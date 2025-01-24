@@ -1,0 +1,26 @@
+<table>
+    <thead>
+        <tr>
+            @for (col of displayedColumns; track col) {
+                @if (col === 'People') {
+                    <th><mat-icon>group</mat-icon></th>
+                } @else {
+                    <th>{{ col }}</th>
+                }
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @for (row of dataSource; track row.id) {
+            <tr>
+                <td>{{ row.id }}</td>
+                <td><span [ngClass]="{
+                    'available': row.status.toString() === 'Available',
+                    'occupied': row.status.toString() === 'Occupied'
+                }">{{ row.status }}</span></td>
+                <td class="price">{{ row.totalPrice }} MKD</td>
+                <!-- <td>{{ row.people }}</td> -->
+            </tr>
+        }
+    </tbody>
+</table>

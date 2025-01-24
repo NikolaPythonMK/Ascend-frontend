@@ -1,0 +1,30 @@
+mat-sidenav-content {
+    padding: 30px;
+}
+
+mat-toolbar {
+    position: relative;
+    z-index: 5;
+}
+
+mat-sidenav-container {
+    height: calc(100vh - 64px);
+}
+
+mat-sidenav,
+mat-sidenav-content {
+    transition: all 500ms ease-in-out !important;
+}
+
+.content-wrapper {
+    background-color: #fff;
+    padding: 44px;
+    height: 100%;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+}
+
+.select-country {
+    margin-left: auto;
+}

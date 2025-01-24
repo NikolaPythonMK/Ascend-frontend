@@ -1,0 +1,13 @@
+:host * {
+    transition: all 500ms ease-in-out !important;
+}
+
+.menu-item {
+    border-left: 5px solid;
+    border-left-color: rgba(0, 0, 0, 0,);
+}
+
+.selected-menu-item {
+    border-left-color: blue;
+    background-color: rgba(0, 0, 0, 0.05);
+}

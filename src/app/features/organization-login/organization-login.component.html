@@ -1,0 +1,38 @@
+<div class="languages">
+    <label (click)="onHandleMk('mk')">MK</label>
+    <label (click)="onHandleMk('en')">EN</label>
+</div>
+
+<div class="wrapper">
+    <div class="login-container">
+        <div class="logo-container">
+            <img src="assets/images/logo.png" />
+        </div>
+
+
+        <form [formGroup]="loginForm" class="credentials-container">
+            @if (errorKey) {
+                <div class="error-block">
+                    <mat-icon><span class="error-label">error</span></mat-icon>
+                    <p class="error-message">{{ errorKey | translate }}</p>
+                    <mat-icon class="close-btn" (click)="onCloseErrorMessage()">close</mat-icon>
+                </div>
+            }
+
+            <div class="input-group">
+                <input type="text"
+                        autofocus
+                       formControlName="username"
+                       [placeholder]= '"auth.username" | translate'
+                       [ngClass]="{'error-input': getUsernameControl().invalid && formSubmitted}"/>
+            </div>
+            <div class="input-group">
+                <input type="password"
+                       formControlName="password"
+                       [placeholder]= '"auth.password" | translate'
+                       [ngClass]="{'error-input': getPasswordControl().invalid && formSubmitted}">
+            </div>
+            <button type="submit" (click)="onSubmit()" class="submit-btn">{{ 'auth.login' | translate }}</button>
+        </form>
+    </div>    
+</div>

@@ -1,0 +1,21 @@
+// @import 'colors';
+
+.custom-snackbar {
+    display: flex;
+    align-items: center;
+}
+
+.snackbar-icon {
+    padding-right: 1em;
+    transform: scale(1.1);
+}
+
+.close-btn {
+    margin-left: auto;
+    border: 0;
+    background-color: transparent;
+    color: #fff;
+    font-size: 1rem;
+}
+
+

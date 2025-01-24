@@ -1,0 +1,18 @@
+<mat-toolbar class="mat-elevation-z2">
+    <button mat-icon-button (click)="collapsed.set(!collapsed())">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <ascend-country-select class="select-country"/>
+</mat-toolbar>
+
+<mat-sidenav-container> <!-- entire page-->
+    <mat-sidenav opened mode="side" [style.width]="sidenavWidth()">
+        <ascend-custom-navbar [collapsed]="collapsed()" />
+    </mat-sidenav>
+    <mat-sidenav-content [style.margin-left]="sidenavWidth()">
+
+        <div class="content-wrapper">
+            <router-outlet />
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

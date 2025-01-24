@@ -1,0 +1,25 @@
+<div class="phone-container" [class.invalid-phone]="hasError() && phoneNumberControl.touched">
+    <div class="country-container" (click)="onToggleDropdown()">
+      <div class="selected-country">
+        <img
+          [src]="'assets/images/countries/' + selectedCountry.code + '.svg'"
+          class="country-img"
+        />
+        <mat-icon>arrow_drop_down</mat-icon>
+      </div>
+    </div>
+  </div>
+  
+  @if(toggleDropdown){
+  <ul class="countries-list">
+    @for(country of countries; track country.name; let index = $index){
+    <li class="country-item" (click)="onSelectCountry(index)">
+      <img
+        [src]="'assets/images/countries/' + country.code + '.svg'"
+        class="country-img"
+      />
+    </li>
+    }
+  </ul>
+  }
+  

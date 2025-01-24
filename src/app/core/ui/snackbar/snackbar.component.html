@@ -1,0 +1,13 @@
+<div class="custom-snackbar">
+    <div class="snackbar-icon">
+        @if (data.isSuccess){
+            <mat-icon>check_circle</mat-icon>
+        } @else {
+            <mat-icon>cancel</mat-icon>
+        }
+    </div>
+    <div class="snackbar-content">
+        <p>{{ data.message }}</p>
+    </div>
+    <button class="close-btn"(click)="dismiss()">Close</button>
+</div>

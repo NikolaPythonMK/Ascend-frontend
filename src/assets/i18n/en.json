@@ -1,0 +1,17 @@
+{
+    "errors": {
+        "http-not-supported-error": "This browser version is not supported. For assistance, contact us.",
+        "internal-server-error": "Something went wrong on our end. For assistance, contact us.",
+        "404-title": "Page Not Found",
+        "404-description": "The page you are looking for doesn't exist or has been moved."
+    },
+    "auth": {
+        "login": "Log In",
+        "username": "Username",
+        "password": "Password",
+        "wrong-credentials": "Wrong credentials"
+    },
+    "common": {
+        "homepage-back": "Go back to Homepage"
+    }
+}
