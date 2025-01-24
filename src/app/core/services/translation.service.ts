@@ -9,14 +9,14 @@ export default class TranslationService {
 
     private translateService = inject(TranslateService);
 
-    changeLanguage(lang: Language): void {
+    changeLanguage(lang: string): void {
         localStorage.setItem('language', lang);
         this.translateService.use(lang);
     }
 
-    // getCurrentLanguage(): Language {
-
-    // }
+    getCurrentLanguage(): string | null {
+        return localStorage.getItem('language');
+    }
 
     setDefaultLanguage(): void {
         const lang = localStorage.getItem('language');

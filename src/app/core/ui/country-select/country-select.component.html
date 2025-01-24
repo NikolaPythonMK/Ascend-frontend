@@ -2,7 +2,7 @@
     <div class="country-container" (click)="onToggleDropdown()">
       <div class="selected-country">
         <img
-          [src]="'assets/images/countries/' + selectedCountry.code + '.svg'"
+          [src]="'assets/images/countries/' + selectedLanguage + '.svg'"
           class="country-img"
         />
         <mat-icon>arrow_drop_down</mat-icon>
@@ -12,10 +12,10 @@
   
   @if(toggleDropdown){
   <ul class="countries-list">
-    @for(country of countries; track country.name; let index = $index){
-    <li class="country-item" (click)="onSelectCountry(index)">
+    @for(language of languages; track language; let index = $index){
+    <li class="country-item" (click)="onSelectCountry(language)">
       <img
-        [src]="'assets/images/countries/' + country.code + '.svg'"
+        [src]="'assets/images/countries/' + language + '.svg'"
         class="country-img"
       />
     </li>

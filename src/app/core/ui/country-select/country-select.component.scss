@@ -38,7 +38,6 @@
 
 .countries-list {
     padding: 0;
-    padding-left: .2em;
     margin: 0;
     list-style: none;
     width: 50px;
@@ -49,11 +48,15 @@
     .country-item{
         display: flex;
         align-items: center;
-        padding-bottom: .5em;
+        justify-content: center;
+        padding-bottom: .2em;
         cursor: pointer;
         .country-info {
             padding-left: .5em;
         }  
+    }
+    .country-item:hover {
+        background-color: #e2dede;
     }
     position: absolute;
     z-index: 100;

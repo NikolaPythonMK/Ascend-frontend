@@ -13,5 +13,15 @@
     },
     "common": {
         "homepage-back": "Go back to Homepage"
+    },
+    "navbar-items": {
+       "tables": "Tables" ,
+       "products-categories": "Products & Categories",
+       "locations": "Locations",
+       "stuff": "Stuff",
+       "revenue": "Revenue",
+       "reports-analysis": "Reports & Analysis",
+       "stock": "Stock",
+       "settings": "Settings"
     }
 }
