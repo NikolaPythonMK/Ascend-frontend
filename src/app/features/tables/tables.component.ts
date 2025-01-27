@@ -1,7 +1,22 @@
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTableModule } from "@angular/material/table"
+import {
+    MAT_DIALOG_DATA,
+    MatDialog,
+    MatDialogActions,
+    MatDialogClose,
+    MatDialogContent,
+    MatDialogRef,
+    MatDialogTitle,
+  } from '@angular/material/dialog';
+import { TableDialogComponent } from "./components/table-dialog/table-dialog.component";
+import { TranslateModule } from "@ngx-translate/core";
+import { TableViewComponent } from "./components/table-view/table-view.component";
+import { GridViewComponent } from "./components/grid-view/grid-view.component";
+import { SearchBarComponent } from "../../core/ui/search-bar/search-bar.component";
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 
 export enum TableStatus {
     available = 'Available',
@@ -29,17 +44,34 @@ const TABLES: Table[] = [
 ]
 
 
+
 @Component({
     selector: 'ascend-tables',
-    imports: [MatTableModule, CommonModule, MatIconModule],
+    imports: [MatTableModule, CommonModule, MatIconModule, TranslateModule, TableViewComponent, GridViewComponent, SearchBarComponent, MatButtonToggleModule ],
     templateUrl: 'tables.component.html',
     styleUrls: ['tables.component.scss']
 })
 export class TablesComponent {
     displayedColumns = ['Table', 'Status', 'Total Price'];
     dataSource = TABLES;
+    readonly dialog = inject(MatDialog);
+    isAvailable = true;
 
-    constructor() {
-        console.log(this.dataSource);
+    toggleState() {
+        this.isAvailable = !this.isAvailable;
+      }
+
+    selectedView = signal<string>('table');
+
+    openDialog(tableId: number): void {
+        const dialogRef = this.dialog.open(TableDialogComponent, {
+            data: {
+                id: 1
+            }
+        });
+    }
+
+    handleViewChange(view: string): void {
+        this.selectedView.set(view);
     }
 }

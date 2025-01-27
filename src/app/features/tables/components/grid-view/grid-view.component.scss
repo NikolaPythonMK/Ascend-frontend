@@ -1,0 +1,53 @@
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 170px);
+    gap: 10px;
+    width: 100%;
+    margin: 20px auto;
+  }
+
+  .grid-item {
+    background-color: #4caf50;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 100px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 170px; 
+    height: 115px; 
+  }
+
+  .grid-item:hover {
+      transform: scale(1.05);
+  }
+
+  .table-name {
+      font-size: 1.2rem;
+  }
+
+  .available {
+    background-color: #ace1af !important;
+  }
+  .occupied {
+    background-color: #FF9999 !important;
+    color: #ffffff;
+  }
+  .reserved {
+    background-color: #f1f5fc !important;
+  }
+
+  .status {
+    padding: 0.3em;
+    border-radius: 10px;
+  }
+
+  .available-status {
+    background-color: #1cac78;
+  }
+
+  .occupied-status {
+    background-color: #ff5f1f;
+  }

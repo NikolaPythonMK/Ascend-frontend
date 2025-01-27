@@ -23,6 +23,9 @@
         "reports-analysis": "Извештаи и Анализи",
         "stock": "Залиха",
         "settings": "Подесувања"
-     }
+    },
+    "tables": {
+        "title": "Маси"
+    }
 }
 

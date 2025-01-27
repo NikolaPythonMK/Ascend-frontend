@@ -23,5 +23,8 @@
        "reports-analysis": "Reports & Analysis",
        "stock": "Stock",
        "settings": "Settings"
+    },
+    "tables": {
+        "title": "Tables"
     }
 }

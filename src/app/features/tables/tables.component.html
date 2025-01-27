@@ -1,26 +1,28 @@
-<table>
-    <thead>
-        <tr>
-            @for (col of displayedColumns; track col) {
-                @if (col === 'People') {
-                    <th><mat-icon>group</mat-icon></th>
-                } @else {
-                    <th>{{ col }}</th>
-                }
-            }
-        </tr>
-    </thead>
-    <tbody>
-        @for (row of dataSource; track row.id) {
-            <tr>
-                <td>{{ row.id }}</td>
-                <td><span [ngClass]="{
-                    'available': row.status.toString() === 'Available',
-                    'occupied': row.status.toString() === 'Occupied'
-                }">{{ row.status }}</span></td>
-                <td class="price">{{ row.totalPrice }} MKD</td>
-                <!-- <td>{{ row.people }}</td> -->
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="tables-header">
+    <div class="left-part">
+        <div class="title">{{ 'tables.title' | translate }}</div>
+        <div class="grid-buttons">
+            <mat-icon><span [ngClass]="{'selected-header-item': selectedView() === 'table'}"
+                            (click)="handleViewChange('table')"
+                            class="clickable-item">table_view</span></mat-icon>
+            <mat-icon><span [ngClass]="{'selected-header-item': selectedView() === 'grid'}"
+                            (click)="handleViewChange('grid')"
+                            class="clickable-item">grid_view</span></mat-icon>
+        </div>
+    </div>
+
+    <!-- <div class="toggle-buttons">
+        <button>All</button>
+        <button>Occupied</button>
+        <button>Available</button>
+    </div> -->
+
+    <ascend-search-bar class="search-bar"/>
+</div>
+
+
+@if (selectedView() === 'table') {
+    <table-view [dataSource]="dataSource" (clickedTableId)="openDialog($event)" />
+} @else {
+    <grid-view  [dataSource]="dataSource" (clickedTableId)="openDialog($event)" />
+}

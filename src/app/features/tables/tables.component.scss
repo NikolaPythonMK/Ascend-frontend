@@ -1,103 +1,47 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f2f5;
-    margin: 0;
-    padding: 20px;
-  }
+@use "variables" as vars;
 
-  h1 {
-    text-align: center;
-    color: #333;
-  }
+.title {
+  color: vars.$primary-font-color;
+  font-size: vars.$title-font-size;
+}
 
-  table {
-    width: 100%;
-    margin: 20px auto;
-    border-collapse: collapse;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-  }
+.selected-header-item {
+  color: #6c63ff !important;
+}
+.clickable-item {
+  cursor: pointer;
+}
 
-  thead {
-    background: linear-gradient(135deg, #6c63ff, #a29bfe);
-    color: white;
-  }
 
-  th, td {
-    padding: 12px 20px;
-    text-align: center;
+.tables-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .grid-buttons {
+    margin-left: 1.5em;
   }
-
-  th {
-    text-transform: uppercase;
-    font-size: 14px;
-    letter-spacing: 1px;
+  .left-part {
+    display: flex;
+    align-items: center;
   }
+}
 
-  tbody tr:nth-child(odd) {
-    background-color: #f9f9f9;
-  }
-
-  tbody tr:nth-child(even) {
-    background-color: #ffffff;
-  }
-
-  tbody tr:hover {
-    background-color: #f1f5fc;
+.toggle-buttons {
+  padding: .2em;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 20px;
+  button {
+    background-color: vars.$white-color;
+    border: 0;
+    padding: .5em;
+    font-size: 1rem;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-    transform: scale(1.02);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-
-  tbody td {
-    color: #555;
-    border-bottom: 1px solid #ddd;
+  button:hover {
+    background-color: #737387;
   }
-
-  tbody td:first-child {
-    font-weight: bold;
-    color: #333;
-  }
-
-// .available {
-//     background-color: #ACE1AF !important;
-// }
-// .occupied {
-//   background-color: #F0E68C !important;
-// }
-// .reserved {
-//   background-color: #f1f5fc !important;
-// }
-
-.available, .occupied, .reserved {
-  padding: 5px;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
 }
 
-.available {
-  background-color: #ACE1AF !important;
-  padding: 0.5em;
-}
-.occupied {
-  background-color: #dd8181 !important;
-  color: #ffffff;
-  padding: 0.5em;
-}
-.reserved {
-  background-color: #f1f5fc !important;
-}
-
-.price{
-  font-weight: bold;
-  font-size: large;
-}
-
-td{
-  padding: 1.4em;
-  font-size: 1.2rem;
+.search-bar {
+  margin-right: 1.5em;
 }

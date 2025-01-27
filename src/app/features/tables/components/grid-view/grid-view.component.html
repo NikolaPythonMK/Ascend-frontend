@@ -1,0 +1,13 @@
+<div class="grid-container">
+    @for (table of dataSource(); track table.id) {
+        <div class="grid-item"
+         [ngClass]="{'available': table.status.toString() === 'Available',
+                      'occupied': table.status.toString() === 'Occupied'}"
+        >
+            <span class="table-name">Table {{ table.id }}</span>
+            <span class="status"
+                  [ngClass]="{'available-status': table.status.toString() === 'Available',
+                'occupied-status': table.status.toString() === 'Occupied'}">{{ table.status }}</span>
+        </div>
+    }
+  </div>

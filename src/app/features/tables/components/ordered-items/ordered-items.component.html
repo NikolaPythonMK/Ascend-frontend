@@ -1,0 +1,28 @@
+<div class="items-list">
+  <table class="order-items-table">
+    <thead>
+      <tr>
+        <th>бр</th>
+        <th>Шифра</th>
+        <th>Име</th>
+        <th>Количина</th>
+        <th>Цена</th>
+        <th>Вкупно</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of order().orderItems; track item.id; let i = $index){
+      <tr>
+        <td>{{ i + 1 }}</td>
+        <td>{{ item.product.code }}</td>
+        <td>{{ item.product.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.product.price }}</td>
+        <td>{{ item.price }}</td>
+        <td><mat-icon>delete</mat-icon></td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
