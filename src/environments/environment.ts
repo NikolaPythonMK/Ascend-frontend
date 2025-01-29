@@ -1,5 +1,5 @@
 export const environment = {
     production: false,
-    domain: 'http://localhost:5243/',
+    domain: 'http://localhost:5073',
     languages: ['en', 'mk']
 }

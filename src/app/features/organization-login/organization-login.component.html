@@ -9,16 +9,14 @@
             <img src="assets/images/logo.png" />
         </div>
 
-
+        @if (errorKey) {
+            <div class="error-block">
+                <mat-icon><span class="error-label">error</span></mat-icon>
+                <p class="error-message">{{ errorKey | translate }}</p>
+                <mat-icon class="close-btn" (click)="onCloseErrorMessage()">close</mat-icon>
+            </div>
+        }
         <form [formGroup]="loginForm" class="credentials-container">
-            @if (errorKey) {
-                <div class="error-block">
-                    <mat-icon><span class="error-label">error</span></mat-icon>
-                    <p class="error-message">{{ errorKey | translate }}</p>
-                    <mat-icon class="close-btn" (click)="onCloseErrorMessage()">close</mat-icon>
-                </div>
-            }
-
             <div class="input-group">
                 <input type="text"
                         autofocus

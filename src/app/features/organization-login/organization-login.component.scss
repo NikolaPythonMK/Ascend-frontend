@@ -11,7 +11,7 @@
     padding-top: 10%;
 
     .credentials-container {
-        padding-top: 2em;
+        // padding-top: 2em;
         display: flex;
         flex-direction: column;
         // width: 50%;
@@ -38,9 +38,13 @@
             cursor: pointer;
         }
     }
+    .logo-container {
+        padding-bottom: 2em;
+    }
 }
 
 .error-block {
+    width: 50%;
     position: relative;
     display: flex;
     flex-wrap: wrap;

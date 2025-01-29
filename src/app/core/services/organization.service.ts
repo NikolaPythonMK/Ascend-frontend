@@ -12,8 +12,9 @@ import { environment } from "../../../environments/environment";
 })
 export class OrganizationService {
     private cookieService = inject(CookieService)
-    private httpClient = inject(HttpClient);
+    private http = inject(HttpClient);
     private domain = environment.domain;
+    private readonly parameters = '?useCookies=true&useSessionCookies=true'
 
     login(request: LoginRequest, isSuccess?: boolean): Observable<LoginResponse>{
         if (isSuccess) {
@@ -22,6 +23,8 @@ export class OrganizationService {
             return of(response);
         }
         return throwError(() => new Error('auth.wrong-credentials'));
+
+       // return this.http.post<LoginResponse>(`${this.domain}/login${this.parameters}`, request, { withCredentials: true });
     }
 
     logout() {

@@ -59,7 +59,7 @@ export class OrganizationLoginPage {
           }
     
           const loginRequest: LoginRequest = {
-            username: this.getUsernameControl().value,
+            email: this.getUsernameControl().value,
             password: this.getPasswordControl().value
           }
     
