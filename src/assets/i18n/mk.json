@@ -9,6 +9,7 @@
         "login": "Најавете се",
         "username": "Корисничко име",
         "password": "Лозинка",
+        "location": "Локација",
         "wrong-credentials": "Погрешни креденцијали"
     },
     "common": {
@@ -18,14 +19,34 @@
         "tables": "Маси" ,
         "products-categories": "Продукти и Категории",
         "locations": "Локации",
-        "stuff": "Вработени",
+        "staff": "Персонал",
         "revenue": "Приходи",
         "reports-analysis": "Извештаи и Анализи",
         "stock": "Залиха",
         "settings": "Подесувања"
     },
     "tables": {
-        "title": "Маси"
+        "title": "Маси",
+        "column-table": "Маса",
+        "column-status": "Состојба",
+        "column-price": "Вкупно",
+        "status-available": "Слободна",
+        "status-occupied": "Зафатена",
+        "no-tables-first-part": "Моментално немате внесено маси во системот.",
+        "no-tables-second-part": "Кликнете",
+        "no-tables-third-part": "тука",
+        "no-tables-fourth-part": "за да започнете со додавање на маси."
+    },
+    "staff": {
+        "tab-title-staff": "Персонал",
+        "tab-title-roles": "Улоги",
+        "add-role-btn": "Додади улога"
+    },
+    "ui": {
+        "button": {
+            "primary": "Поднеси",
+            "secondary": "Откажи"
+        }
     }
 }
 

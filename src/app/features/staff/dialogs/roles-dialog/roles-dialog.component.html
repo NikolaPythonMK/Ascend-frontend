@@ -1,0 +1,22 @@
+
+
+  <form class="roles-form" [formGroup]="roleForm">
+    <mat-form-field>
+      <mat-label>Role Name</mat-label>
+      <input matInput formControlName="name">
+    </mat-form-field>
+  
+    <mat-form-field>
+        <mat-label>Permissions</mat-label>
+        <mat-select formControlName="permissions" multiple>
+          @for (permission of permissions(); track permission.id) {
+            <mat-option [value]="permission.id">{{permission.method}} {{ permission.name }} </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <div class="button-group">
+        <ascend-button type="primary" (clickEvent)="onSubmit()"/>
+        <ascend-button type="secondary" (clickEvent)="onClose()" />
+      </div>
+  </form>

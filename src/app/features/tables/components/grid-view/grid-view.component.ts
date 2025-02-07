@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, input, output } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
 import { TranslateModule } from "@ngx-translate/core";
-import { Table } from "../../tables.component";
+import { Table } from "../../../../core/models/api/table.model";
 
 @Component({
     selector: 'grid-view',

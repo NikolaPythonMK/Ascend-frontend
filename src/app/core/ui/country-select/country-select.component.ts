@@ -2,8 +2,8 @@ import { Component, DestroyRef, ElementRef, inject, input, ViewChild } from "@an
 import { FormControl } from "@angular/forms";
 import { MatSelectModule } from "@angular/material/select";
 import { MatIconModule } from "@angular/material/icon";
-import TranslationService from "../../services/translation.service";
 import { environment } from "../../../../environments/environment";
+import TranslationService from "../../services/utility/translation.service";
 
 @Component({
     selector: 'ascend-country-select',

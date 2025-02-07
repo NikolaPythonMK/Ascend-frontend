@@ -1,0 +1,204 @@
+@use "variables" as vars;
+
+* {
+  box-sizing: border-box;
+}
+
+.dialog-wrapper {
+  margin: 0;
+  padding: 0;
+  width: 800px;
+  height: 400px;
+  display: flex;
+
+  .info-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .image-container {
+    padding: 0;
+    margin: 0;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em;
+    color: vars.$primary-font-color;
+  }
+}
+
+img {
+  width: 100%;
+  height: 100%;
+}
+
+// mat-dialog-content {
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+// }
+
+// .product-details {
+//     display: flex;
+//     align-items: center;
+//     margin-bottom: 16px;
+  
+//     .product-image {
+//       width: 100%;
+//       max-height: 250px;
+//     }
+  
+//     .product-info {
+//       flex: 1;
+  
+//       p {
+//         margin: 4px 0;
+//       }
+  
+//       strong {
+//         font-weight: bold;
+//       }
+//     }
+//   }
+  
+//   .quantity-field {
+//     width: 100%;
+//     margin-bottom: 16px;
+//   }
+  
+  mat-dialog-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+  }
+  
+// .header {
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center;
+//     padding: 1em;
+//     color: vars.$primary-font-color;
+
+// } 
+
+button {
+    padding: 10px 18px;
+    margin-right: 1em;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  button:active {
+    background-color: #003f7f;
+    transform: scale(0.97); 
+  }
+  
+  .primary-btn {
+    background-color: #6c63ff;
+  }
+  
+  .add-btn {
+    background-color: #00A86B;
+  }
+  
+  .default-btn {
+   background-color: #6C757D;
+  }
+
+
+
+
+
+  .quantity-input {
+    display: flex;
+    align-items: end;
+  }
+
+
+  :root {
+    --border-radius: 3px;
+    --border: 2px solid #3b3b3b;
+    --control-size: 38px;
+    --font-size: 20px;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  }
+  
+  .value-control {
+    // width: var(--control-size);
+    // height: var(--control-size);
+    margin: 0 8px;
+    background: transparent;
+    // border: var(--border);
+    // border-radius: var(--border-radius);
+    color: #3b3b3b;
+    cursor: pointer;
+    font-size: 1.5rem;
+  }
+  
+  .value-control:hover {
+    background: #eee;
+  }
+  
+  .value-control:active {
+    background: #ddd;
+  }
+  
+  .value-control:focus,
+  .value-input:focus {
+    // outline: 2px solid #3e67fd;
+    // outline-offset: 1px
+  }
+  
+  .value-input {
+    border: 0;
+    margin: 0;
+    // height: var(--control-size);
+    width: 80px;
+    // border: var(--border);
+    // border-radius: var(--border-radius);
+    padding: 2px 8px;
+    text-align: center;
+    font-size: 1.5rem;
+    border-bottom: 1px solid #777;
+  }
+  
+  .value-input:hover {
+    border-color: #777;
+  }
+  
+  .value-input::-webkit-outer-spin-button,
+  .value-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .value-input {
+    -moz-appearance: textfield;
+  }

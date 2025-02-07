@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, GuardResult, MaybeAsync, Router, RouterStateSnapshot } from "@angular/router";
 import { EmployeeStore } from "../../../core/store/employee.store";
-import { OrganizationService } from "../../../core/services/organization.service";
+import { OrganizationService } from "../../../core/services/api/organization.service";
 
 /**
  * Organization Login Dependency: The employee login page is inaccessible unless the organization has been logged in first.
@@ -21,7 +21,7 @@ export class EmployeeLoginGuard implements CanActivate {
             return this.router.parseUrl('/login')
         }
         if (this.employeeStore.hasEmployee()) {
-            return this.router.parseUrl('/123/tables');
+            return this.router.parseUrl('/tables');
         }
         return true;
     }

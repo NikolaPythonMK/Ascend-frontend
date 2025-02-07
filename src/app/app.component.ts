@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import TranslationService from './core/services/translation.service';
+import TranslationService from './core/services/utility/translation.service';
 
 @Component({
     selector: 'app-root',

@@ -5,11 +5,11 @@
         <h3 class="title">Маса 2</h3>
       </div>
 
-      <tables-order-items [order]="selectedOrder()!"/>
+      <tables-order-items [tableItems]="tableItems()"/>
 
       <div class="product-list-footer">
           <div class="price-label">
-            Вкупно: {{ selectedOrder()?.totalPrice }}
+            Вкупно: {{ table.totalPrice }}
           </div>
           <div>
             <button class="delete-order-btn">Избриши нарачка</button>
@@ -19,25 +19,7 @@
     </div>
 
     <div class="orders">
-      <div class="orders-header">
-        <h3 class="title">Продукти</h3>
-        <div class="orders-filter">
-          <select class="category-select">
-            <option defaultSelected>Сите</option>
-            <option>Пијалоци</option>
-            <option>Доручеци</option>
-            <option>Десерти</option>
-          </select>
-          <ascend-search-bar class="search-bar" />
-        </div>
-      </div>
-      <ul>
-        @for (order of orders(); track order.id; let i = $index) {
-            <li>
-              Lorem ipsum dolor sit amet.
-            </li>
-        }
-      </ul>
+      <display-products (activeProduct)="onActiveProduct($event)" />
     </div>
 
     <div class="footer">

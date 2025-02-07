@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, GuardResult, MaybeAsync, Router, RouterStateSnapshot } from "@angular/router";
 import { EmployeeStore } from "../store/employee.store";
-import { OrganizationService } from "../services/organization.service";
+import { OrganizationService } from "../services/api/organization.service";
 
 
 @Injectable({
@@ -19,7 +19,7 @@ export class EmployeeGuard implements CanActivate {
         }
 
         if (!this.employeeStore.hasEmployee()) {
-            return this.router.parseUrl('/login/123');
+            return this.router.parseUrl('/staff');
         }
         return true;
     }

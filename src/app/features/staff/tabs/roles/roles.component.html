@@ -1,0 +1,25 @@
+<div class="btn-group">
+  <ascend-button
+    type="primary"
+    label="staff.add-role-btn"
+    (clickEvent)="onAddRole()"
+  />
+</div>
+
+<div class="role-permissions">
+  <div class="roles">
+    <div class="roles-header">
+        <span>Улоги</span>
+        <span class="counter">{{ roles().length }}</span>
+        
+    </div>
+    <ul>
+      @for (role of roles(); track role.id) {
+      <li>{{ role.name }}</li>
+      }
+    </ul>
+  </div>
+  <div class="permissions">
+    <p>test</p>
+  </div>
+</div>

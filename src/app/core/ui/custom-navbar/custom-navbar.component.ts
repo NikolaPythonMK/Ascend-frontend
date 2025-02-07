@@ -21,42 +21,42 @@ export class CustomNavbarComponent {
         {
             icon: 'table_bar',
             label: 'navbar-items.tables',
-            route: '/123/tables',
+            route: '/tables',
         },
         {
             icon: 'fastfood',
             label: 'navbar-items.products-categories',
-            route: '/123/menu',
+            route: '/menu',
         },
         {
             icon: 'pin_drop',
             label: 'navbar-items.locations',
-            route: '/123/locations'
+            route: '/locations'
         },
         {
             icon: 'groups',
-            label: 'navbar-items.stuff',
-            route: '/123/stuff',
+            label: 'navbar-items.staff',
+            route: '/personal',
         },
         {
             icon: 'payments',
             label: 'navbar-items.revenue',
-            route: '/123/revenue',
+            route: '/revenue',
         },
         {
             icon: 'query_stats',
             label: 'navbar-items.reports-analysis',
-            route: '/123/reports',
+            route: '/reports',
         },
         {
             icon: 'inventory_2',
             label: 'navbar-items.stock',
-            route: '/123/stock',
+            route: '/stock',
         },
         {
             icon: 'settings',
             label: 'navbar-items.settings',
-            route: '/123/settings',
+            route: '/settings',
         },
     ])
 }

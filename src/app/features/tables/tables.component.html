@@ -1,28 +1,55 @@
 <div class="tables-header">
-    <div class="left-part">
-        <div class="title">{{ 'tables.title' | translate }}</div>
-        <div class="grid-buttons">
-            <mat-icon><span [ngClass]="{'selected-header-item': selectedView() === 'table'}"
-                            (click)="handleViewChange('table')"
-                            class="clickable-item">table_view</span></mat-icon>
-            <mat-icon><span [ngClass]="{'selected-header-item': selectedView() === 'grid'}"
-                            (click)="handleViewChange('grid')"
-                            class="clickable-item">grid_view</span></mat-icon>
-        </div>
+  <div class="left-part">
+    <div class="title">{{ "tables.title" | translate }}</div>
+    <div class="grid-buttons">
+      <mat-icon
+        ><span
+          [ngClass]="{ 'selected-header-item': selectedView() === 'table' }"
+          (click)="handleViewChange('table')"
+          class="clickable-item"
+          >table_view</span
+        ></mat-icon
+      >
+      <mat-icon
+        ><span
+          [ngClass]="{ 'selected-header-item': selectedView() === 'grid' }"
+          (click)="handleViewChange('grid')"
+          class="clickable-item"
+          >grid_view</span
+        ></mat-icon
+      >
+      <mat-icon
+        ><span
+          [ngClass]="{ 'selected-header-item': selectedView() === 'drag' }"
+          (click)="handleViewChange('drag')"
+          class="clickable-item"
+          >move_up</span
+        ></mat-icon
+      >
     </div>
+  </div>
 
-    <!-- <div class="toggle-buttons">
-        <button>All</button>
-        <button>Occupied</button>
-        <button>Available</button>
-    </div> -->
-
-    <ascend-search-bar class="search-bar"/>
+  <ascend-search-bar class="search-bar" (onSearchTerm)="onSearchTerm($event)" />
 </div>
 
-
-@if (selectedView() === 'table') {
-    <table-view [dataSource]="dataSource" (clickedTableId)="openDialog($event)" />
-} @else {
-    <grid-view  [dataSource]="dataSource" (clickedTableId)="openDialog($event)" />
+@if (dataSource().length === 0) {
+  <div class="no-tables-message">
+    <p>{{ 'tables.no-tables-first-part' | translate }}</p>
+    <div>
+      <p>{{ 'tables.no-tables-second-part' | translate }}&nbsp;</p>
+      <a href="/test"><p>{{ 'tables.no-tables-third-part' | translate }}&nbsp;</p></a>
+      <p>{{ 'tables.no-tables-fourth-part' | translate }}</p>
+    </div>
+  </div>
+}
+@else {
+  @if (selectedView() === 'table') {
+    <table-view [dataSource]="dataSource()" (clickedTableId)="openDialog($event)" />
+  }
+  @else if (selectedView() === 'grid') {
+    <grid-view [dataSource]="dataSource()" (clickedTableId)="openDialog($event)" />
+  }
+  @else {
+    <drag-view [dataSource]="dataSource()" />
+  }
 }

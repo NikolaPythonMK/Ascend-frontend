@@ -1,0 +1,54 @@
+@use 'variables' as vars;
+
+.btn-group {
+    padding: 1em;
+    display: flex;
+    justify-content: end;
+}
+
+
+.role-permissions {
+    display: flex;
+    width: 100%;
+    gap: 1.5em;
+
+    .roles, .permissions {
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+        border-radius: 5px;
+        padding: 0.5em;
+    }
+    .roles {
+        padding: 0;
+        flex: 1;
+        .roles-header {
+            display: flex;
+            align-items: center;
+            padding: .5em;
+            color: vars.$primary-font-color;
+        }
+        ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        li {
+            padding: 1em;
+        }
+        li:hover {
+            background-color: #eee;
+        }
+    }
+    .permissions {
+        flex: 2;
+    }
+}
+
+.counter {
+    background-color: #e3f2fd;
+    border-radius: 50%;
+    padding: 8px 12px 8px 12px;
+    margin-left: .5em;
+    font-weight: bold;
+    color: #6c63ff;
+  }
+  

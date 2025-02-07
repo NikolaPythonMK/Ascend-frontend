@@ -2,6 +2,7 @@ import { Component, input } from "@angular/core";
 import { Order } from "../../models/order.model";
 import { MatIconModule } from "@angular/material/icon";
 import { CommonModule } from "@angular/common";
+import { TableItem } from "../../../../core/models/api/table-item.model";
 
 @Component({
     selector: 'tables-order-items',
@@ -10,5 +11,5 @@ import { CommonModule } from "@angular/common";
     styleUrls: ['ordered-items.component.scss']
 })
 export class OrderedItemsComponent {
-    order = input.required<Order>();
+    tableItems = input.required<TableItem[]>();
 }

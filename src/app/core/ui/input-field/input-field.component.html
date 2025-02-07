@@ -1,0 +1,7 @@
+<input [type]="type()"
+       [autofocus]="autoFocus()"
+       [placeholder]="placeholder() | translate"
+       [ngClass]="{'error-input': hasError()}"
+       (change)="onInputChange($event)"
+       (blur)="onBlur()"
+>

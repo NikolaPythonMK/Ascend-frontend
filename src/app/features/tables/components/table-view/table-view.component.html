@@ -2,11 +2,7 @@
     <thead>
         <tr>
             @for (col of displayedColumns; track col) {
-                @if (col === 'People') {
-                    <th><mat-icon>group</mat-icon></th>
-                } @else {
-                    <th>{{ col }}</th>
-                }
+                <th>{{ col | translate }}</th>
             }
         </tr>
     </thead>
@@ -14,11 +10,28 @@
         @for (row of dataSource(); track row.id) {
             <tr (click)="handleRowClick(row.id)">
                 <td>{{ row.id }}</td>
-                <td><span [ngClass]="{
+                @if (row.status.toString() === 'Available') {
+                    <td>
+                        <span class="available">{{ 'tables.status-available' | translate }}</span>
+                    </td>
+                }
+                @if (row.status.toString() === 'Occupied') {
+                    <td>
+                        <span class="occupied">{{ 'tables.status-occupied' | translate }}</span>
+                    </td>
+                }
+                <!-- <td><span [ngClass]="{
                     'available': row.status.toString() === 'Available',
                     'occupied': row.status.toString() === 'Occupied'
-                }">{{ row.status }}</span></td>
+                }">
+                {{ row.status }}
+            </span></td> -->
                 <td class="price">{{ row.totalPrice }} MKD</td>
+                <td>
+                    <button class="primary-button">
+                        Сметка
+                    </button>
+                </td>
             </tr>
         }
     </tbody>

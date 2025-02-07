@@ -1,31 +1,38 @@
 import { Routes } from '@angular/router';
 import { EmployeeGuard } from './core/guards/employee.guard';
+import { EmployeeLoginGuard } from './features/employee-login/guards/employee-login.guard';
 
 export const routes: Routes = [
-    {
-        path: '',
-        redirectTo: 'login',
-        pathMatch: 'full'
-    },
+    // {
+    //     path: '',
+    //     redirectTo: 'login',
+    //     pathMatch: 'full'
+    // },
     {
         path: 'login',
         loadChildren: () => import('./features/organization-login/organization-login.routes').then((m) => m.routes)
     },
     {
-        path: ':organizationId',
+        //path: ':organizationId',
+        path: '',
         loadComponent: () => import('./features/home/home.component').then((m) => m.HomeComponent),
         canActivate: [EmployeeGuard],
         children: [
             {
                 path: 'tables',
-                loadComponent: () => import('./features/tables/tables.component').then((m) => m.TablesComponent)
+                loadComponent: () => import('./features/tables/tables.component').then((m) => m.TablesComponent),
+            },
+            {
+                path: 'personal',
+                loadComponent: () => import('./features/staff/staff.component').then((m) => m.StaffPage)
             }
         ]
     },
     {
-        path: 'login/:organizationId',
-        loadChildren: () => import('./features/employee-login/employee-login.routes').then((m) => m.routes)
-    }
+        path: 'staff',
+        loadComponent: () => import('./features/employee-login/employee-login.component').then((m) => m.EmployeeLoginComponent),
+        canActivate: [EmployeeLoginGuard]
+    },
     // {
     //     path: 'page-not-found',
     //     loadComponent: () => import('./core/pages/404/not-found.component').then((m) => m.NotFoundPageComponent)

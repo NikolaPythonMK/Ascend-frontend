@@ -9,6 +9,7 @@
         "login": "Log In",
         "username": "Username",
         "password": "Password",
+        "location": "Location",
         "wrong-credentials": "Wrong credentials"
     },
     "common": {
@@ -18,13 +19,33 @@
        "tables": "Tables" ,
        "products-categories": "Products & Categories",
        "locations": "Locations",
-       "stuff": "Stuff",
+       "staff": "Staff",
        "revenue": "Revenue",
        "reports-analysis": "Reports & Analysis",
        "stock": "Stock",
        "settings": "Settings"
     },
     "tables": {
-        "title": "Tables"
+        "title": "Tables",
+        "column-table": "Table",
+        "column-status": "Status",
+        "column-price": "Total",
+        "status-available": "Available",
+        "status-occupied": "Occupied",
+        "no-tables-first-part": "You currently have no tables entered in the system.",
+        "no-tables-second-part": "Click",
+        "no-tables-third-part": "here",
+        "no-tables-fourth-part": "to start adding tables."
+    },
+    "staff": {
+        "tab-title-staff": "Staff",
+        "tab-title-roles": "Roles",
+        "add-role-btn": "Add role"
+    },
+    "ui": {
+        "button": {
+            "primary": "Submit",
+            "secondary": "Cancel"
+        }
     }
 }

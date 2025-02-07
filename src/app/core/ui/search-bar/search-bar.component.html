@@ -1,5 +1,5 @@
 <div class="search-container">
-  <input type="text" [placeholder]="placeholder()" class="search-input" />
+  <input type="text" [placeholder]="placeholder()" class="search-input" [formControl]="searchTerm" #searchInput />
   <button mat-icon-button matSuffix class="search-button">
     <mat-icon>search</mat-icon>
   </button>

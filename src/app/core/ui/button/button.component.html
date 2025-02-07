@@ -1,0 +1,9 @@
+<button
+  [ngClass]="{
+    'primary-btn': type() === 'primary',
+    'secondary-btn': type() === 'secondary'
+  }"
+  (click)="onClick()"
+>
+  {{ computedLabel() | translate }}
+</button>

@@ -1,6 +1,5 @@
 <div class="languages">
-    <label (click)="onHandleMk('mk')">MK</label>
-    <label (click)="onHandleMk('en')">EN</label>
+    <ascend-country-select />
 </div>
 
 <div class="wrapper">
@@ -18,11 +17,12 @@
         }
         <form [formGroup]="loginForm" class="credentials-container">
             <div class="input-group">
-                <input type="text"
-                        autofocus
-                       formControlName="username"
-                       [placeholder]= '"auth.username" | translate'
-                       [ngClass]="{'error-input': getUsernameControl().invalid && formSubmitted}"/>
+                <ascend-input-field [type]="'text'"
+                                    [placeholder]="'auth.username'"
+                                    [autoFocus]="true"
+                                    [hasError]="getUsernameControl().invalid && formSubmitted"
+                                    formControlName="username"
+                                    (blurEvent)="onEmailBlur()" />
             </div>
             <div class="input-group">
                 <input type="password"
@@ -30,6 +30,23 @@
                        [placeholder]= '"auth.password" | translate'
                        [ngClass]="{'error-input': getPasswordControl().invalid && formSubmitted}">
             </div>
+            @if (locations().length > 0) {
+                <!-- <select>
+                    @for (location of locations(); track location.id; let index = $index) {
+                        <option [value]="location.id" [selected]="index === 0">{{ location.name }}</option>
+                    }
+                </select> -->
+
+                <mat-form-field>
+                    <mat-label>{{ 'auth.location' | translate }}</mat-label>
+                    <mat-select matNativeControl formControlName="location">
+                      @for (location of locations(); track location) {
+                        <mat-option [value]="location.id" >{{ location.name }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                  
+            }
             <button type="submit" (click)="onSubmit()" class="submit-btn">{{ 'auth.login' | translate }}</button>
         </form>
     </div>    

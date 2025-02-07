@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, inject } from "@ang
 import { Router } from "@angular/router";
 import { EmployeeStore } from "../../core/store/employee.store";
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { StaffAuthService } from "./services/staff-auth.service";
 
 @Component({
     selector: 'ascend-employee-login',
@@ -12,6 +13,7 @@ import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModu
 export class EmployeeLoginComponent implements AfterViewInit{
     router = inject(Router);
     employeeStore = inject(EmployeeStore);
+    staffAuthService = inject(StaffAuthService);
 
     elRef = inject(ElementRef);
 
@@ -36,13 +38,14 @@ export class EmployeeLoginComponent implements AfterViewInit{
 
 
     onSubmit(): void {
-        this.employeeStore.setEmployee({
-            id: 1,
-            code: 1234,
-            permissions: [],
-            language: 'mk'
+        this.staffAuthService.login(this.getPinControl().value).subscribe({
+            next: () => {
+                this.router.navigate(['/tables']);
+            },
+            error: () => {
+
+            }
         })
-        this.router.navigate(['/123/tables']);
     }
 
      onFocus() {

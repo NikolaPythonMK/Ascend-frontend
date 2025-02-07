@@ -12,7 +12,6 @@
   cursor: pointer;
 }
 
-
 .tables-header {
   display: flex;
   justify-content: space-between;
@@ -27,13 +26,13 @@
 }
 
 .toggle-buttons {
-  padding: .2em;
+  padding: 0.2em;
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 20px;
   button {
     background-color: vars.$white-color;
     border: 0;
-    padding: .5em;
+    padding: 0.5em;
     font-size: 1rem;
     cursor: pointer;
   }
@@ -44,4 +43,16 @@
 
 .search-bar {
   margin-right: 1.5em;
+}
+
+.no-tables-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10%;
+  color: vars.$primary-font-color;
+  font-size: 1.2rem;
+  div {
+    display: flex;
+  }
 }

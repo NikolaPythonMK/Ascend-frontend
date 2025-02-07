@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
-import { CustomSnackbarComponent } from '../ui/snackbar/snackbar.component';
-import { SnackbarData } from '../ui/snackbar/models/snackbar-data';
+import { CustomSnackbarComponent } from '../../ui/snackbar/snackbar.component';
+import { SnackbarData } from '../../ui/snackbar/models/snackbar-data';
 
 
 @Injectable({
