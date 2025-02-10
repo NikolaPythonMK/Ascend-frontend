@@ -5,5 +5,8 @@
   }"
   (click)="onClick()"
 >
+  @if (icon()) {
+    <mat-icon>{{ icon() }}</mat-icon>
+  }
   {{ computedLabel() | translate }}
 </button>

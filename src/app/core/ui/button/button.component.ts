@@ -2,16 +2,18 @@ import { Component, input, OnInit, output, signal } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { TranslateModule } from "@ngx-translate/core";
 import { ButtonType } from "./button.type";
+import { MatIconModule } from "@angular/material/icon";
 
 @Component({
     selector: 'ascend-button',
-    imports: [CommonModule, TranslateModule],
+    imports: [CommonModule, TranslateModule, MatIconModule],
     templateUrl: 'button.component.html',
     styleUrls: ['button.component.scss']
 })
 export class ButtonComponent implements OnInit{
     type = input.required<ButtonType>();
     label = input<string>();
+    icon = input<string>();
     clickEvent = output<void>();
     computedLabel = signal<string>('');
 

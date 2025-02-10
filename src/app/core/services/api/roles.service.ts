@@ -25,5 +25,9 @@ export class RolesService {
     addRole(request: AddRoleRequest): Observable<any> {
         return this.http.post<any>(`${this.domain}/role/create`, request, {withCredentials: true})
     } 
+    
+    getById(id: number): Observable<Role>{
+        return this.http.post<Role>(`${this.domain}/role/id`, { id }, {withCredentials:true})
+    }
 
 }

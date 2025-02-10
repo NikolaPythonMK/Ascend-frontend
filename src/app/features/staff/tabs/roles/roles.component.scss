@@ -33,6 +33,9 @@
         }
         li {
             padding: 1em;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
         }
         li:hover {
             background-color: #eee;
@@ -50,5 +53,37 @@
     margin-left: .5em;
     font-weight: bold;
     color: #6c63ff;
-  }
-  
+}
+
+.active-role {
+    color: #6c63ff;
+    background-color: #e3f2fd;
+}
+
+table {
+    border-collapse: collapse;
+    color: vars.$primary-font-color;
+    width: 100%;
+}
+
+td, th {
+    color: #555;
+    padding: 1em;
+    font-size: 1.2rem;
+}
+
+tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.permissions-header {
+    text-align: start;
+}
+
+.cell-align-center {
+    text-align: center;
+}
+
+.trash-btn {
+    color: red;
+}
