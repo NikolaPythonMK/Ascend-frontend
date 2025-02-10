@@ -38,7 +38,10 @@
                     View
                 </th>
                 <th class="cell-align-center">
-                    Add & Edit
+                    Add
+                </th>
+                <th class="cell-align-center">
+                    Edit
                 </th>
                 <th class="cell-align-center">
                     Delete
@@ -108,24 +111,23 @@
                       </li>
                     </ul>
                   </div> -->
-                   @for (permission of Object.keys(groupedPermissions); track permission) {
+                  @for (permissionGroup of objectKeys; track permissionGroup) {
                     <tr>
-                        <td>{{permission}}</td>
-                        @for(singlePermission of groupedPermissions[permission]; track singlePermission.id){
-
-                            @if (singlePermission.name.includes("getall")) {
-                                <td class="cell-align-center"><mat-checkbox [value]=singlePermission.id.toString() /></td>
-                            }
-                            @if (singlePermission.name.includes("create")) {
-                                <td class="cell-align-center"><mat-checkbox [value]=singlePermission.id.toString() /></td>
-                            }   
-                            @if (singlePermission.name.includes("delete")) {
-                                <td class="cell-align-center"><mat-checkbox [value]=singlePermission.id.toString() /></td>
-                            }
-                        }    
+                        <td>{{ permissionGroup }}</td>
+                        <td class="cell-align-center">
+                            <mat-checkbox [checked]="hasPermission(permissionGroup, 'all')"></mat-checkbox>
+                        </td>
+                        <td class="cell-align-center">
+                            <mat-checkbox [checked]="hasPermission(permissionGroup, 'create')"></mat-checkbox>
+                        </td>
+                        <td class="cell-align-center">
+                            <mat-checkbox [checked]="hasPermission(permissionGroup, 'update')"></mat-checkbox>
+                        </td>
+                        <td class="cell-align-center">
+                            <mat-checkbox [checked]="hasPermission(permissionGroup, 'delete')"></mat-checkbox>
+                        </td>
                     </tr>
-                    }
-                  
+                }
         </tbody>
     </table>
   </div>

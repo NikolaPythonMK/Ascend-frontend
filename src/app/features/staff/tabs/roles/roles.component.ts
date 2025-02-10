@@ -33,6 +33,7 @@ export class RolesComponent implements OnInit{
     // permissions = signal<Permission[]>([]);
     selectedRole = signal<Role | null>(null);
     groupedPermissions: Record<string, Permission[]> = {};
+    objectKeys: string[] = [];
 Object: any;
     
     ngOnInit(): void {
@@ -62,17 +63,20 @@ Object: any;
         this.rolesService.getById(role.id).subscribe({
             next: (roleSelected: Role) => {
                 this.selectedRole.set(roleSelected);
-                console.log('ERR');
                 this.groupedPermissions = this.groupPermissions(this.selectedRole()?.permissions || []);
-                console.log('=> ', this.groupedPermissions)
-                //role, create, delete, id, getall ->
+                this.objectKeys = Object.keys(this.groupedPermissions);
+                console.log(this.groupedPermissions)
             },
             error: (error: HttpErrorResponse) => {
                 this.snackbarService.error(error.message);
             }
         })
     }
-      
+    
+    hasPermission(group: string, type: string): boolean {
+        return this.groupedPermissions[group]?.some(p => p.name.includes(type)) ?? false;
+    }
+    
     groupPermissions(permissions: Permission[]): Record<string, Permission[]> {
         return permissions.reduce((acc, permission) => {
             // Split the permission name by `/`
