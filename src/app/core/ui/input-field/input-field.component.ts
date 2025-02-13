@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, input, output, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, forwardRef, input, output, signal, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TranslateModule } from "@ngx-translate/core";
@@ -17,7 +17,8 @@ import { TranslateModule } from "@ngx-translate/core";
     }
   ]
 })
-export class InputFieldComponent implements ControlValueAccessor {
+export class InputFieldComponent implements ControlValueAccessor, AfterViewInit {
+  @ViewChild('inputElement', { static: true }) inputElement!: ElementRef<HTMLInputElement>;
   type = input<string>('text');
   autoFocus = input<boolean>(false);
   placeholder = input<string>('');
@@ -31,6 +32,12 @@ export class InputFieldComponent implements ControlValueAccessor {
 
   private onChange: (value: string) => void = () => {};
   private onTouched: () => void = () => {};
+
+  ngAfterViewInit(): void {
+    if (this.autoFocus()) {
+      setTimeout(() => this.inputElement.nativeElement.focus(), 0);
+    }
+  }
 
   writeValue(value: string): void {
     this.value.set(value ?? '');

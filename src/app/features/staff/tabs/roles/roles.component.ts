@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, OnInit, QueryList, Signal, signal, ViewChildren } from "@angular/core";
 import { TranslateModule } from "@ngx-translate/core";
 import { ButtonComponent } from "../../../../core/ui/button/button.component";
 import { RolesDialog } from "../../dialogs/roles-dialog/roles-dialog.component";
@@ -12,43 +12,112 @@ import { AddRoleRequest } from "../../models/add-role.request";
 import { Permission } from "../../../../core/models/api/permission.model";
 import { MatButtonModule } from "@angular/material/button";
 import { MatTableModule } from "@angular/material/table";
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatCheckbox, MatCheckboxChange, MatCheckboxModule} from '@angular/material/checkbox';
 import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatIconModule } from "@angular/material/icon";
 import { PermissionDTO } from "../../../../core/models/dto/permission.dto";
+import { InputFieldComponent } from "../../../../core/ui/input-field/input-field.component";
+import { ConfirmationDialog } from "../../../../core/ui/confirmation-dialog/confirmation-dialog.component";
+import { UpdateRoleRequest } from "../../models/update-role.request";
+
+interface GroupPermission {
+    groupName: string,
+    permissions: Permission[]
+}
+
+interface UpdatedPermission {
+    permissionId: number,
+    isChecked: boolean
+}
 
 
 @Component({
     selector: 'roles-component',
-    imports: [TranslateModule, ButtonComponent, MatTableModule, CommonModule, MatCheckboxModule, FormsModule, MatIconModule],
+    imports: [TranslateModule, ButtonComponent, MatTableModule, CommonModule, MatCheckboxModule, FormsModule, MatIconModule, InputFieldComponent, ReactiveFormsModule, ConfirmationDialog],
     templateUrl: 'roles.component.html',
     styleUrls: ['roles.component.scss']
 })
 export class RolesComponent implements OnInit{
+    @ViewChildren('checkbox') checkboxes!: QueryList<MatCheckbox>;
     readonly dialog = inject(MatDialog);
     readonly rolesService = inject(RolesService);
     readonly snackbarService = inject(SnackbarService);
+    readonly fb = inject(FormBuilder);
+    readonly cdr = inject(ChangeDetectorRef);
+    toggleAddRole = signal<boolean>(false);
     roles = signal<Role[]>([]);
-    // permissions = signal<Permission[]>([]);
     selectedRole = signal<Role | null>(null);
-    groupedPermissions: Record<string, Permission[]> = {};
+
+    permissions = signal<Permission[]>([]);
+    groupedPermissions = signal<GroupPermission[]>([]);
+    updatedPermissions: UpdatedPermission[] = [];
+    
+
     objectKeys: string[] = [];
-Object: any;
+    Object: any;
+
+    roleForm = this.fb.group({
+        name: ['', Validators.required],
+    })
     
     ngOnInit(): void {
+        this.getAllPermissions();
         this.getRoles();
-        // this.getPermissions();
+    }
+
+    getNameControl(): AbstractControl {
+        return this.roleForm.get('name')!;
     }
 
     onAddRole(): void {
-        const dialogRef = this.dialog.open(RolesDialog);
-        dialogRef.afterClosed().subscribe((result: AddRoleRequest) => {
-            if(!result) {
+        this.toggleAddRole.set(!this.toggleAddRole());
+        // const dialogRef = this.dialog.open(RolesDialog);
+        // dialogRef.afterClosed().subscribe((result: AddRoleRequest) => {
+        //     if(!result) {
+        //         return;
+        //     }
+        //     this.rolesService.addRole(result).subscribe({
+        //         next: () => {
+        //             this.getRoles();
+        //         },
+        //         error: (error: HttpErrorResponse) => {
+        //             this.snackbarService.error(error.message);
+        //         }
+        //     })
+        // })
+    }
+
+    onSubmitRole(): void {
+        if(this.getNameControl().invalid){
+            return;
+        }
+        const addRoleRequest: AddRoleRequest = {
+            name: this.getNameControl().value,
+            rolePermissions: []
+        }
+        this.rolesService.addRole(addRoleRequest).subscribe({
+            next: () => {
+                this.snackbarService.success('Успешно додавање улога')
+                this.getRoles();
+                this.toggleAddRole.set(false);
+
+            },
+            error: (error: HttpErrorResponse) => {
+                this.snackbarService.error(error.message);
+            }
+        })
+    }
+
+    onDelete(id: number): void {
+        const dialogRef = this.dialog.open(ConfirmationDialog);
+        dialogRef.afterClosed().subscribe((result: boolean) => {
+            if(!result){
                 return;
             }
-            this.rolesService.addRole(result).subscribe({
+            this.rolesService.deleteRole(id).subscribe({
                 next: () => {
+                    this.snackbarService.success('Успешно е избришана улогата');
                     this.getRoles();
                 },
                 error: (error: HttpErrorResponse) => {
@@ -59,39 +128,17 @@ Object: any;
     }
 
     onSelectRole(role: Role): void {
-        this.selectedRole.set(role);
         this.rolesService.getById(role.id).subscribe({
             next: (roleSelected: Role) => {
                 this.selectedRole.set(roleSelected);
-                this.groupedPermissions = this.groupPermissions(this.selectedRole()?.permissions || []);
-                this.objectKeys = Object.keys(this.groupedPermissions);
-                console.log(this.groupedPermissions)
+
             },
             error: (error: HttpErrorResponse) => {
                 this.snackbarService.error(error.message);
             }
         })
     }
-    
-    hasPermission(group: string, type: string): boolean {
-        return this.groupedPermissions[group]?.some(p => p.name.includes(type)) ?? false;
-    }
-    
-    groupPermissions(permissions: Permission[]): Record<string, Permission[]> {
-        return permissions.reduce((acc, permission) => {
-            // Split the permission name by `/`
-            const parts = permission.name.split('/');
-            
-            // Get the second-to-last part
-            const key = parts.length > 1 ? parts[parts.length - 2] : "Other";
-    
-            if (!acc[key]) {
-                acc[key] = [];
-            }
-            acc[key].push(permission);
-            return acc;
-        }, {} as Record<string, Permission[]>);
-    }    
+      
     
     private getRoles(): void {
         this.rolesService.getRoles().subscribe({
@@ -107,9 +154,136 @@ Object: any;
         })
     }
 
-    // private getPermissions(): void {
-    //     this.rolesService.getPermissions().subscribe((permissions: Page<Permission>) => {
-    //         this.permissions.set(permissions.data);
-    //     })
-    // }
+    onChangeCheckbox(checkbox: MatCheckboxChange, permission: Permission): void {
+        const containsPermission = this.updatedPermissions.some(i => i.permissionId === permission.id);
+        if (containsPermission) {
+            this.updatedPermissions = this.updatedPermissions.filter(i => i.permissionId !== permission.id)
+            return;
+        }
+        this.updatedPermissions.push({
+            permissionId: permission.id,
+            isChecked: checkbox.checked
+        })
+    }
+
+    onSelectAll(checkbox: MatCheckboxChange, groupPermission: GroupPermission): void {
+        const permissions = groupPermission.permissions.map(i => i.id);
+        if (checkbox.checked) {
+            this.updatedPermissions = this.updatedPermissions.filter(i => !permissions.includes(i.permissionId));
+            groupPermission.permissions.forEach(i => {
+                this.updatedPermissions.push({permissionId: i.id, isChecked: true});
+                this.checkboxes.find(c => c.value === i.id.toString())!.checked = true;
+            })
+        } else {
+            this.updatedPermissions = [];
+            const staffPermissions = this.selectedRole()!.permissions?.map(i => i.id);
+            this.checkboxes.filter(i => permissions.includes(Number(i.value))).forEach(i => {
+                if(!staffPermissions!.includes(Number(i.value))){
+                    i.checked = false;
+                }
+            })
+
+            // check only the selectedRole checked checkboxes and empty the updatedPermissions
+        }
+
+        // if (checkbox.checked) {
+        //     groupPermission.permissions.forEach(i => {
+        //         this.updatedPermissions = this.updatedPermissions.filter(p => p.permissionId !== i.id);
+        //         this.updatedPermissions.push({permissionId: i.id, isChecked: true});
+        //     })
+        // }
+        // else {
+        //     groupPermission.permissions.forEach(i => {
+        //         this.updatedPermissions = this.updatedPermissions.filter(p => p.permissionId !== i.id);
+        //         this.updatedPermissions.push({permissionId: i.id, isChecked: false});
+        //     })
+        // }
+
+        // this.updatedPermissions.forEach(i => {
+        //     this.checkboxes.find(c => c.value === i.permissionId.toString())!.checked = i.isChecked
+        // })
+    }
+
+    hasPermission(permission: Permission): boolean {
+        return this.selectedRole()?.permissions?.some(i => i.id === permission.id) ?? false;
+    }
+
+    onReset(): void {
+        this.updatedPermissions.forEach(i => {
+            this.checkboxes.find(c => c.value === i.permissionId.toString())!.checked = !i.isChecked
+        })
+        this.updatedPermissions = [];
+    }
+
+    onUpdatePermissions(): void {
+        let rolePermissions: number[] = this.selectedRole()!.permissions!.map(i => i.id);
+        this.updatedPermissions.forEach(i => {
+            if (i.isChecked){
+                rolePermissions.push(i.permissionId);
+            } else {
+                rolePermissions = rolePermissions.filter(p => p !== i.permissionId);
+            }
+        })
+        const request: UpdateRoleRequest = {
+            id: this.selectedRole()!.id,
+            name: this.selectedRole()!.name,
+            rolePermissions: rolePermissions
+        }
+        console.log('UPDATED: ',rolePermissions);
+        this.rolesService.updateRole(request).subscribe({
+            next: () => {
+                this.snackbarService.success('Успешно')
+                this.rolesService.getById(this.selectedRole()!.id).subscribe({
+                    next: (roleSelected: Role) => {
+                        this.selectedRole.set(roleSelected);
+        
+                    },
+                    error: (error: HttpErrorResponse) => {
+                        this.snackbarService.error(error.message);
+                    }
+                })
+                
+            },
+            error: (error: HttpErrorResponse) => {
+                this.snackbarService.error(error.message);
+            }
+        })
+    }
+
+    private getAllPermissions(): void {
+        this.rolesService.getPermissions().subscribe({
+            next: (permissions: Page<Permission>) => {
+                this.permissions.set(permissions.data);
+                this.groupedPermissions.set(this.groupPermissions(this.permissions()))
+            },
+            error: (error: HttpErrorResponse) => {
+                this.snackbarService.error(error.message);
+            }
+        })
+    }
+
+    private groupPermissions(permissions: Permission[]): GroupPermission[] {
+        const groups = [
+            { key: "table", groupName: "Tables" },
+            { key: "product", groupName: "Products" },
+            { key: "category", groupName: "Categories" },
+            { key: "transaction", groupName: "Transactions" },
+            { key: "role", groupName: "Roles" },
+            { key: "location", groupName: "Locations" },
+            { key: "revenue", groupName: "Revenue" },
+            { key: "stock", groupName: "Stock" },
+            { key: "report", groupName: "Reports" },
+            { key: "anaylsis", groupName: "Analyses" },
+        ];
+    
+        const groupedPermissions = groups.map(({ key, groupName }) => ({
+            groupName,
+            permissions: permissions.filter(p => 
+                p.name.includes(`/api/${key}/`) && !p.name.includes('/id')
+            )
+        })).filter(group => group.permissions.length > 0); 
+    
+        console.log('Grouped Permissions:', groupedPermissions);
+        return groupedPermissions;
+    }
 }

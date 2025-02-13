@@ -6,6 +6,7 @@ import { Page } from "../../models/api/page.model";
 import { Permission } from "../../models/api/permission.model";
 import { AddRoleRequest } from "../../../features/staff/models/add-role.request";
 import { Role } from "../../models/api/role.model";
+import { UpdateRoleRequest } from "../../../features/staff/models/update-role.request";
 
 @Injectable({
     providedIn: 'root'
@@ -24,10 +25,18 @@ export class RolesService {
 
     addRole(request: AddRoleRequest): Observable<any> {
         return this.http.post<any>(`${this.domain}/role/create`, request, {withCredentials: true})
-    } 
+    }
+
+    updateRole(request: UpdateRoleRequest): Observable<any> {
+        return this.http.put<any>(`${this.domain}/role/update`, request, {withCredentials: true})
+    }
     
     getById(id: number): Observable<Role>{
         return this.http.post<Role>(`${this.domain}/role/id`, { id }, {withCredentials:true})
+    }
+
+    deleteRole(id: number): Observable<any> {
+        return this.http.post<any>(`${this.domain}/role/delete`, { id }, {withCredentials:true} )
     }
 
 }

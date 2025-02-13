@@ -1,27 +1,57 @@
-<div class="btn-group">
-  <!-- <ascend-button type="secondary" icon="save" />   -->
+<!-- <div class="btn-group">
   <ascend-button
     type="primary"
     label="staff.add-role-btn"
     (clickEvent)="onAddRole()"
   />
+</div> -->
+
+
+<div class="update-buttons" [style.visibility]="updatedPermissions.length ? 'visible' : 'hidden'" >
+    <ascend-button type="secondary" label="Reset" icon="undo" class="reset-btn" (clickEvent)="onReset()"/>
+    <ascend-button
+      (clickEvent)="onUpdatePermissions()"
+      class="update-btn"
+      type="primary" 
+      label="Save" 
+      icon="save" 
+      [style.visibility]="updatedPermissions.length ? 'visible' : 'hidden'" 
+    />
 </div>
 
 <div class="role-permissions">
   <div class="roles">
     <div class="roles-header">
-        <span>Улоги</span>
-        <span class="counter">{{ roles().length }}</span>
+        <div>
+            <span>Улоги</span>
+            <span class="counter">{{ roles().length }}</span>
+        </div>
+        <ascend-button
+        type="primary"
+        label="staff.add-role-btn"
+        (clickEvent)="onAddRole()"
+      />
         
     </div>
     <ul>
+      @if (toggleAddRole()) {
+        <li>
+            <form [formGroup]="roleForm" class="add-element">
+                <ascend-input-field formControlName="name" [autoFocus]="true" />
+                <ascend-button type="secondary" label="Додади" class="submit-add-btn" (clickEvent)="onSubmitRole()" />
+            </form>
+        </li>
+      }
       @for (role of roles(); track role.id) {
       <li (click)="onSelectRole(role)"
           [ngClass]="{'active-role': selectedRole()?.id === role.id}"
       >
       <span>{{ role.name }}</span>
       @if (selectedRole()?.id === role.id) {
-        <mat-icon class="trash-btn">delete</mat-icon>
+        <div>
+          <mat-icon class="edit-btn" (click)="onDelete(role.id)">edit</mat-icon>
+          <mat-icon class="trash-btn" (click)="onDelete(role.id)">delete</mat-icon>
+        </div>
       }
     </li>
       }
@@ -46,88 +76,26 @@
                 <th class="cell-align-center">
                     Delete
                 </th>
+                <th class="cell-align-center">
+                    All
+                </th>
             </tr>
         </thead>
         <tbody>
-                <!-- <tr>
-                    <td>Tables</td>
-                    <td class="cell-align-center"><mat-checkbox [value]="'0'" [checked]=""/></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                </tr>
-                <tr>
-                    <td>Products</td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                </tr>
-                <tr>
-                    <td>Categories</td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                </tr>
-                <tr>
-                    <td>Staff</td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                </tr>
-                <tr>
-                    <td>Roles</td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                </tr>
-                <tr>
-                    <td>Locations</td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                </tr>
-                <tr>
-                    <td>Revenue</td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                </tr>
-                <tr>
-                    <td>Reports & Analysis</td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                </tr>
-                <tr>
-                    <td>Stock</td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                    <td class="cell-align-center"><mat-checkbox /></td>
-                </tr>  -->
-                <!-- <div *ngFor="let category of Object.keys(groupedPermissions)">
-                    <h3>{{ category }}</h3>
-                    <ul>
-                      <li *ngFor="let permission of groupedPermissions[category]">
-                        {{ permission.name }}
-                      </li>
-                    </ul>
-                  </div> -->
-                  @for (permissionGroup of objectKeys; track permissionGroup) {
-                    <tr>
-                        <td>{{ permissionGroup }}</td>
-                        <td class="cell-align-center">
-                            <mat-checkbox [checked]="hasPermission(permissionGroup, 'all')"></mat-checkbox>
-                        </td>
-                        <td class="cell-align-center">
-                            <mat-checkbox [checked]="hasPermission(permissionGroup, 'create')"></mat-checkbox>
-                        </td>
-                        <td class="cell-align-center">
-                            <mat-checkbox [checked]="hasPermission(permissionGroup, 'update')"></mat-checkbox>
-                        </td>
-                        <td class="cell-align-center">
-                            <mat-checkbox [checked]="hasPermission(permissionGroup, 'delete')"></mat-checkbox>
-                        </td>
-                    </tr>
+                @for (permissionGroup of groupedPermissions(); track permissionGroup.groupName){
+                  <tr>
+                    <td>{{ permissionGroup.groupName }}</td>
+                    @for (permission of permissionGroup.permissions; track permission.id) {
+                      <td class="cell-align-center">
+                        <mat-checkbox #checkbox  [checked]="hasPermission(permission)" [value]="permission.id.toString()" (change)="onChangeCheckbox($event, permission)"></mat-checkbox>
+                      </td>
+                    }
+                    <td class="cell-align-center">
+                      <mat-checkbox (change)="onSelectAll($event, permissionGroup)"/>
+                    </td>
+                  </tr>
                 }
+               
         </tbody>
     </table>
   </div>

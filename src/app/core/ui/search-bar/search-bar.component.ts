@@ -5,6 +5,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { debounceTime, distinctUntilChanged } from "rxjs";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
     selector: 'ascend-search-bar',
@@ -14,6 +15,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class SearchBarComponent implements OnInit, AfterViewInit {
     @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>
+    private readonly dialog = inject(MatDialog);
     placeholder = input<string>('Пребарај')
     onSearchTerm = output<string>();
     searchTerm = new FormControl('');
@@ -36,6 +38,9 @@ export class SearchBarComponent implements OnInit, AfterViewInit {
 
     @HostListener('window:keydown', ['$event'])
     handleKeydown(event: KeyboardEvent) {
+        if (this.dialog.openDialogs.length > 0){
+            return;
+        }
         this.searchInput.nativeElement.focus();
     }
 }

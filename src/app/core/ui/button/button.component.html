@@ -4,9 +4,11 @@
     'secondary-btn': type() === 'secondary'
   }"
   (click)="onClick()"
+  [disabled]="disabled()"
+  [type]="submitBtn()"
 >
   @if (icon()) {
-    <mat-icon>{{ icon() }}</mat-icon>
+    <mat-icon class="icon">{{ icon() }}</mat-icon>
   }
   {{ computedLabel() | translate }}
 </button>

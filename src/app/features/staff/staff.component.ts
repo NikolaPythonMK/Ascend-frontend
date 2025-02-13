@@ -3,10 +3,11 @@ import {MatTabsModule} from '@angular/material/tabs';
 import { TranslateModule } from "@ngx-translate/core";
 import { ButtonComponent } from "../../core/ui/button/button.component";
 import { RolesComponent } from "./tabs/roles/roles.component";
+import { PersonalComponent } from "./tabs/personal/personal.component";
 
 
 @Component({
-    imports: [MatTabsModule, TranslateModule, RolesComponent],
+    imports: [MatTabsModule, TranslateModule, RolesComponent, PersonalComponent],
     templateUrl: 'staff.component.html',
     styleUrls: ['staff.component.scss']
 })

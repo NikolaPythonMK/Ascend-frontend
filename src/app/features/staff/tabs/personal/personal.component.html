@@ -1,0 +1,8 @@
+<div>
+  <ascend-table
+    title="Personal"
+    [dataRows]="staffUsersRows()"
+    [displayedColumns]="['Name', 'Last Name', 'Phone Number', 'Roles']"
+    (addEvent)="onAddStaff()"
+  />
+</div>

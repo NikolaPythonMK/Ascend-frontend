@@ -1,5 +1,28 @@
 @use 'variables' as vars;
 
+.title {
+  color: vars.$primary-font-color;
+  font-size: vars.$title-font-size;
+}
+
+
+.table-header {
+  // width: 95%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .left-part, .filters {
+    display: flex;
+    align-items: center;
+  }
+  .filters {
+    margin-right: 3em;
+  }
+  .add-btn {
+    margin-right: 1em;
+  }
+}
+
 table {
     width: 100%;
     margin: 20px auto;

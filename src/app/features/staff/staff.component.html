@@ -1,5 +1,9 @@
 <mat-tab-group>
-    <mat-tab [label]="'staff.tab-title-staff' | translate"> Content 1 </mat-tab>
+    <mat-tab [label]="'staff.tab-title-staff' | translate">
+           <div class="content-wrapper">
+                <personal-component />
+           </div>
+    </mat-tab>
     <mat-tab [label]="'staff.tab-title-roles' | translate">
         <div class="content-wrapper">
             <roles-component />

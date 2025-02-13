@@ -14,7 +14,11 @@ export class ButtonComponent implements OnInit{
     type = input.required<ButtonType>();
     label = input<string>();
     icon = input<string>();
+    disabled = input<boolean>(false);
+    submitBtn = input<boolean>(false);
+
     clickEvent = output<void>();
+
     computedLabel = signal<string>('');
 
     ngOnInit(): void {
