@@ -20,7 +20,7 @@ import { LoginRequest } from '../../core/models/login.request';
 import { OrganizationService } from '../../core/services/api/organization.service';
 import { InputFieldComponent } from '../../core/ui/input-field/input-field.component';
 import TranslationService from '../../core/services/utility/translation.service';
-import { LocationServvice } from '../../core/services/api/locations.service';
+import { LocationService } from '../../core/services/api/locations.service';
 import { Location } from '../../core/models/api/location.model';
 import { MatSelectModule } from '@angular/material/select';
 import { CountrySelectComponent } from "../../core/ui/country-select/country-select.component";
@@ -46,7 +46,7 @@ export class OrganizationLoginPage {
   private organizationService = inject(OrganizationService);
   private router = inject(Router);
   private snackbarService = inject(SnackbarService);
-  private locationService = inject(LocationServvice);
+  private locationService = inject(LocationService);
 
   private fb = inject(FormBuilder);
 

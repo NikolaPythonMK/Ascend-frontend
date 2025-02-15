@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from "@angular/core";
+import { Component, computed, inject, OnInit, signal } from "@angular/core";
 import { TableComponent } from "../../../../core/ui/table/table.component";
 import { StaffService } from "../../../../core/services/api/staff.service";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -21,7 +21,17 @@ export class PersonalComponent implements OnInit{
     private readonly snackbarService = inject(SnackbarService);
     readonly dialog = inject(MatDialog);
     staffUsers = signal<StaffUser[]>([]);
-    staffUsersRows = signal<StaffUserRow[]>([])
+    staffUsersRows = signal<StaffUserRow[]>([]);
+    map = new Map<string, string>([
+        ['Name', 'name'],
+        ['Last Name', 'name'],
+        ['Phone Number', 'phoneNumber'],
+        ['Roles', 'roles']
+    ]);
+    colDisplayNames = computed(() => [...this.map.keys()]);
+
+    searchTerm = signal<string>('');
+    sort = signal<string>('');
 
     ngOnInit(): void {
         this.getStaff();
@@ -33,6 +43,17 @@ export class PersonalComponent implements OnInit{
             if (result){
                 // this.staffUsers.set([result, ...this.staffUsers()]);
                 // this.staffUsersRows.set(this.mapToStaffUserRows(this.staffUsers()));
+                this.getStaff();
+            }
+        })
+    }
+
+    onUpdateStaff(id: number): void {
+        const dialogRef = this.dialog.open(StaffUserDialog, {
+            data: this.staffUsers()[id]
+        })
+        dialogRef.afterClosed().subscribe((result: StaffUser | number) => {
+            if (result) {
                 this.getStaff();
             }
         })
@@ -64,7 +85,13 @@ export class PersonalComponent implements OnInit{
         return staffUserRows;
     }
 
+    onSort(key: string) {
+        this.sort.set(this.map.get(key)!);
+        this.getStaff();
+    }
 
-    
-
+    onSearch(term: string) {
+        this.searchTerm.set(term);
+        this.getStaff();
+    }
 }

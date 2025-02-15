@@ -22,4 +22,12 @@ export class StaffService {
         return this.http.post<StaffUser>(`${this.domain}/staffuser/create`, request, { withCredentials: true })
     }
 
+    updateStaffUser(request: StaffUserRequest): Observable<StaffUser> {
+        return this.http.put<StaffUser>(`${this.domain}/staffuser/update`, request, { withCredentials: true })
+    }
+
+    deleteStaffUser(id: number): Observable<number> {
+        return this.http.post<number>(`${this.domain}/staffuser/delete`, { id }, {withCredentials: true})
+    }
+
 }

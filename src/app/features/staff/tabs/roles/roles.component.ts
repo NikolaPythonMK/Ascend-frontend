@@ -229,7 +229,6 @@ export class RolesComponent implements OnInit{
             name: this.selectedRole()!.name,
             rolePermissions: rolePermissions
         }
-        console.log('UPDATED: ',rolePermissions);
         this.rolesService.updateRole(request).subscribe({
             next: () => {
                 this.snackbarService.success('Успешно')

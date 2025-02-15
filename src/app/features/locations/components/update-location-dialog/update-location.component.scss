@@ -37,9 +37,14 @@
   .actions {
     display: flex;
     justify-content: flex-end;
-    align-items: center;
     margin-top: 1.5rem;
     gap: 1rem;
+
+    .trash-btn {
+        color: red;
+        margin-right: auto;
+        cursor: pointer;
+    }
   }
 
   /* Additional styling for the multi-select trigger extra text */
@@ -47,10 +52,4 @@
     color: rgba(0, 0, 0, 0.6);
     font-size: 0.9rem;
     margin-left: 0.3rem;
-  }
-
-  .trash-btn {
-    color: red;
-    margin-right: auto;
-    cursor: pointer;
   }

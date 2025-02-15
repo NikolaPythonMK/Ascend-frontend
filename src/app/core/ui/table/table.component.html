@@ -5,20 +5,22 @@
     </div>
     <div class="filters">
         <ascend-button type="primary"  label="Додади" class="add-btn" (clickEvent)="onAddClick()"/>
-        <ascend-search-bar />
+        <ascend-search-bar (onSearchTerm)="onSearch($event)"  />
     </div>
 </div>
 <table>
     <thead>
         <tr>
             @for (col of displayedColumns(); track col) {
-                <th>{{ col }}</th>
+                <th (click)="onSort(col)">
+                    <div class="col-name"><span>{{ col }}</span><mat-icon>swap_vert</mat-icon></div>
+                </th>
             }
         </tr>
     </thead>
     <tbody>
-        @for (row of dataRows(); track row) {
-            <tr>
+        @for (row of dataRows(); track row; let idx = $index) {
+            <tr (click)="onRowClick(idx)">
                 @for (cell of getValues(row); track idx; let idx = $index){
                     <td>{{ cell }}</td>
                 }

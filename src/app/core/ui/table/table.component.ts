@@ -19,11 +19,26 @@ export class TableComponent {
         displayedColumns = input.required<string[]>();
         dataRows = input.required<any[]>();
         addEvent = output<void>();
+        sortEvent = output<string>();
+        searchEvent = output<string>();
+        clickedRowEvent = output<number>();
 
         clickedTableId = output<number>();
 
         onAddClick(): void {
             this.addEvent.emit();
+        }
+
+        onSort(column: string): void {
+            this.sortEvent.emit(column);
+        }
+
+        onSearch(searchTerm: string): void {
+            this.searchEvent.emit(searchTerm);
+        }
+
+        onRowClick(row: number): void {
+            this.clickedRowEvent.emit(row);
         }
     
         handleRowClick(tableId: number): void {

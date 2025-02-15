@@ -2,7 +2,10 @@
   <ascend-table
     title="Personal"
     [dataRows]="staffUsersRows()"
-    [displayedColumns]="['Name', 'Last Name', 'Phone Number', 'Roles']"
+    [displayedColumns]="colDisplayNames()"
     (addEvent)="onAddStaff()"
+    (searchEvent)="onSearch($event)"
+    (sortEvent)="onSort($event)"
+    (clickedRowEvent)="onUpdateStaff($event)"
   />
 </div>
