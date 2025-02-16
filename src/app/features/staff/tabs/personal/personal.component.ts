@@ -30,12 +30,12 @@ export class PersonalComponent implements OnInit{
     staffUsersRows = signal<StaffUserRow[]>([]);
     map = new Map<string, string>([
         ['Name', 'name'],
-        ['Last Name', 'name'],
+        ['Last Name', 'lastName'],
         ['Phone Number', 'phoneNumber'],
         ['Roles', 'roles']
     ]);
     colDisplayNames = computed(() => [...this.map.keys()]);
-    nonSortableColumns = signal<string[]>(['Phone Number', 'Roles'])
+    nonSortableColumns = signal<string[]>(['Roles'])
 
     searchTerm = this.tableState.searchTerm; // Use shared search state
     sort = this.tableState.sort; // Use shared sort state
@@ -87,8 +87,8 @@ export class PersonalComponent implements OnInit{
             const joinedRoles = i.staffUserRoles!.map(s => s.name).join(", ");
             return {
                 name: i.name!,
-                lastName: i.lastname!,
-                phoneNumber: i.phone!,
+                lastName: i.lastName!,
+                phoneNumber: i.phoneNumber!,
                 roles: joinedRoles
             }
         })
@@ -104,6 +104,7 @@ export class PersonalComponent implements OnInit{
     onSearch(term: string) {
         this.tableState.setSearch(term, this.colDisplayNames(), this.nonSortableColumns(), this.map);
         this.getStaff();
+        console.log('SE: ', this.searchTerm())
     }
 
     // onSort(sort: Sort | null) {

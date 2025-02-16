@@ -38,8 +38,8 @@ export class StaffUserDialog implements OnInit{
     staffUser = this.fb.group({
         name: ['', Validators.required],
         code: ['', Validators.required],
-        lastname: ['', Validators.required],
-        phoneNumber: ['', Validators.required],
+        lastName: '',
+        phoneNumber: '',
         selectedRoles: []
     })
 
@@ -69,6 +69,8 @@ export class StaffUserDialog implements OnInit{
             this.submitBtnlabel.set('Ажурирај');
             this.getNameControl().setValue(this.data.name);
             this.getCodeControl().setValue(this.data.code);
+            this.getLastNameControl().setValue(this.data.lastName);
+            this.getPhoneNumberControl().setValue(this.data.phoneNumber);
             this.getSelectedRolesControl().setValue(this.data.staffUserRoles?.map(i => i.id))
         }
 
@@ -85,7 +87,8 @@ export class StaffUserDialog implements OnInit{
         const request: StaffUserRequest = {
             id: this.data?.id, // Include id only if updating
             name: this.getNameControl().value,
-            lastName: this.get
+            lastName: this.getLastNameControl().value,
+            phoneNumber: this.getPhoneNumberControl().value,
             code: this.getCodeControl().value,
             staffUserRoles: this.getSelectedRolesControl().value
         };
