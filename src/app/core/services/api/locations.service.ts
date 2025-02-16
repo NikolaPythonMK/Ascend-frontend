@@ -6,22 +6,27 @@ import { Location } from "../../models/api/location.model";
 import { Page } from "../../models/api/page.model";
 import { LocationRequest } from "../../../features/locations/models/location.request";
 import { UpdateLocationRequest } from "../../../features/locations/models/update-location.request";
+import { BaseService } from "./base.service";
 
 
 
 @Injectable({
     providedIn: 'root'
 })
-export class LocationService {
-    private http = inject(HttpClient);
-    private domain = environment.domain;
-    
-    getLocations(email: string): Observable<Location[]> { // Locations for the dropdown at /login
-        return this.http.get<Location[]>(`${this.domain}/auth/locations?email=${email}`);
+export class LocationService extends BaseService<Location> {
+    protected override http = inject(HttpClient);
+    protected override domain = environment.domain;
+
+    constructor() {
+        super('location');
     }
 
-    getAllLocations(): Observable<Page<Location>> {
-        return this.http.post<Page<Location>>(`${this.domain}/location/all`, {}, { withCredentials: true });
+    /**
+     *  Returns the locations for the dropdown at /login
+     *  BaseService has the GetAll() method for populating the tables
+     */
+    getLocations(email: string): Observable<Location[]> {
+        return this.http.get<Location[]>(`${this.domain}/auth/locations?email=${email}`);
     }
 
     addLocation(request: LocationRequest): Observable<Location> {

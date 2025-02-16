@@ -9,9 +9,12 @@ import { MatDialog } from "@angular/material/dialog";
 import { CreateLocatinDialog } from "./components/create-locations-dialog/create-location.component";
 import type { Location } from "../../core/models/api/location.model";
 import { UpdateLocationDialog } from "./components/update-location-dialog/update-location.component";
+import { TableStateService } from "../../core/services/utility/table-state.service";
+import { Sort } from "../../core/ui/table/models/sort.model";
 
 @Component({
     imports: [TableComponent],
+    providers: [TableStateService],
     templateUrl: 'locations.component.html',
     styleUrls: ['locations.component.scss']
 })
@@ -19,8 +22,19 @@ export class LocationsPage implements OnInit{
     private readonly locationsService = inject(LocationService);
     private readonly snackbarService = inject(SnackbarService);
     private readonly dialog = inject(MatDialog);
+    private readonly tableState = inject(TableStateService);
     locations = signal<Location[]>([]);
+
     locationRows = computed(() => this.mapToRows(this.locations()))
+    searchTerm = this.tableState.searchTerm;
+    sort = this.tableState.sort;
+    map = new Map<string, string>([
+        ['Name', 'name'],
+        ['Tables', 'tableCount'],
+    ]);
+    colDisplayNames = computed(() => [...this.map.keys()]);
+    nonSortableColumns = signal<string[]>([])
+    
 
     ngOnInit(): void {
         this.getLocations();
@@ -47,6 +61,17 @@ export class LocationsPage implements OnInit{
         })
     }
 
+    onSort(sort: Sort | null) {
+        this.tableState.setSort(sort, this.map);
+        this.getLocations();
+    }
+      
+
+    onSearch(term: string) {
+        this.tableState.setSearch(term, this.colDisplayNames(), this.nonSortableColumns(), this.map);
+        this.getLocations();
+    }
+
     private mapToRows(locations: Location[]): LocationRow[] {
         return locations.map(i => {
             return {
@@ -57,7 +82,7 @@ export class LocationsPage implements OnInit{
     }
 
     private getLocations(): void{
-        this.locationsService.getAllLocations().subscribe({
+        this.locationsService.getAll(this.searchTerm(), this.sort()).subscribe({
             next: (result: Page<Location>) => {
                 this.locations.set(result.data);
             },

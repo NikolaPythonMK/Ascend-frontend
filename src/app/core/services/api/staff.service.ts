@@ -5,17 +5,20 @@ import { Observable } from "rxjs";
 import { Page } from "../../models/api/page.model";
 import { StaffUser } from "../../models/api/staff-user.model";
 import { StaffUserRequest } from "../../../features/staff/models/staff-user.request";
+import { Sort } from "../../ui/table/models/sort.model";
+import { SearchTerm } from "../../models/api/search-term.model";
+import { BaseService } from "./base.service";
 
 
 @Injectable({
     providedIn: 'root'
 })
-export class StaffService {
-    private http = inject(HttpClient);
-    private domain = environment.domain;
+export class StaffService extends BaseService<StaffUser> {
+    protected override http = inject(HttpClient);
+    protected override domain = environment.domain;
 
-    getAll(searchTerm?: string): Observable<Page<StaffUser>> {
-        return this.http.post<Page<StaffUser>>(`${this.domain}/staffuser/all`, {}, {withCredentials: true})
+    constructor() {
+        super('staffuser');
     }
 
     addStaffUser(request: StaffUserRequest): Observable<StaffUser> {
@@ -29,5 +32,4 @@ export class StaffService {
     deleteStaffUser(id: number): Observable<number> {
         return this.http.post<number>(`${this.domain}/staffuser/delete`, { id }, {withCredentials: true})
     }
-
 }

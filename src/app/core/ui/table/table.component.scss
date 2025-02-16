@@ -121,4 +121,9 @@ td{
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+}
+
+.hidden-icon {
+  visibility: hidden;
 }

@@ -3,6 +3,7 @@
     title="Personal"
     [dataRows]="staffUsersRows()"
     [displayedColumns]="colDisplayNames()"
+    [nonSortableColumns]="nonSortableColumns()"
     (addEvent)="onAddStaff()"
     (searchEvent)="onSearch($event)"
     (sortEvent)="onSort($event)"

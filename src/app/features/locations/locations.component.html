@@ -1,9 +1,11 @@
 <div>
   <ascend-table
-    [displayedColumns]="['Name', 'Tables']"
+    [displayedColumns]="colDisplayNames()"
     [dataRows]="locationRows()"
     [title]="'Locations'"
     (addEvent)="onAdd()"
     (clickedRowEvent)="onUpdate($event)"
+    (searchEvent)="onSearch($event)"
+    (sortEvent)="onSort($event)"
   />
 </div>

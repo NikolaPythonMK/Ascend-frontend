@@ -13,7 +13,17 @@
         <tr>
             @for (col of displayedColumns(); track col) {
                 <th (click)="onSort(col)">
-                    <div class="col-name"><span>{{ col }}</span><mat-icon>swap_vert</mat-icon></div>
+                    <div class="col-name">
+                        <span>{{ col }}</span>
+                        <mat-icon [ngClass]="{'hidden-icon': clickedColumnHeader() !== col}">
+                            @if (clickedColumnHeader() === col && currentSort() === 1) {
+                                arrow_upward_alt
+                            }
+                            @else if (clickedColumnHeader() === col && currentSort() === 2) {
+                                arrow_downward_alt
+                            }    
+                        </mat-icon>  
+                    </div>
                 </th>
             }
         </tr>
