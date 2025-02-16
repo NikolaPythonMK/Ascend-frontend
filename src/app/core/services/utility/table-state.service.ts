@@ -17,9 +17,9 @@ export class TableStateService {
       );
     }
     
-      setSearch(term: string, colDisplayNames: string[], nonSortableColumns: string[], map: Map<string, string>) {
+      setSearch(term: string, colDisplayNames: string[], nonSearchableColumns: string[], map: Map<string, string>) {
         const searchTerm = colDisplayNames
-          .filter(i => !nonSortableColumns.includes(i))
+          .filter(i => !nonSearchableColumns.includes(i))
           .map(i => ({
             propName: map.get(i)!.charAt(0).toUpperCase() + map.get(i)!.slice(1),
             searchValue: term

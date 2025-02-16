@@ -23,7 +23,7 @@ export class LocationService extends BaseService<Location> {
 
     /**
      *  Returns the locations for the dropdown at /login
-     *  BaseService has the GetAll() method for populating the tables
+     *  BaseService has the actual GetAll() method for populating the tables
      */
     getLocations(email: string): Observable<Location[]> {
         return this.http.get<Location[]>(`${this.domain}/auth/locations?email=${email}`);
