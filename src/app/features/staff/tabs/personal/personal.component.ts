@@ -84,12 +84,11 @@ export class PersonalComponent implements OnInit{
 
     private mapToStaffUserRows(staffUsers: StaffUser[]): StaffUserRow[] {
         const staffUserRows: StaffUserRow[] = staffUsers.map(i => {
-            const splittedName = i.name!.split(' ');
             const joinedRoles = i.staffUserRoles!.map(s => s.name).join(", ");
             return {
-                name: splittedName[0],
-                lastName: splittedName[1],
-                phoneNumber: '',
+                name: i.name!,
+                lastName: i.lastname!,
+                phoneNumber: i.phone!,
                 roles: joinedRoles
             }
         })

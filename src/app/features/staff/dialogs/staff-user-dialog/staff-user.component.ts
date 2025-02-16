@@ -38,6 +38,8 @@ export class StaffUserDialog implements OnInit{
     staffUser = this.fb.group({
         name: ['', Validators.required],
         code: ['', Validators.required],
+        lastname: ['', Validators.required],
+        phoneNumber: ['', Validators.required],
         selectedRoles: []
     })
 
@@ -47,6 +49,14 @@ export class StaffUserDialog implements OnInit{
 
     getNameControl(): AbstractControl {
         return this.staffUser.get('name')!;
+    }
+
+    getLastNameControl(): AbstractControl {
+        return this.staffUser.get('lastName')!;
+    }
+
+    getPhoneNumberControl(): AbstractControl {
+        return this.staffUser.get('phoneNumber')!;
     }
 
     getCodeControl(): AbstractControl {
@@ -75,6 +85,7 @@ export class StaffUserDialog implements OnInit{
         const request: StaffUserRequest = {
             id: this.data?.id, // Include id only if updating
             name: this.getNameControl().value,
+            lastName: this.get
             code: this.getCodeControl().value,
             staffUserRoles: this.getSelectedRolesControl().value
         };
