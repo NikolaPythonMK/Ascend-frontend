@@ -42,6 +42,10 @@
         "tab-title-roles": "Roles",
         "add-role-btn": "Add role"
     },
+    "menu": {
+        "tab-title-products": "Products",
+        "tab-title-categories": "Categories"
+    },
     "ui": {
         "button": {
             "primary": "Submit",

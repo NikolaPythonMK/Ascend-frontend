@@ -10,6 +10,7 @@ const categories: Category[] = [
     description: 'Refreshing drinks',
     image: null,
     organizationID: 1,
+    subCategories: []
   },
   {
     id: 2,
@@ -17,6 +18,7 @@ const categories: Category[] = [
     description: 'Sweet treats',
     image: null,
     organizationID: 1,
+    subCategories: []
   },
   {
     id: 3,
@@ -24,7 +26,16 @@ const categories: Category[] = [
     description: 'Hearty meals',
     image: null,
     organizationID: 1,
+    subCategories: [],
   },
+  {
+    id: 4,
+    name: 'Coffe',
+    description: 'All kinds of coffee',
+    image: null,
+    organizationID: 1,
+    subCategories: []
+  }
 ];
 
 const products: Product[] = [
@@ -36,6 +47,16 @@ const products: Product[] = [
     description: 'Strong black coffee',
     image: null,
     categoryID: 1,
+    organizationID: 1,
+  },
+  {
+    id: 11,
+    code: '1010',
+    name: 'Espresso',
+    price: 2.5,
+    description: 'Strong black coffee',
+    image: null,
+    categoryID: 4,
     organizationID: 1,
   },
   {
@@ -116,6 +137,16 @@ const products: Product[] = [
     description: 'Strong turkish coffee',
     image: null,
     categoryID: 1,
+    organizationID: 1,
+  },
+  {
+    id: 88,
+    code: '19110',
+    name: 'Turkish Coffee',
+    price: 2.5,
+    description: 'Strong turkish coffee',
+    image: null,
+    categoryID: 4,
     organizationID: 1,
   },
   {

@@ -1,0 +1,150 @@
+<!-- <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Category Form</mat-card-title>
+      </mat-card-header>
+  
+      <mat-card-content>
+        <div class="form-field">
+          <mat-form-field appearance="fill">
+            <mat-label>Category Name</mat-label>
+            <input matInput formControlName="name" required />
+          </mat-form-field>
+        </div>
+  
+        <div class="form-field">
+          <mat-form-field appearance="fill">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description"></textarea>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Под категории</mat-label>
+            <mat-select formControlName="subCategories" multiple>
+              <mat-select-trigger>
+                {{ getSubCategories().value ? getCategoryName(getSubCategories().value[0]) : '' }}
+                @if ((getSubCategories().value?.length || 0) > 1) {
+                  <span class="additional-selection">
+                    (+{{ (getSubCategories().value?.length || 0) - 1 }}
+                    {{ getSubCategories().value?.length === 2 ? 'other' : 'others' }})
+                  </span>
+                }
+              </mat-select-trigger>
+              @for (category of categories(); track category.id) {
+                <mat-option [value]="category.id">{{ category.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+  
+
+        <div class="form-field">
+            <ascend-upload-image />
+        </div>
+  
+
+        <div class="form-actions">
+          <button mat-raised-button color="primary" [disabled]="categoryForm.invalid">Submit</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </form>
+   -->
+
+
+
+
+   <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()" class="form">
+    <div class="basic-info">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Category Form</mat-card-title>
+      </mat-card-header>
+  
+      <mat-card-content>
+        <div class="form-field">
+          <mat-form-field appearance="fill">
+            <mat-label>Category Name</mat-label>
+            <input matInput formControlName="name" required />
+          </mat-form-field>
+        </div>
+  
+        <div class="form-field">
+          <mat-form-field appearance="fill">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description"></textarea>
+          </mat-form-field>
+        </div>
+
+        <!-- <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Под категории</mat-label>
+            <mat-select formControlName="subCategories" multiple>
+              <mat-select-trigger>
+                {{ getSubCategories().value ? getCategoryName(getSubCategories().value[0]) : '' }}
+                @if ((getSubCategories().value?.length || 0) > 1) {
+                  <span class="additional-selection">
+                    (+{{ (getSubCategories().value?.length || 0) - 1 }}
+                    {{ getSubCategories().value?.length === 2 ? 'other' : 'others' }})
+                  </span>
+                }
+              </mat-select-trigger>
+              @for (category of categories(); track category.id) {
+                <mat-option [value]="category.id">{{ category.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field> -->
+  
+
+        <div class="form-field">
+            <ascend-upload-image />
+        </div>
+  
+
+        <div class="form-actions">
+          <button mat-raised-button color="primary" [disabled]="categoryForm.invalid">Submit</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    </div>
+    <div class="categories">
+        <div class="sub-categories">
+            <div>
+                <h3>Под категории</h3>
+                <ascend-header-counter [value]="2"/>
+            </div>
+            <ul>
+                <li>
+                    <span>
+                        <mat-checkbox class="example-margin" checked>Вина</mat-checkbox>
+                        <label></label>
+                    </span>
+                </li>
+                <li>
+                    <span>
+                        <mat-checkbox class="example-margin" checked>Пива</mat-checkbox>
+                        <label></label>
+                    </span>
+                </li>
+                <li>
+                    <span>
+                        <mat-checkbox class="example-margin">Check me!</mat-checkbox>
+                        <label></label>
+                    </span>
+                </li>
+                <li>
+                    <span>
+                        <mat-checkbox class="example-margin">Check me!</mat-checkbox>
+                        <label></label>
+                    </span>
+                </li>
+            </ul>
+        </div>
+        <div class="parent-category">
+            <h3>Parent category</h3>
+            <ul>
+                <li>Нема избрано над катероија</li>
+            </ul>
+        </div>
+    </div>
+  </form>
+     

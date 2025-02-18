@@ -29,6 +29,10 @@ export const routes: Routes = [
             {
                 path: 'locations',
                 loadComponent: () => import('./features/locations/locations.component').then((m) => m.LocationsPage)
+            },
+            {
+                path: 'menu',
+                loadComponent: () => import('./features/menu/menu.component').then((m) => m.MenuPage)
             }
         ]
     },

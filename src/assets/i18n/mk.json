@@ -42,6 +42,10 @@
         "tab-title-roles": "Улоги",
         "add-role-btn": "Додади улога"
     },
+    "menu": {
+        "tab-title-products": "Продукти",
+        "tab-title-categories": "Категории"
+    },
     "ui": {
         "button": {
             "primary": "Поднеси",

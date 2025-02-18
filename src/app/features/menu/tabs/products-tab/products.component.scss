@@ -1,0 +1,88 @@
+@use 'variables' as vars;
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1em;
+    .title {
+        color: vars.$primary-font-color;
+        font-size: vars.$title-font-size;
+    }      
+    .filters {
+        display: flex;
+        margin-right: .5em;
+        .add-btn {
+            margin-right: .5em;
+        }
+        .sort-select {
+            margin-right: .5em;
+            border-radius: 10px;
+        }
+    }
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    gap: 10px;
+    div {
+        border: 1px solid rgba(0, 0, 0, 0.12);;
+    }
+}
+
+.categories {
+    // background-color: #e3f2fd;
+    background: linear-gradient(135deg, #6c63ff, #a29bfe);
+    .category-list {
+        list-style: none;
+        margin: 0;
+        padding: .5em;
+        .category-element {
+            background: #e3f2fd;
+            padding: 1em;
+            margin-bottom: .5em;
+            cursor: pointer;
+            transition: 0.3s ease, transform 0.2s ease;
+        }
+        .category-element:hover {
+            background: linear-gradient(135deg, #e3f2fd, #f0f7ff);
+            transform: scale(1.02);
+        }
+        .search-bar {
+            width: 100% !important;
+        }
+        .search-bar-container {
+            width: 90%;
+            margin-bottom: .5em;
+        }
+    }
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Flexible columns */
+    gap: 16px; /* Space between cards */
+    padding: 16px;
+    .card {
+        cursor: pointer;
+        transition: 0.3s ease, transform 0.2s ease;
+    }
+    .card:hover {
+        transform: scale(1.02);
+    }
+  }
+
+  .example-header-image {
+    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-size: cover;
+  }
+  .example-additional-selection {
+    opacity: 0.75;
+    font-size: 0.75em;
+    line-height: 1;
+    width: 100%;
+  }
+
+  .full-width {
+    width: 100%;
+  }

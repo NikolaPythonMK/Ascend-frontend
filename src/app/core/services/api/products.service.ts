@@ -12,14 +12,12 @@ export class ProductsService {
     private http = inject(HttpClient);
     private domain = environment.domain;
 
-    getProducts(searchTerm: string = '', categoryID: number | null): Observable<Product[]> {
-        let filteredProducts = products;
-        if (categoryID) {
-            filteredProducts = filteredProducts.filter(i => i.categoryID === categoryID);
-        }
-        return of (filteredProducts.filter(i => i.name.toLocaleLowerCase().includes(searchTerm) ||
-                                                i.code.includes(searchTerm) ||
-                                                searchTerm.includes(i.name.toLocaleLowerCase())))
+    getProducts(searchTerm: string = '', categoryID?: number | null): Observable<Product[]> {
+        return of (products);
+    }
+
+    getProductsForCategory(categoryId: number): Observable<Product[]> {
+        return of(products.filter(i => i.categoryID === categoryId));
     }
 
     
