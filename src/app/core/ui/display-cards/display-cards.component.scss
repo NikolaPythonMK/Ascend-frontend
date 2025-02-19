@@ -1,0 +1,45 @@
+@use 'variables' as vars;
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); /* Flexible columns */
+    gap: 16px; /* Space between cards */
+    padding: 16px;
+    .card {
+        cursor: pointer;
+        transition: 0.3s ease, transform 0.2s ease;
+        .title {
+            text-align: center;
+            color: vars.$primary-font-color;
+        }
+        .title-container {
+            display: flex;
+            justify-content: center;
+        }
+    }
+    .card:hover {
+        transform: scale(1.02);
+    }
+  }
+
+  .example-header-image {
+    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-size: cover;
+  }
+  .example-additional-selection {
+    opacity: 0.75;
+    font-size: 0.75em;
+    line-height: 1;
+    width: 100%;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  mat-card-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  

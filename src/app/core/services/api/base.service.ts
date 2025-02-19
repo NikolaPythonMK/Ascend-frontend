@@ -28,4 +28,20 @@ export abstract class BaseService<T> {
 
         return this.http.post<Page<T>>(`${this.domain}/${this.endpoint}/all`, filters, { withCredentials: true });
     }
+
+    getById() {
+
+    }
+
+    add() {
+
+    }
+
+    update() {
+
+    }
+
+    delete() {
+
+    }
 }

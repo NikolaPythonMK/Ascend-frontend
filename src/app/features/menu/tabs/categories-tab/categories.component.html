@@ -1,4 +1,31 @@
-<div class="header">
+<!-- <div class="header">
     <h1>Categories</h1>
     <ascend-button type="primary" label="Додади" icon="add" (clickEvent)="onAddCategory()" />
+</div> -->
+
+<div class="container">
+    <div class="list-container">
+        <ascend-display-list [elements]="categoryGroups()" (selectedEvent)="onSelectedCategoryGroup($event)" (addEvent)="onAddGroupCategory()" />
+    </div>
+    <div class="cards-container">
+        <div class="cards-header">
+            <div class="left-part">
+                @if (selectedCategory()){
+                    <span class="categories-title">{{ selectedCategory()!.title }}</span>
+                }@else {
+                    <span class="categories-title">All Categories</span>
+                }
+                <ascend-header-counter [value]="categories().length" />
+            </div>
+            <div class="right-part">
+                <button mat-fab extended color="ascend" class="add-category-btn" (click)="onAddCategory()">
+                    <mat-icon>add</mat-icon>
+                    Категорија
+                </button>
+                <!-- <ascend-button type="primary" label="Додади категорија" class="add-category-btn"/> -->
+                <ascend-search-bar />
+            </div>
+        </div>
+        <ascend-display-cards [elements]="categories()" />
+    </div>
 </div>

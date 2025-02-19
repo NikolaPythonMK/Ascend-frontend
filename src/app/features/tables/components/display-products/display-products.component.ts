@@ -7,6 +7,7 @@ import { CategoriesService } from "../../../../core/services/api/categories.serv
 import { Category } from "../../../../core/models/api/category.model";
 import { CommonModule } from "@angular/common";
 import { MatListModule } from "@angular/material/list";
+import { Page } from "../../../../core/models/api/page.model";
 
 
 @Component({
@@ -30,8 +31,8 @@ export class DisplayProductsComponent implements OnInit{
         this.getProducts();
 
         this.categoriesService.getAll().subscribe({
-            next: (categories: Category[]) => {
-                this.categories.set(categories);
+            next: (categories: Page<Category>) => {
+                this.categories.set(categories.data);
             },
             error: (error: HttpErrorResponse) => {
                 console.log(error);

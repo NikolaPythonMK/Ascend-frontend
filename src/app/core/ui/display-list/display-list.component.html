@@ -1,0 +1,30 @@
+@if (isCollapsed()){
+    <div class="collapsed-list">
+        <mat-icon class="collapse-icon expand-icon" (click)="onCollapse()">
+            open_in_full
+        </mat-icon>
+    </div>
+}@else {
+    <ul class="category-list">
+        <li class="header-li">
+            <button mat-fab extended color="ascend" class="add-category-btn" (click)="onAdd()">
+                <mat-icon>add</mat-icon>
+                Група
+            </button>
+            <mat-icon class="collapse-icon" (click)="onCollapse()">
+                arrow_back_ios_new
+            </mat-icon>
+        </li>
+        <li (click)="onSelect(null)" class="category-element" [style.--border-color]="getBorderColor(0)">
+            <span [ngClass]="{'selected-title': selectedId() === null}">All Groups</span>
+        </li>
+        @for (element of elements(); track element.id; let index = $index) {
+            <li (click)="onSelect(element.id)" class="category-element"
+            [style.border-left]=" '10px solid ' + getBorderColor(index) "
+                [style.--border-color]="getBorderColor(index)">
+                <span [ngClass]="{'selected-title': selectedId() === element.id}">{{ element.title }}</span>
+            </li>  
+        }   
+    </ul>
+}
+

@@ -13,6 +13,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HeaderCounterComponent } from "../../../../core/ui/header-counter/header-counter.component";
+import { Page } from "../../../../core/models/api/page.model";
 
 
 
@@ -37,8 +38,8 @@ export class ProuctsComponent implements OnInit{
 
     ngOnInit(): void {
         this.categoryService.getAll().subscribe({
-            next: (categories: Category[]) => {
-                this.categories.set(categories);
+            next: (categories: Page<Category>) => {
+                this.categories.set(categories.data);
                 console.log(categories);
             },
             error: (error: HttpErrorResponse) => {

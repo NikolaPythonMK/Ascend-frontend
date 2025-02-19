@@ -13,6 +13,7 @@ import { UploadImageComponent } from "../../../../core/ui/upload-img/upload-img.
 import { Category } from "../../../../core/models/api/category.model";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { HeaderCounterComponent } from "../../../../core/ui/header-counter/header-counter.component";
+import { ButtonComponent } from "../../../../core/ui/button/button.component";
 
 
 
@@ -27,7 +28,8 @@ import { HeaderCounterComponent } from "../../../../core/ui/header-counter/heade
     MatIconModule,
     MatChipsModule,
     UploadImageComponent,
-    MatCheckboxModule, HeaderCounterComponent],
+    MatCheckboxModule,
+    ButtonComponent],
     templateUrl: 'add-category.component.html',
     styleUrls: ['add-category.component.scss']
 })
@@ -73,9 +75,9 @@ export class AddCategoryDialog {
         name: ['', Validators.required],
         description: [''],
         image: [''],
-        parentCategory: [null],
         subCategories: []
     })
+    staffUser: any;
 
     getNameControl(): AbstractControl {
         return this.categoryForm.get('name')!;
@@ -90,9 +92,9 @@ export class AddCategoryDialog {
     }
 
     
-      onSubmit() {
+    onSubmit() {
         if (this.categoryForm.valid) {
           console.log(this.categoryForm.value);
         }
-      }
+    }
 }

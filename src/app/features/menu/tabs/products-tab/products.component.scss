@@ -23,7 +23,7 @@
 
 .container {
     display: grid;
-    grid-template-columns: 1fr 5fr;
+    grid-template-columns: 1fr 4fr;
     gap: 10px;
     div {
         border: 1px solid rgba(0, 0, 0, 0.12);;
@@ -32,13 +32,17 @@
 
 .categories {
     // background-color: #e3f2fd;
-    background: linear-gradient(135deg, #6c63ff, #a29bfe);
+    //background: linear-gradient(135deg, #6c63ff, #a29bfe);
     .category-list {
         list-style: none;
         margin: 0;
         padding: .5em;
+        li {
+            font-size: 1.5rem;
+        }
         .category-element {
-            background: #e3f2fd;
+            background: #0066b2;
+            color: #fff;
             padding: 1em;
             margin-bottom: .5em;
             cursor: pointer;
@@ -60,7 +64,7 @@
 
 .products {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Flexible columns */
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); /* Flexible columns */
     gap: 16px; /* Space between cards */
     padding: 16px;
     .card {
