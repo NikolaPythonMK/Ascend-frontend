@@ -20,11 +20,14 @@
         </li>
         @for (element of elements(); track element.id; let index = $index) {
             <li (click)="onSelect(element.id)" class="category-element"
-            [style.border-left]=" '10px solid ' + getBorderColor(index) "
+                [style.border-left]=" '10px solid ' + getBorderColor(index) "
                 [style.--border-color]="getBorderColor(index)">
                 <span [ngClass]="{'selected-title': selectedId() === element.id}">{{ element.title }}</span>
             </li>  
-        }   
+        }
+        @if (!elements().length && noDataLabel()) {
+            <li><span class="no-data-label">{{ noDataLabel() }}</span></li>
+        } 
     </ul>
 }
 

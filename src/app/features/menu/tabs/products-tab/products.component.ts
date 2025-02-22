@@ -1,10 +1,10 @@
 import { Component, inject, OnInit, signal } from "@angular/core";
-import { Category } from "../../../../core/models/api/category.model";
+import type { Category } from "../../../../core/models/api/responses/category.model";
 import { environment } from "../../../../../environments/environment";
 import { CategoriesService } from "../../../../core/services/api/categories.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ProductsService } from "../../../../core/services/api/products.service";
-import { Product } from "../../../../core/models/api/product.model";
+import type { Product } from "../../../../core/models/api/responses/product.model";
 import { CommonModule } from "@angular/common";
 import {MatCardModule} from '@angular/material/card';
 import { SearchBarComponent } from "../../../../core/ui/search-bar/search-bar.component";
@@ -14,8 +14,6 @@ import { MatSelectModule } from "@angular/material/select";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HeaderCounterComponent } from "../../../../core/ui/header-counter/header-counter.component";
 import { Page } from "../../../../core/models/api/page.model";
-
-
 
 
 @Component({
@@ -56,9 +54,9 @@ export class ProuctsComponent implements OnInit{
     }
 
     private getProducts(): void {
-        this.productService.getProducts(this.searchTerm(), this.selectedCategoryId()).subscribe({
-            next: (products: Product[]) => {
-                this.products.set(products);
+        this.productService.getAll().subscribe({
+            next: (products: Page<Product>) => {
+                this.products.set(products.data);
                 console.log(this.products());
             },
             error: (error: HttpErrorResponse) => {

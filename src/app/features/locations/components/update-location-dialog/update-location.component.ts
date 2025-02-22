@@ -10,10 +10,10 @@ import { MatFormFieldModule, MatLabel } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { ButtonComponent } from "../../../../core/ui/button/button.component";
-import { Location } from "../../../../core/models/api/location.model";
+import type { Location } from "../../../../core/models/api/responses/location.model";
 import { MatIconModule } from "@angular/material/icon";
 import { ConfirmationDialog } from "../../../../core/ui/confirmation-dialog/confirmation-dialog.component";
-import { UpdateLocationRequest } from "../../models/update-location.request";
+import type { LocationRequest } from "../../../../core/models/api/requests/location.request";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Observable } from "rxjs";
 
@@ -46,12 +46,12 @@ export class UpdateLocationDialog implements OnInit{
             return;
         }
     
-        const request: UpdateLocationRequest = {
+        const request: LocationRequest = {
             id: this.data.id,
             name: this.getNameControl().value
         };
         this.handleRequest(
-            this.locationsService.updateLocation(request),
+            this.locationsService.update(request),
             'Успешно'
         );
     }
@@ -62,7 +62,7 @@ export class UpdateLocationDialog implements OnInit{
                 return;
             }
             this.handleRequest(
-                this.locationsService.deleteLocation(this.data.id),
+                this.locationsService.delete(this.data.id),
                 'Успешно'
             );
         });

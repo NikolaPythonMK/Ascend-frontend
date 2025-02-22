@@ -4,8 +4,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatTableModule } from "@angular/material/table";
 import { TranslateModule } from "@ngx-translate/core";
 import { MatButtonModule } from "@angular/material/button";
-import { Table } from "../../../../core/models/api/table.model";
-
+import { Table } from "../../../../core/models/api/responses/table.model";
 
 @Component({
     selector: 'table-view',

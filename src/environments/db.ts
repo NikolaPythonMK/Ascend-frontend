@@ -1,7 +1,8 @@
-import { Category } from '../app/core/models/api/category.model';
-import { Product } from '../app/core/models/api/product.model';
-import { TableItem } from '../app/core/models/api/table-item.model';
-import { Table } from '../app/core/models/api/table.model';
+import { Category } from "../app/core/models/api/responses/category.model";
+import { Product } from "../app/core/models/api/responses/product.model";
+import { TableItem } from "../app/core/models/api/responses/table-item.model";
+import { Table } from "../app/core/models/api/responses/table.model";
+
 
 const categories: Category[] = [
   {
@@ -10,7 +11,7 @@ const categories: Category[] = [
     description: 'Refreshing drinks',
     image: null,
     organizationID: 1,
-    subCategories: []
+    categoryGroupId: 1
   },
   {
     id: 2,
@@ -18,7 +19,7 @@ const categories: Category[] = [
     description: 'Sweet treats',
     image: null,
     organizationID: 1,
-    subCategories: []
+    categoryGroupId: 1
   },
   {
     id: 3,
@@ -26,7 +27,7 @@ const categories: Category[] = [
     description: 'Hearty meals',
     image: null,
     organizationID: 1,
-    subCategories: [],
+    categoryGroupId: 1
   },
   {
     id: 4,
@@ -34,7 +35,7 @@ const categories: Category[] = [
     description: 'All kinds of coffee',
     image: null,
     organizationID: 1,
-    subCategories: []
+    categoryGroupId: 1
   }
 ];
 

@@ -3,20 +3,20 @@ import { Component, inject, OnInit, signal } from "@angular/core";
 import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { MatFormField, MatFormFieldModule, MatLabel } from "@angular/material/form-field";
+import { MatFormFieldModule, MatLabel } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { RolesService } from "../../../../core/services/api/roles.service";
-import { Page } from "../../../../core/models/api/page.model";
-import { Role } from "../../../../core/models/api/role.model";
+import type { Page } from "../../../../core/models/api/page.model";
 import { MatSelectModule } from "@angular/material/select";
-import type { StaffUserRequest } from "../../models/staff-user.request";
 import { StaffService } from "../../../../core/services/api/staff.service";
 import { HttpErrorResponse } from "@angular/common/http";
-import { StaffUser } from "../../../../core/models/api/staff-user.model";
 import { SnackbarService } from "../../../../core/services/utility/snackbar.service";
 import { ButtonComponent } from "../../../../core/ui/button/button.component";
 import { MatIconModule } from "@angular/material/icon";
 import { ConfirmationDialog } from "../../../../core/ui/confirmation-dialog/confirmation-dialog.component";
+import type { StaffUserRequest } from "../../../../core/models/api/requests/staff-user.request";
+import type { Role } from "../../../../core/models/api/responses/role.model";
+import type { StaffUser } from "../../../../core/models/api/responses/staff-user.model";
 
 @Component({
     imports: [MatFormFieldModule, MatLabel, ReactiveFormsModule, CommonModule, MatInputModule, MatButtonModule, MatSelectModule, FormsModule, ButtonComponent, MatIconModule],
@@ -74,7 +74,7 @@ export class StaffUserDialog implements OnInit{
             this.getSelectedRolesControl().setValue(this.data.staffUserRoles?.map(i => i.id))
         }
 
-        this.rolesService.getRoles().subscribe((result: Page<Role>) => {
+        this.rolesService.getAll().subscribe((result: Page<Role>) => {
             this.roles.set(result.data);
         })
     }
@@ -94,8 +94,8 @@ export class StaffUserDialog implements OnInit{
         };
     
         const action$ = this.data 
-            ? this.staffService.updateStaffUser(request)  // Update if data exists
-            : this.staffService.addStaffUser(request);   // Create new if no data
+            ? this.staffService.update(request)  // Update if data exists
+            : this.staffService.add(request);   // Create new if no data
     
         action$.subscribe({
             next: (staffUser: StaffUser) => {
@@ -115,7 +115,7 @@ export class StaffUserDialog implements OnInit{
             if(!isConfirmed) {
                 return;
             }
-            this.staffService.deleteStaffUser(this.data.id!).subscribe({
+            this.staffService.delete(this.data.id!).subscribe({
                 next: (result: number) => {
                     this.snackbarService.success('Успешно');
                     this.dialogRef.close(result);

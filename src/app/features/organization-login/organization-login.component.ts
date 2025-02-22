@@ -3,8 +3,6 @@ import { Component, inject, signal } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
-  FormControl,
-  FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
@@ -19,12 +17,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { LoginRequest } from '../../core/models/login.request';
 import { OrganizationService } from '../../core/services/api/organization.service';
 import { InputFieldComponent } from '../../core/ui/input-field/input-field.component';
-import TranslationService from '../../core/services/utility/translation.service';
 import { LocationService } from '../../core/services/api/locations.service';
-import { Location } from '../../core/models/api/location.model';
 import { MatSelectModule } from '@angular/material/select';
 import { CountrySelectComponent } from "../../core/ui/country-select/country-select.component";
-import { Organization } from '../../core/models/api/organization.model';
+import { Organization } from '../../core/models/api/responses/organization.model';
+import { Location } from '../../core/models/api/responses/location.model';
 
 @Component({
   imports: [

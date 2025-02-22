@@ -4,5 +4,5 @@ export interface Category {
     description: string,
     image: string | null,
     organizationID: number,
-    subCategories: Category[]
+    categoryGroupId: number
 }

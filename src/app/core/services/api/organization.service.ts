@@ -1,11 +1,10 @@
 import { inject, Injectable } from "@angular/core";
-import { LoginRequest } from "../../models/login.request";
-import { LoginResponse } from "../../models/login.response";
 import { CookieService } from 'ngx-cookie-service';
-import { Observable, of, tap, throwError } from "rxjs";
+import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
-import { Organization } from "../../models/api/organization.model";
+import type { Organization } from "../../models/api/responses/organization.model";
+import type { LoginRequest } from "../../models/api/requests/login.request";
 
 
 @Injectable({

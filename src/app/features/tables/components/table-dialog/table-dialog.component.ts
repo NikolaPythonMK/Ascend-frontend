@@ -1,20 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, HostListener, inject, OnInit, signal } from '@angular/core';
-import { MatIconButton } from '@angular/material/button';
-import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { Product } from '../../models/product-item.model';
-import { Order } from '../../models/order.model';
 import { OrderedItemsComponent } from '../ordered-items/ordered-items.component';
 import { SearchBarComponent } from '../../../../core/ui/search-bar/search-bar.component';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { DialogData } from '../../models/dialog-data.model';
-import { Table } from '../../../../core/models/api/table.model';
-import { TableItem } from '../../../../core/models/api/table-item.model';
 import { TableItemsService } from '../../../../core/services/api/table-items.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProductsService } from '../../../../core/services/api/products.service';
 import { DisplayProductsComponent } from '../display-products/display-products.component';
 import { QuantityDialog } from '../quantity-dialog/quantity-dialog.component';
+import { TableItem } from '../../../../core/models/api/responses/table-item.model';
+import { Table } from '../../../../core/models/api/responses/table.model';
 
 
 @Component({

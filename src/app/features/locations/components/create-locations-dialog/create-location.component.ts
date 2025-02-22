@@ -7,11 +7,11 @@ import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { CommonModule } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
-import { LocationRequest } from "../../models/location.request";
 import { LocationService } from "../../../../core/services/api/locations.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { SnackbarService } from "../../../../core/services/utility/snackbar.service";
-import { Location } from "../../../../core/models/api/location.model";
+import type { LocationRequest } from "../../../../core/models/api/requests/location.request";
+import type { Location } from "../../../../core/models/api/responses/location.model";
 
 @Component({
     imports: [MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatInputModule, ButtonComponent, MatLabel, CommonModule, MatButtonModule ],
@@ -45,7 +45,7 @@ export class CreateLocatinDialog {
             name: this.getNameControl().value,
             numberOfTables: this.getTableCountControl().value
         }
-        this.locationsService.addLocation(request).subscribe({
+        this.locationsService.add(request).subscribe({
             next: (result: Location) => {
                 this.snackbarService.success('Успешно');
                 this.dialogRef.close(result);

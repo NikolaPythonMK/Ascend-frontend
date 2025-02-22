@@ -7,10 +7,10 @@ import { TableComponent } from "../../core/ui/table/table.component";
 import type { LocationRow } from "./models/location-row.model";
 import { MatDialog } from "@angular/material/dialog";
 import { CreateLocatinDialog } from "./components/create-locations-dialog/create-location.component";
-import type { Location } from "../../core/models/api/location.model";
 import { UpdateLocationDialog } from "./components/update-location-dialog/update-location.component";
 import { TableStateService } from "../../core/services/utility/table-state.service";
 import { Sort } from "../../core/ui/table/models/sort.model";
+import { Location } from "../../core/models/api/responses/location.model";
 
 @Component({
     imports: [TableComponent],

@@ -1,15 +1,16 @@
 import { Component, inject, OnInit, signal } from "@angular/core";
-import { AbstractControl, FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatDialogRef } from "@angular/material/dialog";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { ButtonComponent } from "../../../../core/ui/button/button.component";
-import { Permission } from "../../../../core/models/api/permission.model";
 import { RolesService } from "../../../../core/services/api/roles.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Page } from "../../../../core/models/api/page.model";
-import { AddRoleRequest } from "../../models/add-role.request";
+import type { Permission } from "../../../../core/models/api/responses/permission.model";
+import { PermissionsService } from "../../../../core/services/api/permissions.service";
+import type { RoleRequest } from "../../../../core/models/api/requests/role.request";
 
 @Component({
     imports: [MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatInputModule, ButtonComponent],
@@ -19,6 +20,7 @@ import { AddRoleRequest } from "../../models/add-role.request";
 export class RolesDialog implements OnInit{
     readonly dialogRef = inject(MatDialogRef<RolesDialog>);
     readonly rolesService = inject(RolesService);
+    readonly permissionsService = inject(PermissionsService)
     readonly fb = inject(FormBuilder);
     permissions = signal<Permission[]>([]);
     roleForm = this.fb.group({
@@ -27,7 +29,7 @@ export class RolesDialog implements OnInit{
     })
 
     ngOnInit(): void {
-        this.rolesService.getPermissions().subscribe({
+        this.permissionsService.getAll().subscribe({
             next: (permissions: Page<Permission>) => {
                 this.permissions.set(permissions.data)
             },
@@ -49,7 +51,7 @@ export class RolesDialog implements OnInit{
         if (this.roleForm.invalid){
             return;
         }
-        const addRoleRequest: AddRoleRequest = {
+        const addRoleRequest: RoleRequest = {
             name: this.getName().value,
             rolePermissions: this.getPermissions().value
         }

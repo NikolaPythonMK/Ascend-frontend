@@ -1,7 +1,7 @@
 <div class="cards">
     @for(element of elements(); track element.id){
-        <mat-card class="card" appearance="outlined">
-            <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+        <mat-card class="card" appearance="outlined" (click)="onSelect(element.id)">
+            <img mat-card-image [src]="element.image ?? 'assets/images/no-image-icon.png'" [alt]="element.description">
             <mat-card-header>
                 <mat-card-title><span class="title">{{ element.title }}</span></mat-card-title>
                 @if (element.description) {

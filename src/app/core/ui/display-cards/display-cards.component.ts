@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, input } from "@angular/core";
+import { Component, input, output } from "@angular/core";
 import { MatCardModule } from "@angular/material/card";
 import { Card } from "./models/card.model";
 
@@ -11,4 +11,9 @@ import { Card } from "./models/card.model";
 })
 export class DisplayCardsComponent {
     elements = input.required<Card[]>();
+    selectedId = output<number>();
+
+    onSelect(id: number): void {
+        this.selectedId.emit(id);
+    }
 }

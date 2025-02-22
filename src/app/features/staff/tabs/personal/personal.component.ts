@@ -3,15 +3,14 @@ import { TableComponent } from "../../../../core/ui/table/table.component";
 import { StaffService } from "../../../../core/services/api/staff.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { SnackbarService } from "../../../../core/services/utility/snackbar.service";
-import { Page } from "../../../../core/models/api/page.model";
-import { StaffUser } from "../../../../core/models/api/staff-user.model";
+import type { Page } from "../../../../core/models/api/page.model";
 import { StaffUserRow } from "../../models/staff-user-row.model";
 import { MatDialog } from "@angular/material/dialog";
 import { StaffUserDialog } from "../../dialogs/staff-user-dialog/staff-user.component";
 import { filter, Observer, switchMap } from "rxjs";
 import { Sort } from "../../../../core/ui/table/models/sort.model";
-import { SearchTerm } from "../../../../core/models/api/search-term.model";
 import { TableStateService } from "../../../../core/services/utility/table-state.service";
+import type { StaffUser } from "../../../../core/models/api/responses/staff-user.model";
 
 
 @Component({
@@ -104,32 +103,5 @@ export class PersonalComponent implements OnInit{
     onSearch(term: string) {
         this.tableState.setSearch(term, this.colDisplayNames(), this.nonSortableColumns(), this.map);
         this.getStaff();
-        console.log('SE: ', this.searchTerm())
     }
-
-    // onSort(sort: Sort | null) {
-    //     if (sort) {
-    //         this.sort.set({
-    //             propName: this.map.get(sort.propName)!,
-    //             direction: sort.direction
-    //         });
-    //     }
-    //     else {
-    //         this.sort.set(undefined);
-    //     }
-    //     this.getStaff();
-    // }
-
-    // onSearch(term: string) {
-    //     const searchTerm = this.colDisplayNames()
-    //     .filter(i => !this.nonSortableColumns().includes(i))
-    //     .map(i => {
-    //         return {
-    //             propName: this.map.get(i)!.charAt(0).toUpperCase() + this.map.get(i)!.slice(1),
-    //             searchValue: term
-    //         }
-    //     })
-    //     this.searchTerm.set(searchTerm);
-    //     this.getStaff();
-    // }
 }

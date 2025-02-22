@@ -1,13 +1,12 @@
 import { Component, HostListener, inject, OnInit, output, signal } from "@angular/core";
 import { SearchBarComponent } from "../../../../core/ui/search-bar/search-bar.component";
 import { ProductsService } from "../../../../core/services/api/products.service";
-import { Product } from "../../../../core/models/api/product.model";
 import { HttpErrorResponse } from "@angular/common/http";
 import { CategoriesService } from "../../../../core/services/api/categories.service";
-import { Category } from "../../../../core/models/api/category.model";
 import { CommonModule } from "@angular/common";
-import { MatListModule } from "@angular/material/list";
 import { Page } from "../../../../core/models/api/page.model";
+import { Category } from "../../../../core/models/api/responses/category.model";
+import { Product } from "../../../../core/models/api/responses/product.model";
 
 
 @Component({
@@ -90,11 +89,11 @@ export class DisplayProductsComponent implements OnInit{
       }
       
     private getProducts() {
-        this.productsService.getProducts(this.searchTerm(), this.selectedCategoryId()).subscribe({
-            next: (products: Product[]) => {
-                this.products.set(products);
-                this.totalCounts.set(products.length);
-                this.selectedProductID.set(products[0].id);
+        this.productsService.getAll().subscribe({
+            next: (products: Page<Product>) => {
+                this.products.set(products.data);
+                this.totalCounts.set(products.count);
+                this.selectedProductID.set(products.data[0].id);
             },
             error: (error: HttpErrorResponse) => {
                 console.log(error);

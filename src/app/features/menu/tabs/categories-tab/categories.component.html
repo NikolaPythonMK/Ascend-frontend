@@ -5,13 +5,16 @@
 
 <div class="container">
     <div class="list-container">
-        <ascend-display-list [elements]="categoryGroups()" (selectedEvent)="onSelectedCategoryGroup($event)" (addEvent)="onAddGroupCategory()" />
+        <ascend-display-list [elements]="categoryGroupElements()"
+                             (selectedEvent)="onSelectedCategoryGroup($event)"
+                             (addEvent)="onAddGroupCategory()"
+                             noDataLabel="Create your first category group!" />
     </div>
     <div class="cards-container">
         <div class="cards-header">
             <div class="left-part">
-                @if (selectedCategory()){
-                    <span class="categories-title">{{ selectedCategory()!.title }}</span>
+                @if (selectedCategoryGroup()){
+                    <span class="categories-title">{{ selectedCategoryGroup()!.name }}</span>
                 }@else {
                     <span class="categories-title">All Categories</span>
                 }
@@ -23,9 +26,13 @@
                     Категорија
                 </button>
                 <!-- <ascend-button type="primary" label="Додади категорија" class="add-category-btn"/> -->
-                <ascend-search-bar />
+                <ascend-search-bar (onSearchTerm)="onSearchCategory($event)" />
             </div>
         </div>
-        <ascend-display-cards [elements]="categories()" />
+        @if (categories().length) {
+            <ascend-display-cards [elements]="categoryCards()" (selectedId)="onUpdateCategory($event)"/>
+        } @else {
+            <span class="no-categories-message">You haven't added any categories yet. Start by creating a new one!</span>
+        }
     </div>
 </div>

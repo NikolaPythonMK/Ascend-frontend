@@ -1,25 +1,22 @@
-import { ChangeDetectorRef, Component, inject, OnInit, QueryList, Signal, signal, ViewChildren } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, OnInit, QueryList, signal, ViewChildren } from "@angular/core";
 import { TranslateModule } from "@ngx-translate/core";
 import { ButtonComponent } from "../../../../core/ui/button/button.component";
-import { RolesDialog } from "../../dialogs/roles-dialog/roles-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { RolesService } from "../../../../core/services/api/roles.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { SnackbarService } from "../../../../core/services/utility/snackbar.service";
 import { Page } from "../../../../core/models/api/page.model";
-import { Role } from "../../../../core/models/api/role.model";
-import { AddRoleRequest } from "../../models/add-role.request";
-import { Permission } from "../../../../core/models/api/permission.model";
-import { MatButtonModule } from "@angular/material/button";
 import { MatTableModule } from "@angular/material/table";
 import {MatCheckbox, MatCheckboxChange, MatCheckboxModule} from '@angular/material/checkbox';
 import { CommonModule } from "@angular/common";
 import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatIconModule } from "@angular/material/icon";
-import { PermissionDTO } from "../../../../core/models/dto/permission.dto";
 import { InputFieldComponent } from "../../../../core/ui/input-field/input-field.component";
 import { ConfirmationDialog } from "../../../../core/ui/confirmation-dialog/confirmation-dialog.component";
-import { UpdateRoleRequest } from "../../models/update-role.request";
+import { Permission } from "../../../../core/models/api/responses/permission.model";
+import { Role } from "../../../../core/models/api/responses/role.model";
+import { RoleRequest } from "../../../../core/models/api/requests/role.request";
+import { PermissionsService } from "../../../../core/services/api/permissions.service";
 
 interface GroupPermission {
     groupName: string,
@@ -42,6 +39,7 @@ export class RolesComponent implements OnInit{
     @ViewChildren('checkbox') checkboxes!: QueryList<MatCheckbox>;
     readonly dialog = inject(MatDialog);
     readonly rolesService = inject(RolesService);
+    readonly permissionsService = inject(PermissionsService);
     readonly snackbarService = inject(SnackbarService);
     readonly fb = inject(FormBuilder);
     readonly cdr = inject(ChangeDetectorRef);
@@ -92,11 +90,11 @@ export class RolesComponent implements OnInit{
         if(this.getNameControl().invalid){
             return;
         }
-        const addRoleRequest: AddRoleRequest = {
+        const addRoleRequest: RoleRequest = {
             name: this.getNameControl().value,
             rolePermissions: []
         }
-        this.rolesService.addRole(addRoleRequest).subscribe({
+        this.rolesService.add(addRoleRequest).subscribe({
             next: () => {
                 this.snackbarService.success('Успешно додавање улога')
                 this.getRoles();
@@ -115,7 +113,7 @@ export class RolesComponent implements OnInit{
             if(!result){
                 return;
             }
-            this.rolesService.deleteRole(id).subscribe({
+            this.rolesService.delete(id).subscribe({
                 next: () => {
                     this.snackbarService.success('Успешно е избришана улогата');
                     this.getRoles();
@@ -141,7 +139,7 @@ export class RolesComponent implements OnInit{
       
     
     private getRoles(): void {
-        this.rolesService.getRoles().subscribe({
+        this.rolesService.getAll().subscribe({
             next: (roles: Page<Role>) => {
                 this.roles.set(roles.data);
                 this.selectedRole.set(this.roles()[0]);
@@ -224,12 +222,12 @@ export class RolesComponent implements OnInit{
                 rolePermissions = rolePermissions.filter(p => p !== i.permissionId);
             }
         })
-        const request: UpdateRoleRequest = {
+        const request: RoleRequest = {
             id: this.selectedRole()!.id,
             name: this.selectedRole()!.name,
             rolePermissions: rolePermissions
         }
-        this.rolesService.updateRole(request).subscribe({
+        this.rolesService.update(request).subscribe({
             next: () => {
                 this.snackbarService.success('Успешно')
                 this.rolesService.getById(this.selectedRole()!.id).subscribe({
@@ -250,7 +248,7 @@ export class RolesComponent implements OnInit{
     }
 
     private getAllPermissions(): void {
-        this.rolesService.getPermissions().subscribe({
+        this.permissionsService.getAll().subscribe({
             next: (permissions: Page<Permission>) => {
                 this.permissions.set(permissions.data);
                 this.groupedPermissions.set(this.groupPermissions(this.permissions()))

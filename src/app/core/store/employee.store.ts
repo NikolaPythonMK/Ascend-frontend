@@ -1,5 +1,5 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals'
-import { StaffUser } from '../models/api/staff-user.model';
+import { StaffUser } from '../models/api/responses/staff-user.model';
 
 
 // Define the initial state

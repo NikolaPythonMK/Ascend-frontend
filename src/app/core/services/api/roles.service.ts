@@ -1,42 +1,18 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { environment } from "../../../../environments/environment";
-import { Observable } from "rxjs";
-import { Page } from "../../models/api/page.model";
-import { Permission } from "../../models/api/permission.model";
-import { AddRoleRequest } from "../../../features/staff/models/add-role.request";
-import { Role } from "../../models/api/role.model";
-import { UpdateRoleRequest } from "../../../features/staff/models/update-role.request";
+import type { Role } from "../../models/api/responses/role.model";
+import { RoleRequest } from "../../models/api/requests/role.request";
+import { BaseService } from "./base.service";
 
 @Injectable({
     providedIn: 'root'
 })
-export class RolesService {
-    private http = inject(HttpClient);
-    private domain = environment.domain;
+export class RolesService extends BaseService<Role, RoleRequest> {
+    protected override http = inject(HttpClient);
+    protected override domain = environment.domain;
 
-    getPermissions(): Observable<Page<Permission>> {
-        return this.http.post<Page<Permission>>(`${this.domain}/permission/all`, { pge: 0, size: 0 }, {withCredentials: true});
+    constructor() {
+        super('role');
     }
-
-    getRoles(): Observable<Page<Role>> {
-        return this.http.post<Page<Role>>(`${this.domain}/role/all`, {page: 0, size: 0}, { withCredentials: true })
-    }
-
-    addRole(request: AddRoleRequest): Observable<any> {
-        return this.http.post<any>(`${this.domain}/role/create`, request, {withCredentials: true})
-    }
-
-    updateRole(request: UpdateRoleRequest): Observable<any> {
-        return this.http.put<any>(`${this.domain}/role/update`, request, {withCredentials: true})
-    }
-    
-    getById(id: number): Observable<Role>{
-        return this.http.post<Role>(`${this.domain}/role/id`, { id }, {withCredentials:true})
-    }
-
-    deleteRole(id: number): Observable<any> {
-        return this.http.post<any>(`${this.domain}/role/delete`, { id }, {withCredentials:true} )
-    }
-
 }

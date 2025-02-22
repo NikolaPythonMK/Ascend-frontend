@@ -1,7 +1,7 @@
 import { Component, input } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { CdkDragEnd, DragDropModule } from '@angular/cdk/drag-drop';
-import { Table } from "../../../../core/models/api/table.model";
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { Table } from "../../../../core/models/api/responses/table.model";
 
 @Component({
     selector: 'drag-view',

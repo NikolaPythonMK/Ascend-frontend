@@ -1,9 +1,9 @@
 import { inject, Injectable } from "@angular/core";
 import { Observable, tap } from "rxjs";
-import { StaffUser } from "../../../core/models/api/staff-user.model";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
 import { EmployeeStore } from "../../../core/store/employee.store";
+import type { StaffUser } from "../../../core/models/api/responses/staff-user.model";
 
 
 @Injectable({

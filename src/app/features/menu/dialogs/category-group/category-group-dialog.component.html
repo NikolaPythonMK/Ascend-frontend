@@ -1,0 +1,44 @@
+<h2 mat-dialog-title class="dialog-title">Додади Група на Категорија</h2>
+
+<form [formGroup]="categoryGroupForm" (ngSubmit)="onSubmit()" class="dialog-form">
+  
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Description (optional)</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+    </mat-form-field>
+
+    @if (data.categories.length) {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Categories</mat-label>
+        <mat-select formControlName="selectedCategories" multiple>
+          <mat-select-trigger>
+            {{ getSelectedCategoriesControl().value ? getCategoryName(getSelectedCategoriesControl().value[0]) : '' }}
+            @if ((getSelectedCategoriesControl().value?.length || 0) > 1) {
+              <span class="additional-selection">
+                (+{{ (getSelectedCategoriesControl().value?.length || 0) - 1 }}
+                {{ getSelectedCategoriesControl().value?.length === 2 ? 'other' : 'others' }})
+              </span>
+            }
+          </mat-select-trigger>
+          @for (category of data.categories; track category.id) {
+            <mat-option [value]="category.id">{{ category.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+
+  <div class="full-width upload-container">
+    <span>Прикачи слика (optional)</span>
+    <ascend-upload-image (uploadEvent)="onUpload($event)" />
+  </div>
+
+  <div class="actions">
+    <button mat-button type="button" (click)="dialogRef.close()">Откажи</button>
+    <ascend-button type="primary" [label]="'Додади'" [disabled]="categoryGroupForm.invalid" />
+  </div>
+</form>

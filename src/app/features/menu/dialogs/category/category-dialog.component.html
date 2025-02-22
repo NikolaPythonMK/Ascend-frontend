@@ -14,29 +14,20 @@
       <textarea matInput formControlName="description"></textarea>
     </mat-form-field>
 
-
-
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Група на категорија (optional)</mat-label>
-    <mat-select formControlName="subCategories" multiple>
-      <mat-select-trigger>
-        {{ getSubCategories().value ? getCategoryName(getSubCategories().value[0]) : '' }}
-        @if ((getSubCategories().value?.length || 0) > 1) {
-          <span class="additional-selection">
-            (+{{ (getSubCategories().value?.length || 0) - 1 }}
-            {{ getSubCategories().value?.length === 2 ? 'other' : 'others' }})
-          </span>
-        }
-      </mat-select-trigger>
-      @for (category of categories(); track category.id) {
-        <mat-option [value]="category.id">{{ category.name }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+    @if (data.categoryGroups.length) {
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Category Group</mat-label>
+        <mat-select formControlName="selectedCategoryGroup">
+          @for (group of data.categoryGroups; track group.id) {
+            <mat-option [value]="group.id">{{group.name}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
 
   <div class="full-width upload-container">
     <span>Прикачи слика (optional)</span>
-    <ascend-upload-image />
+    <ascend-upload-image (uploadEvent)="onUpload($event)" />
   </div>
 
   <div class="actions">

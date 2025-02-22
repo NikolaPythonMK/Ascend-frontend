@@ -10,9 +10,9 @@ import { GridViewComponent } from './components/grid-view/grid-view.component';
 import { SearchBarComponent } from '../../core/ui/search-bar/search-bar.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { DragViewComponent } from './components/drag-view/drag-view.component';
-import { Table } from '../../core/models/api/table.model';
 import { TablesService } from '../../core/services/api/tables.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Table } from '../../core/models/api/responses/table.model';
 
 @Component({
   selector: 'ascend-tables',

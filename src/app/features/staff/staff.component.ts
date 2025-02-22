@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
 import {MatTabsModule} from '@angular/material/tabs';
 import { TranslateModule } from "@ngx-translate/core";
-import { ButtonComponent } from "../../core/ui/button/button.component";
 import { RolesComponent } from "./tabs/roles/roles.component";
 import { PersonalComponent } from "./tabs/personal/personal.component";
 

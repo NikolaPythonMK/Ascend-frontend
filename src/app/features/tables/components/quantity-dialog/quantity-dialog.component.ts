@@ -1,10 +1,10 @@
 import { Component, inject } from "@angular/core";
-import { MAT_DIALOG_DATA, MatDialog, MatDialogActions, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
-import { Product } from "../../../../core/models/api/product.model";
-import { MatFormField, MatFormFieldModule } from "@angular/material/form-field";
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import {  MatFormFieldModule } from "@angular/material/form-field";
 import { CommonModule } from "@angular/common";
-import { FormBuilder, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatInputModule } from "@angular/material/input";
+import { Product } from "../../../../core/models/api/responses/product.model";
 
 @Component({
     imports: [MatDialogActions, MatDialogModule, MatFormFieldModule, CommonModule, FormsModule, MatInputModule, FormsModule, ReactiveFormsModule],
