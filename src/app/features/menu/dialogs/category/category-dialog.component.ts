@@ -92,13 +92,23 @@ export class CategoryDialog implements OnInit{
         if (!this.categoryForm.valid) {
           return;
         }
-        const request: CategoryRequest = {
-            name: this.getNameControl().value,
-            description: this.getDescriptionControl().value,
-            image: this.getImageControl().value,
-            categoryGroup: this.getSelectedCategoryGroup().value
-        }
-        this.categoryService.add(request).subscribe({
+        const view = new Uint8Array(this.getImageControl().value)
+        const blob = new Blob([view], { type: 'image/*' });
+        const form = new FormData();
+
+        form.append("name", this.getNameControl().value);
+        form.append("description", this.getDescriptionControl().value);
+        form.append("image", blob);
+        form.append("categoryGroupId", this.getSelectedCategoryGroup().value);
+
+        // const request: CategoryRequest = {
+        //     name: this.getNameControl().value,
+        //     description: this.getDescriptionControl().value,
+        //     image: this.getImageControl().value,
+        //     categoryGroup: this.getSelectedCategoryGroup().value
+        // }
+
+        this.categoryService.add(form).subscribe({
             next: (result: Category) => {
                 this.snackbar.success('Успешно е додадена категоријата');
                 this.dialogRef.close(result);
