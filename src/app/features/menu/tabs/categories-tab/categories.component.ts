@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from "@angular/core";
+import { Component, computed, inject, OnDestroy, OnInit, signal } from "@angular/core";
 import { ButtonComponent } from "../../../../core/ui/button/button.component";
 import { MatDialog } from "@angular/material/dialog";
 import { ListElement } from "../../../../core/ui/display-list/models/list-element.model";
@@ -22,6 +22,7 @@ import type { CategoryDialogData } from "../../models/category-dialog-data.dto";
 import type { CategoryGroupDialogData } from "../../models/category-group-dialog-data.dto";
 import { CategoryGroupDialog } from "../../dialogs/category-group/category-group-dialog.component";
 import { CategoryDialog } from "../../dialogs/category/category-dialog.component";
+import loadesh from 'lodash';
 
 @Component({
     selector: 'categories-component',
@@ -29,7 +30,7 @@ import { CategoryDialog } from "../../dialogs/category/category-dialog.component
     templateUrl: 'categories.component.html',
     styleUrls: ['categories.component.scss']
 })
-export class CategoriesComponent implements OnInit{
+export class CategoriesComponent implements OnInit, OnDestroy{
     private readonly dialog = inject(MatDialog);
     readonly categoryService = inject(CategoriesService);
     readonly categoryGroupService = inject(CategoryGroupService);
@@ -58,6 +59,10 @@ export class CategoriesComponent implements OnInit{
     ngOnInit(): void {
         this.getAllCategoryGroups();
         this.getAllCategories();
+    }
+
+    ngOnDestroy(): void {
+        this.categories().forEach(c => URL.revokeObjectURL(c.image));
     }
 
     onAddCategory(): void {
@@ -107,11 +112,20 @@ export class CategoriesComponent implements OnInit{
     onSelectedCategoryGroup(id: number | null) {
         if(!id){
             this.getAllCategories();
+            this.selectedCategoryGroup.set(null);
             return;
         }
         this.categoryGroupService.getById(id).subscribe({
             next: (result: CategoryGroup) => {
-                this.categories.set(result.categories);
+                this.categories.set(result.categories.map(c => {
+                    console.log('img: ', c.image);
+                    return {
+                        id: c.id,
+                        name: c.name,
+                        image: 'data:image/png;base64,' + c.image,
+                        description: c.description
+                    } as Category;
+                }));
                 this.selectedCategoryGroup.set(result);
             },
             error: (error: HttpErrorResponse) => {
@@ -129,7 +143,14 @@ export class CategoriesComponent implements OnInit{
         const searchFilter: SearchTerm[] = this.filterData.createSearchTermFilter(this.searchTerm(), ['name'])
         this.categoryService.getAll(searchFilter).subscribe({
             next: (result: Page<Category>) => {
-                this.categories.set(result.data);
+                this.categories.set(result.data.map(c => {
+                    return {
+                        id: c.id,
+                        name: c.name,
+                        image: URL.createObjectURL(c.image),
+                        description: c.description
+                    } as Category;  
+                }));
             },
             error: (error: HttpErrorResponse) => {
                 this.snackbar.error(error.message);

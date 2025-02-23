@@ -2,7 +2,7 @@
 
 .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); /* Flexible columns */
+    grid-template-columns: repeat(auto-fit, minmax(230px, 350px)); /* Flexible columns */
     gap: 16px; /* Space between cards */
     padding: 16px;
     .card {
@@ -16,6 +16,7 @@
             display: flex;
             justify-content: center;
         }
+        
     }
     .card:hover {
         transform: scale(1.02);
