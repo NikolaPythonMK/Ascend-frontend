@@ -67,6 +67,7 @@ export class CategoryGroupDialog {
 
     onUpload(image: Image){
       this.imageUrl.set(image.url);
+      console.log(this.imageUrl())
     }
 
     onSubmit() {
@@ -74,14 +75,27 @@ export class CategoryGroupDialog {
           return;
         }
 
-        const request: CategoryGroupRequest = {
-          name: this.getNameControl().value,
-          description: this.getDescriptionControl().value,
-          image: this.imageUrl(),
-          categories: this.getSelectedCategoriesControl().value,
-        }
+       // let blob = new Blob([this.imageUrl()!], { type: 'image/*' });
 
-        this.categoryGroupService.add(request).subscribe({
+        // const request: CategoryGroupRequest = {
+        //   name: this.getNameControl().value,
+        //   description: this.getDescriptionControl().value,
+        //   image: this.imageUrl(),
+        //   categories: this.getSelectedCategoriesControl().value,
+        // }
+        // console.log('request: ', request);
+
+        const view = new Uint8Array(this.imageUrl()!)
+        const blob = new Blob([view], { type: 'image/*' });
+        const formData = new FormData();
+        formData.append('name', this.getNameControl().value);
+        formData.append('description', this.getDescriptionControl().value);
+        formData.append('categories', this.getSelectedCategoriesControl().value);
+        formData.append('image', blob); 
+
+        
+
+        this.categoryGroupService.add(formData).subscribe({
           next: (result: CategoryGroup) => {
             this.snackbarService.success('Успешно');
             this.dialogRef.close(result);

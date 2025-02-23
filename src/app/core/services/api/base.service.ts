@@ -33,7 +33,7 @@ export abstract class BaseService<TRes, TReq> {
         return this.http.post<TRes>(`${this.domain}/${this.endpoint}/id`, { id }, { withCredentials: true })
     }
 
-    add(request: TReq): Observable<TRes> {
+    add(request: TReq | FormData): Observable<TRes> {
         return this.http.post<TRes>(`${this.domain}/${this.endpoint}/create`, request, { withCredentials: true })
     }
 

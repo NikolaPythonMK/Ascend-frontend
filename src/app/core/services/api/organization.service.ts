@@ -25,6 +25,8 @@ export class OrganizationService {
     }
 
     isAuthenticated(): boolean { // should I check in backend ?
+       console.log('ALL: ',  this.cookieService.getAll());
+        console.log('COOKIEEE: ', this.cookieService.get('.AspNetCore.Identity.Application'))
         return this.cookieService.check('.AspNetCore.Identity.Application');
     }
 
