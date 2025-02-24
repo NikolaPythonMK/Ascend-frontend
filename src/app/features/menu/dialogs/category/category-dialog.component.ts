@@ -54,6 +54,9 @@ export class CategoryDialog implements OnInit{
     staffUser: any;
 
     ngOnInit(): void {
+        if (this.data.selectedGroupId) {
+            this.getSelectedCategoryGroup().setValue(this.data.selectedGroupId);
+        }
         if(!this.data.category){
             return;
         }

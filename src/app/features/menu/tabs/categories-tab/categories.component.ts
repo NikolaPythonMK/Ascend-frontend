@@ -23,6 +23,8 @@ import type { CategoryGroupDialogData } from "../../models/category-group-dialog
 import { CategoryGroupDialog } from "../../dialogs/category-group/category-group-dialog.component";
 import { CategoryDialog } from "../../dialogs/category/category-dialog.component";
 import loadesh from 'lodash';
+import { ImageService } from "../../../../core/services/utility/image.service";
+import { ConfirmationDialog } from "../../../../core/ui/confirmation-dialog/confirmation-dialog.component";
 
 @Component({
     selector: 'categories-component',
@@ -36,6 +38,7 @@ export class CategoriesComponent implements OnInit, OnDestroy{
     readonly categoryGroupService = inject(CategoryGroupService);
     readonly filterData = inject(FilterDataService);
     readonly snackbar = inject(SnackbarService);
+    readonly imageService = inject(ImageService);
     selectedCategoryGroup = signal<CategoryGroup | null>(null)
     searchTerm = signal<string>('');
     categories = signal<Category[]>([]);
@@ -68,16 +71,25 @@ export class CategoriesComponent implements OnInit, OnDestroy{
     onAddCategory(): void {
         const dialogRef = this.dialog.open(CategoryDialog, {
             data: {
-                categoryGroups: this.categoryGroups()
+                categoryGroups: this.categoryGroups(),
+                selectedGroupId: this.selectedCategoryGroup()?.id
             } as CategoryDialogData
         });
         dialogRef.afterClosed().subscribe((result: Category) => {
             if(!result) {
                 return;
             }
-            if (!this.selectedCategoryGroup() || result.categoryGroupId === this.selectedCategoryGroup()?.id){
-                this.categories.set([result, ...this.categories()])
+
+  
+            if (this.selectedCategoryGroup()) {
+                this.getCategoriesByGroupId(this.selectedCategoryGroup()!.id);
+            } else {
+                this.getAllCategories();
             }
+            
+            // if (!this.selectedCategoryGroup() || (result.categoryGroupId === this.selectedCategoryGroup()?.id)){
+            //     this.categories.set([result, ...this.categories()])
+            // }
         })
     }
     onAddGroupCategory(): void {
@@ -105,6 +117,25 @@ export class CategoriesComponent implements OnInit, OnDestroy{
         })
     }
 
+    onDeleteCategoryGroup(id: number): void {
+        const dialogRef = this.dialog.open(ConfirmationDialog);
+        dialogRef.afterClosed().subscribe((result: boolean) => {
+            if(result) {
+                this.categoryGroupService.delete(id).subscribe({
+                    next: () => {
+                        this.categoryGroups.set(this.categoryGroups().filter(c => c.id !== id));
+                        this.getAllCategories();
+                        this.selectedCategoryGroup.set(null);
+                        this.snackbar.success('Успешно е избришана групата на категории');
+                    },
+                    error: (error: HttpErrorResponse) => {
+                        this.snackbar.error(error.message);
+                    }
+                });
+            }
+        })
+    }
+
     onUpdateCategoryGroup(): void {
 
     }
@@ -115,14 +146,21 @@ export class CategoriesComponent implements OnInit, OnDestroy{
             this.selectedCategoryGroup.set(null);
             return;
         }
+        this.getCategoriesByGroupId(id);
+    }
+
+    onSearchCategory(term: string){
+        this.searchTerm.set(term);
+    }
+
+    private getCategoriesByGroupId(id: number): void {
         this.categoryGroupService.getById(id).subscribe({
             next: (result: CategoryGroup) => {
                 this.categories.set(result.categories.map(c => {
-                    console.log('img: ', c.image);
                     return {
                         id: c.id,
                         name: c.name,
-                        image: 'data:image/png;base64,' + c.image,
+                        image: this.imageService.getImageUrl(c.image),
                         description: c.description
                     } as Category;
                 }));
@@ -135,19 +173,15 @@ export class CategoriesComponent implements OnInit, OnDestroy{
         })
     }
 
-    onSearchCategory(term: string){
-        this.searchTerm.set(term);
-    }
-
     private getAllCategories(): void {
         const searchFilter: SearchTerm[] = this.filterData.createSearchTermFilter(this.searchTerm(), ['name'])
-        this.categoryService.getAll(searchFilter).subscribe({
+        this.categoryService.getAll().subscribe({
             next: (result: Page<Category>) => {
                 this.categories.set(result.data.map(c => {
                     return {
                         id: c.id,
                         name: c.name,
-                        image: URL.createObjectURL(c.image),
+                        image: this.imageService.getImageUrl(c.image),
                         description: c.description
                     } as Category;  
                 }));

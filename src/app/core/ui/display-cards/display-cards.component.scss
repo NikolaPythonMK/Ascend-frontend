@@ -2,7 +2,7 @@
 
 .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 350px)); /* Flexible columns */
+    grid-template-columns: repeat(auto-fit, 270px);
     gap: 16px; /* Space between cards */
     padding: 16px;
     .card {
@@ -10,6 +10,7 @@
         transition: 0.3s ease, transform 0.2s ease;
         .title {
             text-align: center;
+            font-size: 1.6rem;
             color: vars.$primary-font-color;
         }
         .title-container {

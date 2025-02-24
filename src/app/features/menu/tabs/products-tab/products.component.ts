@@ -38,7 +38,6 @@ export class ProuctsComponent implements OnInit{
         this.categoryService.getAll().subscribe({
             next: (categories: Page<Category>) => {
                 this.categories.set(categories.data);
-                console.log(categories);
             },
             error: (error: HttpErrorResponse) => {
                 console.log(error);
@@ -57,7 +56,6 @@ export class ProuctsComponent implements OnInit{
         this.productService.getAll().subscribe({
             next: (products: Page<Product>) => {
                 this.products.set(products.data);
-                console.log(this.products());
             },
             error: (error: HttpErrorResponse) => {
                 console.log(error);

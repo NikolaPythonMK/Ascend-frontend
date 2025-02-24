@@ -280,7 +280,6 @@ export class RolesComponent implements OnInit{
             )
         })).filter(group => group.permissions.length > 0); 
     
-        console.log('Grouped Permissions:', groupedPermissions);
         return groupedPermissions;
     }
 }

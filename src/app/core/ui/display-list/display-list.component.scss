@@ -9,6 +9,16 @@
     padding: .5em;
     li {
         font-size: 1.5rem;
+        .li-content {
+            display: flex;
+            justify-content: space-between;
+            .trash-btn {
+                color: red;
+            }
+            .trash-btn:hover {
+                color: rgb(141, 5, 5);
+            }
+        }
     }
     .category-element {
         box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
@@ -37,6 +47,7 @@
 
     .selected-title {
         font-weight: bold;
+        color: #6c63ff;
     }
 
     .header-li {

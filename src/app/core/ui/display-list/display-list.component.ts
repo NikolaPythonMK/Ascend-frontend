@@ -21,11 +21,13 @@ import { trigger, state, style, transition, animate } from "@angular/animations"
 export class DisplayListComponent {
     elements = input.required<ListElement[]>();
     noDataLabel = input<string>();
-    selectedEvent= output<number | null>();
+
     selectedId = signal<number | null>(null);
     isCollapsed = signal<boolean>(false);
 
+    selectedEvent= output<number | null>();
     addEvent = output<void>();
+    deleteEvent = output<number>();
 
     colors: string[] = [
         "#FF6B6B", // Soft Red
@@ -53,6 +55,10 @@ export class DisplayListComponent {
     onSelect(id: number | null): void {
         this.selectedId.set(id);
         this.selectedEvent.emit(id);
+    }
+
+    onDelete(id: number): void {
+        this.deleteEvent.emit(id);
     }
 
     onCollapse(): void {

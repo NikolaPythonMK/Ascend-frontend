@@ -22,7 +22,12 @@
             <li (click)="onSelect(element.id)" class="category-element"
                 [style.border-left]=" '10px solid ' + getBorderColor(index) "
                 [style.--border-color]="getBorderColor(index)">
-                <span [ngClass]="{'selected-title': selectedId() === element.id}">{{ element.title }}</span>
+                <div class="li-content">
+                    <span [ngClass]="{'selected-title': selectedId() === element.id}">{{ element.title }}</span>
+                    @if (selectedId() === element.id) {
+                        <mat-icon class="trash-btn" (click)="onDelete(element.id)">delete</mat-icon>
+                    }
+                </div>
             </li>  
         }
         @if (!elements().length && noDataLabel()) {

@@ -58,7 +58,6 @@ export class InputFieldComponent implements ControlValueAccessor, AfterViewInit 
   onInputChange(event: Event): void {
     const newValue = (event.target as HTMLInputElement).value;
     this.value.set(newValue);
-    console.log('newValue', newValue)
     this.onChange(newValue);
   }
 

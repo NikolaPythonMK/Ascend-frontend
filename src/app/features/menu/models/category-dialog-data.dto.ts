@@ -3,5 +3,6 @@ import { Category } from "../../../core/models/api/responses/category.model";
 
 export interface CategoryDialogData {
     categoryGroups: CategoryGroup[],
+    selectedGroupId?: number,
     category?: Category
 }

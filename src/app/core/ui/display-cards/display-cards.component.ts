@@ -14,7 +14,7 @@ export class DisplayCardsComponent implements OnInit {
     selectedId = output<number>();
 
     ngOnInit(): void {
-        console.log(this.elements());
+        console.log('cards: ', this.elements());
     }
 
     onSelect(id: number): void {

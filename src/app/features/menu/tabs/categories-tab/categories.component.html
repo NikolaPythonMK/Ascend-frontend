@@ -8,6 +8,7 @@
         <ascend-display-list [elements]="categoryGroupElements()"
                              (selectedEvent)="onSelectedCategoryGroup($event)"
                              (addEvent)="onAddGroupCategory()"
+                             (deleteEvent)="onDeleteCategoryGroup($event)"
                              noDataLabel="Create your first category group!" />
     </div>
     <div class="cards-container">
