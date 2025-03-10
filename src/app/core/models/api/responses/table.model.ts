@@ -1,3 +1,5 @@
+import { TablePosition } from "../value-objects/table-position.model";
+
 export interface Table {
     id: number,
     code: string,
@@ -5,4 +7,5 @@ export interface Table {
     totalPrice: number,
     locationID: number,
     staffUserID: number,
+    position: TablePosition
 }

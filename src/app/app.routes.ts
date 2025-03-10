@@ -23,6 +23,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/tables/tables.component').then((m) => m.TablesComponent),
             },
             {
+                path: 'tables/:table',
+                loadComponent: () => import('./features/tables/components/table/table.component').then((m) => m.TableComponent)
+            },
+            {
                 path: 'personal',
                 loadComponent: () => import('./features/staff/staff.component').then((m) => m.StaffPage)
             },

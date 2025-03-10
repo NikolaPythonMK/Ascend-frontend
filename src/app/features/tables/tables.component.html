@@ -1,3 +1,4 @@
+
 <div class="tables-header">
   <div class="left-part">
     <div class="title">{{ "tables.title" | translate }}</div>
@@ -44,12 +45,12 @@
 }
 @else {
   @if (selectedView() === 'table') {
-    <table-view [dataSource]="dataSource()" (clickedTableId)="openDialog($event)" />
+    <table-view [dataSource]="tables()" (clickedTableId)="onClickTable($event)"  />
   }
   @else if (selectedView() === 'grid') {
-    <grid-view [dataSource]="dataSource()" (clickedTableId)="openDialog($event)" />
+    <grid-view [dataSource]="tables()" (clickedTableId)="onClickTable($event)" />
   }
   @else {
-    <drag-view [dataSource]="dataSource()" />
+    <drag-view [dataSource]="tables()"  (clickedTableId)="onClickTable($event)" (updatePositionsEvent)="onUpdatePositions($event)"/>
   }
 }

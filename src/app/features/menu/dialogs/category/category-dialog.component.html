@@ -1,4 +1,4 @@
-<h2 mat-dialog-title class="dialog-title">Додади Категорија</h2>
+<h2 mat-dialog-title class="dialog-title">{{ this.title() }}</h2>
 
 <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()" class="dialog-form">
   
@@ -27,11 +27,14 @@
 
   <div class="full-width upload-container">
     <span>Прикачи слика (optional)</span>
-    <ascend-upload-image (uploadEvent)="onUpload($event)" />
+    <ascend-upload-image (uploadEvent)="onUpload($event)" [imageUrl]="data.category?.image" />
   </div>
 
   <div class="actions">
+    @if (isUpdateDialog()) {
+      <mat-icon class="trash-btn" (click)="onDelete()">delete</mat-icon>
+    }
     <button mat-button type="button" (click)="dialogRef.close()">Откажи</button>
-    <ascend-button type="primary" [label]="'Додади'" [disabled]="categoryForm.invalid" />
+    <ascend-button type="primary" [label]="submitBtnLabel()" [disabled]="categoryForm.invalid" />
   </div>
 </form>

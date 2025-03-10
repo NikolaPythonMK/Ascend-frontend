@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
@@ -13,6 +13,10 @@ import { DragViewComponent } from './components/drag-view/drag-view.component';
 import { TablesService } from '../../core/services/api/tables.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Table } from '../../core/models/api/responses/table.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SnackbarService } from '../../core/services/utility/snackbar.service';
+import { Page } from '../../core/models/api/page.model';
+import { TableRequest } from '../../core/models/api/requests/table.request';
 
 @Component({
   selector: 'ascend-tables',
@@ -33,10 +37,22 @@ import { Table } from '../../core/models/api/responses/table.model';
 export class TablesComponent implements OnInit{
   readonly dialog = inject(MatDialog);
   tablesService = inject(TablesService);
+  snackbarService = inject(SnackbarService);
   dataSource = signal<Table[]>([]);
+  tables = signal<Table[]>([]);
   selectedView = signal<string>('table');
+  readonly router = inject(Router);
+  readonly route = inject(ActivatedRoute);
+  readonly viewportScroller = inject(ViewportScroller);
 
   ngOnInit(): void {
+    this.viewportScroller.scrollToPosition([0, 0])
+    window.scrollY = 0;
+
+    const view = this.route.snapshot.queryParamMap.get('view') || 'table';
+    this.selectedView.set(view);
+
+    this.getTables();
     this.tablesService.getTables().subscribe({
       next: (tables: Table[]) => {
         this.dataSource.set(tables);
@@ -49,11 +65,6 @@ export class TablesComponent implements OnInit{
 
   openDialog(tableId: number): void {
     const table: Table = this.dataSource().find(i => i.id === tableId)!;
-    // const items: TableItem[] = tableItems.filter(i => i.tableID === table.id);
-    // const data: DialogData = {
-    //   table: table,
-    //   items: items
-    // }
     const dialogRef = this.dialog.open(TableDialogComponent, {
       data: table
     });
@@ -61,6 +72,11 @@ export class TablesComponent implements OnInit{
 
   handleViewChange(view: string): void {
     this.selectedView.set(view);
+    this.router.navigate([], {
+      queryParams: { view: this.selectedView() },
+      queryParamsHandling: 'merge',
+    });
+    
   }
 
   onSearchTerm(searchTerm: string) {
@@ -71,6 +87,41 @@ export class TablesComponent implements OnInit{
       error: (error: HttpErrorResponse) => {
         console.log(error);
       } 
+    })
+  }
+
+  onClickTable(id: number): void {
+    this.router.navigate(['/tables', id]);
+  }
+
+
+  onUpdatePositions(tables: Table[]): void {
+    const request: TableRequest[] = tables.map(i => {
+      return {
+        id: i.id,
+        code: i.code,
+        position: i.position
+      } as TableRequest
+    })
+    this.tablesService.updateTablePositions(request).subscribe({
+      next: (result: number[]) => {
+        this.snackbarService.success('Успешно')
+        this.getTables();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.snackbarService.error(error.message);
+      }
+    })
+  }
+
+  private getTables(): void {
+    this.tablesService.getAll().subscribe({
+      next: (result: Page<Table>) => {
+        this.tables.set(result.data);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.snackbarService.error(error.message);
+      }
     })
   }
 }

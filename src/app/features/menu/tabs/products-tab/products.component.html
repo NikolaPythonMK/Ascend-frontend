@@ -1,4 +1,48 @@
-<div>
+<div class="container">
+  <div class="list-container">
+    <div>
+      <form>
+        <mat-form-field>
+          <!-- <mat-label>Category Group</mat-label> -->
+          <mat-select [(ngModel)]="selectedValue" name="food">
+            <mat-option selected [value]="0" (click)="onSelectGroup(0)">Сите категории</mat-option>
+            @for (group of categoryGroups(); track group.id) {
+              <mat-option [value]="group.id" (click)="onSelectGroup(group.id)">{{group.name}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </div>
+    <ascend-display-list  [elements]="categoryListElements()"
+                          selectAllButtonLabel="Сите категории"
+                          (selectedEvent)="onSelectCategory($event)"
+                          [setDeleteButton]="false"
+                          [setSelectAllButton]="false" />
+  </div>
+  <div class="cards-container">
+    <div class="cards-header">
+      <div class="left-part">
+          @if (selectedCategory()){
+              <span class="categories-title">{{ selectedCategory()!.name }}</span>
+          }@else {
+              <span class="categories-title">Сите продукти</span>
+          }
+          <ascend-header-counter [value]="products().length" />
+      </div>
+      <div class="right-part">
+          <button mat-fab extended color="ascend" class="add-category-btn" (click)="onAddProduct()">
+              <mat-icon>add</mat-icon>
+              Продукт
+          </button>
+
+          <ascend-search-bar (onSearchTerm)="onSearchProducts($event)" />
+      </div>
+  </div>
+  <ascend-display-cards  [elements]="productCards()" />   
+  </div>
+</div>
+
+<!-- <div>
     <div class="header">
         <div>
             <span class="title">Продукти</span>
@@ -55,13 +99,9 @@
                       </mat-card-header>
                     <mat-card-content>
                     </mat-card-content>
-                    <!-- <mat-card-actions>
-                      <button mat-button>LIKE</button>
-                      <button mat-button>SHARE</button>
-                    </mat-card-actions> -->
                   </mat-card>
                   
             }
         </div>
     </div>
-</div>
+</div> -->

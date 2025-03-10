@@ -32,6 +32,10 @@
         "column-price": "Total",
         "status-available": "Available",
         "status-occupied": "Occupied",
+        "status": {
+            "Available": "Available",
+            "Occupied": "Occupied"
+        },
         "no-tables-first-part": "You currently have no tables entered in the system.",
         "no-tables-second-part": "Click",
         "no-tables-third-part": "here",

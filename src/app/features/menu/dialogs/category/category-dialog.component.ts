@@ -1,8 +1,8 @@
 import { CommonModule } from "@angular/common";
-import { Component, inject, OnInit, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from "@angular/core";
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
@@ -20,10 +20,14 @@ import { CategoriesService } from "../../../../core/services/api/categories.serv
 import { HttpErrorResponse } from "@angular/common/http";
 import { SnackbarService } from "../../../../core/services/utility/snackbar.service";
 import type { CategoryDialogData } from "../../models/category-dialog-data.dto";
+import { ConfirmationDialog } from "../../../../core/ui/confirmation-dialog/confirmation-dialog.component";
+import { Observable } from "rxjs";
+import { ImageService } from "../../../../core/services/utility/image.service";
 
 
 @Component({
-    imports: [CommonModule,
+    imports: [
+    CommonModule,
     MatCardModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -34,16 +38,20 @@ import type { CategoryDialogData } from "../../models/category-dialog-data.dto";
     MatChipsModule,
     UploadImageComponent,
     MatCheckboxModule,
-    ButtonComponent],
+    ButtonComponent
+    ],
     templateUrl: 'category-dialog.component.html',
-    styleUrls: ['category-dialog.component.scss']
+    styleUrls: ['category-dialog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CategoryDialog implements OnInit{
     readonly dialogRef = inject(MatDialogRef<CategoryDialog>);
     readonly data = inject<CategoryDialogData>(MAT_DIALOG_DATA);
+    readonly dialog = inject(MatDialog);
     readonly fb = inject(FormBuilder);
     readonly categoryService = inject(CategoriesService);
     readonly snackbar = inject(SnackbarService);
+    readonly imageService = inject(ImageService);
 
     categoryForm = this.fb.group({
         name: ['', Validators.required],
@@ -52,6 +60,9 @@ export class CategoryDialog implements OnInit{
         selectedCategoryGroup: ['']
     })
     staffUser: any;
+    isUpdateDialog = signal<boolean>(false);
+    title = signal<string>('Додади Категорија');
+    submitBtnLabel = signal<string>('Додади');
 
     ngOnInit(): void {
         if (this.data.selectedGroupId) {
@@ -69,6 +80,9 @@ export class CategoryDialog implements OnInit{
         if(category.categoryGroupId){
             this.getSelectedCategoryGroup().setValue(category.categoryGroupId);
         }
+        this.isUpdateDialog.set(true);
+        this.title.set('Ажурирај Категорија')
+        this.submitBtnLabel.set('Ажурирај');
     }
 
     getNameControl(): AbstractControl {
@@ -89,6 +103,7 @@ export class CategoryDialog implements OnInit{
 
     onUpload(event: Image): void {
         this.getImageControl().setValue(event.url);
+        console.log(this.getImageControl().value);
     }
 
     onSubmit() {
@@ -104,22 +119,43 @@ export class CategoryDialog implements OnInit{
         form.append("image", blob);
         form.append("categoryGroupId", this.getSelectedCategoryGroup().value);
 
-        // const request: CategoryRequest = {
-        //     name: this.getNameControl().value,
-        //     description: this.getDescriptionControl().value,
-        //     image: this.getImageControl().value,
-        //     categoryGroup: this.getSelectedCategoryGroup().value
-        // }
+        console.log(this.getImageControl().value);
 
-        this.categoryService.add(form).subscribe({
-            next: (result: Category) => {
-                this.snackbar.success('Успешно е додадена категоријата');
+        this.isUpdateDialog() && form.append("id", String(this.data.category!.id));
+
+        const action$ = this.isUpdateDialog() ?
+            this.categoryService.update(form) :
+            this.categoryService.add(form);
+
+        this.handleRequest<Category>(
+            action$,
+            'Успешно е додадена категоријата'
+        );
+    }
+
+    onDelete(): void {
+        const dialogRef = this.dialog.open(ConfirmationDialog);
+        dialogRef.afterClosed().subscribe((result: boolean) => {
+            if(!result) {
+                return;
+            }
+            this.handleRequest<number>(
+                this.categoryService.delete(this.data.category!.id),
+                'Категоријата е успешно избришана'
+            )            
+        })
+    }
+
+    private handleRequest<T>(request$: Observable<T>, successMessage: string): void {
+        request$.subscribe({
+            next: (result: T) => {
+                this.snackbar.success(successMessage);
                 this.dialogRef.close(result);
             },
             error: (error: HttpErrorResponse) => {
                 this.snackbar.error(error.message);
                 this.dialogRef.close();
             }
-        })
+        });
     }
 }

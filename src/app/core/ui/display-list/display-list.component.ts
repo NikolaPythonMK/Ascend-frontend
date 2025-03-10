@@ -21,6 +21,11 @@ import { trigger, state, style, transition, animate } from "@angular/animations"
 export class DisplayListComponent {
     elements = input.required<ListElement[]>();
     noDataLabel = input<string>();
+    setAddButton = input<boolean>(false);
+    setDeleteButton = input<boolean>(true);
+    setSelectAllButton = input<boolean>(true);
+    addButtonLabel = input<string>('');
+    selectAllButtonLabel = input<string>('');
 
     selectedId = signal<number | null>(null);
     isCollapsed = signal<boolean>(false);

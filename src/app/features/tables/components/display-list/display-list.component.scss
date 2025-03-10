@@ -1,0 +1,15 @@
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    li {
+        
+        // background-color: #acacac;
+        background: linear-gradient(135deg, #6c63ff, #a29bfe);
+        color: #fff;
+        padding: 1.5em;
+        margin-bottom: .5em;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+}

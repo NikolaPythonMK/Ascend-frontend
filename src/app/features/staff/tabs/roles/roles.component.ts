@@ -31,7 +31,15 @@ interface UpdatedPermission {
 
 @Component({
     selector: 'roles-component',
-    imports: [TranslateModule, ButtonComponent, MatTableModule, CommonModule, MatCheckboxModule, FormsModule, MatIconModule, InputFieldComponent, ReactiveFormsModule, ConfirmationDialog],
+    imports: [TranslateModule,
+              ButtonComponent,
+              MatTableModule,
+              CommonModule,
+              MatCheckboxModule,
+              FormsModule,
+              MatIconModule,
+              InputFieldComponent,
+              ReactiveFormsModule],
     templateUrl: 'roles.component.html',
     styleUrls: ['roles.component.scss']
 })
@@ -70,20 +78,6 @@ export class RolesComponent implements OnInit{
 
     onAddRole(): void {
         this.toggleAddRole.set(!this.toggleAddRole());
-        // const dialogRef = this.dialog.open(RolesDialog);
-        // dialogRef.afterClosed().subscribe((result: AddRoleRequest) => {
-        //     if(!result) {
-        //         return;
-        //     }
-        //     this.rolesService.addRole(result).subscribe({
-        //         next: () => {
-        //             this.getRoles();
-        //         },
-        //         error: (error: HttpErrorResponse) => {
-        //             this.snackbarService.error(error.message);
-        //         }
-        //     })
-        // })
     }
 
     onSubmitRole(): void {
@@ -183,23 +177,6 @@ export class RolesComponent implements OnInit{
 
             // check only the selectedRole checked checkboxes and empty the updatedPermissions
         }
-
-        // if (checkbox.checked) {
-        //     groupPermission.permissions.forEach(i => {
-        //         this.updatedPermissions = this.updatedPermissions.filter(p => p.permissionId !== i.id);
-        //         this.updatedPermissions.push({permissionId: i.id, isChecked: true});
-        //     })
-        // }
-        // else {
-        //     groupPermission.permissions.forEach(i => {
-        //         this.updatedPermissions = this.updatedPermissions.filter(p => p.permissionId !== i.id);
-        //         this.updatedPermissions.push({permissionId: i.id, isChecked: false});
-        //     })
-        // }
-
-        // this.updatedPermissions.forEach(i => {
-        //     this.checkboxes.find(c => c.value === i.permissionId.toString())!.checked = i.isChecked
-        // })
     }
 
     hasPermission(permission: Permission): boolean {

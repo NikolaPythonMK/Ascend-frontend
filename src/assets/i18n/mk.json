@@ -32,6 +32,10 @@
         "column-price": "Вкупно",
         "status-available": "Слободна",
         "status-occupied": "Зафатена",
+        "status": {
+            "Available": "Слободна",
+            "Occupied": "Зафатена"
+        },
         "no-tables-first-part": "Моментално немате внесено маси во системот.",
         "no-tables-second-part": "Кликнете",
         "no-tables-third-part": "тука",

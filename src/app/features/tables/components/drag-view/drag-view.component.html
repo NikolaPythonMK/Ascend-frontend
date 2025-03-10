@@ -1,10 +1,48 @@
-<!-- <div class="restaurant-layout">
-    <div *ngFor="let table of dataSource()" 
-         cdkDrag
-         [cdkDragFreeDragPosition]="{x: table.x!, y: table.y!}"
-         (cdkDragEnded)="onDragEnd($event, table)"
-         class="table">
-      {{ table.name }}
-    </div>
+<div class="container">
+  <div class="update-buttons">
+    @if (isUpdateMode()) {
+      <ascend-button type="secondary" label="Reset" icon="undo" class="reset-btn" (clickEvent)="onReset()"/>
+      <ascend-button
+        (clickEvent)="onUpdatePositions()"
+        class="update-btn"
+        type="primary" 
+        label="Save" 
+        icon="save" 
+      />
+    } @else {
+      <ascend-button type="primary" label="Edit" icon="edit_square" (clickEvent)="handleUpdateMode()" />
+    }
   </div>
-   -->
+@for (table of tables(); track table.id) {
+  @if (isUpdateMode()) {
+      <div cdkDrag
+           [cdkDragFreeDragPosition]="getDragPosition(table)"
+           (cdkDragEnded)="onDragEnd($event, table)"
+           cdkDropListSortingDisabled="false"
+           class="table"
+           [ngClass]="{'available': table.status.toString() === 'Available',
+                      'occupied': table.status.toString() === 'Occupied'}">
+        <span>{{ table.code }}</span>
+        <span class="status" [ngClass]="{'available-status': table.status.toString() === 'Available',
+                              'occupied-status': table.status.toString() === 'Occupied'}">
+            {{ 'tables.status.' + table.status | translate }}
+        </span>
+      </div>
+  }
+  @else {
+        <div class="table"
+             (click)="onClickTable(table.id)"
+             cdkDrag
+             [cdkDragFreeDragPosition]="getDragPosition(table)"
+             [cdkDragDisabled]="true"
+             [ngClass]="{'available': table.status.toString() === 'Available',
+                        'occupied': table.status.toString() === 'Occupied'}">
+            <span>{{ table.code }}</span>
+            <span class="status" [ngClass]="{'available-status': table.status.toString() === 'Available',
+                          'occupied-status': table.status.toString() === 'Occupied'}">
+                  {{ 'tables.status.' + table.status | translate }}
+            </span>
+        </div>
+  }
+}
+</div>

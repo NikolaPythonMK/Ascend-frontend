@@ -2,16 +2,17 @@
 
 .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, 270px);
-    gap: 16px; /* Space between cards */
+    grid-template-columns: repeat(auto-fit, 240px); //230
+    gap: 16px;
     padding: 16px;
     .card {
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+        border-radius: 10px;
         cursor: pointer;
         transition: 0.3s ease, transform 0.2s ease;
         .title {
             text-align: center;
             font-size: 1.6rem;
-            color: vars.$primary-font-color;
         }
         .title-container {
             display: flex;
@@ -43,5 +44,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.25);
   }
-  
+
+  mat-card img{
+    width: 100%;
+    height: 200px;
+    //object-fit: cover; // Ensures images maintain aspect ratio without stretching
+  }

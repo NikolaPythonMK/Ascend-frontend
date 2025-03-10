@@ -80,7 +80,6 @@ export class CategoriesComponent implements OnInit, OnDestroy{
                 return;
             }
 
-  
             if (this.selectedCategoryGroup()) {
                 this.getCategoriesByGroupId(this.selectedCategoryGroup()!.id);
             } else {
@@ -112,8 +111,18 @@ export class CategoriesComponent implements OnInit, OnDestroy{
             data: {
                 categoryGroups: this.categoryGroups(),
                 category,
-                
             } as CategoryDialogData
+        })
+        dialogRef.afterClosed().subscribe((result) => {
+            if (!result) {
+                return;
+            }
+
+            if (this.selectedCategoryGroup()) {
+                this.getCategoriesByGroupId(this.selectedCategoryGroup()!.id);
+            } else {
+                this.getAllCategories();
+            }
         })
     }
 
@@ -161,7 +170,9 @@ export class CategoriesComponent implements OnInit, OnDestroy{
                         id: c.id,
                         name: c.name,
                         image: this.imageService.getImageUrl(c.image),
-                        description: c.description
+                        description: c.description,
+                        categoryGroupId: c.categoryGroupId
+                        
                     } as Category;
                 }));
                 this.selectedCategoryGroup.set(result);

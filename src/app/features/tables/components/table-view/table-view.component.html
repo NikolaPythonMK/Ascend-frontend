@@ -9,23 +9,13 @@
     <tbody>
         @for (row of dataSource(); track row.id) {
             <tr (click)="handleRowClick(row.id)">
-                <td>{{ row.id }}</td>
-                @if (row.status.toString() === 'Available') {
-                    <td>
-                        <span class="available">{{ 'tables.status-available' | translate }}</span>
-                    </td>
-                }
-                @if (row.status.toString() === 'Occupied') {
-                    <td>
-                        <span class="occupied">{{ 'tables.status-occupied' | translate }}</span>
-                    </td>
-                }
-                <!-- <td><span [ngClass]="{
-                    'available': row.status.toString() === 'Available',
-                    'occupied': row.status.toString() === 'Occupied'
-                }">
-                {{ row.status }}
-            </span></td> -->
+                <td>{{ row.code }}</td>
+                <td>
+                    <span [ngClass]="{'available': row.status.toString() === 'Available',
+                                      'occupied': row.status.toString() === 'Occupied' }">
+                        {{ 'tables.status.' + row.status | translate }}
+                    </span>
+                </td>
                 <td class="price">{{ row.totalPrice }} MKD</td>
                 <td>
                     <button class="primary-button">

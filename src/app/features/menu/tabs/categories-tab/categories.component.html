@@ -9,7 +9,10 @@
                              (selectedEvent)="onSelectedCategoryGroup($event)"
                              (addEvent)="onAddGroupCategory()"
                              (deleteEvent)="onDeleteCategoryGroup($event)"
-                             noDataLabel="Create your first category group!" />
+                             noDataLabel="Create your first category group!"
+                             [setAddButton]="true"
+                             addButtonLabel="Група"
+                             selectAllButtonLabel="Сите групи" />
     </div>
     <div class="cards-container">
         <div class="cards-header">

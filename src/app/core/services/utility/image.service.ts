@@ -24,4 +24,10 @@ export class ImageService {
         const mimeType = this.getMimeType(base64);
         return `data:${mimeType};base64,${base64}`;
     }
+
+    async base64ToArrayBuffer(base64: string): Promise<ArrayBuffer> {
+        const response = await fetch(base64);
+        const blob = await response.blob();
+        return await blob.arrayBuffer();
+    }
 }

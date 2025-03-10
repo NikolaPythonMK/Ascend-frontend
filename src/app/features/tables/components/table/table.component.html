@@ -1,0 +1,98 @@
+<div class="wrapper">
+    <div class="container">
+        <div class="item item-categories">
+            <div class="item-header-categories">
+                <span class="header-label">Категории</span>
+            </div>
+            <display-list />
+        </div>
+        <div class="item item-products">
+            <div class="item-header-products">
+                <div class="search-container">
+                    <input type="text" placeholder="Пребарај продукт..." class="search-input">
+                    <button mat-icon-button class="search-btn">
+                      <mat-icon>search</mat-icon>
+                    </button>
+                </div>
+                <div class="products">
+                    <ascend-display-cards  [elements]="cards()" />
+                </div>
+            </div>
+
+        </div>
+        <div class="item order-items-wrapper">
+            <div>
+                <div class="order-item-list-wrapper">
+                    <ul class="order-items-list">
+                        <li>
+                            <div class="order-item-container">
+                                <span>Омлет</span>
+                                <span class="quantity">
+                                    <button class="quantity-btn">+</button>
+                                    <span class="quantity-label">2</span>
+                                    <button class="quantity-btn">-</button>
+                                </span>
+                                <span>100 MKD</span>
+                                <mat-icon class="remove-order-item-btn">close</mat-icon>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="order-item-container">
+                                <!-- <span>Хамбургер</span> -->
+                                <span>Омлет</span>
+                                <span class="quantity">
+                                    <button class="quantity-btn">+</button>
+                                    <span class="quantity-label">2</span>
+                                    <button class="quantity-btn">-</button>
+                                </span>
+                                <span>100 MKD</span>
+                                <mat-icon class="remove-order-item-btn">close</mat-icon>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="order-item-container">
+                                <span>Омлет</span>
+                                <span class="quantity">
+                                    <button class="quantity-btn">+</button>
+                                    <span class="quantity-label">2</span>
+                                    <button class="quantity-btn">-</button>
+                                </span>
+                                <span>100 MKD</span>
+                                <mat-icon class="remove-order-item-btn">close</mat-icon>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="order-item-container">
+                                <span>Омлет</span>
+                                <span class="quantity">
+                                    <button class="quantity-btn">+</button>
+                                    <span class="quantity-label">2</span>
+                                    <button class="quantity-btn">-</button>
+                                </span>
+                                <span>100 MKD</span>
+                                <mat-icon class="remove-order-item-btn">close</mat-icon>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="total-price-container">
+                    <div>
+                        <span class="total-label">Вкупно</span>
+                        <span class="price-info">(ставки: x количина: y)</span>
+                    </div>
+                    <div>
+                        <span class="total-price">1250 <span class="type">MKD</span></span>
+                    </div>
+                </div>
+                <div class="transaction-container">
+                    <button class="cash-btn">Кеш</button>
+                    <button class="card-btn">Картичка</button>
+                    <button>Оделно плаќање</button>
+                </div>
+            </div>
+        </div>
+    </div>
+      
+</div>

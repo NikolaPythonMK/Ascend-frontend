@@ -51,3 +51,10 @@
   .occupied-status {
     background-color: #ff5f1f;
   }
+
+  .grid-header{
+    display: flex;
+    justify-content: space-between;
+    height: 25%;
+    top: 0%;
+  }

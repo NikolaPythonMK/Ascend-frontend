@@ -1,13 +1,32 @@
-<div class="grid-container">
+<!-- <div class="grid-container">
     @for (table of dataSource(); track table.id) {
         <div class="grid-item"
+         (click)="handleRowClick(table.id)"
          [ngClass]="{'available': table.status.toString() === 'Available',
                       'occupied': table.status.toString() === 'Occupied'}"
         >
             <span class="table-name">Table {{ table.id }}</span>
             <span class="status"
                   [ngClass]="{'available-status': table.status.toString() === 'Available',
-                'occupied-status': table.status.toString() === 'Occupied'}">{{ table.status }}</span>
+                              'occupied-status': table.status.toString() === 'Occupied'}">
+                  {{ 'tables.status.' + table.status | translate }}
+            </span>
         </div>
     }
+  </div> -->
+  <div class="grid-container">
+        <div class="grid-item occupied">
+            <span class="table-name">Table 1</span>
+            <span class="status occupied-status">
+                  {{ 'tables.status.' + 'occupied' | translate }}
+            </span>
+        </div>
   </div>
+  
+  <div class="grid-container">
+    <div class="grid-header">
+        <span class="table-name">Table 1</span>
+        <span class="status">Occupied</span>
+        <span class="status">Jovan</span>
+    </div>
+</div>

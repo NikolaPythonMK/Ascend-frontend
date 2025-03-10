@@ -11,7 +11,8 @@ const categories: Category[] = [
     description: 'Refreshing drinks',
     image: null,
     organizationID: 1,
-    categoryGroupId: 1
+    categoryGroupId: 1,
+    products: []
   },
   {
     id: 2,
@@ -19,7 +20,8 @@ const categories: Category[] = [
     description: 'Sweet treats',
     image: null,
     organizationID: 1,
-    categoryGroupId: 1
+    categoryGroupId: 1,
+    products: []
   },
   {
     id: 3,
@@ -27,7 +29,8 @@ const categories: Category[] = [
     description: 'Hearty meals',
     image: null,
     organizationID: 1,
-    categoryGroupId: 1
+    categoryGroupId: 1,
+    products: []
   },
   {
     id: 4,
@@ -35,7 +38,8 @@ const categories: Category[] = [
     description: 'All kinds of coffee',
     image: null,
     organizationID: 1,
-    categoryGroupId: 1
+    categoryGroupId: 1,
+    products: []
   }
 ];
 
@@ -170,6 +174,10 @@ const tables: Table[] = [
     totalPrice: 7.5,
     locationID: 1,
     staffUserID: 1,
+    position: {
+      x: 0,
+      y: 0
+    }
   },
   {
     id: 2,
@@ -178,6 +186,10 @@ const tables: Table[] = [
     totalPrice: 0,
     locationID: 1,
     staffUserID: 2,
+    position: {
+      x: 0,
+      y: 0
+    }
   },
   {
     id: 3,
@@ -186,6 +198,10 @@ const tables: Table[] = [
     totalPrice: 15.0,
     locationID: 1,
     staffUserID: 3,
+    position: {
+      x: 0,
+      y: 0
+    }
   },
   {
     id: 4,
@@ -194,6 +210,10 @@ const tables: Table[] = [
     totalPrice: 20.0,
     locationID: 2,
     staffUserID: 4,
+    position: {
+      x: 0,
+      y: 0
+    }
   },
 ];
 

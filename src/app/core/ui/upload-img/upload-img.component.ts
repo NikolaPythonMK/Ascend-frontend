@@ -1,4 +1,4 @@
-import { Component, output, signal } from "@angular/core";
+import { Component, input, linkedSignal, output, signal } from "@angular/core";
 import { Image } from "./models/image.model";
 
 @Component({
@@ -8,8 +8,13 @@ import { Image } from "./models/image.model";
     styleUrls: ['upload-img.component.scss']
 })
 export class UploadImageComponent {
-  imageUrl = signal<string | ArrayBuffer | null>(null);
+  imageUrlInput = input<string | ArrayBuffer | null>(null, { alias: 'imageUrl' });
+
+  imageUrl = linkedSignal(() => {
+    return this.imageUrlInput()
+  });
   fileName = signal<string>('');
+
   uploadEvent = output<Image>();
 
   preview(event: Event): void {
