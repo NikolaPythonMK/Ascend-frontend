@@ -1,24 +1,26 @@
   .grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, 170px);
+    grid-template-columns: repeat(auto-fit, 260px); //170
     gap: 10px;
     width: 100%;
     margin: 20px auto;
   }
 
-  .grid-item {
-    background-color: #4caf50;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    height: 100px;
-    border-radius: 8px;
-    cursor: pointer;
-    width: 170px; 
-    height: 115px; 
-  }
+  // .grid-item {
+  //   background-color: #4caf50;
+  //   color: white;
+  //   display: flex;
+  //   flex-direction: column;
+  //   align-items: center;
+  //   justify-content: space-evenly;
+  //   height: 100px;
+  //   border-radius: 8px;
+  //   cursor: pointer;
+  //   width: 170px; 
+  //   height: 115px; 
+  //   width: 220px;
+  //   height: 150px;
+  // }
 
   .grid-item:hover {
       transform: scale(1.05);
@@ -52,9 +54,69 @@
     background-color: #ff5f1f;
   }
 
-  .grid-header{
+ 
+
+
+
+.grid-item {
+  height: 220px;
+}
+
+.grid-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px 8px 10px;
+  .flex {
     display: flex;
-    justify-content: space-between;
-    height: 25%;
-    top: 0%;
+    align-items: center;
   }
+  ul {
+    list-style: none;
+    width: 100%;
+    li {
+      padding-bottom: 10px;
+    }
+    .plus-items {
+      padding-left: 5px;
+    }
+  }
+}
+
+.row-header {
+  font-size: .9rem;
+  font-weight: bold;
+}
+
+// .row-status {
+//   background-color: #fefeff;
+// }
+
+.item-occupied {
+  border: 2px solid #FF9999;
+}
+.item-available {
+  border: 2px solid #ace1af;
+}
+.header-occupied {
+  background-color: #FF9999;
+}
+.header-available {
+  background-color: #ace1af;
+}
+.status-occupied {
+  background-color: #FF9999 !important;
+  color: #ffffff;
+  padding: 8px;
+  border-radius: 20px;
+}
+.status-available {
+  background-color: #ace1af !important;
+  color: #ffffff;
+  padding: 8px;
+  border-radius: 20px;  
+}
+
+.light-font {
+ color: #737387;
+}

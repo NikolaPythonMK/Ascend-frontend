@@ -1,5 +1,5 @@
-<!-- <div class="grid-container">
-    @for (table of dataSource(); track table.id) {
+<div class="grid-container">
+    <!-- @for (table of dataSource(); track table.id) {
         <div class="grid-item"
          (click)="handleRowClick(table.id)"
          [ngClass]="{'available': table.status.toString() === 'Available',
@@ -12,21 +12,61 @@
                   {{ 'tables.status.' + table.status | translate }}
             </span>
         </div>
-    }
-  </div> -->
-  <div class="grid-container">
-        <div class="grid-item occupied">
-            <span class="table-name">Table 1</span>
-            <span class="status occupied-status">
-                  {{ 'tables.status.' + 'occupied' | translate }}
+    } -->
+    <div class="grid-item item-occupied">
+        <div class="grid-row header-occupied row-header">
+            <span>T5 (#803)</span>
+            <span class="flex">
+                <mat-icon>person</mat-icon>
+                <span>Nikola Nikolovski</span>
             </span>
         </div>
-  </div>
-  
-  <div class="grid-container">
-    <div class="grid-header">
-        <span class="table-name">Table 1</span>
-        <span class="status">Occupied</span>
-        <span class="status">Jovan</span>
+        <div class="grid-row row-status">
+            <span class="status-occupied">Occupied</span>
+            <span>500 MKD</span>
+        </div>
+        <div class="grid-row">
+            <ul>
+                <li><span class="light-font">1x</span> Bacon Burger</li>
+                <li><span class="light-font">1x</span> Margherita</li>
+                <li><span class="light-font">1x</span> Tuna Sandwich</li>
+                <li class="plus-items">. . . <span class="light-font">+1</span></li>
+            </ul>
+        </div>
     </div>
-</div>
+
+    @for (table of dataSource(); track table.id){
+        @if (table.status === 'Available') {
+            <div class="grid-item item-available">
+                <div class="grid-row header-available row-header">
+                    <span>T5 (#803)</span>
+                </div>
+                <div class="grid-row row-status">
+                    <span class="status-available">Available</span>
+                </div>
+            </div>
+        } @else {
+            <div class="grid-item item-occupied">
+                <div class="grid-row header-occupied row-header">
+                    <span>T5 (#803)</span>
+                    <span class="flex">
+                        <mat-icon>person</mat-icon>
+                        <span>Nikola Nikolovski</span>
+                    </span>
+                </div>
+                <div class="grid-row row-status">
+                    <span class="status-occupied">Occupied</span>
+                    <span>500 MKD</span>
+                </div>
+                <div class="grid-row">
+                    <ul>
+                        <li><span class="light-font">1x</span> Bacon Burger</li>
+                        <li><span class="light-font">1x</span> Margherita</li>
+                        <li><span class="light-font">1x</span> Tuna Sandwich</li>
+                        <li> . . .</li>
+                    </ul>
+                </div>
+            </div>            
+        }
+    }
+  </div>
