@@ -62,7 +62,7 @@
   <ascend-search-bar class="search-bar" (onSearchTerm)="onSearchTerm($event)" />
 </div>
 
-@if (dataSource().length === 0) {
+@if (tables().length === 0) {
   <div class="no-tables-message">
     <p>{{ 'tables.no-tables-first-part' | translate }}</p>
     <div>

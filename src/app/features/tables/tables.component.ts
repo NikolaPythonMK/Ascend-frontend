@@ -38,7 +38,6 @@ export class TablesComponent implements OnInit{
   readonly dialog = inject(MatDialog);
   tablesService = inject(TablesService);
   snackbarService = inject(SnackbarService);
-  dataSource = signal<Table[]>([]);
   tables = signal<Table[]>([]);
   selectedView = signal<string>('table');
   readonly router = inject(Router);
@@ -53,21 +52,6 @@ export class TablesComponent implements OnInit{
     this.selectedView.set(view);
 
     this.getTables();
-    this.tablesService.getTables().subscribe({
-      next: (tables: Table[]) => {
-        this.dataSource.set(tables);
-      },
-      error: (error: HttpErrorResponse) => {
-        console.log(error);
-      }
-    })
-  }
-
-  openDialog(tableId: number): void {
-    const table: Table = this.dataSource().find(i => i.id === tableId)!;
-    const dialogRef = this.dialog.open(TableDialogComponent, {
-      data: table
-    });
   }
 
   handleViewChange(view: string): void {
@@ -80,14 +64,7 @@ export class TablesComponent implements OnInit{
   }
 
   onSearchTerm(searchTerm: string) {
-    this.tablesService.getTables(searchTerm).subscribe({
-      next: (tables: Table[]) => {
-        this.dataSource.set(tables);
-      },
-      error: (error: HttpErrorResponse) => {
-        console.log(error);
-      } 
-    })
+
   }
 
   onClickTable(id: number): void {

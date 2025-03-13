@@ -2,9 +2,7 @@ import { Product } from "./product.model"
 
 export interface TableItem {
     id: number,
-    tableID: number,
-    product: Product
-    locationID: number,
+    product: Product, 
     quantity: number,
     totalPrice: number
 }

@@ -13,7 +13,7 @@
             </span>
         </div>
     } -->
-    <div class="grid-item item-occupied">
+    <div class="grid-item item-occupied" (click)="handleRowClick(0)"> 
         <div class="grid-row header-occupied row-header">
             <span>T5 (#803)</span>
             <span class="flex">
@@ -37,7 +37,7 @@
 
     @for (table of dataSource(); track table.id){
         @if (table.status === 'Available') {
-            <div class="grid-item item-available">
+            <div class="grid-item item-available" (click)="handleRowClick(table.id)">
                 <div class="grid-row header-available row-header">
                     <span>T5 (#803)</span>
                 </div>
@@ -46,7 +46,7 @@
                 </div>
             </div>
         } @else {
-            <div class="grid-item item-occupied">
+            <div class="grid-item item-occupied" (click)="handleRowClick(table.id)">
                 <div class="grid-row header-occupied row-header">
                     <span>T5 (#803)</span>
                     <span class="flex">

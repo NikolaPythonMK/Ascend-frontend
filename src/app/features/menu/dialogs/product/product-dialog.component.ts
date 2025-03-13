@@ -108,6 +108,7 @@ export class ProductDialog implements OnInit {
 
         form.append("name", this.getNameControl().value);
         form.append("code", this.getCodeControl().value);
+        form.append("price", this.getPriceControl().value);
         form.append("description", this.getDescriptionControl().value);
         form.append("image", blob);
         form.append("categoryId", this.getCategoryControl().value);

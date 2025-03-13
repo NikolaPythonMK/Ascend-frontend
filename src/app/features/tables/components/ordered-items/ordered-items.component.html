@@ -12,7 +12,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (item of tableItems(); track item.id; let i = $index){
+      @for (item of tableItems(); track item.product.name; let i = $index){
       <tr>
         <td>{{ i + 1 }}</td>
         <td>{{ item.product.code }}</td>

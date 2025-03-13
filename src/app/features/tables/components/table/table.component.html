@@ -4,7 +4,7 @@
             <div class="item-header-categories">
                 <span class="header-label">Категории</span>
             </div>
-            <display-list />
+            <display-list [categories]="categories()" (selectedCategoryEvent)="onSelectCategory($event)" />
         </div>
         <div class="item item-products">
             <div class="item-header-products">
@@ -15,7 +15,11 @@
                     </button>
                 </div>
                 <div class="products">
-                    <ascend-display-cards  [elements]="cards()" />
+                    @if (productCards().length) {
+                        <ascend-display-cards  [elements]="productCards()" (selectedId)="onSelectProduct($event)" />
+                    }@else {
+                        <p class="no-data-message">Нема продукти за оваа категорија</p>
+                    }
                 </div>
             </div>
 
@@ -24,6 +28,32 @@
             <div>
                 <div class="order-item-list-wrapper">
                     <ul class="order-items-list">
+                        @for (item of tableItems(); track item.id) {
+                            <li>
+                                <div class="order-item-container">
+                                    <span>{{ item.product.name }}</span>
+                                    <span class="quantity">
+                                        <button class="quantity-btn" (click)="onDecrementItemQuantity(item)">-</button>
+                                        <span class="quantity-label">{{ item.quantity }}</span>
+                                        <button class="quantity-btn" (click)="onIncrementItemQuantity(item)">+</button>
+                                    </span>
+                                    <span>{{ item.totalPrice }} MKD</span>
+                                    <mat-icon class="remove-order-item-btn" (click)="onRemoveItem(item.id)">close</mat-icon>
+                                </div>
+                            </li>
+                        }
+                        <!-- <li>
+                            <div class="order-item-container">
+                                <span>Омлет</span>
+                                <span class="quantity">
+                                    <button class="quantity-btn">+</button>
+                                    <span class="quantity-label">2</span>
+                                    <button class="quantity-btn">-</button>
+                                </span>
+                                <span>100 MKD</span>
+                                <mat-icon class="remove-order-item-btn">close</mat-icon>
+                            </div>
+                        </li>
                         <li>
                             <div class="order-item-container">
                                 <span>Омлет</span>
@@ -38,7 +68,6 @@
                         </li>
                         <li>
                             <div class="order-item-container">
-                                <!-- <span>Хамбургер</span> -->
                                 <span>Омлет</span>
                                 <span class="quantity">
                                     <button class="quantity-btn">+</button>
@@ -60,19 +89,7 @@
                                 <span>100 MKD</span>
                                 <mat-icon class="remove-order-item-btn">close</mat-icon>
                             </div>
-                        </li>
-                        <li>
-                            <div class="order-item-container">
-                                <span>Омлет</span>
-                                <span class="quantity">
-                                    <button class="quantity-btn">+</button>
-                                    <span class="quantity-label">2</span>
-                                    <button class="quantity-btn">-</button>
-                                </span>
-                                <span>100 MKD</span>
-                                <mat-icon class="remove-order-item-btn">close</mat-icon>
-                            </div>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
             </div>
@@ -80,10 +97,10 @@
                 <div class="total-price-container">
                     <div>
                         <span class="total-label">Вкупно</span>
-                        <span class="price-info">(ставки: x количина: y)</span>
+                        <span class="price-info">(ставки: {{ totalItems() }} количина: {{ totalQuantity() }})</span>
                     </div>
                     <div>
-                        <span class="total-price">1250 <span class="type">MKD</span></span>
+                        <span class="total-price">{{ this.totalPrice() }} <span class="type">MKD</span></span>
                     </div>
                 </div>
                 <div class="transaction-container">

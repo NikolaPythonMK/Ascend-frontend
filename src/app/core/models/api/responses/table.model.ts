@@ -1,4 +1,5 @@
 import { TablePosition } from "../value-objects/table-position.model";
+import { TableItem } from "./table-item.model";
 
 export interface Table {
     id: number,
@@ -7,5 +8,6 @@ export interface Table {
     totalPrice: number,
     locationID: number,
     staffUserID: number,
-    position: TablePosition
+    position: TablePosition,
+    tableItems: TableItem[]
 }
