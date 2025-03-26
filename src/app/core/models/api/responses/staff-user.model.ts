@@ -4,7 +4,7 @@ export interface StaffUser {
     id: number | null,
     code: string | null,
     name: string | null,
-    lastName?: string | null,
+    lastName: string | null,
     phoneNumber?: string | null,
     tables: Table[] | null,
     staffUserRoles: any[] | null,

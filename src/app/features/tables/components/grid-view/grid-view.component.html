@@ -1,45 +1,9 @@
 <div class="grid-container">
-    <!-- @for (table of dataSource(); track table.id) {
-        <div class="grid-item"
-         (click)="handleRowClick(table.id)"
-         [ngClass]="{'available': table.status.toString() === 'Available',
-                      'occupied': table.status.toString() === 'Occupied'}"
-        >
-            <span class="table-name">Table {{ table.id }}</span>
-            <span class="status"
-                  [ngClass]="{'available-status': table.status.toString() === 'Available',
-                              'occupied-status': table.status.toString() === 'Occupied'}">
-                  {{ 'tables.status.' + table.status | translate }}
-            </span>
-        </div>
-    } -->
-    <div class="grid-item item-occupied" (click)="handleRowClick(0)"> 
-        <div class="grid-row header-occupied row-header">
-            <span>T5 (#803)</span>
-            <span class="flex">
-                <mat-icon>person</mat-icon>
-                <span>Nikola Nikolovski</span>
-            </span>
-        </div>
-        <div class="grid-row row-status">
-            <span class="status-occupied">Occupied</span>
-            <span>500 MKD</span>
-        </div>
-        <div class="grid-row">
-            <ul>
-                <li><span class="light-font">1x</span> Bacon Burger</li>
-                <li><span class="light-font">1x</span> Margherita</li>
-                <li><span class="light-font">1x</span> Tuna Sandwich</li>
-                <li class="plus-items">. . . <span class="light-font">+1</span></li>
-            </ul>
-        </div>
-    </div>
-
     @for (table of dataSource(); track table.id){
         @if (table.status === 'Available') {
             <div class="grid-item item-available" (click)="handleRowClick(table.id)">
                 <div class="grid-row header-available row-header">
-                    <span>T5 (#803)</span>
+                    <span>{{ table.code }}</span>
                 </div>
                 <div class="grid-row row-status">
                     <span class="status-available">Available</span>
@@ -48,22 +12,24 @@
         } @else {
             <div class="grid-item item-occupied" (click)="handleRowClick(table.id)">
                 <div class="grid-row header-occupied row-header">
-                    <span>T5 (#803)</span>
+                    <span>{{ table.code }}</span>
                     <span class="flex">
                         <mat-icon>person</mat-icon>
-                        <span>Nikola Nikolovski</span>
+                        <span>{{ table.staffUser.name?.concat(' ', table.staffUser.lastName!)}}</span>
                     </span>
                 </div>
                 <div class="grid-row row-status">
                     <span class="status-occupied">Occupied</span>
-                    <span>500 MKD</span>
+                    <span>{{ table.totalPrice }} MKD</span>
                 </div>
                 <div class="grid-row">
                     <ul>
-                        <li><span class="light-font">1x</span> Bacon Burger</li>
-                        <li><span class="light-font">1x</span> Margherita</li>
-                        <li><span class="light-font">1x</span> Tuna Sandwich</li>
-                        <li> . . .</li>
+                        @for (item of table.tableItems.slice(0, 3); track item.product.name) {
+                            <li><span class="light-font">{{ item.quantity }}x</span> {{ item.product.name }}</li>
+                        }
+                        @if (table.tableItems.length > 3) {
+                            <li class="plus-items">. . . <span class="light-font">+{{ table.tableItems.length - 3 }}</span></li>
+                        }
                     </ul>
                 </div>
             </div>            

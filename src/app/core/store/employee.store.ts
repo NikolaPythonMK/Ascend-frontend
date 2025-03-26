@@ -9,6 +9,7 @@ const initialState: StaffUser = {
     id: null,
     code: null,
     name: null,
+    lastName: null,
     tables: null,
     transactions: null,
     staffUserRoles: null
@@ -21,6 +22,7 @@ export const EmployeeStore = signalStore(
     withMethods(
         (store) => ({
             setEmployee(employee: StaffUser) {
+                console.log(employee);
                 patchState(store, employee);
             },
             hasEmployee(): StaffUser | null {
@@ -31,6 +33,7 @@ export const EmployeeStore = signalStore(
                     id: store.id(),
                     code: store.code(),
                     name: store.name(),
+                    lastName: store.lastName(),
                     tables: store.tables(),
                     transactions: store.transactions(),
                     staffUserRoles: store.staffUserRoles()
@@ -42,6 +45,9 @@ export const EmployeeStore = signalStore(
             hasPermission() {
                 // sends the code to the backend?
             },
+            getFullname() {
+                return store.name() + ' ' + (store.lastName() ?? '');
+            }
         })
     )
 )
