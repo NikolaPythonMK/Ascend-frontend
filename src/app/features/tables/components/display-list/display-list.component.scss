@@ -2,20 +2,26 @@ ul {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
     li {
         background: linear-gradient(135deg, #6c63ff, #a29bfe);
         color: #fff;
-        padding: 1.5em;
-        margin-bottom: .5em;
+        width: 10em;
+        padding: .5em;
         font-size: 1.2rem;
         text-align: center;
+        align-content: center;
+        align-items: center;
         cursor: pointer;
+        border-radius: 1.5em;
         // transition: background 0.3s ease, transform 0.2s ease;
 
-        // &:hover {
-        //     background: linear-gradient(135deg, #5a52e0, #8d84ff);
-        //     transform: scale(1.05);
-        // }
+        &:hover {
+            background: linear-gradient(135deg, #5a52e0, #8d84ff);
+            transform: scale(1.05);
+        }
     }
     .selected-li {
         background: linear-gradient(135deg, #ff8a00, #ff3d00); // Different color for selection

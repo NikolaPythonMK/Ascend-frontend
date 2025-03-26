@@ -1,19 +1,16 @@
 <div class="wrapper">
+    <div class="item item-categories">
+        <display-list [categories]="categories()" (selectedCategoryEvent)="onSelectCategory($event)" />
+    </div>
     <div class="container">
-        <div class="item item-categories">
-            <div class="item-header-categories">
-                <span class="header-label">Категории</span>
-            </div>
-            <display-list [categories]="categories()" (selectedCategoryEvent)="onSelectCategory($event)" />
-        </div>
         <div class="item item-products">
             <div class="item-header-products">
-                <div class="search-container">
+                <!-- <div class="search-container">
                     <input type="text" placeholder="Пребарај продукт..." class="search-input">
                     <button mat-icon-button class="search-btn">
                       <mat-icon>search</mat-icon>
                     </button>
-                </div>
+                </div> -->
                 <div class="products">
                     @if (productCards().length) {
                         <ascend-display-cards  [elements]="productCards()" (selectedId)="onSelectProduct($event)" />

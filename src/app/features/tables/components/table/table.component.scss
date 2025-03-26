@@ -7,12 +7,14 @@
 .container {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 3fr 2fr;
+    grid-template-columns: 4fr 2fr;
     gap: 10px;
   }
   
   .item {
     border: 1px solid #ccc;
+    align-items: center;
+    align-content: center;
     // box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
   }
@@ -23,7 +25,7 @@
 //   }
 
   .item-categories {
-    padding: 10px;
+    padding: 2em;
   }
   
 
