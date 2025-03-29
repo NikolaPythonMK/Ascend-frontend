@@ -19,11 +19,12 @@ import { TableItem } from "../../../../core/models/api/responses/table-item.mode
 import { TableItemRequest } from "../../../../core/models/api/requests/table-item.request";
 import { EmployeeStore } from "../../../../core/store/employee.store";
 import { TableItemsService } from "../../../../core/services/api/table-items.service";
+import { SearchBarComponent } from "../../../../core/ui/search-bar/search-bar.component";
 
 
 @Component({
     selector: 'table',
-    imports: [DisplayListComponent, MatFormFieldModule, MatLabel, MatIconModule, DisplayCardsComponent],
+    imports: [DisplayListComponent, MatFormFieldModule, MatLabel, MatIconModule, DisplayCardsComponent, SearchBarComponent],
     templateUrl: 'table.component.html',
     styleUrls: ['table.component.scss']
 })

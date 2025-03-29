@@ -5,12 +5,14 @@
     <div class="container">
         <div class="item item-products">
             <div class="item-header-products">
-                <!-- <div class="search-container">
-                    <input type="text" placeholder="Пребарај продукт..." class="search-input">
-                    <button mat-icon-button class="search-btn">
-                      <mat-icon>search</mat-icon>
-                    </button>
-                </div> -->
+                <div class="search-wrapper">
+                    <div class="search-container">
+                        <input type="text" placeholder="Пребарај продукт..." class="search-input">
+                        <button mat-icon-button class="search-btn">
+                        <mat-icon class="search-icon">search</mat-icon>
+                        </button>
+                    </div>
+                </div>
                 <div class="products">
                     @if (productCards().length) {
                         <ascend-display-cards  [elements]="productCards()" (selectedId)="onSelectProduct($event)" />
@@ -39,54 +41,6 @@
                                 </div>
                             </li>
                         }
-                        <!-- <li>
-                            <div class="order-item-container">
-                                <span>Омлет</span>
-                                <span class="quantity">
-                                    <button class="quantity-btn">+</button>
-                                    <span class="quantity-label">2</span>
-                                    <button class="quantity-btn">-</button>
-                                </span>
-                                <span>100 MKD</span>
-                                <mat-icon class="remove-order-item-btn">close</mat-icon>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="order-item-container">
-                                <span>Омлет</span>
-                                <span class="quantity">
-                                    <button class="quantity-btn">+</button>
-                                    <span class="quantity-label">2</span>
-                                    <button class="quantity-btn">-</button>
-                                </span>
-                                <span>100 MKD</span>
-                                <mat-icon class="remove-order-item-btn">close</mat-icon>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="order-item-container">
-                                <span>Омлет</span>
-                                <span class="quantity">
-                                    <button class="quantity-btn">+</button>
-                                    <span class="quantity-label">2</span>
-                                    <button class="quantity-btn">-</button>
-                                </span>
-                                <span>100 MKD</span>
-                                <mat-icon class="remove-order-item-btn">close</mat-icon>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="order-item-container">
-                                <span>Омлет</span>
-                                <span class="quantity">
-                                    <button class="quantity-btn">+</button>
-                                    <span class="quantity-label">2</span>
-                                    <button class="quantity-btn">-</button>
-                                </span>
-                                <span>100 MKD</span>
-                                <mat-icon class="remove-order-item-btn">close</mat-icon>
-                            </div>
-                        </li> -->
                     </ul>
                 </div>
             </div>

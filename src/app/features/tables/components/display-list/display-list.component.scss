@@ -1,12 +1,23 @@
 ul {
     list-style: none;
-    padding: 0;
+    padding-bottom: .5em;
     margin: 0;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
+    justify-content: flex-start;  /* Align to the left, space evenly */
+    overflow-x: auto;  /* Enable horizontal scrolling */
+    gap: 1em;  /* Add spacing between the items */
+    -webkit-overflow-scrolling: touch;
+
+    -ms-overflow-style: none; 
+    scrollbar-width: none;  
+    
+    ::-webkit-scrollbar {
+        display: none;  
+    }
+
+
     li {
-        background: linear-gradient(135deg, #6c63ff, #a29bfe);
+        background-color: #89AC46;  /* A solid green color for better visibility */
         color: #fff;
         width: 10em;
         padding: .5em;
@@ -16,15 +27,17 @@ ul {
         align-items: center;
         cursor: pointer;
         border-radius: 1.5em;
-        // transition: background 0.3s ease, transform 0.2s ease;
+        flex-shrink: 0;  /* Prevent shrinking of list items */
+        transition: background-color 0.3s ease, transform 0.2s ease;
 
         &:hover {
-            background: linear-gradient(135deg, #5a52e0, #8d84ff);
+            background-color: #89AC46;  /* Darker green on hover */
             transform: scale(1.05);
         }
     }
+
     .selected-li {
-        background: linear-gradient(135deg, #ff8a00, #ff3d00); // Different color for selection
+        background-color: #ff5722;  /* A bright red color for selection */
         color: white;
         font-weight: bold;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
