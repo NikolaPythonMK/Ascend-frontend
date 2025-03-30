@@ -93,7 +93,7 @@
   }
   .test {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 250px); /* Use fixed column widths */
+    grid-template-columns: repeat(auto-fill, 200px); /* Use fixed column widths */
     justify-content: center;
     gap: 15px;
     width: 100%;  /* Ensure the container takes up full width */
@@ -101,8 +101,8 @@
 }
 
 .test-card {
-    width: 250px;  /* Ensure fixed width for the cards */
-    height: 250px; /* You can define a height if needed, to maintain consistency */
+    width: 200px;  /* Ensure fixed width for the cards */
+    height: 200px; /* You can define a height if needed, to maintain consistency */
     box-sizing: border-box;  /* Include padding and borders in the width calculation */
     overflow: hidden;  /* Prevent any content from overflowing */
     display: flex;

@@ -1,9 +1,9 @@
 <div class="wrapper">
-    <div class="item item-categories">
+    <!-- <div class="item-categories">
         <display-list [categories]="categories()" (selectedCategoryEvent)="onSelectCategory($event)" />
-    </div>
+    </div> -->
     <div class="container">
-        <div class="item item-products">
+        <!-- <div class="item item-products">
             <div class="item-header-products">
                 <div class="search-wrapper">
                     <div class="search-container">
@@ -21,29 +21,75 @@
                     }
                 </div>
             </div>
-
+        </div> -->
+        <div class="left-part">
+            <div class="item-categories">
+                <display-list [categories]="categories()" (selectedCategoryEvent)="onSelectCategory($event)" />
+            </div>
+            <div class="item-products">
+                <div class="item-header-products">
+                    <div class="search-wrapper">
+                        <div class="search-container">
+                            <input type="text" placeholder="Пребарај продукт..." class="search-input">
+                            <button mat-icon-button class="search-btn">
+                            <mat-icon class="search-icon">search</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="products">
+                        @if (productCards().length) {
+                            <ascend-display-cards  [elements]="productCards()" (selectedId)="onSelectProduct($event)" />
+                        }@else {
+                            <p class="no-data-message">Нема продукти за оваа категорија</p>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="item order-items-wrapper">
-            <div>
-                <div class="order-item-list-wrapper">
+        <div class="order-items-wrapper">
+            <div class="table-items-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Qty</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(item of tableItems(); track item.id) {
+                            <tr>
+                                <td>{{ item.product.name }}</td>
+                                <td>{{ item.product.code }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ item.totalPrice }}</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+                <!-- <div class="order-item-list-wrapper">
                     <ul class="order-items-list">
                         @for (item of tableItems(); track item.id) {
                             <li>
                                 <div class="order-item-container">
-                                    <span>{{ item.product.name }}</span>
-                                    <span class="quantity">
-                                        <button class="quantity-btn" (click)="onDecrementItemQuantity(item)">-</button>
-                                        <span class="quantity-label">{{ item.quantity }}</span>
-                                        <button class="quantity-btn" (click)="onIncrementItemQuantity(item)">+</button>
-                                    </span>
-                                    <span>{{ item.totalPrice }} MKD</span>
-                                    <mat-icon class="remove-order-item-btn" (click)="onRemoveItem(item.id)">close</mat-icon>
+                                    <span class="order-item-title order-item-text-bold">{{ item.product.name }}</span>
+                                    <div class="order-per-and-total-price">
+                                        <div class="order-item-price-per-item">
+                                            <span class="order-item-text-bold">{{ item.quantity }}.00</span>
+                                            <span>&nbsp; X &nbsp;</span>
+                                            <span>{{ item.product.price }} MKD</span>
+                                        </div>
+                                        <div class="order-item-total-price">
+                                            <span class="order-item-text-bold">{{ item.totalPrice }} MKD</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </li>
                         }
                     </ul>
-                </div>
-            </div>
+                </div> -->
             <div class="footer">
                 <div class="total-price-container">
                     <div>

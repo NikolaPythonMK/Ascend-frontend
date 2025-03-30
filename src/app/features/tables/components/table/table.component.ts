@@ -23,7 +23,7 @@ import { SearchBarComponent } from "../../../../core/ui/search-bar/search-bar.co
 
 
 @Component({
-    selector: 'table',
+    selector: 'table-items',
     imports: [DisplayListComponent, MatFormFieldModule, MatLabel, MatIconModule, DisplayCardsComponent, SearchBarComponent],
     templateUrl: 'table.component.html',
     styleUrls: ['table.component.scss']

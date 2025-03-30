@@ -1,39 +1,28 @@
 .wrapper {
     width: 88vw;
-    overflow-y: auto;
-    overflow: visible;
+    //overflow-y: auto;
+    //overflow: visible;
+    overflow-y: hidden;
 }
 
 .container {
     width: 100%;
-    display: grid;
-    grid-template-columns: 4fr 2fr;
-    gap: 10px;
+    display: flex;
+    overflow-y: hidden;
   }
   
-  .item {
-    border: 1px solid #ccc;
-    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
-  }
 
 
   .item-categories {
-    padding: 2em;
+    padding: 0 2.2em 1.5em 2.2em;
   }
   
 
-.item-header-categories {
+ .left-part {
     display: flex;
-    justify-content: center;
-    margin-bottom: 1em;
-    .header-label {
-        text-align: center;
-        width: 80%;
-        padding: .5em;
-        font-size: 1.3rem;
-        border-bottom: 3px solid #ccc;
-    }
-} 
+    flex-direction: column;
+    width: 70%;
+ } 
 
 .item-header-products {
     .search-wrapper{
@@ -81,14 +70,36 @@
       }
       
 }
+.order-items-list{
+    border-left: 3px solid #89AC46;
+    .order-item-title{
+        width: 100%;
+        color:#89AC46;
+    }
+    .order-item-price-per-item{
+        display: flex;
+        margin-left: 2em;
+    }
+}
+
+.order-per-and-total-price{
+    display: flex;
+    justify-content: space-around;
+}
+
+.order-item-text-bold{
+    font-weight: bold;
+
+}
 
 .order-items-list {
     margin: 0px;
     list-style: none;
     li {
         font-size: 1.2rem;
-        padding: 2em;
-        box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
+        padding: 1em 2em;
+        
+
     }
     .quantity {
         display: flex;
@@ -108,29 +119,104 @@
         padding-right: .8em;
     }
     .order-item-container {
-        // display: grid;
-        // grid-template-columns: 3fr 1fr 1fr 1fr;
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column;
     }
     .remove-order-item-btn {
         color: red;
     }
 }
 
+
+
+
+.table-items-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+    background-color:#89AC46;
+    text-align: left;
+    font-weight: bold;
+    display: block;
+}
+
+tbody {
+    display: block;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+// tbody {
+//     max-height: 550px;
+//     overflow-y: auto;
+// }
+
+
+th, td {
+    padding: 26px 28px;
+    border-bottom: 1px solid #ddd;
+    width: 100%;
+}
+
+th:first-child, td:first-child {
+    border-left: 3px solid #89AC46;
+}
+
+th {
+    font-size: 16px;
+    color: #fff;;
+}
+
+td {
+    cursor: pointer;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+
+
+
+
 .order-items-wrapper {
+    width: 30%;
     position: sticky;
     top: 0;
     z-index: 100;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 84vh;
+    height: 90vh;
+    overflow-y: auto;
+}
+.order-item-list-wrapper{
+    height: 70%;
 }
 
 .footer {
     border-top: 3px solid #ccc;
+    height: 30%;
 
     .total-price-container {
         padding: 1em;
@@ -154,13 +240,28 @@
         padding-top: 1em;
         display: flex;
         gap: 5px;
-        width: 100%; /* Ensure container takes full width */
+        width: 100%;
         
         button {
             flex: 1;
             font-size: 1.4rem;
-            padding: .6em;
-            text-align: center; /* Ensures text is centered */
+            padding: 0.6em 1.2em;
+            text-align: center;
+            background-color: #89AC46;
+            color: white;
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+        
+        button:hover {
+            background-color: #76953D;
+        }
+        
+        button:active {
+            background-color: #5E7A30;
+            transform: scale(0.98);
         }
     }
 }
