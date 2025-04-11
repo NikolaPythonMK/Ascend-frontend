@@ -4,7 +4,6 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
-    gap: 2em;
     align-items: center;
     align-content: center;
     // .card {
@@ -93,12 +92,11 @@
   }
   .test {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 200px); /* Use fixed column widths */
-    justify-content: center;
-    gap: 15px;
+    gap: 1em;
+    grid-template-columns: repeat(auto-fill, 200px);
     width: 100%;  /* Ensure the container takes up full width */
-    margin: 20px auto;
-}
+    justify-content: center;
+  }
 
 .test-card {
     width: 200px;  /* Ensure fixed width for the cards */

@@ -3,7 +3,7 @@ ul {
     padding-bottom: .5em;
     margin: 0;
     display: flex;
-    flex-direction: column;
+    justify-content: flex-start;  /* Align to the left, space evenly */
     overflow-x: auto;  /* Enable horizontal scrolling */
     gap: 1em;  /* Add spacing between the items */
     -webkit-overflow-scrolling: touch;
@@ -17,12 +17,11 @@ ul {
 
 
     li {
-        box-sizing: border-box;
         background-color: #89AC46;  /* A solid green color for better visibility */
         color: #fff;
-        width: 95%;
-        padding: 1.1em .5em;
-        font-size: 1.3rem;
+        width: 10em;
+        padding: .5em;
+        font-size: 1.2rem;
         text-align: center;
         align-content: center;
         align-items: center;

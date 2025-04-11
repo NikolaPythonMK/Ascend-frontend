@@ -20,11 +20,12 @@ import { TableItemRequest } from "../../../../core/models/api/requests/table-ite
 import { EmployeeStore } from "../../../../core/store/employee.store";
 import { TableItemsService } from "../../../../core/services/api/table-items.service";
 import { SearchBarComponent } from "../../../../core/ui/search-bar/search-bar.component";
+import { CommonModule } from "@angular/common";
 
 
 @Component({
     selector: 'table-items',
-    imports: [DisplayListComponent, MatFormFieldModule, MatLabel, MatIconModule, DisplayCardsComponent, SearchBarComponent],
+    imports: [DisplayListComponent, MatFormFieldModule, MatLabel, MatIconModule, DisplayCardsComponent, SearchBarComponent, CommonModule],
     templateUrl: 'table.component.html',
     styleUrls: ['table.component.scss']
 })
