@@ -1,13 +1,14 @@
-import { Component, Input, signal } from "@angular/core";
+import { Component, Input, output, signal } from "@angular/core";
 import { MenuItem } from "./menu-item.model";
 import { MatListModule } from '@angular/material/list'
 import { MatIconModule } from '@angular/material/icon'
 import { RouterModule } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
+import { CountrySelectComponent } from "../country-select/country-select.component";
 
 @Component({
     selector: 'ascend-custom-navbar',
-    imports: [MatListModule, MatIconModule, RouterModule, TranslateModule],
+    imports: [MatListModule, MatIconModule, RouterModule, TranslateModule, CountrySelectComponent],
     templateUrl: 'custom-navbar.component.html',
     styleUrls: ['custom-navbar.component.scss']
 })
@@ -16,6 +17,8 @@ export class CustomNavbarComponent {
     @Input() set collapsed(val: boolean) {
         this.sideNavCollapsed.set(val);
     }
+
+    collapseEvent = output<boolean>();
 
     menuItems = signal<MenuItem[]>([
         {
@@ -59,4 +62,9 @@ export class CustomNavbarComponent {
             route: '/settings',
         },
     ])
+
+    onCollapse(): void {
+        this.sideNavCollapsed.set(!this.sideNavCollapsed());
+        this.collapseEvent.emit(this.sideNavCollapsed());
+    }
 }

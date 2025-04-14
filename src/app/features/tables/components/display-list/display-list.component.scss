@@ -33,15 +33,12 @@ ul {
 
         &:hover {
             background-color: #89AC46;  /* Darker green on hover */
-            transform: scale(1.05);
         }
     }
 
     .selected-li {
-        background-color: #ff5722;  /* A bright red color for selection */
         color: white;
         font-weight: bold;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-        transform: scale(1.05);
     }
 }

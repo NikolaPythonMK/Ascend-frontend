@@ -1,3 +1,4 @@
+<div class="countries-wrapper">
 <div class="phone-container" [class.invalid-phone]="hasError() && phoneNumberControl.touched">
     <div class="country-container" (click)="onToggleDropdown()">
       <div class="selected-country">
@@ -5,10 +6,10 @@
           [src]="'assets/images/countries/' + selectedLanguage + '.svg'"
           class="country-img"
         />
-        <mat-icon>arrow_drop_down</mat-icon>
+        <!-- <mat-icon>arrow_drop_down</mat-icon> -->
       </div>
     </div>
-  </div>
+</div>
   
   @if(toggleDropdown){
   <ul class="countries-list">
@@ -22,4 +23,5 @@
     }
   </ul>
   }
+</div>
   

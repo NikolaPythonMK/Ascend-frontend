@@ -3,10 +3,12 @@
 
     <div class="item-categories">
       <p class="categories-title">Categories</p>
+      <div class="categories">
       <display-list
         [categories]="categories()"
         (selectedCategoryEvent)="onSelectCategory($event)"
       />
+      </div>
     </div>
 
     <div class="item-products">
