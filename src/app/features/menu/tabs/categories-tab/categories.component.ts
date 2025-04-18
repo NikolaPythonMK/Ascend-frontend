@@ -105,7 +105,7 @@ export class CategoriesComponent implements OnInit, OnDestroy{
         })
     }
 
-    onUpdateCategory(id: number): void {
+    onUpdateCategory(id: any): void {
         const category = this.categories().find(c => c.id === id);
         const dialogRef = this.dialog.open(CategoryDialog, {
             data: {
