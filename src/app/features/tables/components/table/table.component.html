@@ -29,7 +29,7 @@
           @if (productCards().length) {
           <ascend-display-cards
             [elements]="productCards()"
-            (selectedId)="onSelectProduct($event)"
+            (selectedCard)="onSelectCard($event)"
           />
           }@else {
           <p class="no-data-message">Нема продукти за оваа категорија</p>

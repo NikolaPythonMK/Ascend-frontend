@@ -11,13 +11,13 @@ import { Card } from "./models/card.model";
 })
 export class DisplayCardsComponent implements OnInit {
     elements = input.required<Card[]>();
-    selectedId = output<number>();
+    selectedCard = output<any>();
 
     ngOnInit(): void {
         console.log('cards: ', this.elements());
     }
 
-    onSelect(id: number): void {
-        this.selectedId.emit(id);
+    onSelect(card: any): void {
+        this.selectedCard.emit(card);
     }
 }
