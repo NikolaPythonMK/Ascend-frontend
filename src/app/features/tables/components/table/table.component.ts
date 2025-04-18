@@ -76,17 +76,20 @@ export class TableComponent implements OnInit{
 
     onSelectCard(card: Card): void {
        const dialogRef = this.quantityDialog.open(ProductQuantityComponent, {
+            width: '400px',
             data: { card }
        })
 
-       dialogRef.afterClosed().subscribe(quantity => {
-        if (quantity != null) {
+       dialogRef.afterClosed().subscribe(result => {
+        if (result != null) {
             const request: TableItemRequest = {
                 tableID: this.tableId(),
                 productID: card.id,
                 staffUserID: this.staffStore.id()!,
-                quantity: quantity
+                quantity: result.quantity,
+                note: result.note
             }
+            console.log(result);
             this.tableItemsService.add(request).subscribe({
                 next: () => {
                     this.getTableItems();

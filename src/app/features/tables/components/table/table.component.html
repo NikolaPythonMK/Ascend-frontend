@@ -50,35 +50,35 @@
             </tr>
           </thead>
           <tbody>
-            @for(item of tableItems(); track item.id; let idx = $index) { @if
-            (idx === 0) {
-            <tr class="noted-row">
-              <td>{{ item.product.name }}</td>
-              <td>{{ item.product.code }}</td>
-              <td>{{ item.quantity }}</td>
-              <td>{{ item.totalPrice }}</td>
-            </tr>
-            } @else {
-            <tr>
-              <td>{{ item.product.name }}</td>
-              <td>{{ item.product.code }}</td>
-              <td>{{ item.quantity }}</td>
-              <td>{{ item.totalPrice }}</td>
-            </tr>
-            } @if (idx == 0) {
-            <tr class="note-row">
-              <td class="note text-muted" colspan="4">
-                <div class="note-text">
-                  <span
-                    ><mat-icon>sticky_note_2</mat-icon> Bez majonez i kromid,
-                    dodadi bukovic i origano</span
-                  >
-                </div>
-              </td>
-            </tr>
-            }@else {
-            <tr class="note-row"></tr>
-            } }
+            @for(item of tableItems(); track item.id; let idx = $index) 
+            { 
+              @if (item.note !== null && item.note !== '') {
+                <tr class="noted-row">
+                  <td>{{ item.product.name }}</td>
+                  <td>{{ item.product.code }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.totalPrice }}</td>
+                </tr>
+                } @else {
+                <tr>
+                  <td>{{ item.product.name }}</td>
+                  <td>{{ item.product.code }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.totalPrice }}</td>
+                </tr>
+              }
+
+              @if (item.note !== null && item.note !== '') {
+                <tr class="note-row" *ngIf="item.note !== null && item.note !== ''">
+                  <td class="note text-muted" colspan="4">
+                      <span class="note-text">
+                        <mat-icon class="note-icon">sticky_note_2</mat-icon>
+                        <p>{{ item.note }}</p>
+                      </span>
+                  </td>
+                </tr>
+              }
+            }
           </tbody>
         </table>
       </div>

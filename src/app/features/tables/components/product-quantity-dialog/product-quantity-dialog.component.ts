@@ -29,6 +29,7 @@ import { ProductQuantityDialogDataModel } from '../../models/product-quantity-di
   export class ProductQuantityComponent implements AfterViewInit {
     quantity: number | null = null;
     @ViewChild('qtyInput') qtyInput!: ElementRef<HTMLInputElement>;
+    @ViewChild('noteInput') noteInput!: ElementRef<HTMLInputElement>;
 
     readonly dialogRef = inject(MatDialogRef<ProductQuantityComponent>);
     readonly data = inject<ProductQuantityDialogDataModel>(MAT_DIALOG_DATA);
@@ -42,7 +43,13 @@ import { ProductQuantityDialogDataModel } from '../../models/product-quantity-di
       if (!q || q <= 0) {
         q = 1;
       }
-      this.dialogRef.close(q);
+    
+      const result = {
+        quantity: q,
+        note: this.noteInput
+      };
+    
+      this.dialogRef.close(result);
     }
   }
   

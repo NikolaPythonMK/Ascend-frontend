@@ -3,5 +3,6 @@ export interface TableItemRequest {
     quantity: number,
     productID: number,
     tableID: number,
-    staffUserID: number
+    staffUserID: number,
+    note?: string
 }
