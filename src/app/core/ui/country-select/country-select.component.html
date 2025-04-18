@@ -1,27 +1,23 @@
 <div class="countries-wrapper">
-<div class="phone-container" [class.invalid-phone]="hasError() && phoneNumberControl.touched">
-    <div class="country-container" (click)="onToggleDropdown()">
-      <div class="selected-country">
-        <img
-          [src]="'assets/images/countries/' + selectedLanguage + '.svg'"
-          class="country-img"
-        />
-        <!-- <mat-icon>arrow_drop_down</mat-icon> -->
-      </div>
-    </div>
-</div>
-  
-  @if(toggleDropdown){
-  <ul class="countries-list">
-    @for(language of languages; track language; let index = $index){
-    <li class="country-item" (click)="onSelectCountry(language)">
+  <div class="country-container" (click)="onToggleDropdown()">
+    <div class="selected-country">
       <img
-        [src]="'assets/images/countries/' + language + '.svg'"
+        [src]="'assets/images/countries/' + selectedLanguage + '.svg'"
         class="country-img"
       />
-    </li>
+    </div>
+  </div> 
+
+  @if(isCountryListOpen()){
+    <ul class="countries-list">
+      @for(language of languages; track language; let index = $index){
+      <li class="country-item" (click)="onSelectCountry(language)">
+        <img
+          [src]="'assets/images/countries/' + language + '.svg'"
+          class="country-img"
+        />
+      </li>
+      }
+    </ul>
     }
-  </ul>
-  }
 </div>
-  

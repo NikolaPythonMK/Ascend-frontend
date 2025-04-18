@@ -13,7 +13,7 @@
 }
 
 .select-country {
-    margin: auto;
+
 }
 
 .sidenav-items {
@@ -28,3 +28,27 @@
 .bottom-nav{
     padding-bottom: 30px;
 }
+
+.hamburger-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+  }
+  
+  .menu-item-placeholder {
+    flex: 1;
+  }
+  
+  .hamburger-icon {
+    cursor: pointer;
+  }
+
+  .right-align {
+    // position: relative !important;
+    // mat-icon {
+    //     position: absolute !important;
+    //     right: 5px;
+    // }
+  }
+  

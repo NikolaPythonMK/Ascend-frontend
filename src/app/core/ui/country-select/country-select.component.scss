@@ -13,15 +13,15 @@
         display: flex;
         align-items: center;
         .country-info{
-            padding-left: .5em;
+         //   padding-left: .5em;
         }
         .dropdown-arrow{
-            padding-left: .5em;
+            //padding-left: .5em;
         }
     }
     .phone-input-container {
         display: flex;
-        padding-left: .5em;
+        //padding-left: .5em;
         .phone-input {
             outline: 0;
             font-size: 1.3rem;
@@ -32,7 +32,7 @@
         .prefix {
             font-size: 1.3rem;
             color: #737387;
-            padding-bottom: 1.5px;
+           // padding-bottom: 1.5px;
         }
     }
 }
@@ -47,15 +47,16 @@
     background-color: #f4f6f8;
     display: flex;
     position: absolute;
+    left: 60px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     .country-item{
         display: flex;
         align-items: center;
         justify-content: center;
-        padding-bottom: .2em;
+        //padding-bottom: .2em;
         cursor: pointer;
         .country-info {
-            padding-left: .5em;
+            //padding-left: .5em;
         }  
     }
     .country-item:hover {
@@ -68,6 +69,8 @@
 .country-img {
     width: 40px;
     height: 40px;
+    margin-left: 10px;
+    cursor: pointer;
 }
 
 .invalid-phone {
@@ -76,14 +79,14 @@
 
 .search-countries {
   background-color: inherit;
-  width: 90%;
+ // width: 90%;
   font-size: 1rem;
   outline: 0;
   border: 0;
 }
 
 .search-item {
-  padding: .5em;
+  //padding: .5em;
   border-bottom: 1px solid #737387;
   position: relative;
 }
@@ -97,4 +100,5 @@
 .countries-wrapper{
     display: flex;
     position: relative;
+    //justify-content: center;
 }

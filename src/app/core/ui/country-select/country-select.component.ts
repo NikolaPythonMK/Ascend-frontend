@@ -13,6 +13,7 @@ import TranslationService from "../../services/utility/translation.service";
 })
 export class CountrySelectComponent {
     hasError = input(false);
+    isCountryListOpen = input(false);
     languages: string[] = environment.languages;
     toggleDropdown: boolean = false;
     selectedLanguage?: string;

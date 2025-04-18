@@ -23,7 +23,8 @@
         "revenue": "Приходи",
         "reports-analysis": "Извештаи и Анализи",
         "stock": "Залиха",
-        "settings": "Подесувања"
+        "settings": "Подесувања",
+        "logout": "Одјави се"
     },
     "tables": {
         "title": "Маси",

@@ -1,24 +1,37 @@
 <mat-nav-list class="sidenav-items">
     <div class="top-nav">
-        <a mat-list-item class="menu-item" (click)="onCollapse()">
-            <mat-icon matListItemIcon>menu</mat-icon>
+        <div class="hamburger-container">
+            <a mat-list-item class="menu-item hamburger-icon" (click)="onCollapse()" [ngClass]="{ 'right-align': !sideNavCollapsed() }">
+              <mat-icon matListItemIcon>
+                {{ sideNavCollapsed() ? 'menu' : 'menu_open' }}
+              </mat-icon>
+            </a>
+        </div>
+          
+  
+      @for (item of menuItems(); track item.icon) {
+        <a mat-list-item
+           [routerLink]="item.route"
+           routerLinkActive="selected-menu-item"
+           #rla="routerLinkActive"
+           [activated]="rla.isActive"
+           class="menu-item">
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          @if (!sideNavCollapsed()) {
+            <span matListItemTitle>{{ item.label | translate }}</span>
+          }
         </a>
-           @for (item of menuItems(); track item.icon) {
-               <a mat-list-item
-                  [routerLink]="item.route"
-                  routerLinkActive="selected-menu-item"
-                  #rla="routerLinkActive"
-                  [activated]="rla.isActive"
-                  class="menu-item">
-                   <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-                   @if (!sideNavCollapsed()){
-                       <span matListItemTitle>{{ item.label | translate }}</span>
-                   }
-               </a>
-           }
+      }
     </div>
-
+  
     <div class="bottom-nav">
-        <ascend-country-select class="select-country"/>
+      <a mat-list-item class="menu-item" (click)="logout()">
+        <mat-icon matListItemIcon>logout</mat-icon>
+        @if (!sideNavCollapsed()) {
+          <span matListItemTitle>{{ 'navbar-items.logout' | translate }}</span>
+        }
+      </a>
+      <ascend-country-select class="select-country" (click)="onLangSelect()" [isCountryListOpen]="countryListOpened()"/>
     </div>
-</mat-nav-list>
+  </mat-nav-list>
+  

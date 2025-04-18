@@ -23,7 +23,8 @@
        "revenue": "Revenue",
        "reports-analysis": "Reports & Analysis",
        "stock": "Stock",
-       "settings": "Settings"
+       "settings": "Settings",
+       "logout": "Logout"
     },
     "tables": {
         "title": "Tables",

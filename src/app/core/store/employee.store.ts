@@ -40,7 +40,7 @@ export const EmployeeStore = signalStore(
                 };
             },
             clearStore() {
-
+                patchState(store, initialState);
             },
             hasPermission() {
                 // sends the code to the backend?
