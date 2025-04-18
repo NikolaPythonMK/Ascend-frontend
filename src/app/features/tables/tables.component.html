@@ -73,6 +73,7 @@
   </div>
 }
 @else {
+  <div class="display-tables">
   @if (selectedView() === 'table') {
     <table-view [dataSource]="tables()" (clickedTableId)="onClickTable($event)"  />
   }
@@ -82,4 +83,5 @@
   @else {
     <drag-view [dataSource]="tables()"  (clickedTableId)="onClickTable($event)" (updatePositionsEvent)="onUpdatePositions($event)"/>
   }
+  </div>
 }

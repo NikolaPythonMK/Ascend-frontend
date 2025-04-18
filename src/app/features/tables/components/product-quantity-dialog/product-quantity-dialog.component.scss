@@ -1,0 +1,31 @@
+.quantity-dialog-container {
+    padding: 20px;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .quantity-dialog-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .quantity-dialog-content {
+    margin-bottom: 20px;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .custom-color{
+    background-color: #89AC46 !important;
+  }

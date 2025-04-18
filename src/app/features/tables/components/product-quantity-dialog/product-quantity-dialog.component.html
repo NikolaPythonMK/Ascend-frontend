@@ -1,0 +1,21 @@
+<div class="quantity-dialog-container">
+  <h2 class="quantity-dialog-title">{{ data.card.title }}</h2>
+
+  <mat-form-field appearance="outline" class="quantity-dialog-content full-width">
+    <mat-label>Quantity</mat-label>
+    <input
+      #qtyInput
+      matInput
+      type="number"
+      [(ngModel)]="quantity"
+      (keydown.enter)="submit()"
+      min="1"
+      placeholder="Enter Quantity"
+    />
+  </mat-form-field>
+
+  <div class="dialog-actions" mat-dialog-actions>
+    <button mat-stroked-button color="warn" (click)="dialogRef.close()">Cancel</button>
+    <button mat-flat-button color="primary" class="custom-color" (click)="submit()">OK</button>
+  </div>
+</div>

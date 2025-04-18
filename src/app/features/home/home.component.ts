@@ -18,4 +18,9 @@ import { TranslateModule } from "@ngx-translate/core";
 export class HomeComponent {
     collapsed = signal(true);
     sidenavWidth = computed(() => this.collapsed() ? '65px' : '280px');
+
+    onCollapse(isCollapsed: boolean): void {
+        console.log(isCollapsed);
+        this.collapsed.set(isCollapsed);
+    }
 }

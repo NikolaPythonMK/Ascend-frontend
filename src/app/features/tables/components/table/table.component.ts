@@ -19,11 +19,15 @@ import { TableItem } from "../../../../core/models/api/responses/table-item.mode
 import { TableItemRequest } from "../../../../core/models/api/requests/table-item.request";
 import { EmployeeStore } from "../../../../core/store/employee.store";
 import { TableItemsService } from "../../../../core/services/api/table-items.service";
+import { SearchBarComponent } from "../../../../core/ui/search-bar/search-bar.component";
+import { CommonModule } from "@angular/common";
+import { MatDialog } from "@angular/material/dialog";
+import { ProductQuantityComponent } from "../product-quantity-dialog/product-quantity-dialog.component";
 
 
 @Component({
-    selector: 'table',
-    imports: [DisplayListComponent, MatFormFieldModule, MatLabel, MatIconModule, DisplayCardsComponent],
+    selector: 'table-items',
+    imports: [DisplayListComponent, MatFormFieldModule, MatLabel, MatIconModule, DisplayCardsComponent, SearchBarComponent, CommonModule, ProductQuantityComponent],
     templateUrl: 'table.component.html',
     styleUrls: ['table.component.scss']
 })
@@ -36,6 +40,7 @@ export class TableComponent implements OnInit{
     readonly imageService = inject(ImageService);
     readonly route = inject(ActivatedRoute);
     readonly staffStore = inject(EmployeeStore);
+    readonly quantityDialog = inject(MatDialog);
 
     tableId = signal<number>(0);
     products = signal<Product[]>([]);
@@ -69,21 +74,29 @@ export class TableComponent implements OnInit{
         this.getProductsByCategory(id);
     }
 
-    onSelectProduct(id: number): void {
-        const request: TableItemRequest = {
-            tableID: this.tableId(),
-            productID: id,
-            staffUserID: this.staffStore.id()!,
-            quantity: 1
-        }
-        this.tableItemsService.add(request).subscribe({
-            next: () => {
-                this.getTableItems();
-            },
-            error: (error: HttpErrorResponse) => {
-                this.snackbarService.error(error.message);
+    onSelectCard(card: Card): void {
+       const dialogRef = this.quantityDialog.open(ProductQuantityComponent, {
+            data: { card }
+       })
+
+       dialogRef.afterClosed().subscribe(quantity => {
+        if (quantity != null) {
+            const request: TableItemRequest = {
+                tableID: this.tableId(),
+                productID: card.id,
+                staffUserID: this.staffStore.id()!,
+                quantity: quantity
             }
-        })
+            this.tableItemsService.add(request).subscribe({
+                next: () => {
+                    this.getTableItems();
+                },
+                error: (error: HttpErrorResponse) => {
+                    this.snackbarService.error(error.message);
+                }
+            })
+        }
+      });
     }
 
     onIncrementItemQuantity(item: TableItem): void {

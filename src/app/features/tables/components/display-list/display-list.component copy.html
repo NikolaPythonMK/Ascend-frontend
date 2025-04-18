@@ -1,0 +1,8 @@
+<ul>
+    <li (click)="onSelectCategory(null)">All</li>
+    @for (category of categories(); track category.id) {
+        <li (click)="onSelectCategory(category.id)" [ngClass]="{'selected-li': category.id === selectedId()}">
+            {{ category.name }}
+        </li>
+    }
+</ul>

@@ -2,16 +2,20 @@
 
 table {
     width: 100%;
-    margin: 20px auto;
+    //margin: 20px auto;
     border-collapse: collapse;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    overflow: hidden;
+    //overflow: hidden;
+    position: relative;
+    overflow-y: auto;
   }
 
   thead {
     background: linear-gradient(135deg, #6c63ff, #a29bfe);
     color: vars.$white-color;
+    position: sticky;
+    top: 0;
   }
 
   th, td {
@@ -37,7 +41,6 @@ table {
     background-color: #f1f5fc;
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-    transform: scale(1.02);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
