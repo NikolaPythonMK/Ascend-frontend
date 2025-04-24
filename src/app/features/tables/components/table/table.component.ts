@@ -23,11 +23,13 @@ import { SearchBarComponent } from "../../../../core/ui/search-bar/search-bar.co
 import { CommonModule } from "@angular/common";
 import { MatDialog } from "@angular/material/dialog";
 import { ProductQuantityComponent } from "../product-quantity-dialog/product-quantity-dialog.component";
+import { SkeletonCardComponent } from "../../../../core/ui/display-cards/skeleton-card/skeleton-card.component";
+import { finalize } from "rxjs";
 
 
 @Component({
     selector: 'table-items',
-    imports: [DisplayListComponent, MatFormFieldModule, MatLabel, MatIconModule, DisplayCardsComponent, SearchBarComponent, CommonModule, ProductQuantityComponent],
+    imports: [DisplayListComponent, MatFormFieldModule, MatLabel, MatIconModule, DisplayCardsComponent, SearchBarComponent, CommonModule, ProductQuantityComponent, SkeletonCardComponent],
     templateUrl: 'table.component.html',
     styleUrls: ['table.component.scss']
 })
@@ -41,6 +43,9 @@ export class TableComponent implements OnInit{
     readonly route = inject(ActivatedRoute);
     readonly staffStore = inject(EmployeeStore);
     readonly quantityDialog = inject(MatDialog);
+
+    productsLoading = signal<boolean>(false);
+    categoriesLoading = signal<boolean>(false);
 
     tableId = signal<number>(0);
     products = signal<Product[]>([]);
@@ -153,18 +158,26 @@ export class TableComponent implements OnInit{
     }
 
     private getAllProducts(): void {
-        this.productService.getAll().subscribe({
+        this.productsLoading.set(true);
+
+        this.productService.getAll().pipe(
+            finalize(() => this.productsLoading.set(false))
+          ).subscribe({
             next: (result: Page<Product>) => {
-                this.products.set(result.data);
+              this.products.set(result.data);
             },
             error: (error: HttpErrorResponse) => {
-                this.snackbarService.error(error.message);
+              this.snackbarService.error(error.message);
             }
-        })
+          });
     }
 
     private getProductsByCategory(id: number): void {
-        this.categoryService.getById(id).subscribe({
+        this.productsLoading.set(true);
+
+        this.categoryService.getById(id).pipe(
+            finalize(() => this.productsLoading.set(false))
+        ).subscribe({
             next: (category: Category) => {
                 this.products.set(category.products);
             },
@@ -175,7 +188,10 @@ export class TableComponent implements OnInit{
     }
 
     private getAllCategories(): void {
-        this.categoryService.getAll().subscribe({
+        this.categoriesLoading.set(true);
+        this.categoryService.getAll().pipe(
+            finalize(() => this.categoriesLoading.set(false))
+        ).subscribe({
             next: (result: Page<Category>) => {
                 this.categories.set(result.data);
             },

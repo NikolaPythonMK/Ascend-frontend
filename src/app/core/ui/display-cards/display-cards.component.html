@@ -1,28 +1,19 @@
-<!-- <div class="cards">
-    @for(element of elements(); track element.id){
-        <mat-card class="card" appearance="outlined" (click)="onSelect(element.id)">
-            <img mat-card-image [src]="element.image ?? 'assets/images/no-image-icon.png'" [alt]="element.description">
-            <mat-card-header>
-                <mat-card-title><span class="title">{{ element.title }}</span></mat-card-title>
-                @if (element.description) {
-                    <mat-card-subtitle>{{ element.description }}</mat-card-subtitle>
-                }
-              </mat-card-header>
-        </mat-card>
-    }
-</div> -->
-<div class="test">
-    @for(element of elements(); track element.id){
-        <div class="card-container">
-            <div class="test-card" appearance="outlined" (click)="onSelect(element)">
-                <img mat-card-image [src]="element.image ?? 'assets/images/no-image-icon.png'" [alt]="element.description">
+@if (true) {
+    <ascend-skeleton-card [numberOfCards]="7" />
+} @else {
+    <div class="cards-grid">
+        @for(element of elements(); track element.id){
+            <div class="card-container">
+                <div class="test-card" appearance="outlined" (click)="onSelect(element)">
+                    <img mat-card-image [src]="element.image ?? 'assets/images/no-image-icon.png'" [alt]="element.description">
+                </div>
+                <div class="card-label">
+                    <span class="label">{{ element.title }}</span>
+                </div>
+                <div class="card-price">
+                    <span class="label">30000</span>
+                </div>
             </div>
-            <div class="card-label">
-                <span class="label">{{ element.title }}</span>
-            </div>
-            <div class="card-price">
-                <span class="label">30000</span>
-            </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+}

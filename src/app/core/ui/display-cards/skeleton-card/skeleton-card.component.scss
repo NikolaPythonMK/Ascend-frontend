@@ -1,0 +1,55 @@
+/* skeleton-card.component.scss */
+.card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    width: 200px;
+    height: 200px;
+  }
+  
+  /* image placeholder: keep same aspect ratio as real image */
+  .skeleton-img {
+    width: 100%;
+    padding-top: 60%;        /* tweak to match your real-card aspect ratio */
+    background: #e0e0e0;
+  }
+  
+  /* price badge placeholder */
+  .skeleton-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 60px;
+    height: 24px;
+    border-radius: 4px;
+    background: #e0e0e0;
+  }
+  
+  /* title placeholder */
+  .skeleton-title {
+    height: 20px;
+    width: 50%;
+    margin: 12px;
+    background: #e0e0e0;
+    border-radius: 4px;
+  }
+  
+  /* shimmer animation */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      #e0e0e0 25%,
+      #f0f0f0 50%,
+      #e0e0e0 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  
+  @keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  

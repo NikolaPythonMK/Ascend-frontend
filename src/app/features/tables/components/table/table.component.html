@@ -6,6 +6,7 @@
       <div class="categories">
       <display-list
         [categories]="categories()"
+        [loading]="categoriesLoading()"
         (selectedCategoryEvent)="onSelectCategory($event)"
       />
       </div>
@@ -26,9 +27,10 @@
           </div>
         </div>
         <div class="products">
-          @if (productCards().length) {
+          @if (productCards().length || productsLoading()) {
           <ascend-display-cards
             [elements]="productCards()"
+            [loading]="productsLoading()"
             (selectedCard)="onSelectCard($event)"
           />
           }@else {

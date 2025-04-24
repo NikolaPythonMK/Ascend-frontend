@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SnackbarService } from '../../core/services/utility/snackbar.service';
 import { Page } from '../../core/models/api/page.model';
 import { TableRequest } from '../../core/models/api/requests/table.request';
+import { SkeletonCardComponent } from "../../core/ui/display-cards/skeleton-card/skeleton-card.component";
 
 @Component({
   selector: 'ascend-tables',
@@ -30,7 +31,8 @@ import { TableRequest } from '../../core/models/api/requests/table.request';
     SearchBarComponent,
     MatButtonToggleModule,
     DragViewComponent,
-  ],
+    SkeletonCardComponent
+],
   templateUrl: 'tables.component.html',
   styleUrls: ['tables.component.scss'],
 })

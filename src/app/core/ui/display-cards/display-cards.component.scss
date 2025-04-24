@@ -90,14 +90,7 @@
     color: white;
     font-size: 1.2rem;
   }
-  .test {
-    display: grid;
-    gap: 1em;
-    grid-template-columns: repeat(auto-fill, 200px);
-    width: 100%;  /* Ensure the container takes up full width */
-    justify-content: center;
-  }
-
+  
 .test-card {
     width: 200px;  /* Ensure fixed width for the cards */
     height: 200px; /* You can define a height if needed, to maintain consistency */
