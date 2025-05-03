@@ -58,7 +58,7 @@ export class ProuctsComponent implements OnInit{
         return {
             id: p.id,
             title: p.name,
-            image: p.image ? this.imageService.getImageUrl(p.image) : ''
+            image: p.image
         }
     }))
 
@@ -121,6 +121,23 @@ export class ProuctsComponent implements OnInit{
 
     onAddProduct(): void {
         const dialogRef = this.dialog.open(ProductDialog);
+        dialogRef.afterClosed().subscribe((result) => {
+            if(!result){
+                return;
+            }
+            if (this.selectedCategory()){
+                this.categoryService.getById(this.selectedCategory()!.id!).subscribe((result: Category) => {
+                    this.products.set(result.products);
+                })
+            }
+            else {
+                this.getProducts();
+            }
+        })
+    }
+
+    onProductedit(product: any): void {
+        const dialogRef = this.dialog.open(ProductDialog, product);
         dialogRef.afterClosed().subscribe((result) => {
             if(!result){
                 return;

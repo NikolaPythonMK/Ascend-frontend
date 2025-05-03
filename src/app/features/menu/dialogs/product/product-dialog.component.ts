@@ -101,17 +101,15 @@ export class ProductDialog implements OnInit {
         if(this.productForm.invalid){
             return;
         }
-
-        const view = new Uint8Array(this.getImageControl().value)
-        const blob = new Blob([view], { type: 'image/*' });
         const form = new FormData();
 
         form.append("name", this.getNameControl().value);
         form.append("code", this.getCodeControl().value);
         form.append("price", this.getPriceControl().value);
         form.append("description", this.getDescriptionControl().value);
-        form.append("image", blob);
+        form.append("fileBytes", this.getImageControl().value);
         form.append("categoryId", this.getCategoryControl().value);
+        form.append("sourceLocation", "1");
 
         this.productService.add(form).subscribe({
             next: (result) => {
@@ -129,7 +127,7 @@ export class ProductDialog implements OnInit {
 
     }
 
-    onUpload(event: Image): void {
-        this.getImageControl().setValue(event.url);
+    onUpload(event: File): void {
+        this.getImageControl().setValue(event);
     }
 }

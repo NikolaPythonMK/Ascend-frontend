@@ -79,7 +79,7 @@ export class TableComponent implements OnInit{
         this.getProductsByCategory(id);
     }
 
-    onSelectCard(card: Card): void {
+    onSelectCard(card: any): void {
        const dialogRef = this.quantityDialog.open(ProductQuantityComponent, {
             width: '400px',
             data: { card }

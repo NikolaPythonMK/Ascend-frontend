@@ -38,7 +38,7 @@
           <ascend-search-bar (onSearchTerm)="onSearchProducts($event)" />
       </div>
   </div>
-  <ascend-display-cards  [elements]="productCards()" />   
+  <ascend-display-cards (selectedCard)="onProductedit($event)"  [elements]="productCards()" />   
   </div>
 </div>
 

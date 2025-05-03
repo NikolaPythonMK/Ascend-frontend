@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, input, OnInit, output } from "@angular/core";
+import { Component, EventEmitter, input, OnInit, Output, output } from "@angular/core";
 import { MatCardModule } from "@angular/material/card";
 import { Card } from "./models/card.model";
 import { SkeletonCardComponent } from "./skeleton-card/skeleton-card.component";
@@ -13,8 +13,8 @@ import { SkeletonCardComponent } from "./skeleton-card/skeleton-card.component";
 export class DisplayCardsComponent implements OnInit {
     elements = input.required<Card[]>();
     loading = input<boolean>(false);
-    selectedCard = output<any>();
-
+    @Output() selectedCard = new EventEmitter<any>();
+    
     ngOnInit(): void {
         console.log('cards: ', this.elements());
     }
