@@ -6,26 +6,6 @@
     justify-content: flex-start;
     align-items: center;
     align-content: center;
-    // .card {
-    //     width: 15em !important;
-    //     margin-top: 2em !important;
-    //     box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-    //     border-radius: 10px;
-    //     cursor: pointer;
-    //     transition: 0.3s ease, transform 0.2s ease;
-    //     .title {
-    //         text-align: center;
-    //         font-size: 1.3rem;
-    //     }
-    //     .title-container {
-    //         display: flex;
-    //         justify-content: center;
-    //     }
-        
-    // }
-    // .card:hover {
-    //     transform: scale(1.02);
-    // }
   }
 
   .example-header-image {
@@ -56,7 +36,6 @@
   mat-card img{
     width: 100%;
     height: 200px;
-    //object-fit: cover; // Ensures images maintain aspect ratio without stretching
   }
 
   .card-container {
@@ -76,14 +55,11 @@
     position: absolute;
     left: 0%;
     top: 0%;
-    //border-radius: 50%;
     background-color: rgba($color: #89AC46, $alpha: 0.7);
-    //padding: 1.5em 1em 1.5em 1em;
     padding: .6em;
     border-bottom-right-radius: 20px;
     .label {
       font-size: 1.2rem;
-     // padding: 1.5em;
     }
   }
   .label{
@@ -92,10 +68,10 @@
   }
   
 .test-card {
-    width: 200px;  /* Ensure fixed width for the cards */
-    height: 200px; /* You can define a height if needed, to maintain consistency */
-    box-sizing: border-box;  /* Include padding and borders in the width calculation */
-    overflow: hidden;  /* Prevent any content from overflowing */
+    width: 200px;
+    height: 200px;
+    box-sizing: border-box; 
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -103,12 +79,12 @@
     transition: 0.3s ease, transform 0.2s ease;
     cursor: pointer;
 }
-.test-card:hover {
-  transform: scale(1.02);
-}
+// .test-card:hover {
+//   transform: scale(1.01);
+// }
 
 .test-card img {
-    width: 100%;  /* Ensure the image fills the card */
-    height: 100%;  /* Optionally set a fixed height for images */
-    object-fit: cover; /* Ensure the image is cropped and fits the container */
+    width: 100%; 
+    height: 100%;
+    object-fit: cover;
 }

@@ -1,6 +1,6 @@
-import { Component, computed, inject, OnInit, signal } from "@angular/core";
+import { Component, computed, DestroyRef, inject, OnInit, signal } from "@angular/core";
 import { DisplayListComponent } from "../display-list/display-list.component";
-import { MatFormFieldModule, MatLabel } from "@angular/material/form-field";
+import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { Card } from "../../../../core/ui/display-cards/models/card.model";
 import { DisplayCardsComponent } from "../../../../core/ui/display-cards/display-cards.component";
@@ -19,17 +19,19 @@ import { TableItem } from "../../../../core/models/api/responses/table-item.mode
 import { TableItemRequest } from "../../../../core/models/api/requests/table-item.request";
 import { EmployeeStore } from "../../../../core/store/employee.store";
 import { TableItemsService } from "../../../../core/services/api/table-items.service";
-import { SearchBarComponent } from "../../../../core/ui/search-bar/search-bar.component";
 import { CommonModule } from "@angular/common";
 import { MatDialog } from "@angular/material/dialog";
 import { ProductQuantityComponent } from "../product-quantity-dialog/product-quantity-dialog.component";
-import { SkeletonCardComponent } from "../../../../core/ui/display-cards/skeleton-card/skeleton-card.component";
-import { finalize } from "rxjs";
+import { debounceTime, distinctUntilChanged, finalize } from "rxjs";
+import { FormControl, ReactiveFormsModule } from "@angular/forms";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { SearchTerm } from "../../../../core/models/api/search-term.model";
+import { ProductQuantityDialogResponse } from "../../models/product-quantity-dialog-response";
 
 
 @Component({
     selector: 'table-items',
-    imports: [DisplayListComponent, MatFormFieldModule, MatLabel, MatIconModule, DisplayCardsComponent, SearchBarComponent, CommonModule, ProductQuantityComponent, SkeletonCardComponent],
+    imports: [DisplayListComponent, MatFormFieldModule, MatIconModule, DisplayCardsComponent, CommonModule, ReactiveFormsModule],
     templateUrl: 'table.component.html',
     styleUrls: ['table.component.scss']
 })
@@ -46,8 +48,13 @@ export class TableComponent implements OnInit{
 
     productsLoading = signal<boolean>(false);
     categoriesLoading = signal<boolean>(false);
+    tableItemsLoading = signal<boolean>(false);
+
+    searchTerm = new FormControl('');
+    readonly destroyRef = inject(DestroyRef)
 
     tableId = signal<number>(0);
+    tableStatus = signal<string>('');
     products = signal<Product[]>([]);
     categories = signal<Category[]>([]);
     tableItems = signal<TableItem[]>([]);
@@ -59,7 +66,8 @@ export class TableComponent implements OnInit{
         return {
             id: i.id,
             title: i.name,
-            image: i.image ? this.imageService.getImageUrl(i.image) : ''
+            image: i.image ? this.imageService.getImageUrl(i.image) : '',
+            price: i.price
         } as Card
     }))
 
@@ -69,6 +77,14 @@ export class TableComponent implements OnInit{
         this.getAllProducts();
         console.log(this,this.tableId());
         this.getTableItems();
+
+        this.searchTerm.valueChanges.pipe(
+            debounceTime(300),
+            distinctUntilChanged(),
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe(value => {
+            this.getAllProducts([{propName: 'Name', searchValue: value ?? ''}])
+        })
     }
 
     onSelectCategory(id: number | null): void {
@@ -82,22 +98,22 @@ export class TableComponent implements OnInit{
     onSelectCard(card: Card): void {
        const dialogRef = this.quantityDialog.open(ProductQuantityComponent, {
             width: '400px',
-            data: { card }
+            data: { title: card.title }
        })
 
-       dialogRef.afterClosed().subscribe(result => {
+       dialogRef.afterClosed().subscribe((result: ProductQuantityDialogResponse) => {
         if (result != null) {
             const request: TableItemRequest = {
                 tableID: this.tableId(),
                 productID: card.id,
                 staffUserID: this.staffStore.id()!,
-                quantity: result.quantity,
-                note: result.note
+                quantity: result.data.quantity,
+                note: result.data.note
             }
-            console.log(result);
             this.tableItemsService.add(request).subscribe({
                 next: () => {
                     this.getTableItems();
+                    this.snackbarService.success('Успешно е додадена нарачка');
                 },
                 error: (error: HttpErrorResponse) => {
                     this.snackbarService.error(error.message);
@@ -107,60 +123,59 @@ export class TableComponent implements OnInit{
       });
     }
 
-    onIncrementItemQuantity(item: TableItem): void {
-        const request = this.createRequest(item.product.id, item.quantity + 1, item.id);
-        this.tableItemsService.update(request).subscribe({
-            next: () => {
-                this.getTableItems();
-            },
-            error: (error: HttpErrorResponse) => {
-                this.snackbarService.error(error.message);
+    onOpenItemDetails(item: TableItem): void {
+        const dialogRef = this.quantityDialog.open(ProductQuantityComponent, {
+            width: '400px',
+            data: { id: item.id, title: item.product.name }
+        });
+        dialogRef.afterClosed().subscribe((result: ProductQuantityDialogResponse) => {
+            if (!result){
+                return;
             }
-        })
-    }
 
-    onDecrementItemQuantity(item: TableItem): void {
-        if (item.quantity === 1) {
-            this.onRemoveItem(item.id);
-            return;
-        }
-
-        const request = this.createRequest(item.product.id, item.quantity - 1, item.id);
-        this.tableItemsService.update(request).subscribe({
-            next: () => {
-                this.getTableItems();
-            },
-            error: (error: HttpErrorResponse) => {
-                this.snackbarService.error(error.message);
+            if (result.data) {
+                const request: TableItemRequest = {
+                    id: item.id,
+                    tableID: this.tableId(),
+                    productID: item.product.id,
+                    staffUserID: this.staffStore.id()!,
+                    quantity: result.data.quantity,
+                    note: result.data.note
+                }
+                this.tableItemsService.update(request).subscribe({
+                    next: () => {
+                        this.getTableItems();
+                        this.snackbarService.success('Успешно е ажурирана нарачката');
+                    },
+                    error: (error: HttpErrorResponse) => {
+                        this.snackbarService.error(error.message);
+                    }
+                })               
             }
+
+            else if (result.operation === 'DELETE') {
+                this.tableItemsService.delete(item.id).subscribe({
+                    next: () => {
+                        this.getTableItems();
+                        this.snackbarService.success('Успешно е избришана нарачката');
+                    },
+                    error: (error: HttpErrorResponse) => {
+                        this.snackbarService.error(error.message);
+                    }
+                })                  
+            }        
         })
+    }   
+
+    onClearSearch(): void {
+        this.searchTerm.setValue('');
     }
 
-    onRemoveItem(id: number): void {
-        this.tableItemsService.delete(id).subscribe({
-            next: () => {
-                this.getTableItems();
-            },
-            error: (error: HttpErrorResponse) => {
-                this.snackbarService.error(error.message);
-            }
-        })
-    }
 
-    private createRequest(productId: number, quantity: number, itemId?: number): TableItemRequest {
-        return {
-            tableID: this.tableId(),
-            productID: productId,
-            staffUserID: this.staffStore.id()!,
-            quantity: quantity,
-            ...(itemId ? { id: itemId } : {})
-        }
-    }
-
-    private getAllProducts(): void {
+    private getAllProducts(searchTerm?: SearchTerm[]): void {
         this.productsLoading.set(true);
 
-        this.productService.getAll().pipe(
+        this.productService.getAll(searchTerm).pipe(
             finalize(() => this.productsLoading.set(false))
           ).subscribe({
             next: (result: Page<Product>) => {
@@ -202,12 +217,18 @@ export class TableComponent implements OnInit{
     }
 
     private getTableItems(): void {
-        this.tableService.getById(this.tableId()).subscribe({
+        this.tableItemsLoading.set(true);
+        this.tableService.getById(this.tableId()).pipe(
+            finalize(() => this.tableItemsLoading.set(false))
+        )
+        .subscribe({
             next: (table: Table) => {
                 this.tableItems.set(table.tableItems);
                 this.totalItems.set(table.tableItems.length);
                 this.totalQuantity.set(table.tableItems.reduce((acc, cur) => acc + cur.quantity, 0));
                 this.totalPrice.set(table.totalPrice);
+                this.tableStatus.set(table.status);
+                
             },
             error: (error: HttpErrorResponse) => {
                 this.snackbarService.error(error.message);

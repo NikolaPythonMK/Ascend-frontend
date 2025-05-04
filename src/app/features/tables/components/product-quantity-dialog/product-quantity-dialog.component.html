@@ -1,33 +1,77 @@
 <div class="quantity-dialog-container">
-  <h2 class="quantity-dialog-title">{{ data.card.title }}</h2>
+  @if (isLoading()) {
+    <ascend-loader />
+  }
 
-  <mat-form-field appearance="outline" class="quantity-dialog-content full-width">
-    <mat-label>Quantity</mat-label>
-    <input
-      #qtyInput
-      matInput
-      type="number"
-      [(ngModel)]="quantity"
-      (keydown.enter)="submit()"
-      min="1"
-      placeholder="Enter Quantity"
-    />
-  </mat-form-field>
+  <h2 class="quantity-dialog-title">{{ data.title }}</h2>
 
-  <mat-form-field appearance="outline" class="quantity-dialog-content full-width">
-    <mat-label>Note</mat-label>
-    <textarea
-      #qtyInput
-      matInput
-      type="text"
-      [(ngModel)]="noteInput"
-      (keydown.enter)="submit()"
-      placeholder="Enter Note"
-    ></textarea>
-  </mat-form-field>
+  <form [formGroup]="itemForm">
+    <mat-form-field appearance="outline" class="quantity-dialog-content full-width">
+      <mat-label>{{ quantityLabel() | translate }}</mat-label>
+      <input
+        #qtyInput
+        matInput
+        type="number"
+        formControlName="quantity"
+        (keydown.enter)="onSubmit()"
+        min="1"
+        placeholder="Enter Quantity"
+      />
+    </mat-form-field>
 
-  <div class="dialog-actions" mat-dialog-actions>
-    <button mat-stroked-button color="warn" (click)="dialogRef.close()">Cancel</button>
-    <button mat-flat-button color="primary" class="custom-color" (click)="submit()">OK</button>
-  </div>
+    <mat-form-field appearance="outline" class="quantity-dialog-content full-width">
+      <mat-label>{{ noteLabel() | translate }}</mat-label>
+      <textarea
+        #qtyInput
+        matInput
+        type="text"
+        formControlName="note"
+        (keydown.enter)="onSubmit()"
+      ></textarea>
+    </mat-form-field>
+
+    <!-- <div class="dialog-actions" mat-dialog-actions>
+      <button mat-icon-button
+              color="warn" 
+              aria-label="Delete item"
+              (click)="onDelete()">
+         <mat-icon>delete</mat-icon>
+      </button>
+
+      <div>
+        <button mat-stroked-button color="warn" (click)="dialogRef.close()">{{ cancelLabel() | translate }}</button>
+        <button mat-flat-button color="primary" class="custom-color" (click)="onSubmit()">{{ submitLabel() | translate }}</button>
+      </div>
+    </div> -->
+
+    @if (data.id) {
+      <div class="dialog-actions" mat-dialog-actions>
+        <button mat-icon-button
+                color="warn" 
+                aria-label="Delete item"
+                (click)="onDelete()">
+           <mat-icon>delete</mat-icon>
+        </button>
+  
+        <div>
+          <button mat-stroked-button color="warn" (click)="dialogRef.close()">{{ cancelLabel() | translate }}</button>
+          <button mat-flat-button color="primary" class="custom-color" (click)="onSubmit()">{{ submitLabel() | translate }}</button>
+        </div>
+      </div>       
+    } @else {
+      <div class="dialog-actions-del" mat-dialog-actions>
+        <button mat-icon-button
+                color="warn" 
+                aria-label="Delete item"
+                (click)="onDelete()">
+           <mat-icon>delete</mat-icon>
+        </button>
+  
+        <div>
+          <button mat-stroked-button color="warn" (click)="dialogRef.close()">{{ cancelLabel() | translate }}</button>
+          <button mat-flat-button color="primary" class="custom-color" (click)="onSubmit()">{{ submitLabel() | translate }}</button>
+        </div>
+      </div>    
+    }
+  </form>
 </div>

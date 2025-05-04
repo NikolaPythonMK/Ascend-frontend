@@ -28,6 +28,12 @@
         top: 27%;
         left: 2%;
       }
+
+      .close-btn {
+        position: absolute;
+        top: 27%;
+        right: 2%;
+      }
       
       .search-input {
         flex: 1;
@@ -39,7 +45,7 @@
         outline: none;
       }
 
-      .search-icon {
+      .search-icon, .close-icon {
         color:#89AC46;
       }
       
@@ -298,3 +304,51 @@ tbody tr:last-child td {
     padding-bottom: .5em;
     margin-bottom: 1em;
 }
+
+.filler-row {
+    border-left: none !important;
+    box-shadow: none !important;
+    * {
+        border-left: none !important;
+        box-shadow: none !important;
+        
+    }
+    td {
+        border-left: none !important;
+        box-shadow: none !important;
+    }
+    
+}
+
+
+
+.skeleton-row {
+    td {
+      padding: 26px 28px;
+      border-bottom: 1px solid #ddd;
+    }
+  }
+  
+  .skeleton-cell {
+    width: 100%;
+    height: 1em;
+    border-radius: 4px;
+    background: linear-gradient(
+      to right,
+      #eeeeee 8%,
+      #dddddd 18%,
+      #eeeeee 33%
+    );
+    background-size: 800px 104px;
+    animation: shimmer 1.5s infinite linear;
+  }
+  
+  @keyframes shimmer {
+    0% {
+      background-position: -800px 0;
+    }
+    100% {
+      background-position: 800px 0;
+    }
+  }
+  

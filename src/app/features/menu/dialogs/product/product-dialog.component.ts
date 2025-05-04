@@ -105,6 +105,8 @@ export class ProductDialog implements OnInit {
         const view = new Uint8Array(this.getImageControl().value)
         const blob = new Blob([view], { type: 'image/*' });
         const form = new FormData();
+        
+        
 
         form.append("name", this.getNameControl().value);
         form.append("code", this.getCodeControl().value);

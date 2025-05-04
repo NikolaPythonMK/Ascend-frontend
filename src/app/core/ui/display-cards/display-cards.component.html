@@ -1,4 +1,4 @@
-@if (true) {
+@if (loading()) {
     <ascend-skeleton-card [numberOfCards]="7" />
 } @else {
     <div class="cards-grid">
@@ -10,9 +10,11 @@
                 <div class="card-label">
                     <span class="label">{{ element.title }}</span>
                 </div>
-                <div class="card-price">
-                    <span class="label">30000</span>
-                </div>
+                @if (element.price) {
+                    <div class="card-price">
+                        <span class="label">{{ element.price }}</span>
+                    </div>
+                }
             </div>
         }
     </div>

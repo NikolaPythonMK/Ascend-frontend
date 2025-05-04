@@ -22,10 +22,19 @@
   
   .dialog-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: end;
+    align-items: center;
     gap: 10px;
+  }
+
+  .dialog-actions-del {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px; 
   }
 
   .custom-color{
     background-color: #89AC46 !important;
+    margin-left: 1em;
   }

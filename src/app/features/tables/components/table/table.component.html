@@ -20,10 +20,18 @@
               type="text"
               placeholder="Пребарај продукт..."
               class="search-input"
+              [formControl]="searchTerm"
             />
             <button mat-icon-button class="search-btn">
               <mat-icon class="search-icon">search</mat-icon>
             </button>
+            @if (searchTerm.value){
+              <button mat-icon-button
+                      class="close-btn"
+                      (click)="onClearSearch()">
+                <mat-icon class="close-icon">close</mat-icon>
+              </button>
+            }
           </div>
         </div>
         <div class="products">
@@ -51,37 +59,43 @@
               <th>Total</th>
             </tr>
           </thead>
-          <tbody>
-            @for(item of tableItems(); track item.id; let idx = $index) 
-            { 
-              @if (item.note !== null && item.note !== '') {
-                <tr class="noted-row">
-                  <td>{{ item.product.name }}</td>
-                  <td>{{ item.product.code }}</td>
-                  <td>{{ item.quantity }}</td>
-                  <td>{{ item.totalPrice }}</td>
-                </tr>
-                } @else {
-                <tr>
-                  <td>{{ item.product.name }}</td>
-                  <td>{{ item.product.code }}</td>
-                  <td>{{ item.quantity }}</td>
-                  <td>{{ item.totalPrice }}</td>
+          @if (tableItemsLoading()) {
+            <tbody>
+              @for (x of [1, 2, 3]; track x) {
+                <tr class="skeleton-row">
+                  <td><div class="skeleton-cell"></div></td>
+                  <td><div class="skeleton-cell"></div></td>
+                  <td><div class="skeleton-cell"></div></td>
+                  <td><div class="skeleton-cell"></div></td>
                 </tr>
               }
+            </tbody>
+          }
+          @else {
+            <tbody>
+              @for(item of tableItems(); track item.id; let idx = $index) 
+              { 
+                <tr (click)="onOpenItemDetails(item)" 
+                  [ngClass]="{'noted-row': item.note !== null && item.note !== ''}">
+                  <td>{{ item.product.name }}</td>
+                  <td>{{ item.product.code }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.totalPrice }}</td>
+                </tr>
 
-              @if (item.note !== null && item.note !== '') {
-                <tr class="note-row" *ngIf="item.note !== null && item.note !== ''">
-                  <td class="note text-muted" colspan="4">
-                      <span class="note-text">
-                        <mat-icon class="note-icon">sticky_note_2</mat-icon>
-                        <p>{{ item.note }}</p>
-                      </span>
-                  </td>
-                </tr>
+                @if (item.note !== null && item.note !== '') {
+                  <tr class="note-row" (click)="onOpenItemDetails(item)">
+                    <td class="note text-muted" colspan="4">
+                        <span class="note-text">
+                          <mat-icon class="note-icon">sticky_note_2</mat-icon>
+                          <p>{{ item.note }}</p>
+                        </span>
+                    </td>
+                  </tr>
+                }
               }
-            }
-          </tbody>
+            </tbody>
+          }
         </table>
       </div>
       <div class="footer">

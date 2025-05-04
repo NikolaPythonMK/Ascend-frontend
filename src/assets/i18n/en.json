@@ -56,5 +56,19 @@
             "primary": "Submit",
             "secondary": "Cancel"
         }
+    },
+    "tableItems": {
+        "add-dialog": {
+            "quantity-label": "Add quantity",
+            "note-label": "Add note"
+        },
+        "update-dialog": {
+            "quantity-label": "Quantity",
+            "note-label": "Note"         
+        },
+        "dialog-buttons": {
+            "cancel-button": "Cancel",
+            "submit-button": "Submit"  
+        }
     }
 }

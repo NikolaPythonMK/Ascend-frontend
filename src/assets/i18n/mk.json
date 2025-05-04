@@ -56,6 +56,20 @@
             "primary": "Поднеси",
             "secondary": "Откажи"
         }
+    },
+    "tableItems": {
+        "add-dialog": {
+            "quantity-label": "Додади количина",
+            "note-label": "Додади белешка"
+        },
+        "update-dialog": {
+            "quantity-label": "Количина",
+            "note-label": "Белешка"         
+        },
+        "dialog-buttons": {
+            "cancel-button": "Откажи",
+            "submit-button": "Продолжи"  
+        }
     }
 }
 
