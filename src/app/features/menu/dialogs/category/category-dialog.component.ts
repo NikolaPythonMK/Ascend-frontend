@@ -116,6 +116,7 @@ export class CategoryDialog implements OnInit{
         form.append("description", this.getDescriptionControl().value);
         form.append("fileBytes", this.getImageControl().value);
         form.append("categoryGroupId", this.getSelectedCategoryGroup().value);
+        form.append("sourceLocation", "2");
 
         this.isUpdateDialog() && form.append("id", String(this.data.category!.id));
 

@@ -79,6 +79,7 @@ export class CategoryGroupDialog {
         formData.append('description', this.getDescriptionControl().value);
         formData.append('categories', JSON.stringify(this.getSelectedCategoriesControl().value));
         formData.append('fileBytes', this.imageUrl()!); 
+        formData.append("sourceLocation", "3");
 
         this.categoryGroupService.add(formData).subscribe({
           next: (result: CategoryGroup) => {
