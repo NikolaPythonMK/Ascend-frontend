@@ -51,7 +51,7 @@ export class CategoryGroupDialog {
         description: [''],
         selectedCategories: [[]]
     })
-    imageUrl = signal<ArrayBuffer | null>(null);
+    imageUrl = signal<File | null>(null);
 
     getNameControl(): AbstractControl {
         return this.categoryGroupForm.get('name')!;
@@ -65,8 +65,8 @@ export class CategoryGroupDialog {
         return this.categoryGroupForm.get('selectedCategories')!;
     }
 
-    onUpload(image: Image){
-      this.imageUrl.set(image.url);
+    onUpload(image: File){
+      this.imageUrl.set(image);
     }
 
     onSubmit() {
@@ -74,13 +74,12 @@ export class CategoryGroupDialog {
           return;
         }
 
-        const view = new Uint8Array(this.imageUrl()!)
-        const blob = new Blob([view], { type: 'image/*' });
         const formData = new FormData();
         formData.append('name', this.getNameControl().value);
         formData.append('description', this.getDescriptionControl().value);
         formData.append('categories', JSON.stringify(this.getSelectedCategoriesControl().value));
-        formData.append('image', blob); 
+        formData.append('fileBytes', this.imageUrl()!); 
+        formData.append("sourceLocation", "3");
 
         this.categoryGroupService.add(formData).subscribe({
           next: (result: CategoryGroup) => {

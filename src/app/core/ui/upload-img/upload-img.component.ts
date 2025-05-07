@@ -15,7 +15,7 @@ export class UploadImageComponent {
   });
   fileName = signal<string>('');
 
-  uploadEvent = output<Image>();
+  uploadEvent = output<File>();
 
   preview(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -32,11 +32,7 @@ export class UploadImageComponent {
 
       const arrayBufferReader = new FileReader();
       arrayBufferReader.onload = () => {
-        const result = arrayBufferReader.result as ArrayBuffer;
-        this.uploadEvent.emit({
-          url: result,
-          name: this.fileName(),
-        });
+        this.uploadEvent.emit(file);
       };
       arrayBufferReader.readAsArrayBuffer(file);
     }

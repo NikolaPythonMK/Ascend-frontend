@@ -5,7 +5,9 @@
         @for(element of elements(); track element.id){
             <div class="card-container">
                 <div class="test-card" appearance="outlined" (click)="onSelect(element)">
-                    <img mat-card-image [src]="element.image ?? 'assets/images/no-image-icon.png'" [alt]="element.description">
+                    <img mat-card-image 
+                    [src]="element.image && element.image.trim() !== '' ? 'http://localhost:5073' + element.image : 'assets/images/no-image-icon.png'" 
+                    [alt]="element.description">               
                 </div>
                 <div class="card-label">
                     <span class="label">{{ element.title }}</span>

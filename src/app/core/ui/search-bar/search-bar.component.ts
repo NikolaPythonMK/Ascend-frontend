@@ -13,7 +13,7 @@ import { MatDialog } from "@angular/material/dialog";
     templateUrl: 'search-bar.component.html',
     styleUrls: ['search-bar.component.scss']
 })
-export class SearchBarComponent implements OnInit, AfterViewInit {
+export class SearchBarComponent implements OnInit {
     @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>
     private readonly dialog = inject(MatDialog);
     placeholder = input<string>('Пребарај')
@@ -30,10 +30,6 @@ export class SearchBarComponent implements OnInit, AfterViewInit {
         ).subscribe(value => {
             this.onSearchTerm.emit(value?.toLocaleLowerCase() ?? '');
         })
-    }
-
-    ngAfterViewInit(): void {
-        this.searchInput.nativeElement.focus();
     }
 
     @HostListener('window:keydown', ['$event'])

@@ -101,8 +101,8 @@ export class CategoryDialog implements OnInit{
         return this.categoryForm.get('selectedCategoryGroup')!;
     }
 
-    onUpload(event: Image): void {
-        this.getImageControl().setValue(event.url);
+    onUpload(event: File): void {
+        this.getImageControl().setValue(event);
         console.log(this.getImageControl().value);
     }
 
@@ -110,16 +110,13 @@ export class CategoryDialog implements OnInit{
         if (!this.categoryForm.valid) {
           return;
         }
-        const view = new Uint8Array(this.getImageControl().value)
-        const blob = new Blob([view], { type: 'image/*' });
-        const form = new FormData();
 
+        const form = new FormData();
         form.append("name", this.getNameControl().value);
         form.append("description", this.getDescriptionControl().value);
-        form.append("image", blob);
+        form.append("fileBytes", this.getImageControl().value);
         form.append("categoryGroupId", this.getSelectedCategoryGroup().value);
-
-        console.log(this.getImageControl().value);
+        form.append("sourceLocation", "2");
 
         this.isUpdateDialog() && form.append("id", String(this.data.category!.id));
 

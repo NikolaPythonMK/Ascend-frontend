@@ -1,17 +1,7 @@
 <div class="container">
   <div class="list-container">
     <div>
-      <form>
-        <mat-form-field>
-          <!-- <mat-label>Category Group</mat-label> -->
-          <mat-select [(ngModel)]="selectedValue" name="food">
-            <mat-option selected [value]="0" (click)="onSelectGroup(0)">Сите категории</mat-option>
-            @for (group of categoryGroups(); track group.id) {
-              <mat-option [value]="group.id" (click)="onSelectGroup(group.id)">{{group.name}}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </form>
+      <p class="title title-category-list">Категории</p>
     </div>
     <ascend-display-list  [elements]="categoryListElements()"
                           selectAllButtonLabel="Сите категории"
@@ -23,9 +13,9 @@
     <div class="cards-header">
       <div class="left-part">
           @if (selectedCategory()){
-              <span class="categories-title">{{ selectedCategory()!.name }}</span>
+              <span class="title">Продукти > {{ selectedCategory()!.name }}</span>
           }@else {
-              <span class="categories-title">Сите продукти</span>
+              <span class="title">Продукти > Сите продукти</span>
           }
           <ascend-header-counter [value]="products().length" />
       </div>
@@ -38,70 +28,6 @@
           <ascend-search-bar (onSearchTerm)="onSearchProducts($event)" />
       </div>
   </div>
-  <ascend-display-cards  [elements]="productCards()" />   
+  <ascend-display-cards (selectedCard)="onProductedit($event)"  [elements]="productCards()" />   
   </div>
 </div>
-
-<!-- <div>
-    <div class="header">
-        <div>
-            <span class="title">Продукти</span>
-            <ascend-header-counter [value]="products().length" />
-        </div>     
-        <div class="filters">
-            <ascend-button type="primary" label="Додади" class="add-btn"/>
-            <select class="sort-select">
-                <option>Име</option>
-                <option>Шифра</option>
-                <option>Цена</option>
-                <option>Залиха</option>
-            </select>
-            <ascend-search-bar placeholder="Пребарај продукт" />
-        </div>
-    </div>
-    <div class="container">
-        <div class="categories">
-            <ul class="category-list">
-                    <li>
-                        <mat-form-field class="full-width">
-                            <mat-label>Category Group</mat-label>
-                            <mat-select [formControl]="categoryGroups" multiple>
-                              <mat-select-trigger>
-                                {{categoryGroups.value?.[0] || ''}}
-                                @if ((categoryGroups.value?.length || 0) > 1) {
-                                  <span class="example-additional-selection">
-                                    (+{{(categoryGroups.value?.length || 0) - 1}} {{categoryGroups.value?.length === 2 ? 'other' : 'others'}})
-                                  </span>
-                                }
-                              </mat-select-trigger>
-                              @for (topping of categoryGroupsList; track topping) {
-                            <mat-option [value]="topping">{{topping}}</mat-option>
-                          }
-                            </mat-select>
-                          </mat-form-field>
-                    </li>
-                    <li class="search-bar-container"><ascend-search-bar class="search-bar" placeholder="Пребарај категорија" /></li>
-                    <li (click)="onSelectCategory(null)" class="category-element">All categories</li>
-                @for(category of categories(); track category.id){
-                    <li (click)="onSelectCategory(category.id)" class="category-element">
-                        {{ category.name }}
-                    </li>  
-                }   
-            </ul>
-        </div>
-        <div class="products">
-            @for(product of products(); track product.id){
-                <mat-card class="card" appearance="outlined">
-                    <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
-                    <mat-card-header>
-                        <mat-card-title>Shiba Inu</mat-card-title>
-                        <mat-card-subtitle>Dog Breed</mat-card-subtitle>
-                      </mat-card-header>
-                    <mat-card-content>
-                    </mat-card-content>
-                  </mat-card>
-                  
-            }
-        </div>
-    </div>
-</div> -->
