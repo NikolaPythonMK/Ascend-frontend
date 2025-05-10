@@ -41,7 +41,7 @@ import { ImageService } from "../../../../core/services/utility/image.service";
     ButtonComponent
     ],
     templateUrl: 'category-dialog.component.html',
-    styleUrls: ['category-dialog.component.scss'],
+    styleUrls: ['category-dialog.component.scss', '../../styles/dialog-style.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CategoryDialog implements OnInit{
@@ -63,26 +63,32 @@ export class CategoryDialog implements OnInit{
     isUpdateDialog = signal<boolean>(false);
     title = signal<string>('Додади Категорија');
     submitBtnLabel = signal<string>('Додади');
+    imageUrl = signal('');
 
     ngOnInit(): void {
         if (this.data.selectedGroupId) {
             this.getSelectedCategoryGroup().setValue(this.data.selectedGroupId);
         }
-        if(!this.data.category){
+        if(!this.data.categoryId){
             return;
         }
-        const category = this.data.category;
-        this.getNameControl().setValue(category.name);
-        this.getDescriptionControl().setValue(category.description);
-        if(category.image){
-            this.getImageControl().setValue(category.image);
-        }
-        if(category.categoryGroupId){
-            this.getSelectedCategoryGroup().setValue(category.categoryGroupId);
-        }
-        this.isUpdateDialog.set(true);
-        this.title.set('Ажурирај Категорија')
-        this.submitBtnLabel.set('Ажурирај');
+
+        this.categoryService.getById(this.data.categoryId).subscribe({
+            next: (category: Category) => {
+                this.getNameControl().setValue(category.name);
+                this.getDescriptionControl().setValue(category.description);
+                this.imageUrl.set(category.image);
+                if(category.categoryGroupId){
+                    this.getSelectedCategoryGroup().setValue(category.categoryGroupId);
+                }
+                this.isUpdateDialog.set(true);
+                this.title.set('Ажурирај Категорија')
+                this.submitBtnLabel.set('Ажурирај');
+            },
+            error: (error: HttpErrorResponse) => {
+                this.snackbar.error(error.message);
+            }
+        })
     }
 
     getNameControl(): AbstractControl {
@@ -103,7 +109,6 @@ export class CategoryDialog implements OnInit{
 
     onUpload(event: File): void {
         this.getImageControl().setValue(event);
-        console.log(this.getImageControl().value);
     }
 
     onSubmit() {
@@ -118,7 +123,7 @@ export class CategoryDialog implements OnInit{
         form.append("categoryGroupId", this.getSelectedCategoryGroup().value);
         form.append("sourceLocation", "2");
 
-        this.isUpdateDialog() && form.append("id", String(this.data.category!.id));
+        this.isUpdateDialog() && form.append("id", String(this.data.categoryId));
 
         const action$ = this.isUpdateDialog() ?
             this.categoryService.update(form) :
@@ -137,7 +142,7 @@ export class CategoryDialog implements OnInit{
                 return;
             }
             this.handleRequest<number>(
-                this.categoryService.delete(this.data.category!.id),
+                this.categoryService.delete(this.data.categoryId!),
                 'Категоријата е успешно избришана'
             )            
         })

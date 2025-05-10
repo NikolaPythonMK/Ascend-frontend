@@ -1,0 +1,32 @@
+<div class="container">
+  <div class="cards-container">
+    <div class="cards-header">
+      <div class="left-part">
+        <span class="title">Групи на категории</span>
+        <ascend-header-counter [value]="categoryGroupCards().length" />
+      </div>
+      <div class="right-part">
+        <button
+          mat-fab
+          extended
+          color="ascend"
+          class="add-btn"
+          (click)="onAddCategoryGroup()"
+        >
+          <mat-icon>add</mat-icon>
+          Група
+        </button>
+
+        <ascend-search-bar (onSearchTerm)="onSearchCategoryGroup($event)"  />
+      </div>
+    </div>
+    @if (categoryGroupCards()) {
+      <ascend-display-cards
+      (selectedCard)="onUpdateCategoryGroup($event)"
+      [elements]="categoryGroupCards()"
+    />
+    } @else {
+      <p class="no-data-message">No category groups have been found</p>
+    }
+  </div>
+</div>

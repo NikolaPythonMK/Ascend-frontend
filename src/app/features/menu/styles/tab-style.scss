@@ -1,0 +1,76 @@
+@use 'variables' as vars;
+
+.container {
+    display: grid;
+    grid-template-columns: auto 4fr;
+
+    box-sizing: border-box;
+    overflow-y: hidden;
+    height: 100%;
+
+    .list-container {
+        border-right: 1px solid rgba(0, 0, 0, 0.15);
+        margin-top: .5em;
+        height: 75%;
+        overflow-y: scroll !important;
+    }
+
+    .cards-container {
+        display: flex;
+        flex-direction: column;
+        height: 75%;
+        overflow-y: scroll !important;
+        z-index: 1;
+    }
+
+    .cards-header {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        width: 97%;
+        padding: 1em 1em 1em 3em;
+        box-sizing: border-box;
+        background-color: #fff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .right-part, .left-part {
+            display: flex;
+            align-items: center;
+        }
+        .add-btn {
+            margin-right: 1em;
+        }
+    }
+}
+
+.title {
+    font-size: 2rem;
+    color: vars.$primary-font-color;
+}
+
+.title-sidebar-list {
+    text-align: center;
+    padding: .5em;
+}
+
+.mat-ascend {
+    background-color: #6c63ff;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.no-data-message {
+    text-align: center;
+    margin-top: 10em;
+    color: vars.$primary-font-color;
+    font-size: 1.5rem;
+}
+
+.sidebar-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: #fff;
+}

@@ -1,42 +1,49 @@
-<!-- <div class="header">
-    <h1>Categories</h1>
-    <ascend-button type="primary" label="Додади" icon="add" (clickEvent)="onAddCategory()" />
-</div> -->
-
 <div class="container">
-    <div class="list-container">
-        <ascend-display-list [elements]="categoryGroupElements()"
-                             (selectedEvent)="onSelectedCategoryGroup($event)"
-                             (addEvent)="onAddGroupCategory()"
-                             (deleteEvent)="onDeleteCategoryGroup($event)"
-                             noDataLabel="Create your first category group!"
-                             [setAddButton]="true"
-                             addButtonLabel="Група"
-                             selectAllButtonLabel="Сите групи" />
+  <div class="list-container">
+    <div class="sidebar-header">
+      <p class="title title-sidebar-list">Група на категории</p>
     </div>
-    <div class="cards-container">
-        <div class="cards-header">
-            <div class="left-part">
-                @if (selectedCategoryGroup()){
-                    <span class="categories-title">{{ selectedCategoryGroup()!.name }}</span>
-                }@else {
-                    <span class="categories-title">All Categories</span>
-                }
-                <ascend-header-counter [value]="categories().length" />
-            </div>
-            <div class="right-part">
-                <button mat-fab extended color="ascend" class="add-category-btn" (click)="onAddCategory()">
-                    <mat-icon>add</mat-icon>
-                    Категорија
-                </button>
-                <!-- <ascend-button type="primary" label="Додади категорија" class="add-category-btn"/> -->
-                <ascend-search-bar (onSearchTerm)="onSearchCategory($event)" />
-            </div>
-        </div>
-        @if (categories().length) {
-            <ascend-display-cards [elements]="categoryCards()" (selectedId)="onUpdateCategory($event)"/>
-        } @else {
-            <span class="no-categories-message">You haven't added any categories yet. Start by creating a new one!</span>
+    <ascend-display-list
+      [elements]="categoryGroupElements()"
+      selectAllButtonLabel="Сите категории"
+      (selectedEvent)="onSelectedCategoryGroup($event)"
+      [setDeleteButton]="false"
+      [setSelectAllButton]="false"
+    />
+  </div>
+  <div class="cards-container">
+    <div class="cards-header">
+      <div class="left-part">
+        @if (selectedCategoryGroup()){
+        <span class="title">Категории > {{ selectedCategoryGroup()!.name }}</span>
+        }@else {
+        <span class="title">Категории > Сите категории</span>
         }
+        <ascend-header-counter [value]="categories().length" />
+      </div>
+      <div class="right-part">
+        <button
+          mat-fab
+          extended
+          color="ascend"
+          class="add-btn"
+          (click)="onAddCategory()"
+        >
+          <mat-icon>add</mat-icon>
+          Категорија
+        </button>
+
+        <ascend-search-bar (onSearchTerm)="onSearchCategory($event)"  />
+      </div>
     </div>
+    @if (categoryCards()) {
+      <ascend-display-cards
+      [loading]="categoryLoading()"
+      (selectedCard)="onUpdateCategory($event)"
+      [elements]="categoryCards()"
+    />
+    } @else {
+      <p class="no-data-message">No categories have been found</p>
+    }
+  </div>
 </div>

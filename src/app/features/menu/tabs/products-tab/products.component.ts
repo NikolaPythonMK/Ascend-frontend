@@ -26,6 +26,9 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatDialog } from "@angular/material/dialog";
 import { ProductDialog } from "../../dialogs/product/product-dialog.component";
 import { ImageService } from "../../../../core/services/utility/image.service";
+import { finalize } from "rxjs";
+import { SearchTerm } from "../../../../core/models/api/search-term.model";
+import { FilterDataService } from "../../../../core/services/utility/filter-data.service";
 
 
 @Component({
@@ -38,7 +41,7 @@ import { ImageService } from "../../../../core/services/utility/image.service";
               MatSelectModule,
               FormsModule, ReactiveFormsModule, HeaderCounterComponent, DisplayCardsComponent, DisplayListComponent, MatIconModule, MatButtonModule],
     templateUrl: 'products.component.html',
-    styleUrls: ['products.component.scss']
+    styleUrls: ['products.component.scss', '../../styles/tab-style.scss']
 })
 export class ProuctsComponent implements OnInit{
     private readonly categoryService = inject(CategoriesService);
@@ -47,10 +50,12 @@ export class ProuctsComponent implements OnInit{
     private readonly snackbarService = inject(SnackbarService);
     private readonly imageService = inject(ImageService);
     private readonly dialog = inject(MatDialog);
+    private readonly filterData = inject(FilterDataService);
     categories = signal<Category[]>([]);
     categoryGroups = signal<CategoryGroup[]>([]);
     products = signal<Product[]>([]);
     selectedCategory = signal<Category | null>(null);
+    productsLoading = signal<boolean>(false);
 
     selectedValue = 0;
 
@@ -92,7 +97,10 @@ export class ProuctsComponent implements OnInit{
             this.getProducts();
             return;
         }
-        this.categoryService.getById(id).subscribe({
+        this.productsLoading.set(true);
+        this.categoryService.getById(id).pipe(
+            finalize(() => this.productsLoading.set(false))
+        ).subscribe({
             next: (result: Category) => {
                 this.selectedCategory.set(result);
                 this.products.set(result.products);
@@ -103,24 +111,12 @@ export class ProuctsComponent implements OnInit{
         })
     }
 
-    onSelectGroup(id: number) {
-        if (id === 0) {
-            this.getCategories();
-        }
-        else {
-            this.categoryGroupService.getById(id).subscribe({
-                next: (result: CategoryGroup) => {
-                    this.categories.set(result.categories);
-                },
-                error: (error: HttpErrorResponse) => {
-                    console.log(error.message);
-                }       
-            })
-        }
-    }
-
     onAddProduct(): void {
-        const dialogRef = this.dialog.open(ProductDialog);
+        const dialogRef = this.dialog.open(ProductDialog, {
+            data: {
+                categories: this.categories()
+            }
+        });
         dialogRef.afterClosed().subscribe((result) => {
             if(!result){
                 return;
@@ -137,7 +133,13 @@ export class ProuctsComponent implements OnInit{
     }
 
     onProductedit(product: any): void {
-        const dialogRef = this.dialog.open(ProductDialog, product);
+        console.log(product);
+        const dialogRef = this.dialog.open(ProductDialog, {
+            data: {
+                id: product.id,
+                categories: this.categories()
+            }
+        })
         dialogRef.afterClosed().subscribe((result) => {
             if(!result){
                 return;
@@ -154,13 +156,19 @@ export class ProuctsComponent implements OnInit{
     }
 
     onSearchProducts(searchTerm: string): void {
-
+        this.searchTerm.set(searchTerm);
+        this.getProducts();
     }
 
     private getProducts(): void {
-        this.productService.getAll().subscribe({
+        this.productsLoading.set(true);
+        const searchFilter: SearchTerm[] = this.filterData.createSearchTermFilter(this.searchTerm(), ['Name'])
+        this.productService.getAll(searchFilter).pipe(
+            finalize(() => this.productsLoading.set(false))
+        )
+        .subscribe({
             next: (products: Page<Product>) => {
-                this.products.set(products.data);
+                this.products.set([...products.data]);
             },
             error: (error: HttpErrorResponse) => {
                 console.log(error);

@@ -25,12 +25,13 @@ import { CategoryDialog } from "../../dialogs/category/category-dialog.component
 import loadesh from 'lodash';
 import { ImageService } from "../../../../core/services/utility/image.service";
 import { ConfirmationDialog } from "../../../../core/ui/confirmation-dialog/confirmation-dialog.component";
+import { finalize } from "rxjs";
 
 @Component({
     selector: 'categories-component',
     imports: [ButtonComponent, DisplayListComponent, DisplayCardsComponent, SearchBarComponent, MatIconModule, MatButtonModule, HeaderCounterComponent],
     templateUrl: 'categories.component.html',
-    styleUrls: ['categories.component.scss']
+    styleUrls: ['categories.component.scss', '../../styles/tab-style.scss']
 })
 export class CategoriesComponent implements OnInit, OnDestroy{
     private readonly dialog = inject(MatDialog);
@@ -43,6 +44,7 @@ export class CategoriesComponent implements OnInit, OnDestroy{
     searchTerm = signal<string>('');
     categories = signal<Category[]>([]);
     categoryGroups = signal<CategoryGroup[]>([]);
+    categoryLoading = signal<boolean>(false);
 
     categoryCards = computed<Card[]>(() => this.categories().map(c => {
         return {
@@ -91,26 +93,12 @@ export class CategoriesComponent implements OnInit, OnDestroy{
             // }
         })
     }
-    onAddGroupCategory(): void {
-        const dialogRef = this.dialog.open(CategoryGroupDialog, {
-            data: {
-                categories: this.categories(),
-            } as CategoryGroupDialogData
-        });
-        dialogRef.afterClosed().subscribe((result) => {
-            if(!result) {
-                return;
-            }
-            this.getAllCategoryGroups();
-        })
-    }
 
-    onUpdateCategory(id: any): void {
-        const category = this.categories().find(c => c.id === id);
+    onUpdateCategory(card: any): void {
         const dialogRef = this.dialog.open(CategoryDialog, {
             data: {
                 categoryGroups: this.categoryGroups(),
-                category,
+                categoryId: card.id,
             } as CategoryDialogData
         })
         dialogRef.afterClosed().subscribe((result) => {
@@ -145,10 +133,6 @@ export class CategoriesComponent implements OnInit, OnDestroy{
         })
     }
 
-    onUpdateCategoryGroup(): void {
-
-    }
-
     onSelectedCategoryGroup(id: number | null) {
         if(!id){
             this.getAllCategories();
@@ -160,10 +144,15 @@ export class CategoriesComponent implements OnInit, OnDestroy{
 
     onSearchCategory(term: string){
         this.searchTerm.set(term);
+        this.getAllCategories();
     }
 
     private getCategoriesByGroupId(id: number): void {
-        this.categoryGroupService.getById(id).subscribe({
+        this.categoryLoading.set(true);
+        this.categoryGroupService.getById(id).pipe(
+            finalize(() => this.categoryLoading.set(false))
+        )
+        .subscribe({
             next: (result: CategoryGroup) => {
                 this.categories.set(result.categories.map(c => {
                     return {
@@ -185,8 +174,12 @@ export class CategoriesComponent implements OnInit, OnDestroy{
     }
 
     private getAllCategories(): void {
-        const searchFilter: SearchTerm[] = this.filterData.createSearchTermFilter(this.searchTerm(), ['name'])
-        this.categoryService.getAll().subscribe({
+        this.categoryLoading.set(true)
+        const searchFilter: SearchTerm[] = this.filterData.createSearchTermFilter(this.searchTerm(), ['Name'])
+        this.categoryService.getAll(searchFilter).pipe(
+            finalize(() => this.categoryLoading.set(false))
+        )
+        .subscribe({
             next: (result: Page<Category>) => {
                 this.categories.set(result.data.map(c => {
                     return {

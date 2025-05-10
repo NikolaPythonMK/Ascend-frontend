@@ -1,33 +1,49 @@
 <div class="container">
   <div class="list-container">
-    <div>
-      <p class="title title-category-list">Категории</p>
+    <div class="sidebar-header">
+      <p class="title title-sidebar-list">Категории</p>
     </div>
-    <ascend-display-list  [elements]="categoryListElements()"
-                          selectAllButtonLabel="Сите категории"
-                          (selectedEvent)="onSelectCategory($event)"
-                          [setDeleteButton]="false"
-                          [setSelectAllButton]="false" />
+    <ascend-display-list
+      [elements]="categoryListElements()"
+      selectAllButtonLabel="Сите категории"
+      (selectedEvent)="onSelectCategory($event)"
+      [setDeleteButton]="false"
+      [setSelectAllButton]="false"
+    />
   </div>
   <div class="cards-container">
     <div class="cards-header">
       <div class="left-part">
-          @if (selectedCategory()){
-              <span class="title">Продукти > {{ selectedCategory()!.name }}</span>
-          }@else {
-              <span class="title">Продукти > Сите продукти</span>
-          }
-          <ascend-header-counter [value]="products().length" />
+        @if (selectedCategory()){
+        <span class="title">Продукти > {{ selectedCategory()!.name }}</span>
+        }@else {
+        <span class="title">Продукти > Сите продукти</span>
+        }
+        <ascend-header-counter [value]="products().length" />
       </div>
       <div class="right-part">
-          <button mat-fab extended color="ascend" class="add-category-btn" (click)="onAddProduct()">
-              <mat-icon>add</mat-icon>
-              Продукт
-          </button>
+        <button
+          mat-fab
+          extended
+          color="ascend"
+          class="add-btn"
+          (click)="onAddProduct()"
+        >
+          <mat-icon>add</mat-icon>
+          Продукт
+        </button>
 
-          <ascend-search-bar (onSearchTerm)="onSearchProducts($event)" />
+        <ascend-search-bar (onSearchTerm)="onSearchProducts($event)"  />
       </div>
-  </div>
-  <ascend-display-cards (selectedCard)="onProductedit($event)"  [elements]="productCards()" />   
+    </div>
+    @if (productCards()) {
+      <ascend-display-cards
+      [loading]="productsLoading()"
+      (selectedCard)="onProductedit($event)"
+      [elements]="productCards()"
+    />
+    } @else {
+      <p class="no-data-message">No products have been found</p>
+    }
   </div>
 </div>

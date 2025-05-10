@@ -1,48 +1,65 @@
 <h2 mat-dialog-title class="dialog-title">{{ this.title() }}</h2>
 
 <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="dialog-form">
-  
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Product Name</mat-label>
-      <input matInput formControlName="name" required />
-    </mat-form-field>
+  <div class="form-inputs">
+    <div>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Product Name</mat-label>
+        <input matInput formControlName="name" required />
+      </mat-form-field>
 
-    <mat-form-field appearance="fill" class="full-width">
+      <mat-form-field appearance="fill" class="full-width">
         <mat-label>Code</mat-label>
         <input matInput formControlName="code" />
       </mat-form-field>
 
-    <mat-form-field appearance="fill" class="full-width">
+      <mat-form-field appearance="fill" class="full-width">
         <mat-label>Price</mat-label>
         <input type="number" matInput formControlName="price" required />
-    </mat-form-field>
+      </mat-form-field>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Description (optional)</mat-label>
-      <textarea matInput formControlName="description"></textarea>
-    </mat-form-field>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Description (optional)</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field>
 
-    @if (categories().length) {
+
+      @if (categories().length) {
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Categories</mat-label>
-        <mat-select formControlName="category">
+        <mat-select formControlName="category" [compareWith]="compareWith">
           @for (category of categories(); track category.id) {
-            <mat-option [value]="category.id">{{ category.name }}</mat-option>
+          <mat-option [value]="category">{{ category.name }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
-    }
+      }
+    </div>
 
-  <div class="full-width upload-container">
-    <span>Прикачи слика (optional)</span>
-    <ascend-upload-image (uploadEvent)="onUpload($event)"  />
+    <div>
+      <div class="full-width upload-container">
+        <span>Прикачи слика (optional)</span>
+        <ascend-upload-image
+          (uploadEvent)="onUpload($event)"
+          [imageUrl]="
+            imageUrl() && imageUrl()?.trim() !== ''
+              ? 'http://localhost:5073' + imageUrl()
+              : 'assets/images/no-image-icon.png'
+          "
+        />
+      </div>
+    </div>
   </div>
 
   <div class="actions">
     @if (isUpdateDialog()) {
-      <mat-icon class="trash-btn" (click)="onDelete()">delete</mat-icon>
+    <mat-icon class="trash-btn" (click)="onDelete()">delete</mat-icon>
     }
     <button mat-button type="button" (click)="dialogRef.close()">Откажи</button>
-    <ascend-button type="primary" [label]="submitBtnLabel()" [disabled]="productForm.invalid" />
+    <ascend-button
+      type="primary"
+      [label]="submitBtnLabel()"
+      [disabled]="productForm.invalid"
+    />
   </div>
 </form>

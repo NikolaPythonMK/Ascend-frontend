@@ -1,6 +1,6 @@
-import { Component, inject, OnInit, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from "@angular/core";
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { CategoriesService } from "../../../../core/services/api/categories.service";
 import { ImageService } from "../../../../core/services/utility/image.service";
 import { SnackbarService } from "../../../../core/services/utility/snackbar.service";
@@ -18,11 +18,15 @@ import { UploadImageComponent } from "../../../../core/ui/upload-img/upload-img.
 import { Category } from "../../../../core/models/api/responses/category.model";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Page } from "../../../../core/models/api/page.model";
-import { Image } from "../../../../core/ui/upload-img/models/image.model";
 import { ProductsService } from "../../../../core/services/api/products.service";
+import { ProductDialogData } from "../../models/product-dialog-data.dto";
+import { Product } from "../../../../core/models/api/responses/product.model";
+import { iif, Observable, of, switchMap, tap } from 'rxjs';
+import { ConfirmationDialog } from "../../../../core/ui/confirmation-dialog/confirmation-dialog.component";
 
 
 @Component({
+      standalone: true,             // ← this is required
     imports: [
         CommonModule,
         MatCardModule,
@@ -38,10 +42,12 @@ import { ProductsService } from "../../../../core/services/api/products.service"
         ButtonComponent
     ],
     templateUrl: 'product-dialog.component.html',
-    styleUrls: ['product-dialog.component.scss']
+    styleUrls: ['product-dialog.component.scss', '../../styles/dialog-style.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductDialog implements OnInit {
     readonly dialogRef = inject(MatDialogRef<ProductDialog>);
+    readonly data = inject<ProductDialogData>(MAT_DIALOG_DATA);
     readonly dialog = inject(MatDialog);
     readonly fb = inject(FormBuilder);
     readonly categoryService = inject(CategoriesService);
@@ -58,19 +64,32 @@ export class ProductDialog implements OnInit {
         price: ['']
     })
     categories = signal<Category[]>([]);
+    selectedCategory = signal<Category | undefined>(undefined);
     isUpdateDialog = signal<boolean>(false);
     title = signal<string>('Додади Продукт');
     submitBtnLabel = signal<string>('Додади');
 
+    imageUrl = signal<string | null>("");
+
     ngOnInit(): void {
-        this.categoryService.getAll().subscribe({
-            next: (result: Page<Category>) => {
-                this.categories.set(result.data);
-            },
-            error: (error: HttpErrorResponse) => {
-                this.snackbar.error(error.message);
-            }
-        })
+        this.categories.set(this.data.categories);
+
+        if (this.data.id) {
+            this.isUpdateDialog.set(true);
+            this.productService.getById(this.data.id).subscribe({
+                next: (product: Product) => {
+                    this.getNameControl().setValue(product.name);
+                    this.getCodeControl().setValue(product.code);
+                    this.getPriceControl().setValue(product.price);
+                    this.getDescriptionControl().setValue(product.description);
+                    this.getCategoryControl().setValue(this.categories().find(c => c.id === product.categoryID));
+                    this.imageUrl.set(product.image);
+                },
+                error: (error: HttpErrorResponse) => {
+                    this.snackbar.error(error.message)
+                }
+            })
+        }
     }
 
     getNameControl(): AbstractControl {
@@ -103,33 +122,60 @@ export class ProductDialog implements OnInit {
         }
         const form = new FormData();
         
-        
-
         form.append("name", this.getNameControl().value);
         form.append("code", this.getCodeControl().value);
         form.append("price", this.getPriceControl().value);
         form.append("description", this.getDescriptionControl().value);
         form.append("fileBytes", this.getImageControl().value);
-        form.append("categoryId", this.getCategoryControl().value);
+        form.append("categoryId", (this.getCategoryControl().value as Category).id.toString());
         form.append("sourceLocation", "1");
 
-        this.productService.add(form).subscribe({
-            next: (result) => {
-                this.snackbar.success('Успешно е додаден продуктот');
-                this.dialogRef.close(result);
-            },
-            error: (error: HttpErrorResponse) => {
-                this.snackbar.error(error.message);
-                this.dialogRef.close(false);
-            }
-        })
+        if (this.data.id) {
+            form.append("id", this.data.id.toString());
+        }
+
+        const isEdit = !!this.data.id;
+        const request$ = isEdit
+            ? this.productService.update(form)
+            : this.productService.add(form);
+
+        const action = isEdit ? 'ажуриран' : 'додаден';
+        const message = `Успешно е ${action} продуктот`;
+
+        this.handleRequest(request$, message);
     }
 
     onDelete(): void {
-
+        const dialogRef = this.dialog.open(ConfirmationDialog);
+        dialogRef.afterClosed().subscribe((result: boolean) => {
+            if(!result) {
+                return;
+            }
+            this.handleRequest<number>(
+                this.productService.delete(this.data.id!),
+                'Продуктот е успешно избришан'
+            )            
+        })
     }
 
     onUpload(event: File): void {
         this.getImageControl().setValue(event);
     }
+
+    compareWith(o1: Category, o2: Category): boolean {
+        return o1.id === o2.id;
+    }
+
+        private handleRequest<T>(request$: Observable<T>, successMessage: string): void {
+            request$.subscribe({
+                next: (result: T) => {
+                    this.snackbar.success(successMessage);
+                    this.dialogRef.close(result);
+                },
+                error: (error: HttpErrorResponse) => {
+                    this.snackbar.error(error.message);
+                    this.dialogRef.close();
+                }
+            });
+        }
 }
