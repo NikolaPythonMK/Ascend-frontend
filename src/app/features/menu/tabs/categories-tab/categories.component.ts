@@ -45,6 +45,7 @@ export class CategoriesComponent implements OnInit, OnDestroy{
     categories = signal<Category[]>([]);
     categoryGroups = signal<CategoryGroup[]>([]);
     categoryLoading = signal<boolean>(false);
+    categoryGroupsLoading = signal<boolean>(false);
 
     categoryCards = computed<Card[]>(() => this.categories().map(c => {
         return {
@@ -197,7 +198,11 @@ export class CategoriesComponent implements OnInit, OnDestroy{
     }
 
     private getAllCategoryGroups(): void {
-        this.categoryGroupService.getAll().subscribe({
+        this.categoryGroupsLoading.set(true);
+        this.categoryGroupService.getAll().pipe(
+            finalize(() => this.categoryGroupsLoading.set(false))
+        )
+        .subscribe({
             next: (result: Page<CategoryGroup>) => {
                 this.categoryGroups.set(result.data);
             },

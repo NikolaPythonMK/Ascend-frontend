@@ -9,6 +9,7 @@
       (selectedEvent)="onSelectedCategoryGroup($event)"
       [setDeleteButton]="false"
       [setSelectAllButton]="false"
+      [isLoading]="categoryGroupsLoading()"
     />
   </div>
   <div class="cards-container">
@@ -36,7 +37,7 @@
         <ascend-search-bar (onSearchTerm)="onSearchCategory($event)"  />
       </div>
     </div>
-    @if (categoryCards()) {
+    @if (categoryCards().length) {
       <ascend-display-cards
       [loading]="categoryLoading()"
       (selectedCard)="onUpdateCategory($event)"

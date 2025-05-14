@@ -9,6 +9,7 @@
       (selectedEvent)="onSelectCategory($event)"
       [setDeleteButton]="false"
       [setSelectAllButton]="false"
+      [isLoading]="categoriesLoading()"
     />
   </div>
   <div class="cards-container">
@@ -36,7 +37,7 @@
         <ascend-search-bar (onSearchTerm)="onSearchProducts($event)"  />
       </div>
     </div>
-    @if (productCards()) {
+    @if (productCards().length) {
       <ascend-display-cards
       [loading]="productsLoading()"
       (selectedCard)="onProductedit($event)"

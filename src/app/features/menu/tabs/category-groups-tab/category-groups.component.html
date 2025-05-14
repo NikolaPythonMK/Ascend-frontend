@@ -11,7 +11,7 @@
           extended
           color="ascend"
           class="add-btn"
-          (click)="onAddCategoryGroup()"
+          (click)="onAddCategoryGroup($event)"
         >
           <mat-icon>add</mat-icon>
           Група
@@ -20,8 +20,9 @@
         <ascend-search-bar (onSearchTerm)="onSearchCategoryGroup($event)"  />
       </div>
     </div>
-    @if (categoryGroupCards()) {
+    @if (categoryGroupCards().length) {
       <ascend-display-cards
+      [loading]="categoryGroupLoading()"
       (selectedCard)="onUpdateCategoryGroup($event)"
       [elements]="categoryGroupCards()"
     />

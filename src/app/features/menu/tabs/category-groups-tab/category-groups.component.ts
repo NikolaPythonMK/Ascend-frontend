@@ -15,6 +15,11 @@ import { CategoryGroup } from "../../../../core/models/api/responses/category-gr
 import { Card } from "../../../../core/ui/display-cards/models/card.model";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Page } from "../../../../core/models/api/page.model";
+import { CategoryGroupDialog } from "../../dialogs/category-group/category-group-dialog.component";
+import { CategoryGroupDialogData } from "../../models/category-group-dialog-data.dto";
+import { Category } from "../../../../core/models/api/responses/category.model";
+import { SearchTerm } from "../../../../core/models/api/search-term.model";
+import { finalize } from "rxjs";
 
 @Component({
     selector: 'category-groups-component',
@@ -30,6 +35,7 @@ export class CategoryGroupsComponent implements OnInit, OnDestroy{
     readonly snackbar = inject(SnackbarService);
     searchTerm = signal<string>('');
     categoryGroups = signal<CategoryGroup[]>([]);
+    categoryGroupLoading = signal<boolean>(false);
     
     categoryGroupCards = computed<Card[]>(() => this.categoryGroups().map(c => {
         return {
@@ -38,21 +44,43 @@ export class CategoryGroupsComponent implements OnInit, OnDestroy{
             image: c.image
         }
     }))
+    categories = signal<Category[]>([]);
 
     ngOnDestroy(): void {
     }
 
     ngOnInit(): void {
-        this.getAllCategoryGroups();                
+        this.getAllCategoryGroups(); 
+        this.getAllCategories();
     }
 
-
-    onAddCategoryGroup(): void {
-
+    onAddCategoryGroup(card: any): void {
+        const dialogRef = this.dialog.open(CategoryGroupDialog, {
+            data: {
+                categories: this.categories()
+            } as CategoryGroupDialogData
+        })
+        dialogRef.afterClosed().subscribe((result: any) => {
+            if(!result){
+                return;
+            }
+            this.getAllCategoryGroups();
+        })
     }
 
     onUpdateCategoryGroup(obj: any): void {
-
+        const dialogRef = this.dialog.open(CategoryGroupDialog, {
+            data: {
+                categoryGroupId: obj.id,
+                categories: this.categories()
+            } as CategoryGroupDialogData
+        })
+        dialogRef.afterClosed().subscribe((result: any) => {
+            if(!result){
+                return;
+            }
+            this.getAllCategoryGroups();
+        })
     }
 
     onDeleteCategoryGroup(): void {
@@ -60,16 +88,31 @@ export class CategoryGroupsComponent implements OnInit, OnDestroy{
     }
 
     onSearchCategoryGroup(term: string): void {
-        
+        this.searchTerm.set(term);
+        this.getAllCategoryGroups();
     }
  
     
     private getAllCategoryGroups(): void {
-        console.log("IM CALLING IT");
-        this.categoryGroupService.getAll().subscribe({
+        this.categoryGroupLoading.set(true);
+        const searchFilter: SearchTerm[] = this.filterData.createSearchTermFilter(this.searchTerm(), ['Name'])
+        this.categoryGroupService.getAll(searchFilter).pipe(
+         finalize(() => this.categoryGroupLoading.set(false))   
+        )    
+        .subscribe({
             next: (result: Page<CategoryGroup>) => {
                 this.categoryGroups.set(result.data);
-                console.log("GROUPS: ", this.categoryGroups());
+            },
+            error: (error: HttpErrorResponse) => {
+                this.snackbar.error(error.message);
+            }
+        })
+    }
+
+    private getAllCategories(): void {
+        this.categoryService.getAll().subscribe({
+            next: (result: Page<Category>) => {
+                this.categories.set(result.data);
             },
             error: (error: HttpErrorResponse) => {
                 this.snackbar.error(error.message);

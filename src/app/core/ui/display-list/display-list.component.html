@@ -1,9 +1,16 @@
-@if (isCollapsed()){
-    <div class="collapsed-list">
-        <mat-icon class="collapse-icon expand-icon" (click)="onCollapse()">
-            open_in_full
-        </mat-icon>
-    </div>
+@if (isLoading()){
+  <ul class="category-list">
+      <li>
+        <div class="skeleton-rect"></div>
+      </li>
+            <li>
+        <div class="skeleton-rect"></div>
+      </li>
+            <li>
+        <div class="skeleton-rect"></div>
+      </li>
+  </ul>
+
 }@else {
     <ul class="category-list">
         <li class="header-li">

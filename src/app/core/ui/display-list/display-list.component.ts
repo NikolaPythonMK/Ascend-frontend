@@ -29,6 +29,7 @@ export class DisplayListComponent {
 
     selectedId = signal<number | null>(null);
     isCollapsed = signal<boolean>(false);
+    isLoading = input<boolean>(false);
 
     selectedEvent= output<number | null>();
     addEvent = output<void>();

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ButtonComponent } from '../../../../core/ui/button/button.component';
 import { UploadImageComponent } from '../../../../core/ui/upload-img/upload-img.component';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Image } from '../../../../core/ui/upload-img/models/image.model';
 import { CategoryGroupRequest } from '../../../../core/models/api/requests/category-group.request';
 import { CategoryGroupService } from '../../../../core/services/api/category-group.service';
@@ -20,6 +20,10 @@ import { CategoryGroup } from '../../../../core/models/api/responses/category-gr
 import { SnackbarService } from '../../../../core/services/utility/snackbar.service';
 import { Category } from '../../../../core/models/api/responses/category.model';
 import { CategoryGroupDialogData } from '../../models/category-group-dialog-data.dto';
+import { CategoriesService } from '../../../../core/services/api/categories.service';
+import { Page } from '../../../../core/models/api/page.model';
+import { Observable } from 'rxjs';
+import { ConfirmationDialog } from '../../../../core/ui/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   imports: [
@@ -37,21 +41,48 @@ import { CategoryGroupDialogData } from '../../models/category-group-dialog-data
     ButtonComponent,
   ],
   templateUrl: 'category-group-dialog.component.html',
-  styleUrls: ['category-group-dialog.component.scss'],
+  styleUrls: ['category-group-dialog.component.scss', '../../styles/dialog-style.scss'],
 })
-export class CategoryGroupDialog {
+export class CategoryGroupDialog implements OnInit{
     private readonly fb = inject(FormBuilder);
     readonly dialogRef = inject(MatDialogRef<CategoryGroupDialog>);
     readonly data = inject<CategoryGroupDialogData>(MAT_DIALOG_DATA);
     readonly categoryGroupService = inject(CategoryGroupService);
+    readonly categoryService = inject(CategoriesService);
     readonly snackbarService = inject(SnackbarService);
+    readonly dialog = inject(MatDialog);
 
     categoryGroupForm = this.fb.group({
         name: ['', Validators.required],
         description: [''],
-        selectedCategories: [[]]
+        selectedCategories: [[]],
+        image: ['']
     })
-    imageUrl = signal<File | null>(null);
+    imageUrl = signal<string>('');
+    categories = signal<Category[]>([]);
+    isUpdateDialog = signal<boolean>(false);
+
+    ngOnInit(): void {
+      this.categories.set(this.data.categories);
+       
+      if(!this.data.categoryGroupId) {
+        return;
+      }
+      this.isUpdateDialog.set(true);
+      this.categoryGroupService.getById(this.data.categoryGroupId).subscribe({
+        next: (caregoryGroup: CategoryGroup) => {
+          console.log("HELLO")
+          this.getNameControl().setValue(caregoryGroup.name);
+          this.getDescriptionControl().setValue(caregoryGroup.descripton);
+          this.getSelectedCategoriesControl().setValue(caregoryGroup.categories.map(i => i.id))
+          this.imageUrl.set(caregoryGroup.image);
+          console.log("THE IMAGE: ", this.imageUrl());
+        },
+        error: (error: HttpErrorResponse) => {
+          this.snackbarService.error(error.message);
+        }
+      })
+    }
 
     getNameControl(): AbstractControl {
         return this.categoryGroupForm.get('name')!;
@@ -65,8 +96,12 @@ export class CategoryGroupDialog {
         return this.categoryGroupForm.get('selectedCategories')!;
     }
 
-    onUpload(image: File){
-      this.imageUrl.set(image);
+    getImageControl(): AbstractControl {
+      return this.categoryGroupForm.get('image')!;
+    }
+
+    onUpload(event: File): void {
+        this.getImageControl().setValue(event);
     }
 
     onSubmit() {
@@ -78,23 +113,52 @@ export class CategoryGroupDialog {
         formData.append('name', this.getNameControl().value);
         formData.append('description', this.getDescriptionControl().value);
         formData.append('categories', JSON.stringify(this.getSelectedCategoriesControl().value));
-        formData.append('fileBytes', this.imageUrl()!); 
+        formData.append('fileBytes', this.getImageControl().value); 
         formData.append("sourceLocation", "3");
 
-        this.categoryGroupService.add(formData).subscribe({
-          next: (result: CategoryGroup) => {
-            this.snackbarService.success('Успешно e искреирана групата на категории');
-            this.dialogRef.close(result);
-          },
-          error: (error: HttpErrorResponse) => {
-            this.snackbarService.error(error.message);
-            this.dialogRef.close();
-          }
-        })
+        if (this.data.categoryGroupId){
+          formData.append("id", this.data.categoryGroupId.toString());
+        }
 
+        const isEdit = !!this.data.categoryGroupId;
+        const request$ = isEdit
+            ? this.categoryGroupService.update(formData)
+            : this.categoryGroupService.add(formData);
+
+        const action = isEdit ? 'ажурирана' : 'додадена';
+        const message = `Успешно е ${action} групата`;
+
+        this.handleRequest(request$, message);
+
+    }
+
+    onDelete(): void {
+        const dialogRef = this.dialog.open(ConfirmationDialog);
+        dialogRef.afterClosed().subscribe((result: boolean) => {
+            if(!result) {
+                return;
+            }
+            this.handleRequest<number>(
+                this.categoryGroupService.delete(this.data.categoryGroupId!),
+                'Групата е успешно избришана'
+            )            
+        })
     }
 
     getCategoryName(id: number): string {
       return this.data.categories.find(i => i.id === id)?.name ?? '';
   }
+
+      private handleRequest<T>(request$: Observable<T>, successMessage: string): void {
+          request$.subscribe({
+              next: (result: T) => {
+                  this.snackbarService.success(successMessage);
+                  this.dialogRef.close(result);
+              },
+              error: (error: HttpErrorResponse) => {
+                  this.snackbarService.error(error.message);
+                  this.dialogRef.close();
+              }
+          });
+      }
 }

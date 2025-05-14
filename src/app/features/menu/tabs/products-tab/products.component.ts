@@ -29,6 +29,7 @@ import { ImageService } from "../../../../core/services/utility/image.service";
 import { finalize } from "rxjs";
 import { SearchTerm } from "../../../../core/models/api/search-term.model";
 import { FilterDataService } from "../../../../core/services/utility/filter-data.service";
+import { ProductDialogData } from "../../models/product-dialog-data.dto";
 
 
 @Component({
@@ -56,6 +57,7 @@ export class ProuctsComponent implements OnInit{
     products = signal<Product[]>([]);
     selectedCategory = signal<Category | null>(null);
     productsLoading = signal<boolean>(false);
+    categoriesLoading = signal<boolean>(false);
 
     selectedValue = 0;
 
@@ -114,8 +116,9 @@ export class ProuctsComponent implements OnInit{
     onAddProduct(): void {
         const dialogRef = this.dialog.open(ProductDialog, {
             data: {
-                categories: this.categories()
-            }
+                categories: this.categories(),
+                selectedCategory: this.selectedCategory()
+            } as ProductDialogData
         });
         dialogRef.afterClosed().subscribe((result) => {
             if(!result){
@@ -177,7 +180,11 @@ export class ProuctsComponent implements OnInit{
     }
 
     private getCategories(): void {
-        this.categoryService.getAll().subscribe({
+        this.categoriesLoading.set(true);
+        this.categoryService.getAll().pipe(
+            finalize(() => this.categoriesLoading.set(false))
+        )
+        .subscribe({
             next: (categories: Page<Category>) => {
                 this.categories.set(categories.data);
             },

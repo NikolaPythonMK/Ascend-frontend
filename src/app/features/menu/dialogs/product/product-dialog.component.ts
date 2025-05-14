@@ -73,6 +73,11 @@ export class ProductDialog implements OnInit {
 
     ngOnInit(): void {
         this.categories.set(this.data.categories);
+        if (this.data.selectedCategory) {
+            this.getCategoryControl().setValue(this.data.selectedCategory);
+        }
+        console.log(this.data.selectedCategory);
+        console.log(this.getCategoryControl());
 
         if (this.data.id) {
             this.isUpdateDialog.set(true);

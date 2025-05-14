@@ -1,18 +1,19 @@
 <h2 mat-dialog-title class="dialog-title">Додади Група на Категорија</h2>
 
 <form [formGroup]="categoryGroupForm" (ngSubmit)="onSubmit()" class="dialog-form">
-  
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Name</mat-label>
-      <input matInput formControlName="name" required />
-    </mat-form-field>
+  <div class="form-inputs">
+    <div>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" required />
+      </mat-form-field>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Description (optional)</mat-label>
-      <textarea matInput formControlName="description"></textarea>
-    </mat-form-field>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Description (optional)</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field>
 
-    @if (data.categories.length) {
+    @if (data.categories) {
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Categories</mat-label>
         <mat-select formControlName="selectedCategories" multiple>
@@ -31,14 +32,31 @@
         </mat-select>
       </mat-form-field>
     }
-
-  <div class="full-width upload-container">
-    <span>Прикачи слика (optional)</span>
-    <ascend-upload-image (uploadEvent)="onUpload($event)" />
+    </div>
+    <div>
+      <div class="full-width upload-container">
+        <span>Прикачи слика (optional)</span>
+        <ascend-upload-image
+          (uploadEvent)="onUpload($event)"
+          [imageUrl]="
+            imageUrl() && imageUrl()?.trim() !== ''
+              ? 'http://localhost:5073' + imageUrl()
+              : 'assets/images/no-image-icon.png'
+          "
+        />
+      </div>
+    </div>
   </div>
-
+  
   <div class="actions">
+    @if (isUpdateDialog()) {
+    <mat-icon class="trash-btn" (click)="onDelete()">delete</mat-icon>
+    }
     <button mat-button type="button" (click)="dialogRef.close()">Откажи</button>
-    <ascend-button type="primary" [label]="'Додади'" [disabled]="categoryGroupForm.invalid" />
+    <ascend-button
+      type="primary"
+      [label]=''
+      [disabled]="categoryGroupForm.invalid"
+    />
   </div>
 </form>
