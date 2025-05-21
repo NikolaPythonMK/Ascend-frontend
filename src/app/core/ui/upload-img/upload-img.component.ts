@@ -1,9 +1,10 @@
 import { Component, input, linkedSignal, output, signal } from "@angular/core";
-import { Image } from "./models/image.model";
+import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
     selector: 'ascend-upload-image',
-    imports: [],
+    imports: [MatIcon, MatIconButton],
     templateUrl: 'upload-img.component.html',
     styleUrls: ['upload-img.component.scss']
 })
@@ -16,6 +17,8 @@ export class UploadImageComponent {
   fileName = signal<string>('');
 
   uploadEvent = output<File>();
+
+  deleteEvent = output<void>();
 
   preview(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -40,5 +43,10 @@ export class UploadImageComponent {
 
   onChooseImage(imgInput: HTMLInputElement): void {
     imgInput.click();
+  }
+
+  onRemoveImage(): void {
+    this.deleteEvent.emit();
+    this.imageUrl.set(null);
   }
 }

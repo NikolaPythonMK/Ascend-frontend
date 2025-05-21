@@ -1,5 +1,9 @@
 @use 'variables' as vars;
 
+.wrapper {
+  height: 100vh;
+}
+
 .cards {
     display: flex;
     flex-wrap: wrap;

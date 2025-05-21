@@ -23,6 +23,8 @@ import type { CategoryDialogData } from "../../models/category-dialog-data.dto";
 import { ConfirmationDialog } from "../../../../core/ui/confirmation-dialog/confirmation-dialog.component";
 import { Observable } from "rxjs";
 import { ImageService } from "../../../../core/services/utility/image.service";
+import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
+import { ErrorDetails } from "../../../../core/models/error-details";
 
 
 @Component({
@@ -38,8 +40,9 @@ import { ImageService } from "../../../../core/services/utility/image.service";
     MatChipsModule,
     UploadImageComponent,
     MatCheckboxModule,
-    ButtonComponent
-    ],
+    ButtonComponent,
+    LoaderComponent
+],
     templateUrl: 'category-dialog.component.html',
     styleUrls: ['category-dialog.component.scss', '../../styles/dialog-style.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -64,6 +67,8 @@ export class CategoryDialog implements OnInit{
     title = signal<string>('Додади Категорија');
     submitBtnLabel = signal<string>('Додади');
     imageUrl = signal('');
+    loading = signal<boolean>(false);
+    errorMessages = signal<string[]>([]);
 
     ngOnInit(): void {
         if (this.data.selectedGroupId) {
@@ -73,6 +78,11 @@ export class CategoryDialog implements OnInit{
             return;
         }
 
+        this.isUpdateDialog.set(true);
+        this.title.set('Ажурирај Категорија')
+        this.submitBtnLabel.set('Ажурирај');
+
+        this.loading.set(true);
         this.categoryService.getById(this.data.categoryId).subscribe({
             next: (category: Category) => {
                 this.getNameControl().setValue(category.name);
@@ -81,9 +91,7 @@ export class CategoryDialog implements OnInit{
                 if(category.categoryGroupId){
                     this.getSelectedCategoryGroup().setValue(category.categoryGroupId);
                 }
-                this.isUpdateDialog.set(true);
-                this.title.set('Ажурирај Категорија')
-                this.submitBtnLabel.set('Ажурирај');
+                this.loading.set(false);
             },
             error: (error: HttpErrorResponse) => {
                 this.snackbar.error(error.message);
@@ -155,8 +163,8 @@ export class CategoryDialog implements OnInit{
                 this.dialogRef.close(result);
             },
             error: (error: HttpErrorResponse) => {
-                this.snackbar.error(error.message);
-                this.dialogRef.close();
+                    const errorDetails = error.error as ErrorDetails;
+                    this.errorMessages.set(errorDetails.detail.split(','));    
             }
         });
     }

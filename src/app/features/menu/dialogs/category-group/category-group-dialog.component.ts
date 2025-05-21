@@ -24,6 +24,8 @@ import { CategoriesService } from '../../../../core/services/api/categories.serv
 import { Page } from '../../../../core/models/api/page.model';
 import { Observable } from 'rxjs';
 import { ConfirmationDialog } from '../../../../core/ui/confirmation-dialog/confirmation-dialog.component';
+import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
+import { ErrorDetails } from '../../../../core/models/error-details';
 
 @Component({
   imports: [
@@ -39,7 +41,8 @@ import { ConfirmationDialog } from '../../../../core/ui/confirmation-dialog/conf
     UploadImageComponent,
     MatCheckboxModule,
     ButtonComponent,
-  ],
+    LoaderComponent
+],
   templateUrl: 'category-group-dialog.component.html',
   styleUrls: ['category-group-dialog.component.scss', '../../styles/dialog-style.scss'],
 })
@@ -61,6 +64,11 @@ export class CategoryGroupDialog implements OnInit{
     imageUrl = signal<string>('');
     categories = signal<Category[]>([]);
     isUpdateDialog = signal<boolean>(false);
+    title = signal<string>('Додади Група');
+    submitBtnLabel = signal<string>('Додади');
+    loading = signal<boolean>(false);
+    errorMessages = signal<string[]>([]);
+
 
     ngOnInit(): void {
       this.categories.set(this.data.categories);
@@ -68,15 +76,17 @@ export class CategoryGroupDialog implements OnInit{
       if(!this.data.categoryGroupId) {
         return;
       }
+      this.loading.set(true);
       this.isUpdateDialog.set(true);
+      this.title.set('Ажурирај Група')
+      this.submitBtnLabel.set('Ажурирај');
       this.categoryGroupService.getById(this.data.categoryGroupId).subscribe({
         next: (caregoryGroup: CategoryGroup) => {
-          console.log("HELLO")
           this.getNameControl().setValue(caregoryGroup.name);
           this.getDescriptionControl().setValue(caregoryGroup.descripton);
           this.getSelectedCategoriesControl().setValue(caregoryGroup.categories.map(i => i.id))
           this.imageUrl.set(caregoryGroup.image);
-          console.log("THE IMAGE: ", this.imageUrl());
+          this.loading.set(false);
         },
         error: (error: HttpErrorResponse) => {
           this.snackbarService.error(error.message);
@@ -156,8 +166,8 @@ export class CategoryGroupDialog implements OnInit{
                   this.dialogRef.close(result);
               },
               error: (error: HttpErrorResponse) => {
-                  this.snackbarService.error(error.message);
-                  this.dialogRef.close();
+                    const errorDetails = error.error as ErrorDetails;
+                    this.errorMessages.set(errorDetails.detail.split(','));    
               }
           });
       }

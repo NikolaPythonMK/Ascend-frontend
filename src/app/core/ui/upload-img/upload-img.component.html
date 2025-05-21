@@ -1,23 +1,38 @@
 <div class="image-upload-container">
-    <input
-      #imgInput
-      name="images"
-      type="file"
-      accept="image/x-png, image/jpeg"
-      (change)="preview($event)"
-      style="opacity: 0;"/>
-    @if (!imageUrl()) {
-        <div class="image-previews">
-            <div class="image" (click)="onChooseImage(imgInput)">
-                <div>+</div>
-            </div>
-        </div>
-    }
+  <input
+    #imgInput
+    name="images"
+    type="file"
+    accept="image/x-png, image/jpeg"
+    (change)="preview($event)"
+    style="opacity: 0"
+  />
+  @if (!imageUrl()) {
+  <div class="image-preview-container">
+    <div class="image" (click)="onChooseImage(imgInput)">
+      <div>+</div>
+    </div>
   </div>
+  }
+</div>
 
 @if (imageUrl()){
-    <div class="image-preview-container">
-        <img class="selected-image" [src]="imageUrl()" alt="Image Preview" (click)="onChooseImage(imgInput)" />
-        <div>{{ fileName() }}</div>
-    </div>
+<div class="image-preview-container">
+  <button
+    class="delete-img"
+    mat-icon-button
+    aria-label="Delete image"
+    (click)="onRemoveImage()"
+    type="button"
+  >
+    <mat-icon>delete</mat-icon>
+  </button>
+  <img
+    class="selected-image"
+    [src]="imageUrl()"
+    alt="Image Preview"
+    (click)="onChooseImage(imgInput)"
+  />
+  <div>{{ fileName() }}</div>
+</div>
 }

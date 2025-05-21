@@ -26,14 +26,13 @@
             }
         </li>
         @if (setSelectAllButton()) {
-            <li (click)="onSelect(null)" class="category-element" [style.--border-color]="getBorderColor(0)">
+            <li (click)="onSelect(null)" class="category-element select-all-btn">
                 <span [ngClass]="{'selected-title': selectedId() === null}">{{ selectAllButtonLabel() }}</span>
             </li>
         }
         @for (element of elements(); track element.id; let index = $index) {
             <li (click)="onSelect(element.id)" class="category-element"
-                [style.border-left]=" '10px solid ' + getBorderColor(index) "
-                [style.--border-color]="getBorderColor(index)">
+                [style.border-left]=" '10px solid ' + getBorderColor(index) ">
                 <div class="li-content">
                     <span [ngClass]="{'selected-title': selectedId() === element.id}">{{ element.title }}</span>
                     @if (selectedId() === element.id && setDeleteButton()) {

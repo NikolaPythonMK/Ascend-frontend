@@ -27,7 +27,7 @@ import { finalize } from "rxjs";
     templateUrl: 'category-groups.component.html',
     styleUrls: ['category-groups.component.scss']
 })
-export class CategoryGroupsComponent implements OnInit, OnDestroy{
+export class CategoryGroupsComponent implements OnInit{
     private readonly dialog = inject(MatDialog);
     readonly categoryGroupService = inject(CategoryGroupService);
     readonly categoryService = inject(CategoriesService);
@@ -45,9 +45,6 @@ export class CategoryGroupsComponent implements OnInit, OnDestroy{
         }
     }))
     categories = signal<Category[]>([]);
-
-    ngOnDestroy(): void {
-    }
 
     ngOnInit(): void {
         this.getAllCategoryGroups(); 
@@ -81,10 +78,6 @@ export class CategoryGroupsComponent implements OnInit, OnDestroy{
             }
             this.getAllCategoryGroups();
         })
-    }
-
-    onDeleteCategoryGroup(): void {
-
     }
 
     onSearchCategoryGroup(term: string): void {

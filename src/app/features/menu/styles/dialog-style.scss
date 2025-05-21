@@ -58,7 +58,7 @@
   }
 
   .trash-btn {
-    color: red;
+    color: #d9534f;
     margin-right: auto;
     cursor: pointer;
  }
@@ -69,4 +69,14 @@
     }
     display: flex;
     flex-direction: column;
+ }
+
+ .error-message {
+  display: flex;
+  align-items: center;
+  color: #d9534f;
+  padding-bottom: .4em;
+  span {
+    padding-left: .3em;
+  }
  }

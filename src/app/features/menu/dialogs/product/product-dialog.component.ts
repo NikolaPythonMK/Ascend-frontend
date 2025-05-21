@@ -21,26 +21,29 @@ import { Page } from "../../../../core/models/api/page.model";
 import { ProductsService } from "../../../../core/services/api/products.service";
 import { ProductDialogData } from "../../models/product-dialog-data.dto";
 import { Product } from "../../../../core/models/api/responses/product.model";
-import { iif, Observable, of, switchMap, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ConfirmationDialog } from "../../../../core/ui/confirmation-dialog/confirmation-dialog.component";
+import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
+import { ErrorDetails } from "../../../../core/models/error-details";
 
 
 @Component({
-      standalone: true,             // ← this is required
+      standalone: true,
     imports: [
-        CommonModule,
-        MatCardModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatButtonModule,
-        MatIconModule,
-        MatChipsModule,
-        UploadImageComponent,
-        MatCheckboxModule,
-        ButtonComponent
-    ],
+    CommonModule,
+    MatCardModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
+    UploadImageComponent,
+    MatCheckboxModule,
+    ButtonComponent,
+    LoaderComponent
+],
     templateUrl: 'product-dialog.component.html',
     styleUrls: ['product-dialog.component.scss', '../../styles/dialog-style.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -68,19 +71,22 @@ export class ProductDialog implements OnInit {
     isUpdateDialog = signal<boolean>(false);
     title = signal<string>('Додади Продукт');
     submitBtnLabel = signal<string>('Додади');
-
     imageUrl = signal<string | null>("");
+    loading = signal<boolean>(false);
+    errorMessages = signal<string[]>([]);
+
 
     ngOnInit(): void {
         this.categories.set(this.data.categories);
         if (this.data.selectedCategory) {
             this.getCategoryControl().setValue(this.data.selectedCategory);
         }
-        console.log(this.data.selectedCategory);
-        console.log(this.getCategoryControl());
 
         if (this.data.id) {
+            this.loading.set(true);
             this.isUpdateDialog.set(true);
+            this.title.set('Ажурирај Продукт')
+            this.submitBtnLabel.set('Ажурирај');
             this.productService.getById(this.data.id).subscribe({
                 next: (product: Product) => {
                     this.getNameControl().setValue(product.name);
@@ -89,6 +95,7 @@ export class ProductDialog implements OnInit {
                     this.getDescriptionControl().setValue(product.description);
                     this.getCategoryControl().setValue(this.categories().find(c => c.id === product.categoryID));
                     this.imageUrl.set(product.image);
+                    this.loading.set(false);
                 },
                 error: (error: HttpErrorResponse) => {
                     this.snackbar.error(error.message)
@@ -163,8 +170,17 @@ export class ProductDialog implements OnInit {
         })
     }
 
+    onDeleteImage(): void {
+        this.getImageControl().setValue('');
+        this.imageUrl.set('');
+    }
+
     onUpload(event: File): void {
         this.getImageControl().setValue(event);
+    }
+
+    onInputChange(errorKey: string): void {
+        this.errorMessages.set(this.errorMessages().filter(i => i !== errorKey));
     }
 
     compareWith(o1: Category, o2: Category): boolean {
@@ -178,8 +194,8 @@ export class ProductDialog implements OnInit {
                     this.dialogRef.close(result);
                 },
                 error: (error: HttpErrorResponse) => {
-                    this.snackbar.error(error.message);
-                    this.dialogRef.close();
+                    const errorDetails = error.error as ErrorDetails;
+                    this.errorMessages.set(errorDetails.detail.split(','));        
                 }
             });
         }

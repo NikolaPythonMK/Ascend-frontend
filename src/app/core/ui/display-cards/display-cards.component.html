@@ -1,6 +1,7 @@
 @if (loading()) {
     <ascend-skeleton-card [numberOfCards]="7" />
 } @else {
+    <div class="wrapper">
     <div class="cards-grid">
         @for(element of elements(); track element.id){
             <div class="card-container">
@@ -19,5 +20,6 @@
                 }
             </div>
         }
+    </div>
     </div>
 }

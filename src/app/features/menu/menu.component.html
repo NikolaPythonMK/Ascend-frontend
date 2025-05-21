@@ -2,17 +2,23 @@
   <mat-tab-group>
   <mat-tab [label]="'menu.tab-title-products' | translate">
     <div class="content-wrapper">
-      <products-component />
+      <ng-template matTabContent>
+        <products-component />
+      </ng-template>
     </div>
   </mat-tab>
   <mat-tab [label]="'menu.tab-title-categories' | translate">
     <div class="content-wrapper">
-      <categories-component />
+      <ng-template matTabContent>
+        <categories-component />
+      </ng-template>
     </div>
   </mat-tab>
     <mat-tab [label]="'menu.tab-title-categorygroups' | translate">
     <div class="content-wrapper">
-      <category-groups-component />
+      <ng-template matTabContent>
+        <category-groups-component />
+      </ng-template>
     </div>
   </mat-tab>
 </mat-tab-group>

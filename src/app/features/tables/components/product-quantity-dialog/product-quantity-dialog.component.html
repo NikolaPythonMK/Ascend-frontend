@@ -30,20 +30,6 @@
       ></textarea>
     </mat-form-field>
 
-    <!-- <div class="dialog-actions" mat-dialog-actions>
-      <button mat-icon-button
-              color="warn" 
-              aria-label="Delete item"
-              (click)="onDelete()">
-         <mat-icon>delete</mat-icon>
-      </button>
-
-      <div>
-        <button mat-stroked-button color="warn" (click)="dialogRef.close()">{{ cancelLabel() | translate }}</button>
-        <button mat-flat-button color="primary" class="custom-color" (click)="onSubmit()">{{ submitLabel() | translate }}</button>
-      </div>
-    </div> -->
-
     @if (data.id) {
       <div class="dialog-actions" mat-dialog-actions>
         <button mat-icon-button
@@ -61,6 +47,7 @@
     } @else {
       <div class="dialog-actions-del" mat-dialog-actions>
         <button mat-icon-button
+                type="button"
                 color="warn" 
                 aria-label="Delete item"
                 (click)="onDelete()">
