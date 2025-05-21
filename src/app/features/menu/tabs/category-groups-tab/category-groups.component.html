@@ -2,7 +2,7 @@
   <div class="cards-container">
     <div class="cards-header">
       <div class="left-part">
-        <span class="title">Групи на категории</span>
+        <span class="title">Category Groups</span>
         <ascend-header-counter [value]="categoryGroupCards().length" />
       </div>
       <div class="right-part">
@@ -14,7 +14,7 @@
           (click)="onAddCategoryGroup($event)"
         >
           <mat-icon>add</mat-icon>
-          Група
+          Group
         </button>
 
         <ascend-search-bar (onSearchTerm)="onSearchCategoryGroup($event)"  />

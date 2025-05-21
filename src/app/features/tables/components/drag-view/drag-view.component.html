@@ -1,48 +1,52 @@
-<div class="container">
-  <div class="update-buttons">
-    @if (isUpdateMode()) {
-      <ascend-button type="secondary" label="Reset" icon="undo" class="reset-btn" (clickEvent)="onReset()"/>
-      <ascend-button
-        (clickEvent)="onUpdatePositions()"
-        class="update-btn"
-        type="primary" 
-        label="Save" 
-        icon="save" 
-      />
-    } @else {
-      <ascend-button type="primary" label="Edit" icon="edit_square" (clickEvent)="handleUpdateMode()" />
-    }
-  </div>
-@for (table of tables(); track table.id) {
-  @if (isUpdateMode()) {
-      <div cdkDrag
-           [cdkDragFreeDragPosition]="getDragPosition(table)"
-           (cdkDragEnded)="onDragEnd($event, table)"
-           cdkDropListSortingDisabled="false"
-           class="table"
-           [ngClass]="{'available': table.status.toString() === 'Available',
-                      'occupied': table.status.toString() === 'Occupied'}">
-        <span>{{ table.code }}</span>
-        <span class="status" [ngClass]="{'available-status': table.status.toString() === 'Available',
-                              'occupied-status': table.status.toString() === 'Occupied'}">
-            {{ 'tables.status.' + table.status | translate }}
-        </span>
+<div class="layout">
+  <div class="toolbar">
+
+    <div class="dropdown">
+      <button class="dropbtn" title="Add Shape">
+        <i class="material-icons">add</i>
+      </button>
+      <div class="dropdown-content">
+        <button (click)="addTable()"><i class="material-icons">table_bar</i> Table</button>
+        <button (click)="addObstacle()"><i class="material-icons">fence</i> Obstacle</button>
+        <button (click)="saveLayout()"><i class="material-icons">save</i> Save</button>
       </div>
-  }
-  @else {
-        <div class="table"
-             (click)="onClickTable(table.id)"
-             cdkDrag
-             [cdkDragFreeDragPosition]="getDragPosition(table)"
-             [cdkDragDisabled]="true"
-             [ngClass]="{'available': table.status.toString() === 'Available',
-                        'occupied': table.status.toString() === 'Occupied'}">
-            <span>{{ table.code }}</span>
-            <span class="status" [ngClass]="{'available-status': table.status.toString() === 'Available',
-                          'occupied-status': table.status.toString() === 'Occupied'}">
-                  {{ 'tables.status.' + table.status | translate }}
-            </span>
-        </div>
-  }
-}
+    </div>
+
+    <div class="dropdown">
+      <button class="dropbtn" title="Change Shape">
+        <i class="material-icons">category</i>
+      </button>
+      <div class="dropdown-content">
+        <button (click)="switchShapeType(selectedId, 'rect')"><i class="material-icons">rectangle</i> Rectangle</button>
+        <button (click)="switchShapeType(selectedId, 'circle')"><i class="material-icons">circle</i> Circle</button>
+        <button (click)="switchShapeType(selectedId, 'oval')"><i class="material-icons">circle</i> Oval</button>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <button class="dropbtn" title="Zooom">
+        <i class="material-icons">search</i>
+      </button>
+    </div>
+
+    <ngx-colors ngx-colors-trigger [(ngModel)]="color" (slider)="changeShapeColor($event, selectedId)" (ngModelChange)="changeShapeColor($event, selectedId)"></ngx-colors>
+
+    <div class="floors">
+      <button *ngFor="let floor of layers; let i = index" (click)="switchFloor(i)" [title]="'Floor ' + (i + 1)">
+        {{ i + 1 }}
+      </button>
+      <button (click)="addFloor({ id: (layers.length + 1).toString(), name: 'Floor ' + (layers.length + 1), items: [] })" title="Add Floor">
+        ＋
+      </button>
+    </div>
+
+  </div>
+
+  <div class="canvas-container">
+    <div class="zoom-buttons">
+      <button (click)="zoomIn()"><i class="material-icons">add</i></button>
+      <button (click)="zoomOut()"><i class="material-icons">remove</i></button>
+    </div>
+    <div id="container" style="width: 100%; height: 100%; z-index: 1;"></div>
+  </div>
 </div>

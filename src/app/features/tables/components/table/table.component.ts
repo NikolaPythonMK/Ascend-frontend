@@ -66,7 +66,7 @@ export class TableComponent implements OnInit{
         return {
             id: i.id,
             title: i.name,
-            image: i.image ? this.imageService.getImageUrl(i.image) : '',
+            image: i.image ? i.image : '',
             price: i.price
         } as Card
     }))

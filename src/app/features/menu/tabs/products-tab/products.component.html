@@ -1,7 +1,7 @@
 <div class="container">
   <div class="list-container">
     <div class="sidebar-header">
-      <p class="title title-sidebar-list">Категории</p>
+      <p class="title title-sidebar-list">Categories</p>
     </div>
     <ascend-display-list
       [elements]="categoryListElements()"
@@ -16,9 +16,9 @@
     <div class="cards-header">
       <div class="left-part">
         @if (selectedCategory()){
-        <span class="title">Продукти > {{ selectedCategory()!.name }}</span>
+        <span class="title">Products > {{ selectedCategory()!.name }}</span>
         }@else {
-        <span class="title">Продукти > Сите продукти</span>
+        <span class="title">Products > All Products</span>
         }
         <ascend-header-counter [value]="products().length" />
       </div>
@@ -31,7 +31,7 @@
           (click)="onAddProduct()"
         >
           <mat-icon>add</mat-icon>
-          Продукт
+          Product
         </button>
 
         <ascend-search-bar (onSearchTerm)="onSearchProducts($event)"  />
