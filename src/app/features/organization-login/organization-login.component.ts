@@ -22,6 +22,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { CountrySelectComponent } from "../../core/ui/country-select/country-select.component";
 import { Organization } from '../../core/models/api/responses/organization.model';
 import { Location } from '../../core/models/api/responses/location.model';
+import { LoginResponse } from '../../core/models/api/responses/login-response';
 
 @Component({
   imports: [
@@ -95,7 +96,8 @@ export class OrganizationLoginPage {
     const result = this.organizationService
       .login(loginRequest)
       .subscribe({
-        next: (organization: Organization) => {
+        next: (response: LoginResponse) => {
+          localStorage.setItem('location', response.locationID.toString())
           this.snackbarService.success('Logged in successfully');
           this.router.navigate([`/staff`]);
         },

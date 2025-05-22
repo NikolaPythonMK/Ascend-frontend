@@ -18,9 +18,9 @@
     <div class="cards-header">
       <div class="left-part">
         @if (selectedCategoryGroup()){
-        <span class="title">Категории > {{ selectedCategoryGroup()!.name }}</span>
+        <span class="title">Categories > {{ selectedCategoryGroup()!.name }}</span>
         }@else {
-        <span class="title">Категории > Сите категории</span>
+        <span class="title">Category > All Categories</span>
         }
         <ascend-header-counter [value]="categories().length" />
       </div>
@@ -33,7 +33,7 @@
           (click)="onAddCategory()"
         >
           <mat-icon>add</mat-icon>
-          Категорија
+          Category
         </button>
 
         <ascend-search-bar (onSearchTerm)="onSearchCategory($event)"  />

@@ -81,7 +81,7 @@
     <grid-view [dataSource]="tables()" (clickedTableId)="onClickTable($event)" />
   }
   @else {
-    <drag-view [dataSource]="tables()"  (clickedTableId)="onClickTable($event)" (updatePositionsEvent)="onUpdatePositions($event)"/>
+    <drag-view [dataSource]="tables()"/>
   }
   </div>
 }

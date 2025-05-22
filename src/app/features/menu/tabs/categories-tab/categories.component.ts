@@ -159,7 +159,7 @@ export class CategoriesComponent implements OnInit, OnDestroy{
                     return {
                         id: c.id,
                         name: c.name,
-                        image: this.imageService.getImageUrl(c.image),
+                        image: c.image,
                         description: c.description,
                         categoryGroupId: c.categoryGroupId
                         

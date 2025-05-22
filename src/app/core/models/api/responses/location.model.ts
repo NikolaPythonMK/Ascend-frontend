@@ -6,4 +6,5 @@ export interface Location {
     tables?: Table[],
     transactions?: any,
     tableCount: number,
+    tableLocationMapping?: string
 }

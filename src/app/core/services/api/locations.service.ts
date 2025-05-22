@@ -5,6 +5,7 @@ import { environment } from "../../../../environments/environment";
 import { BaseService } from "./base.service";
 import type { LocationRequest } from "../../models/api/requests/location.request";
 import type { Location } from "../../models/api/responses/location.model";
+import { LocationTablesRequest } from "../../models/api/requests/location-tables.request";
 
 @Injectable({
     providedIn: 'root'
@@ -23,5 +24,9 @@ export class LocationService extends BaseService<Location, LocationRequest> {
      */
     getLocations(email: string): Observable<Location[]> {
         return this.http.get<Location[]>(`${this.domain}/auth/locations?email=${email}`);
+    }
+
+    updateTableMapping(request: LocationTablesRequest): Observable<void> {
+        return this.http.post<void>(`${this.domain}/location/update-table-mapping`, request, { withCredentials: true});
     }
 }

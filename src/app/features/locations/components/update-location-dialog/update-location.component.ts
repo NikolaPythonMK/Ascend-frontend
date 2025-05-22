@@ -48,7 +48,8 @@ export class UpdateLocationDialog implements OnInit{
     
         const request: LocationRequest = {
             id: this.data.id,
-            name: this.getNameControl().value
+            name: this.getNameControl().value,
+            tabbleLocationMapping: ''
         };
         this.handleRequest(
             this.locationsService.update(request),
