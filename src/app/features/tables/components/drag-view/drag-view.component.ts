@@ -6,6 +6,8 @@ import {
   input,
   linkedSignal,
   OnInit,
+  output,
+  signal,
 } from '@angular/core';
 import { Floor, ShapeItem } from '../../models/drag-view.model';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,6 +21,8 @@ import { LocationTablesRequest } from '../../../../core/models/api/requests/loca
 import { SnackbarService } from '../../../../core/services/utility/snackbar.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '../../../../core/models/api/responses/location.model';
+import { catchError, map, Observable, of } from 'rxjs';
+import { Layer } from 'konva/lib/Layer';
 
 @Component({
   selector: 'drag-view',
@@ -30,11 +34,13 @@ import { Location } from '../../../../core/models/api/responses/location.model';
 export class DragViewComponent implements OnInit {
   private readonly locationService = inject(LocationService);
   private readonly snackbarService = inject(SnackbarService);
+  clickedTableId = output<number>();
+  isEdit = signal<boolean>(false);
   stage!: Konva.Stage;
   transformer!: Konva.Transformer;
   dataSource = input.required<Table[]>();
   tables = linkedSignal<Table[]>(() => this.dataSource());
-  layers: Konva.Layer[] = [];
+  layers = signal<Konva.Layer[]>([]);
   floors: Floor[] = [];
   currentFloorIndex: number = 0;
   selectedId: string | null = null;
@@ -44,7 +50,6 @@ export class DragViewComponent implements OnInit {
 
   ngOnInit() {
     const containerElement = document.querySelector('#container');
-
     this.stage = new Konva.Stage({
       container: 'container',
       width: containerElement?.clientWidth,
@@ -61,24 +66,28 @@ export class DragViewComponent implements OnInit {
       flipEnabled: false,
     });
 
-    if (!this.loadLayout()) {
-      this.addFloor({ id: '1', name: 'Main', items: [] });
+    this.loadLayout().subscribe(result => {
+      if (!result) {
+        this.addFloor({ id: '1', name: 'Main', items: [] });
 
-      this.tables().forEach((table) => {
-        this.addTable(table.code);
-      });
-    }
+        this.tables().forEach((table) => {
+          this.addTable(table.code, table.id);
+        });
+      }
+
+      this.onEditClick(false);
+    });
   }
 
   addFloor(floor: Floor) {
     const newLayer = new Konva.Layer();
-    this.layers.push(newLayer);
+    this.layers.set([...this.layers(), newLayer]);
     this.floors.push(floor);
     this.stage.add(newLayer);
     newLayer.add(this.transformer);
 
     floor.items.forEach((item) => this.drawShape(item, newLayer));
-    this.switchFloor(this.layers.length - 1);
+    this.switchFloor(this.layers().length - 1);
   }
 
   switchFloor(index: number) {
@@ -93,11 +102,11 @@ export class DragViewComponent implements OnInit {
         const [item] = currentFloor.items.splice(itemIndex, 1);
         targetFloor.items.push(item);
 
-        const oldLayer = this.layers[this.currentFloorIndex];
+        const oldLayer = this.layers()[this.currentFloorIndex];
         const group = oldLayer.findOne<Konva.Group>(`#${this.selectedId}`);
         group?.destroy();
         oldLayer.draw();
-        this.drawShape(item, this.layers[index]);
+        this.drawShape(item, this.layers()[index]);
       }
     }
 
@@ -106,11 +115,13 @@ export class DragViewComponent implements OnInit {
 
     this.currentFloorIndex = index;
 
-    this.layers.forEach((layer, i) => {
-      layer.visible(i === index);
-    });
+    // this.layers().forEach((layer:Layer, i:number) => {
+    //   layer.visible(i === index);
+    // });
 
-    const newLayer = this.layers[this.currentFloorIndex];
+    this.layers.set(this.layers().map((q, i)=> q.visible(i === index)))
+
+    const newLayer = this.layers()[this.currentFloorIndex];
     newLayer.add(this.transformer);
 
     if (this.selectedId) {
@@ -125,10 +136,11 @@ export class DragViewComponent implements OnInit {
     newLayer.draw();
   }
 
-  addTable(textToShow?: string) {
+  addTable(textToShow: string, tableId: number) {
     const id = crypto.randomUUID();
     const table: ShapeItem = {
       id,
+      tableId,
       x: this.stage.width() / 2,
       y: this.stage.height() / 2,
       width: 80,
@@ -137,13 +149,14 @@ export class DragViewComponent implements OnInit {
       text: textToShow,
     };
     this.floors[this.currentFloorIndex].items.push(table);
-    this.drawShape(table, this.layers[this.currentFloorIndex]);
+    this.drawShape(table, this.layers()[this.currentFloorIndex]);
   }
 
   addObstacle() {
     const id = crypto.randomUUID();
     const obstacle: ShapeItem = {
       id,
+      tableId: 0,
       x: this.stage.width() / 2,
       y: this.stage.height() / 2,
       width: 120,
@@ -151,7 +164,7 @@ export class DragViewComponent implements OnInit {
       fill: 'gray',
     };
     this.floors[this.currentFloorIndex].items.push(obstacle);
-    this.drawShape(obstacle, this.layers[this.currentFloorIndex]);
+    this.drawShape(obstacle, this.layers()[this.currentFloorIndex]);
   }
 
   drawShape(item: ShapeItem, layer: Konva.Layer) {
@@ -216,12 +229,16 @@ export class DragViewComponent implements OnInit {
     layer.add(group);
 
     group.on('click', (e: any) => {
-      e.cancelBubble = true;
-      this.selectedId = item.id;
-      this.color = item.fill;
-      this.transformer.nodes([group]);
-      layer.batchDraw();
-      this.cdr.detectChanges();
+      if(!this.isEdit()){
+        this.clickedTableId.emit(item.tableId);
+      }else{
+        e.cancelBubble = true;
+        this.selectedId = item.id;
+        this.color = item.fill;
+        this.transformer.nodes([group]);
+        layer.batchDraw();
+        this.cdr.detectChanges();
+      }
     });
 
     group.on('transformend', () => {
@@ -264,7 +281,7 @@ export class DragViewComponent implements OnInit {
     );
     if (!item) return;
 
-    const layer = this.layers[this.currentFloorIndex];
+    const layer = this.layers()[this.currentFloorIndex];
     const group = layer.findOne<Konva.Group>(`#${id}`);
     if (!group) return;
 
@@ -289,7 +306,7 @@ export class DragViewComponent implements OnInit {
 
     item.shapeType = newType;
 
-    const layer = this.layers[this.currentFloorIndex];
+    const layer = this.layers()[this.currentFloorIndex];
     const group = layer.findOne<Konva.Group>(`#${id}`);
     if (!group) return;
 
@@ -340,6 +357,36 @@ export class DragViewComponent implements OnInit {
     this.zoom(-0.5);
   }
 
+  onEditClick(param: boolean = true){
+    if(param){
+      this.isEdit.set(!this.isEdit());
+    }
+    
+     if (!this.isEdit()) {
+      this.transformer.nodes([]);
+      this.transformer.enabledAnchors([]);
+      this.layers().forEach(layer => {
+        layer.find('Group').forEach(shape => {
+          shape.draggable(false);
+        });
+        layer.draw();
+      });
+    } else {
+      this.transformer.enabledAnchors([
+        'top-left', 'top-right',
+        'bottom-left', 'bottom-right',
+        'top-center', 'bottom-center',
+        'middle-left', 'middle-right'
+      ]);
+      this.layers().forEach(layer => {
+      layer.find('Group').forEach(shape => {
+          shape.draggable(true);
+        });
+        layer.draw();
+      });
+    }
+  }
+
   saveLayout() {
     const request: LocationTablesRequest = {
       id: Number(localStorage.getItem('location')),
@@ -356,24 +403,33 @@ export class DragViewComponent implements OnInit {
     });
   }
 
-  loadLayout(): boolean {
-    const location = Number(localStorage.getItem('location'));
-    let raw = '';
+  loadLayout(): Observable<boolean> {
+    const locationId = Number(localStorage.getItem('location'));
 
-    this.locationService.getById(location).subscribe({
-      next: (location: Location) => {
-        raw = location.tableLocationMapping!;
+    if (!locationId) return of(false);
+
+    return this.locationService.getById(locationId).pipe(
+      map((location: Location) => {
+        const raw = location.tableLocationMapping;
+
+        if (!raw) return false;
 
         const savedFloors: Floor[] = JSON.parse(raw);
-        this.layers.forEach((layer) => layer.destroy());
-        this.layers = [];
+
+        //this.layers().forEach((layer: Layer) => layer.destroy());
+        this.layers.set(this.layers().map(q => q.destroy()));
+        this.layers.set([]);
         this.floors = [];
 
-        savedFloors.forEach((floor) => this.addFloor(floor));
+        savedFloors.forEach(floor => this.addFloor(floor));
         this.switchFloor(0);
-      },
-    });
 
-    return true;
+        return true;
+      }),
+      catchError(err => {
+        console.error('Failed to load layout:', err);
+        return of(false);
+      })
+    );
   }
 }
