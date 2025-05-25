@@ -1,5 +1,6 @@
 export interface ShapeItem {
   id: string;
+  tableId: number;
   x: number;
   y: number;
   width: number;

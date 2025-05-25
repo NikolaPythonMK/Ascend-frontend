@@ -1,52 +1,43 @@
 <div class="layout">
   <div class="toolbar">
+  <div class="toolbar-group">
+    <button title="Add Obstacle" [disabled]="!isEdit()" (click)="addObstacle()"><i class="material-icons">fence</i>Obstacle</button>
+  </div>
 
-    <div class="dropdown">
-      <button class="dropbtn" title="Add Shape">
-        <i class="material-icons">add</i>
-      </button>
-      <div class="dropdown-content">
-        <button (click)="addTable()"><i class="material-icons">table_bar</i> Table</button>
-        <button (click)="addObstacle()"><i class="material-icons">fence</i> Obstacle</button>
-        <button (click)="saveLayout()"><i class="material-icons">save</i> Save</button>
-      </div>
-    </div>
+  <div class="toolbar-group">
+    <button title="Rectangle" [disabled]="!isEdit()"  (click)="switchShapeType(selectedId, 'rect')"><i class="material-icons">rectangle</i>Rectange</button>
+    <button title="Circle" [disabled]="!isEdit()"  (click)="switchShapeType(selectedId, 'circle')"><i class="material-icons">circle</i>Circle</button>
+  </div>
 
-    <div class="dropdown">
-      <button class="dropbtn" title="Change Shape">
-        <i class="material-icons">category</i>
-      </button>
-      <div class="dropdown-content">
-        <button (click)="switchShapeType(selectedId, 'rect')"><i class="material-icons">rectangle</i> Rectangle</button>
-        <button (click)="switchShapeType(selectedId, 'circle')"><i class="material-icons">circle</i> Circle</button>
-        <button (click)="switchShapeType(selectedId, 'oval')"><i class="material-icons">circle</i> Oval</button>
-      </div>
-    </div>
+  <div class="toolbar-group">
+    <button title="Save Layout" [disabled]="!isEdit()"  (click)="saveLayout()"><i class="material-icons">save</i> Save</button>
 
-    <div class="dropdown">
-      <button class="dropbtn" title="Zooom">
-        <i class="material-icons">search</i>
-      </button>
-    </div>
+    <button title="Toggle Edit Mode" (click)="onEditClick()">
+      <i class="material-icons">edit</i> {{ true ? 'Editing' : 'View' }}
+    </button>
+  </div>
 
-    <ngx-colors ngx-colors-trigger [(ngModel)]="color" (slider)="changeShapeColor($event, selectedId)" (ngModelChange)="changeShapeColor($event, selectedId)"></ngx-colors>
-
-    <div class="floors">
-      <button *ngFor="let floor of layers; let i = index" (click)="switchFloor(i)" [title]="'Floor ' + (i + 1)">
+  <div class="floors-section">
+    <span class="floors-span">Floors:</span>
+    @for (floor of layers(); track floor; let i = $index) {
+      <button (click)="switchFloor(i)" [title]="'Floor ' + (i + 1)"
+              [ngClass]="{'activeFloor': i === currentFloorIndex}">
         {{ i + 1 }}
       </button>
-      <button (click)="addFloor({ id: (layers.length + 1).toString(), name: 'Floor ' + (layers.length + 1), items: [] })" title="Add Floor">
-        ＋
-      </button>
-    </div>
-
+    }
+    <button [disabled]="!isEdit()"  (click)="addFloor({ id: (layers.length + 1).toString(), name: 'Floor ' + (layers.length + 1), items: [] })" title="Add Floor">
+      ＋
+    </button>
   </div>
+</div>
+
 
   <div class="canvas-container">
-    <div class="zoom-buttons">
-      <button (click)="zoomIn()"><i class="material-icons">add</i></button>
-      <button (click)="zoomOut()"><i class="material-icons">remove</i></button>
-    </div>
-    <div id="container" style="width: 100%; height: 100%; z-index: 1;"></div>
+  <div class="zoom-buttons">
+    <button (click)="zoomIn()"><i class="material-icons">add</i></button>
+    <button (click)="zoomOut()"><i class="material-icons">remove</i></button>
   </div>
+  <div id="container" style="width: 100%; height: 100%; z-index: 1;"></div>
+</div>
+
 </div>
