@@ -10,7 +10,8 @@
         "username": "Username",
         "password": "Password",
         "location": "Location",
-        "wrong-credentials": "Wrong credentials"
+        "auth.invalid-credential": "Wrong credentials",
+        "staffuser.notfound": "Wrong code"
     },
     "common": {
         "homepage-back": "Go back to Homepage"

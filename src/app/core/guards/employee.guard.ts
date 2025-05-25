@@ -23,21 +23,17 @@ export class EmployeeGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<GuardResult> {
-    console.log('EMP GUARD');
-    return this.organizationService.isAuthenticated().pipe(
-      map((result) => {
-        console.log('result: ', result);
-        console.log('staff: ', this.employeeStore.hasEmployee())
-        if (!result)
-            return this.router.parseUrl('/login');
-        if (!this.employeeStore.hasEmployee())
-            return this.router.parseUrl('/staff');
-        return true;
-      }),
-      catchError((err) => {
-        console.log('ERROR: ', err);
-        return of(true);
-      })
-    );
+  return this.organizationService.isAuthenticated().pipe(
+    map((result) => {
+      if (!result)
+          return this.router.parseUrl('/login');
+      if (!this.employeeStore.hasEmployee())
+          return this.router.parseUrl('/staff');
+      return true;
+    }),
+    catchError((err) => {
+      return of(true);
+    })
+  );
   }
 }

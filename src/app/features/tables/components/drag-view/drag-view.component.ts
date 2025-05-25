@@ -362,7 +362,11 @@ export class DragViewComponent implements OnInit {
 
     this.locationService.getById(location).subscribe({
       next: (location: Location) => {
+
         raw = location.tableLocationMapping!;
+
+        if (raw == '')
+          return false;
 
         const savedFloors: Floor[] = JSON.parse(raw);
         this.layers.forEach((layer) => layer.destroy());
@@ -371,6 +375,7 @@ export class DragViewComponent implements OnInit {
 
         savedFloors.forEach((floor) => this.addFloor(floor));
         this.switchFloor(0);
+        return true;
       },
     });
 

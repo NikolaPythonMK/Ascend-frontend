@@ -1,6 +1,5 @@
-@if(loading()) {
-  <ascend-loader />
-}
+ <ascend-loader [loading]="loading()" />
+
 
 <h2 mat-dialog-title class="dialog-title">{{ this.title() }}</h2>
 

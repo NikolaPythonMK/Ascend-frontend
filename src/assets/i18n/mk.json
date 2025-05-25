@@ -10,7 +10,8 @@
         "username": "Корисничко име",
         "password": "Лозинка",
         "location": "Локација",
-        "wrong-credentials": "Погрешни креденцијали"
+        "auth.invalid-credential": "Погрешни креденцијали",
+        "staffuser.notfound": "Погрешен код"
     },
     "common": {
         "homepage-back": "Вратете се на почетната страница"
