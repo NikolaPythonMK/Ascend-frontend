@@ -13,18 +13,25 @@ export class OrganizatoinLoginGuard implements CanActivate {
     router = inject(Router);
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<GuardResult> {
+      console.log('ENTERS');
       return this.organizationService.isAuthenticated()
         .pipe(
           map(result => {
+            console.log(result,'result')
             if (result) {
+              console.log('TRUE')
               if (this.employeeStore.hasEmployee())
                 return this.router.parseUrl('/tables');
               return this.router.parseUrl('/staff');
             } else {
+              console.log('FALSE')
               return true;
             }
           }),
-          catchError(() => of(true))
+          catchError((err) => {
+            console.log("err", err)
+            return of(true);
+          })
         )
     }
 }
