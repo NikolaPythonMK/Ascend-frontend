@@ -113,3 +113,20 @@ ngx-colors {
   gap: 0.4em;
   flex-wrap: wrap;
 }
+
+::ng-deep .app-color-picker{
+  width: 40px !important;
+  height: 40px !important;
+  align-items: center;
+  align-content: center;
+}
+
+::ng-deep .app-color-picker .preview{
+  padding: 0 !important;
+}
+::ng-deep .app-color-picker .preview .circle {
+  width: 35px !important;
+  height: 35px !important;
+  border-radius: 50% !important; 
+  border: 1px solid #fff;
+}

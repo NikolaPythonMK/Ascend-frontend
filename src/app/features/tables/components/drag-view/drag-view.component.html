@@ -7,6 +7,7 @@
   <div class="toolbar-group">
     <button title="Rectangle" [disabled]="!isEdit()"  (click)="switchShapeType(selectedId, 'rect')"><i class="material-icons">rectangle</i>Rectange</button>
     <button title="Circle" [disabled]="!isEdit()"  (click)="switchShapeType(selectedId, 'circle')"><i class="material-icons">circle</i>Circle</button>
+    <ngx-colors ngx-colors-trigger [(ngModel)]="color" (slider)="changeShapeColor($event, selectedId)" (ngModelChange)="changeShapeColor($event, selectedId)"></ngx-colors>
   </div>
 
   <div class="toolbar-group">
