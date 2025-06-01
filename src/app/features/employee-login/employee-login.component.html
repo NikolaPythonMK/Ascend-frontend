@@ -1,11 +1,30 @@
 <div class="wrapper">
-    <div class="container">
-        <div class="logo-container">
-            <img src="assets/images/logo.png" alt="Logo">
-        </div>
-        <form [formGroup]="pinEntryForm" class="login-container">
-            <input type="password" autofocus formControlName="pin" tabindex="1"  (focus)="onFocus()" (keydown.tab)="onTab($event)" (mouseleave)="onTab($event)" >
-            <button type="submit" (click)="onSubmit()" hidden="true">Submit</button>
-        </form>
+  <ascend-loader [loading]="loading()" />
+  <div class="container">
+    <div class="logo-container">
+      <img src="assets/images/logo.png" alt="Logo" />
     </div>
+
+    <form [formGroup]="pinEntryForm" class="login-container">
+      @if (errorKey) {
+      <div class="error-container">
+        <mat-icon class="error-icon">error</mat-icon>
+        <p class="error-message">{{ 'auth.' + errorKey | translate }}</p>
+        <mat-icon class="close-btn" (click)="onCloseErrorMessage()"
+          >close</mat-icon
+        >
+      </div>
+      }
+      <input
+        type="password"
+        autofocus
+        formControlName="pin"
+        tabindex="1"
+        (focus)="onFocus()"
+        (keydown.tab)="onTab($event)"
+        (mouseleave)="onTab($event)"
+      />
+      <button type="submit" (click)="onSubmit()" hidden="true">Submit</button>
+    </form>
+  </div>
 </div>

@@ -1,3 +1,5 @@
+<ascend-loader [loading]="loading()" />
+
 <div class="languages">
     <ascend-country-select />
 </div>
@@ -8,14 +10,15 @@
             <img src="assets/images/logo.png" />
         </div>
 
-        @if (errorKey) {
-            <div class="error-block">
-                <mat-icon><span class="error-label">error</span></mat-icon>
-                <p class="error-message">{{ errorKey | translate }}</p>
+        <form [formGroup]="loginForm" class="credentials-container">
+            @if (errorKey) {
+                            <div class="error-container">
+                <mat-icon class="error-icon">error</mat-icon>
+                <p class="error-message">Invalid Credentials</p>
                 <mat-icon class="close-btn" (click)="onCloseErrorMessage()">close</mat-icon>
             </div>
-        }
-        <form [formGroup]="loginForm" class="credentials-container">
+            }
+
             <div class="input-group">
                 <ascend-input-field [type]="'text'"
                                     [placeholder]="'auth.username'"

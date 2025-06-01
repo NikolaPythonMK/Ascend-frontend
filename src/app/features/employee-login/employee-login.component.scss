@@ -64,3 +64,42 @@ body {
 .login-container button:hover {
     // background-color: #45a049;
 }
+
+.error-container {
+  background-color: #e30b5c;
+      box-shadow: #e30b5c 0px 5px 15px;
+
+  width: 100%;
+  display: flex;
+  align-items: center; // vertically center
+  padding: 0.5em;
+  box-sizing: border-box;
+  position: relative;
+  margin-bottom: 1.5em;
+
+  // target both your class *and* the .mat-icon host class
+  .error-icon.mat-icon {
+    font-size: 2.5rem !important; // override defaults
+    width: 2.5rem !important; // for SVG icons
+    height: 2.5rem !important;
+    color: #fff;
+    margin-right: 0.5rem;
+  }
+
+  .error-message {
+    color: #fff;
+    font-size: 1.2rem;
+  }
+
+  .close-btn {
+    color: #fff;
+    background-color: #c80815;
+    padding: 2px;
+    border-radius: 50%;
+    transform: scale(0.7);
+    position: absolute;
+    top: 2%;
+    right: 2%;
+    cursor: pointer;
+  }
+}

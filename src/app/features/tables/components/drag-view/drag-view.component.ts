@@ -415,6 +415,9 @@ export class DragViewComponent implements OnInit {
 
         if (!raw) return false;
 
+        if (raw == '')
+          return false;
+
         const savedFloors: Floor[] = JSON.parse(raw);
 
         //this.layers().forEach((layer: Layer) => layer.destroy());

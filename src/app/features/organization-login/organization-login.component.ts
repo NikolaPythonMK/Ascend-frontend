@@ -23,6 +23,8 @@ import { CountrySelectComponent } from "../../core/ui/country-select/country-sel
 import { Organization } from '../../core/models/api/responses/organization.model';
 import { Location } from '../../core/models/api/responses/location.model';
 import { LoginResponse } from '../../core/models/api/responses/login-response';
+import { finalize } from 'rxjs';
+import { LoaderComponent } from '../../core/ui/loader/loader.component';
 
 @Component({
   imports: [
@@ -35,7 +37,8 @@ import { LoginResponse } from '../../core/models/api/responses/login-response';
     MatIconModule,
     InputFieldComponent,
     MatSelectModule,
-    CountrySelectComponent
+    CountrySelectComponent,
+    LoaderComponent
 ],
   templateUrl: 'organization-login.component.html',
   styleUrls: ['organization-login.component.scss'],
@@ -58,6 +61,8 @@ export class OrganizationLoginPage {
   
   formSubmitted: boolean = false;
   errorKey?: string;
+
+  loading = signal<boolean>(false);
 
   getUsernameControl(): AbstractControl {
     return this.loginForm.get('username')!;
@@ -93,8 +98,12 @@ export class OrganizationLoginPage {
       locationID: this.getLocationControl().value
     };
 
+    this.loading.set(true);
+
     const result = this.organizationService
-      .login(loginRequest)
+      .login(loginRequest).pipe(
+        finalize(() => this.loading.set(false))
+      )
       .subscribe({
         next: (response: LoginResponse) => {
           localStorage.setItem('location', response.locationID.toString())
@@ -102,8 +111,7 @@ export class OrganizationLoginPage {
           this.router.navigate([`/staff`]);
         },
         error: (error: HttpErrorResponse) => {
-          console.log(error.message);
-          this.errorKey = error.message;
+          this.errorKey = error.error.message;
         },
       });
   }

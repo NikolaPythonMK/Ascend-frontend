@@ -1,100 +1,143 @@
 .wrapper {
-    height: 95vh;
-    display: flex;
-    justify-content: center;
+  box-sizing: border-box;  
+  height: 95vh;
+  display: flex;
+  justify-content: center;
 }
 
 .login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10%;
+
+  .credentials-container {
+    // padding-top: 2em;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding-top: 10%;
+    // width: 50%;
 
-    .credentials-container {
-        // padding-top: 2em;
-        display: flex;
-        flex-direction: column;
-        // width: 50%;
-
-        input {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1.5rem;
-        }
-
-        .error-input {
-            border: 2px solid #ED4337;
-            border-radius: 4px;    
-        }
-
-        .input-group {
-            padding-bottom: 1em;
-        }
-
-        .submit-btn {
-            font-size: 1.1rem;
-            padding: 8px;
-            cursor: pointer;
-        }
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1.5rem;
     }
-    .logo-container {
-        padding-bottom: 2em;
+
+    .error-input {
+      border: 2px solid #ed4337;
+      border-radius: 4px;
     }
+
+    .input-group {
+      padding-bottom: 1em;
+    }
+
+    .submit-btn {
+      font-size: 1.1rem;
+      padding: 8px;
+      cursor: pointer;
+    }
+  }
+  .logo-container {
+    padding-bottom: 2em;
+  }
 }
 
-.error-block {
-    width: 50%;
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    background-color: #E30B5C;
-    padding: 1em;
-    margin-bottom: 1em;
-    .error-label, .error-message {
-        color: #fff;
-        font-size: 1.1rem;
-    }
-    .error-label {
-        width: 80px;
-        height: 80px;
-    }
-    .close-btn {
-        color: #fff;
-        background-color: #C80815;
-        padding: 2px;
-        border-radius: 50%;
-        transform: scale(.7);
-        position: absolute;
-        top: 2%;
-        right: 2%;
-        cursor: pointer;
-    }
+// .error-block {
+//     width: 50%;
+//     position: relative;
+//     display: flex;
+//     flex-wrap: wrap;
+//     align-items: center;
+//     background-color: #E30B5C;
+//     //padding: 1em;
+//     margin-bottom: 1em;
+//     .error-label, .error-message {
+//         color: #fff;
+//         font-size: 1.1rem;
+//     }
+//     .error-message {
+//         padding: 1em;
+//     }
+//     .error-label {
+//         font-size: 2rem;
+//     }
+//     .close-btn {
+//         color: #fff;
+//         background-color: #C80815;
+//         padding: 2px;
+//         border-radius: 50%;
+//         transform: scale(.7);
+//         position: absolute;
+//         top: 2%;
+//         right: 2%;
+//         cursor: pointer;
+//     }
+// }
+
+// error.component.scss
+.error-container {
+  background-color: #e30b5c;
+      box-shadow: #e30b5c 0px 5px 15px;
+
+  width: 100%;
+  display: flex;
+  align-items: center; // vertically center
+  padding: 0.5em;
+  box-sizing: border-box;
+  position: relative;
+  margin-bottom: 1.5em;
+
+  // target both your class *and* the .mat-icon host class
+  .error-icon.mat-icon {
+    font-size: 2.5rem !important; // override defaults
+    width: 2.5rem !important; // for SVG icons
+    height: 2.5rem !important;
+    color: #fff;
+    margin-right: 0.5rem;
+  }
+
+  .error-message {
+    color: #fff;
+    font-size: 1.2rem;
+  }
+
+  .close-btn {
+    color: #fff;
+    background-color: #c80815;
+    padding: 2px;
+    border-radius: 50%;
+    transform: scale(0.7);
+    position: absolute;
+    top: 2%;
+    right: 2%;
+    cursor: pointer;
+  }
 }
 
 .languages {
-    display: flex;
-    justify-content: end;
-    padding-right: 1em;
-    padding-top: .5em;
-    label {
-        padding: .2em;
-        cursor: pointer;
-    }
-    label:hover {
-        border-bottom: 1px solid black;
-    }
+  display: flex;
+  justify-content: end;
+  padding-right: 1em;
+  padding-top: 0.5em;
+  label {
+    padding: 0.2em;
+    cursor: pointer;
+  }
+  label:hover {
+    border-bottom: 1px solid black;
+  }
 }
 
 @media (max-width: 767px) {
-    .logo-container {
-        width: 100%;
-        display: flex;
-        justify-content: center;
+  .logo-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 
-        img {
-            width: 80%;
-        }
+    img {
+      width: 80%;
     }
+  }
 }

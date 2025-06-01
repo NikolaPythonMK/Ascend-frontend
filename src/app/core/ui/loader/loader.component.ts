@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, input, signal } from "@angular/core";
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @Component({
@@ -8,5 +8,5 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     styleUrls: ['loader.component.scss']
 })
 export class LoaderComponent {
-
+    loading = input.required();
 }

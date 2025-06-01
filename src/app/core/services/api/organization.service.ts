@@ -6,7 +6,7 @@ import { environment } from '../../../../environments/environment';
 import type { Organization } from '../../models/api/responses/organization.model';
 import type { LoginRequest } from '../../models/api/requests/login.request';
 import { LoginResponse } from '../../models/api/responses/login-response';
-import { map } from 'lodash';
+import { map, tap } from 'lodash';
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +28,7 @@ export class OrganizationService {
   }
 
   isAuthenticated(): Observable<boolean> {
+    console.log('VLAGA')
     return this.http
       .get<boolean>(`${this.domain}/auth/user/is-authenticated`, {
         withCredentials: true,

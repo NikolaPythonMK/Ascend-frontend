@@ -1,12 +1,17 @@
-import { AfterViewInit, Component, ElementRef, HostListener, inject } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, HostListener, inject, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import { EmployeeStore } from "../../core/store/employee.store";
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { StaffAuthService } from "./services/staff-auth.service";
+import { finalize } from "rxjs";
+import { LoaderComponent } from "../../core/ui/loader/loader.component";
+import { HttpErrorResponse } from "@angular/common/http";
+import { TranslateModule } from "@ngx-translate/core";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
     selector: 'ascend-employee-login',
-    imports: [ReactiveFormsModule, FormsModule],
+    imports: [ReactiveFormsModule, FormsModule, LoaderComponent, TranslateModule, MatIcon],
     templateUrl: 'employee-login.component.html',
     styleUrls: ['employee-login.component.scss']
 })
@@ -14,8 +19,10 @@ export class EmployeeLoginComponent implements AfterViewInit{
     router = inject(Router);
     employeeStore = inject(EmployeeStore);
     staffAuthService = inject(StaffAuthService);
+    loading = signal(false);
 
     elRef = inject(ElementRef);
+    errorKey?: string;
 
     focusOnPinInput = true;
 
@@ -38,12 +45,17 @@ export class EmployeeLoginComponent implements AfterViewInit{
 
 
     onSubmit(): void {
-        this.staffAuthService.login(this.getPinControl().value).subscribe({
+        this.loading.set(true);
+        this.staffAuthService.login(this.getPinControl().value).pipe(
+            finalize(() => this.loading.set(false))
+        )
+        .subscribe({
             next: () => {
                 this.router.navigate(['/tables']);
             },
-            error: () => {
-
+            error: (error: HttpErrorResponse) => {
+                console.log(error.error);
+                this.errorKey = error.error.detail;
             }
         })
     }
@@ -57,6 +69,10 @@ export class EmployeeLoginComponent implements AfterViewInit{
     // Optionally, you can focus on the same input again to keep it in place
     const inputElement = event.target as HTMLInputElement;
     inputElement.focus();
+  }
+
+  onCloseErrorMessage(): void {
+        this.errorKey = '';
   }
 
   @HostListener('document:click', ['$event'])

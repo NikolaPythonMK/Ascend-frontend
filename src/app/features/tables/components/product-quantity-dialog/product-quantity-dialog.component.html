@@ -1,7 +1,5 @@
 <div class="quantity-dialog-container">
-  @if (isLoading()) {
-    <ascend-loader />
-  }
+<ascend-loader [loading]="isLoading()" />
 
   <h2 class="quantity-dialog-title">{{ data.title }}</h2>
 
