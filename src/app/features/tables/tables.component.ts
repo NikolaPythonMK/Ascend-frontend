@@ -20,6 +20,7 @@ import { TableRequest } from '../../core/models/api/requests/table.request';
 import { SkeletonCardComponent } from "../../core/ui/display-cards/skeleton-card/skeleton-card.component";
 import { finalize } from 'rxjs';
 import { LoaderComponent } from "../../core/ui/loader/loader.component";
+import { BreakpointService } from '../../core/services/utility/breakpoint.service';
 
 @Component({
   selector: 'ascend-tables',
@@ -49,6 +50,7 @@ export class TablesComponent implements OnInit{
   readonly router = inject(Router);
   readonly route = inject(ActivatedRoute);
   readonly viewportScroller = inject(ViewportScroller);
+  readonly breakpointService = inject(BreakpointService);
 
   ngOnInit(): void {
     this.viewportScroller.scrollToPosition([0, 0])
