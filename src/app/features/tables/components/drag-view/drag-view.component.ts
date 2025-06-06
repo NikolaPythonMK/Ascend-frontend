@@ -77,6 +77,95 @@ export class DragViewComponent implements OnInit {
 
       this.onEditClick(false);
     });
+
+    this.stage.on('wheel', (e) => {
+      e.evt.preventDefault();
+
+      const oldScale = this.stage.scaleX();
+      const pointer = this.stage.getPointerPosition();
+      const scaleBy = 1.05;
+
+      const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
+
+      const mousePointTo = {
+        x: (pointer!.x - this.stage.x()) / oldScale,
+        y: (pointer!.y - this.stage.y()) / oldScale,
+      };
+
+      this.stage.scale({ x: newScale, y: newScale });
+      this.stage.position({
+        x: pointer!.x - mousePointTo.x * newScale,
+        y: pointer!.y - mousePointTo.y * newScale,
+      });
+
+      this.stage.batchDraw();
+    });
+
+  let lastTouchDist = 0;
+let lastTouchCenter = { x: 0, y: 0 };
+
+this.stage.on('contentTouchstart', (e) => {
+  if (e.evt.touches?.length === 2) {
+    const [touch1, touch2] = e.evt.touches;
+
+    lastTouchDist = Math.hypot(
+      touch2.clientX - touch1.clientX,
+      touch2.clientY - touch1.clientY
+    );
+
+    lastTouchCenter = {
+      x: (touch1.clientX + touch2.clientX) / 2,
+      y: (touch1.clientY + touch2.clientY) / 2,
+    };
+
+    this.stage.draggable(false);
+  }
+});
+
+this.stage.on('contentTouchmove', (e) => {
+  if (e.evt.touches?.length === 2) {
+    e.evt.preventDefault();
+
+    const [touch1, touch2] = e.evt.touches;
+
+    const newDist = Math.hypot(
+      touch2.clientX - touch1.clientX,
+      touch2.clientY - touch1.clientY
+    );
+
+    const newCenter = {
+      x: (touch1.clientX + touch2.clientX) / 2,
+      y: (touch1.clientY + touch2.clientY) / 2,
+    };
+
+    const oldScale = this.stage.scaleX();
+    const scaleBy = newDist / lastTouchDist;
+    const newScale = Math.min(Math.max(oldScale * scaleBy, 0.3), 3);
+
+    const stageRelative = {
+      x: (newCenter.x - this.stage.x()) / oldScale,
+      y: (newCenter.y - this.stage.y()) / oldScale,
+    };
+
+    this.stage.scale({ x: newScale, y: newScale });
+
+    this.stage.position({
+      x: newCenter.x - stageRelative.x * newScale,
+      y: newCenter.y - stageRelative.y * newScale,
+    });
+
+    this.stage.batchDraw();
+
+    lastTouchDist = newDist;
+    lastTouchCenter = newCenter;
+  }
+});
+
+this.stage.on('contentTouchend contentTouchcancel', () => {
+  this.stage.draggable(true);
+  lastTouchDist = 0;
+});
+
   }
 
   addFloor(floor: Floor) {
@@ -228,10 +317,10 @@ export class DragViewComponent implements OnInit {
 
     layer.add(group);
 
-    group.on('click', (e: any) => {
-      if(!this.isEdit()){
+    const selectShape = (e: any) => {
+      if (!this.isEdit()) {
         this.clickedTableId.emit(item.tableId);
-      }else{
+      } else {
         e.cancelBubble = true;
         this.selectedId = item.id;
         this.color = item.fill;
@@ -239,7 +328,11 @@ export class DragViewComponent implements OnInit {
         layer.batchDraw();
         this.cdr.detectChanges();
       }
-    });
+    };
+
+    group.on('click', selectShape);  
+    group.on('touchstart', selectShape); 
+
 
     group.on('transformend', () => {
       debugger
