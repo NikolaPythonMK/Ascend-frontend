@@ -1,3 +1,4 @@
+<ascend-loader [loading]="tablesLoading()" />
 
 <div class="tables-header">
   <div class="left-part">
@@ -30,7 +31,8 @@
     </div>
   </div>
 
-  <div class="status-filter">
+  @if (breakpointService.isDesktop()) {
+      <div class="status-filter">
     <div>
       <div class="filter-all selected-filter">
         <span class="filter-label">
@@ -57,7 +59,17 @@
         5
       </span>
     </div>
-  </div>
+   </div>
+  }
+  @else {
+    <div class="status-dropdown-wrapper">
+      <select class="status-dropdown">
+        <option>All</option>
+        <option>Available</option>
+        <option>Occupied</option>
+      </select>
+    </div>
+  }
 
   <ascend-search-bar class="search-bar" (onSearchTerm)="onSearchTerm($event)" />
 </div>

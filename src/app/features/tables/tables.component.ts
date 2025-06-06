@@ -18,6 +18,9 @@ import { SnackbarService } from '../../core/services/utility/snackbar.service';
 import { Page } from '../../core/models/api/page.model';
 import { TableRequest } from '../../core/models/api/requests/table.request';
 import { SkeletonCardComponent } from "../../core/ui/display-cards/skeleton-card/skeleton-card.component";
+import { finalize } from 'rxjs';
+import { LoaderComponent } from "../../core/ui/loader/loader.component";
+import { BreakpointService } from '../../core/services/utility/breakpoint.service';
 
 @Component({
   selector: 'ascend-tables',
@@ -31,7 +34,8 @@ import { SkeletonCardComponent } from "../../core/ui/display-cards/skeleton-card
     SearchBarComponent,
     MatButtonToggleModule,
     DragViewComponent,
-    SkeletonCardComponent
+    SkeletonCardComponent,
+    LoaderComponent
 ],
   templateUrl: 'tables.component.html',
   styleUrls: ['tables.component.scss'],
@@ -41,10 +45,12 @@ export class TablesComponent implements OnInit{
   tablesService = inject(TablesService);
   snackbarService = inject(SnackbarService);
   tables = signal<Table[]>([]);
+  tablesLoading = signal<boolean>(false);
   selectedView = signal<string>('table');
   readonly router = inject(Router);
   readonly route = inject(ActivatedRoute);
   readonly viewportScroller = inject(ViewportScroller);
+  readonly breakpointService = inject(BreakpointService);
 
   ngOnInit(): void {
     this.viewportScroller.scrollToPosition([0, 0])
@@ -94,7 +100,11 @@ export class TablesComponent implements OnInit{
   }
 
   private getTables(): void {
-    this.tablesService.getAll().subscribe({
+    this.tablesLoading.set(true);
+    this.tablesService.getAll().pipe(
+      finalize(() => this.tablesLoading.set(false))
+    ) 
+    .subscribe({
       next: (result: Page<Table>) => {
         this.tables.set(result.data);
       },

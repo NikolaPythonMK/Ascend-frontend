@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, computed, signal } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +8,7 @@ import { CustomNavbarComponent } from "../../core/ui/custom-navbar/custom-navbar
 import { RouterOutlet } from "@angular/router";
 import { CountrySelectComponent } from "../../core/ui/country-select/country-select.component";
 import { TranslateModule } from "@ngx-translate/core";
+import { BreakpointService } from "../../core/services/utility/breakpoint.service";
 
 @Component({
     selector: 'ascend-navbar',

@@ -27,11 +27,12 @@ import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { SearchTerm } from "../../../../core/models/api/search-term.model";
 import { ProductQuantityDialogResponse } from "../../models/product-quantity-dialog-response";
+import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
 
 
 @Component({
     selector: 'table-items',
-    imports: [DisplayListComponent, MatFormFieldModule, MatIconModule, DisplayCardsComponent, CommonModule, ReactiveFormsModule],
+    imports: [DisplayListComponent, MatFormFieldModule, MatIconModule, DisplayCardsComponent, CommonModule, ReactiveFormsModule, LoaderComponent],
     templateUrl: 'table.component.html',
     styleUrls: ['table.component.scss']
 })
@@ -49,6 +50,7 @@ export class TableComponent implements OnInit{
     productsLoading = signal<boolean>(false);
     categoriesLoading = signal<boolean>(false);
     tableItemsLoading = signal<boolean>(false);
+    dialogLoading = signal<boolean>(false);
 
     searchTerm = new FormControl('');
     readonly destroyRef = inject(DestroyRef)
@@ -100,8 +102,10 @@ export class TableComponent implements OnInit{
             width: '400px',
             data: { title: card.title }
        })
-
-       dialogRef.afterClosed().subscribe((result: ProductQuantityDialogResponse) => {
+       this.dialogLoading.set(true);
+       dialogRef.afterClosed()
+       .pipe(finalize(() => this.dialogLoading.set(false)))
+       .subscribe((result: ProductQuantityDialogResponse) => {
         if (result != null) {
             const request: TableItemRequest = {
                 tableID: this.tableId(),
@@ -142,7 +146,10 @@ export class TableComponent implements OnInit{
                     quantity: result.data.quantity,
                     note: result.data.note
                 }
-                this.tableItemsService.update(request).subscribe({
+                this.dialogLoading.set(true);
+                this.tableItemsService.update(request)
+                .pipe(finalize(() => this.dialogLoading.set(false)))
+                .subscribe({
                     next: () => {
                         this.getTableItems();
                         this.snackbarService.success('Успешно е ажурирана нарачката');
@@ -154,7 +161,10 @@ export class TableComponent implements OnInit{
             }
 
             else if (result.operation === 'DELETE') {
-                this.tableItemsService.delete(item.id).subscribe({
+                this.dialogLoading.set(true);
+                this.tableItemsService.delete(item.id)
+                .pipe(finalize(() => this.dialogLoading.set(false)))
+                .subscribe({
                     next: () => {
                         this.getTableItems();
                         this.snackbarService.success('Успешно е избришана нарачката');
