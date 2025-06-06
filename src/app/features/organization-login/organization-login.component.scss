@@ -1,21 +1,23 @@
-.wrapper {
-  box-sizing: border-box;  
-  height: 95vh;
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.page-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  height: 100%; /* NOT 100vh! ✅ */
 }
 
 .login-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 10%;
 
   .credentials-container {
-    // padding-top: 2em;
     display: flex;
     flex-direction: column;
-    // width: 50%;
 
     input {
       padding: 10px;
@@ -40,43 +42,11 @@
     }
   }
   .logo-container {
+    height: 50px;
     padding-bottom: 2em;
   }
 }
 
-// .error-block {
-//     width: 50%;
-//     position: relative;
-//     display: flex;
-//     flex-wrap: wrap;
-//     align-items: center;
-//     background-color: #E30B5C;
-//     //padding: 1em;
-//     margin-bottom: 1em;
-//     .error-label, .error-message {
-//         color: #fff;
-//         font-size: 1.1rem;
-//     }
-//     .error-message {
-//         padding: 1em;
-//     }
-//     .error-label {
-//         font-size: 2rem;
-//     }
-//     .close-btn {
-//         color: #fff;
-//         background-color: #C80815;
-//         padding: 2px;
-//         border-radius: 50%;
-//         transform: scale(.7);
-//         position: absolute;
-//         top: 2%;
-//         right: 2%;
-//         cursor: pointer;
-//     }
-// }
-
-// error.component.scss
 .error-container {
   background-color: #e30b5c;
       box-shadow: #e30b5c 0px 5px 15px;
@@ -117,27 +87,45 @@
 }
 
 .languages {
+  flex-shrink: 0;
+  padding: 0.5em 1em;
+  background-color: white;
+  border-bottom: 1px solid #ddd;
   display: flex;
-  justify-content: end;
-  padding-right: 1em;
-  padding-top: 0.5em;
-  label {
-    padding: 0.2em;
-    cursor: pointer;
-  }
-  label:hover {
-    border-bottom: 1px solid black;
+  justify-content: flex-end;
+}
+
+.logo-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 2em;
+}
+.wrapper {
+  flex: 1;
+  min-height: 0; /* 🔥 critical for flex children with overflow */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: auto; /* only if form + logo are too big */
+  padding: 1em;
+}
+
+.logo-container img {
+  width: auto;
+  height: auto;
+  max-width: clamp(120px, 40vw, 280px);
+  max-height: clamp(80px, 20vh, 180px);
+  display: block;
+  object-fit: contain;
+}
+
+/* 🖥️ Desktop boost */
+@media (min-width: 1024px) {
+  .logo-container img {
+    max-width: 520px;
+    max-height: 420px;
   }
 }
 
-@media (max-width: 767px) {
-  .logo-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-
-    img {
-      width: 80%;
-    }
-  }
-}
