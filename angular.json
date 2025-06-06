@@ -74,13 +74,6 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "options": {
-            "ssl": true,
-            "sslKey": "./localhost-key.pem",
-            "sslCert": "./localhost.pem",
-            "host": "localhost",
-            "port": 4200
-          },
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {

@@ -21,12 +21,13 @@ import { LocationTablesRequest } from '../../../../core/models/api/requests/loca
 import { SnackbarService } from '../../../../core/services/utility/snackbar.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '../../../../core/models/api/responses/location.model';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, finalize, map, Observable, of } from 'rxjs';
 import { Layer } from 'konva/lib/Layer';
+import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
 
 @Component({
   selector: 'drag-view',
-  imports: [FormsModule, NgxColorsModule, CommonModule],
+  imports: [FormsModule, NgxColorsModule, CommonModule, LoaderComponent],
   templateUrl: './drag-view.component.html',
   styleUrl: './drag-view.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,6 +46,7 @@ export class DragViewComponent implements OnInit {
   currentFloorIndex: number = 0;
   selectedId: string | null = null;
   color: string = '#fff';
+  loader = signal<boolean>(false);
 
   constructor(private cdr: ChangeDetectorRef) {}
 
@@ -66,7 +68,10 @@ export class DragViewComponent implements OnInit {
       flipEnabled: false,
     });
 
-    this.loadLayout().subscribe(result => {
+    this.loader.set(true);
+    this.loadLayout()
+    .pipe(finalize(() => this.loader.set(false)))
+    .subscribe(result => {
       if (!result) {
         this.addFloor({ id: '1', name: 'Main', items: [] });
 
@@ -393,7 +398,12 @@ export class DragViewComponent implements OnInit {
       tableLocationMapping: JSON.stringify(this.floors),
     };
 
-    this.locationService.updateTableMapping(request).subscribe({
+    this.loader.set(true);
+    this.locationService.updateTableMapping(request)
+    .pipe(
+      finalize(() => this.loader.set(false))
+    )
+    .subscribe({
       next: () => {
         this.snackbarService.success('Успешно');
       },

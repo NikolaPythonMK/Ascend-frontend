@@ -1,5 +1,6 @@
 <div class="layout">
-  <div class="toolbar">
+  <ascend-loader [loading]="loader()" />
+  <div class="toolbar" [class.editMode]="isEdit()">
   <div class="toolbar-group">
     <button title="Add Obstacle" [disabled]="!isEdit()" (click)="addObstacle()"><i class="material-icons">fence</i>Obstacle</button>
   </div>

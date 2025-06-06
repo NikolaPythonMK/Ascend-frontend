@@ -99,7 +99,6 @@ import { ProductQuantityDialogResponse } from '../../models/product-quantity-dia
         if(!result){
           return;
         }
-
         this.dialogRef.close({
           operation: 'DELETE',
           data: null

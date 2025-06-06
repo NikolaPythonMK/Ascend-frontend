@@ -19,3 +19,41 @@
   color: rgba(0,0,0,0.7);
   text-align: center;       
 }
+
+
+
+
+
+
+/* Same backdrop style as Angular Material dialogs */
+// .cdk-overlay-backdrop.custom-loader-backdrop {
+//   background-color: rgba(0, 0, 0, 0.32);
+//   position: fixed;
+//   top: 0;
+//   right: 0;
+//   bottom: 0;
+//   left: 0;
+//   z-index: 1000; 
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   pointer-events: auto;
+// }
+
+// .loader-container {
+//   background-color: #fff;
+//   padding: 1.5em;
+//   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+//   border-radius: 10px;
+//   z-index: 1001; 
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+// }
+
+// .loading-text {
+//   margin-top: 1em;
+//   font-size: 1rem;
+//   color: rgba(0, 0, 0, 0.7);
+//   text-align: center;
+// }
