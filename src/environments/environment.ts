@@ -1,5 +1,5 @@
 export const environment = {
     production: false,
-    domain: 'https://px1cb6ts-5073.euw.devtunnels.ms/api',
+    domain: 'http://localhost:5073/api',
     languages: ['en', 'mk'],
 }
