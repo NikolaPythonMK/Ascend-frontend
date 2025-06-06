@@ -247,6 +247,7 @@ export class DragViewComponent implements OnInit {
     });
 
     group.on('transformend', () => {
+      debugger
       const item = this.floors[this.currentFloorIndex].items.find(
         (i) => i.id === group.id()
       );
