@@ -1,4 +1,5 @@
-<div class="container">
+<div [ngClass]="{'container-pc': breakpointService.isDesktop(), 'container-tablet': breakpointService.isTablet()}">
+  @if (breakpointService.isDesktop()) {
   <div class="list-container">
     <div class="sidebar-header">
       <p class="title title-sidebar-list">Група на категории</p>
@@ -14,13 +15,14 @@
       [selectAllButtonLabel]="'All Groups'"
     />
   </div>
+  }
   <div class="cards-container">
     <div class="cards-header">
       <div class="left-part">
         @if (selectedCategoryGroup()){
-        <span class="title">Categories > {{ selectedCategoryGroup()!.name }}</span>
+        <span class="title">Categories > <span class="select-category" (click)="openCategoryGroupSelectDialog()">{{ selectedCategoryGroup()!.name }}</span></span>
         }@else {
-        <span class="title">Category > All Categories</span>
+        <span class="title">Category > <span class="select-category" (click)="openCategoryGroupSelectDialog()">All Categories</span></span>
         }
         <ascend-header-counter [value]="categories().length" />
       </div>
@@ -39,6 +41,7 @@
         <ascend-search-bar (onSearchTerm)="onSearchCategory($event)"  />
       </div>
     </div>
+    <div class="cards-layout">
     @if (categoryCards().length) {
       <ascend-display-cards
       [loading]="categoryLoading()"
@@ -48,5 +51,6 @@
     } @else {
       <p class="no-data-message">No categories have been found</p>
     }
+    </div>
   </div>
 </div>

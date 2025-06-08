@@ -1,4 +1,13 @@
-<div class="container">
+<div
+  [ngClass]="{
+    'container-pc': breakpointService.isDesktop(),
+    'container-tablet':
+      breakpointService.isTablet() ||
+      breakpointService.isMobile() ||
+      breakpointService.isHandsetLandscape()
+  }"
+>
+  @if(breakpointService.isDesktop()){
   <div class="list-container">
     <div class="sidebar-header">
       <p class="title title-sidebar-list">Categories</p>
@@ -12,18 +21,32 @@
       [isLoading]="categoriesLoading()"
       [setSelectAllButton]="true"
       [selectAllButtonLabel]="'All Categories'"
-      
     />
   </div>
+  }
   <div class="cards-container">
     <div class="cards-header">
       <div class="left-part">
         @if (selectedCategory()){
-        <span class="title">Products > {{ selectedCategory()!.name }}</span>
+        <span class="title"
+          >Products >
+          <span
+            class="select-category"
+            (click)="onOpenCategorySelectDialog()"
+            >{{ selectedCategory()!.name }}</span
+          ></span
+        >
         }@else {
-        <span class="title">Products > All Products</span>
+        <span class="title"
+          >Products >
+          <span class="select-category" (click)="onOpenCategorySelectDialog()"
+            >All Products</span
+          ></span
+        >
         }
-        <ascend-header-counter [value]="products().length" />
+        @if (!breakpointService.isHandsetLandscape() && !breakpointService.isMobile()) {
+          <ascend-header-counter [value]="products().length" />
+        }
       </div>
       <div class="right-part">
         <button
@@ -36,18 +59,19 @@
           <mat-icon>add</mat-icon>
           Product
         </button>
-
-        <ascend-search-bar (onSearchTerm)="onSearchProducts($event)"  />
+        <ascend-search-bar (onSearchTerm)="onSearchProducts($event)" class="search-bar"/>
       </div>
     </div>
-    @if (productCards().length) {
+    <div class="cards-layout">
+      @if (productCards().length) {
       <ascend-display-cards
-      [loading]="productsLoading()"
-      (selectedCard)="onProductedit($event)"
-      [elements]="productCards()"
-    />
-    } @else {
+        [loading]="productsLoading()"
+        (selectedCard)="onProductedit($event)"
+        [elements]="productCards()"
+      />
+      } @else {
       <p class="no-data-message">No products have been found</p>
-    }
+      }
+    </div>
   </div>
 </div>

@@ -21,6 +21,7 @@ import { SkeletonCardComponent } from "../../core/ui/display-cards/skeleton-card
 import { finalize } from 'rxjs';
 import { LoaderComponent } from "../../core/ui/loader/loader.component";
 import { BreakpointService } from '../../core/services/utility/breakpoint.service';
+import { ButtonComponent } from '../../core/ui/button/button.component';
 
 @Component({
   selector: 'ascend-tables',
@@ -35,7 +36,8 @@ import { BreakpointService } from '../../core/services/utility/breakpoint.servic
     MatButtonToggleModule,
     DragViewComponent,
     SkeletonCardComponent,
-    LoaderComponent
+    LoaderComponent,
+    ButtonComponent
 ],
   templateUrl: 'tables.component.html',
   styleUrls: ['tables.component.scss'],

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject, OnInit, signal } from "@angular/core";
 import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { LocationService } from "../../../../core/services/api/locations.service";
@@ -15,10 +15,11 @@ import { MatIconModule } from "@angular/material/icon";
 import { ConfirmationDialog } from "../../../../core/ui/confirmation-dialog/confirmation-dialog.component";
 import type { LocationRequest } from "../../../../core/models/api/requests/location.request";
 import { HttpErrorResponse } from "@angular/common/http";
-import { Observable } from "rxjs";
+import { finalize, Observable } from "rxjs";
+import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
 
 @Component({
-    imports: [MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatInputModule, ButtonComponent, MatLabel, CommonModule, MatButtonModule, MatIconModule ],
+    imports: [MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatInputModule, ButtonComponent, MatLabel, CommonModule, MatButtonModule, MatIconModule, LoaderComponent],
     templateUrl: 'update-location.component.html',
     styleUrls: ['update-location.component.scss']
 })
@@ -32,6 +33,7 @@ export class UpdateLocationDialog implements OnInit{
     locationForm = this.fb.group({
         name: ['', Validators.required],
     })
+    loading = signal<boolean>(false);
 
     ngOnInit(): void {
         this.getNameControl().setValue(this.data.name);
@@ -51,6 +53,7 @@ export class UpdateLocationDialog implements OnInit{
             name: this.getNameControl().value,
             tabbleLocationMapping: ''
         };
+        this.loading.set(true);
         this.handleRequest(
             this.locationsService.update(request),
             'Успешно'
@@ -62,6 +65,7 @@ export class UpdateLocationDialog implements OnInit{
             if (!isConfirmed) {
                 return;
             }
+            this.loading.set(true);
             this.handleRequest(
                 this.locationsService.delete(this.data.id),
                 'Успешно'
@@ -71,7 +75,8 @@ export class UpdateLocationDialog implements OnInit{
 
 
     private handleRequest<T>(request$: Observable<T>, successMessage: string): void {
-        request$.subscribe({
+        request$.pipe(finalize(() => this.loading.set(false)))
+        .subscribe({
             next: (result: T) => {
                 this.snackbarService.success(successMessage);
                 this.dialogRef.close(result);

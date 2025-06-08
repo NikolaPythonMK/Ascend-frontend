@@ -1,5 +1,7 @@
 @use "variables" as vars;
 
+
+
 .dialog-title {
   color: vars.$primary-font-color;
   padding-top: 1em;
@@ -78,5 +80,15 @@
   padding-bottom: .4em;
   span {
     padding-left: .3em;
+  }
+ }
+
+ @media (min-width: 600px) and (max-width: 1080px) {
+  .dialog-form {
+    width: 80vw;
+    max-height: 80vh;
+  }
+  .actions {
+    margin-top: 0.5rem;
   }
  }

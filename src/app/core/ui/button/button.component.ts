@@ -1,8 +1,9 @@
-import { Component, input, OnInit, output, signal } from "@angular/core";
+import { Component, inject, input, OnInit, output, signal } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { TranslateModule } from "@ngx-translate/core";
 import { ButtonType } from "./button.type";
 import { MatIconModule } from "@angular/material/icon";
+import { BreakpointService } from "../../services/utility/breakpoint.service";
 
 @Component({
     selector: 'ascend-button',

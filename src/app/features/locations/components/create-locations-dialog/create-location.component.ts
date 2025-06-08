@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatFormFieldModule, MatLabel } from "@angular/material/form-field";
 import { ButtonComponent } from "../../../../core/ui/button/button.component";
@@ -12,9 +12,11 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { SnackbarService } from "../../../../core/services/utility/snackbar.service";
 import type { LocationRequest } from "../../../../core/models/api/requests/location.request";
 import type { Location } from "../../../../core/models/api/responses/location.model";
+import { finalize } from "rxjs";
+import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
 
 @Component({
-    imports: [MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatInputModule, ButtonComponent, MatLabel, CommonModule, MatButtonModule ],
+    imports: [MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatInputModule, ButtonComponent, MatLabel, CommonModule, MatButtonModule, LoaderComponent],
     templateUrl: 'create-location.component.html',
     styleUrls: ['create-location.component.scss']
 })
@@ -27,6 +29,7 @@ export class CreateLocatinDialog {
         name: ['', Validators.required],
         tableCount: [0, Validators.required]
     })
+    loading = signal<boolean>(false);
 
     getNameControl(): AbstractControl {
         return this.locationForm.get('name')!;
@@ -45,7 +48,10 @@ export class CreateLocatinDialog {
             name: this.getNameControl().value,
             numberOfTables: this.getTableCountControl().value
         }
-        this.locationsService.add(request).subscribe({
+        this.loading.set(true);
+        this.locationsService.add(request).pipe(
+            finalize(() => this.loading.set(false))
+        ).subscribe({
             next: (result: Location) => {
                 this.snackbarService.success('Успешно');
                 this.dialogRef.close(result);

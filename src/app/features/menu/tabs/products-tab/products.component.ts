@@ -30,12 +30,16 @@ import { finalize } from "rxjs";
 import { SearchTerm } from "../../../../core/models/api/search-term.model";
 import { FilterDataService } from "../../../../core/services/utility/filter-data.service";
 import { ProductDialogData } from "../../models/product-dialog-data.dto";
+import { BreakpointService } from "../../../../core/services/utility/breakpoint.service";
+import { FilterDialog } from "../../dialogs/filter-dialog/filter-dialog.component";
+import { FilterDialogData } from "../../models/filter-dialog-data.dto";
 
 
 @Component({
     selector: 'products-component',
     imports: [CommonModule,
               MatCardModule,
+              MatButtonModule,
               SearchBarComponent,
               ButtonComponent,
               MatFormFieldModule,
@@ -52,6 +56,7 @@ export class ProuctsComponent implements OnInit{
     private readonly imageService = inject(ImageService);
     private readonly dialog = inject(MatDialog);
     private readonly filterData = inject(FilterDataService);
+    public readonly breakpointService = inject(BreakpointService);
     categories = signal<Category[]>([]);
     categoryGroups = signal<CategoryGroup[]>([]);
     products = signal<Product[]>([]);
@@ -92,6 +97,20 @@ export class ProuctsComponent implements OnInit{
 
         this.getCategories();
         this.getProducts();
+    }
+
+    onOpenCategorySelectDialog(): void {
+        const dialogRef = this.dialog.open(FilterDialog, {
+            data: {
+                selectList: this.categories().map(i => {
+                    return {id: i.id, name: i.name}
+                }),
+                title: 'Select Category'
+            } as FilterDialogData
+        })
+        dialogRef.afterClosed().subscribe((res: number | null) => {
+            this.onSelectCategory(res)
+        })
     }
 
     onSelectCategory(id: number | null): void {
@@ -136,7 +155,6 @@ export class ProuctsComponent implements OnInit{
     }
 
     onProductedit(product: any): void {
-        console.log(product);
         const dialogRef = this.dialog.open(ProductDialog, {
             data: {
                 id: product.id,

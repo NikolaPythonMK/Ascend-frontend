@@ -1,0 +1,24 @@
+<div class="dialog-wrapper">
+  <button
+    type="button"
+    mat-icon-button
+    aria-label="Delete item"
+    class="close-btn"
+    (click)="onClose()"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <p class="title">{{ data.title }}</p>
+  <div class="list-container">
+    <p class="list-item" (click)="onSelect(null)">All Categories</p>
+    @for (item of data.selectList; track item.id) {
+    <p
+      class="list-item"
+      [class.selected]="item.id === selectedItem()"
+      (click)="onSelect(item.id)"
+    >
+      {{ item.name }}
+    </p>
+    }
+  </div>
+</div>

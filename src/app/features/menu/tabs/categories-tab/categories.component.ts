@@ -26,10 +26,14 @@ import loadesh from 'lodash';
 import { ImageService } from "../../../../core/services/utility/image.service";
 import { ConfirmationDialog } from "../../../../core/ui/confirmation-dialog/confirmation-dialog.component";
 import { finalize } from "rxjs";
+import { CommonModule } from "@angular/common";
+import { BreakpointService } from "../../../../core/services/utility/breakpoint.service";
+import { FilterDialog } from "../../dialogs/filter-dialog/filter-dialog.component";
+import { FilterDialogData } from "../../models/filter-dialog-data.dto";
 
 @Component({
     selector: 'categories-component',
-    imports: [ButtonComponent, DisplayListComponent, DisplayCardsComponent, SearchBarComponent, MatIconModule, MatButtonModule, HeaderCounterComponent],
+    imports: [ButtonComponent, DisplayListComponent, DisplayCardsComponent, SearchBarComponent, MatIconModule, MatButtonModule, HeaderCounterComponent, CommonModule],
     templateUrl: 'categories.component.html',
     styleUrls: ['categories.component.scss', '../../styles/tab-style.scss']
 })
@@ -40,6 +44,7 @@ export class CategoriesComponent implements OnInit, OnDestroy{
     readonly filterData = inject(FilterDataService);
     readonly snackbar = inject(SnackbarService);
     readonly imageService = inject(ImageService);
+    readonly breakpointService = inject(BreakpointService)
     selectedCategoryGroup = signal<CategoryGroup | null>(null)
     searchTerm = signal<string>('');
     categories = signal<Category[]>([]);
@@ -112,6 +117,20 @@ export class CategoriesComponent implements OnInit, OnDestroy{
             } else {
                 this.getAllCategories();
             }
+        })
+    }
+
+    openCategoryGroupSelectDialog(): void {
+        const dialogRef = this.dialog.open(FilterDialog, {
+            data: {
+                selectList: this.categoryGroups().map(i => {
+                    return {id: i.id, name: i.name}
+                }),
+                title: 'Select Category Group'
+            } as FilterDialogData
+        })
+        dialogRef.afterClosed().subscribe((res: number | null) => {
+            this.onSelectedCategoryGroup(res)
         })
     }
 

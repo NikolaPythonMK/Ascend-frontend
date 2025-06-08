@@ -24,10 +24,14 @@ import { Location } from '../../../../core/models/api/responses/location.model';
 import { catchError, finalize, map, Observable, of } from 'rxjs';
 import { Layer } from 'konva/lib/Layer';
 import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
+import { ButtonComponent } from "../../../../core/ui/button/button.component";
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { BreakpointService } from '../../../../core/services/utility/breakpoint.service';
 
 @Component({
   selector: 'drag-view',
-  imports: [FormsModule, NgxColorsModule, CommonModule, LoaderComponent],
+  imports: [FormsModule, NgxColorsModule, CommonModule, LoaderComponent, ButtonComponent, MatIconModule, MatButtonModule],
   templateUrl: './drag-view.component.html',
   styleUrl: './drag-view.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,6 +39,7 @@ import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
 export class DragViewComponent implements OnInit {
   private readonly locationService = inject(LocationService);
   private readonly snackbarService = inject(SnackbarService);
+  readonly breakpointService = inject(BreakpointService);
   clickedTableId = output<number>();
   isEdit = signal<boolean>(false);
   stage!: Konva.Stage;
@@ -538,5 +543,13 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
         return of(false);
       })
     );
+  }
+
+  onCanvasEditButtonClick(): void {
+    this.isEdit.set(true);
+  }
+
+  onCancel(): void {
+    this.isEdit.set(false);
   }
 }
