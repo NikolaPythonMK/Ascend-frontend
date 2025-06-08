@@ -20,6 +20,7 @@ import { CategoryGroupDialogData } from "../../models/category-group-dialog-data
 import { Category } from "../../../../core/models/api/responses/category.model";
 import { SearchTerm } from "../../../../core/models/api/search-term.model";
 import { finalize } from "rxjs";
+import { BreakpointService } from "../../../../core/services/utility/breakpoint.service";
 
 @Component({
     selector: 'category-groups-component',
@@ -33,6 +34,7 @@ export class CategoryGroupsComponent implements OnInit{
     readonly categoryService = inject(CategoriesService);
     readonly filterData = inject(FilterDataService);
     readonly snackbar = inject(SnackbarService);
+    readonly breakpointService = inject(BreakpointService)
     searchTerm = signal<string>('');
     categoryGroups = signal<CategoryGroup[]>([]);
     categoryGroupLoading = signal<boolean>(false);

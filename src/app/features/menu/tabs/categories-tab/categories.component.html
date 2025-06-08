@@ -1,4 +1,10 @@
-<div [ngClass]="{'container-pc': breakpointService.isDesktop(), 'container-tablet': breakpointService.isTablet()}">
+<div   [ngClass]="{
+    'container-pc': breakpointService.isDesktop(),
+    'container-tablet':
+      breakpointService.isTablet() ||
+      breakpointService.isMobile() ||
+      breakpointService.isHandsetLandscape()
+  }">
   @if (breakpointService.isDesktop()) {
   <div class="list-container">
     <div class="sidebar-header">
@@ -24,7 +30,9 @@
         }@else {
         <span class="title">Category > <span class="select-category" (click)="openCategoryGroupSelectDialog()">All Categories</span></span>
         }
-        <ascend-header-counter [value]="categories().length" />
+        @if (!breakpointService.isHandsetLandscape() && !breakpointService.isMobile()) {
+          <ascend-header-counter [value]="categories().length" />
+        }
       </div>
       <div class="right-part">
         <button

@@ -56,3 +56,15 @@
     color: vars.$primary-font-color;
     font-size: 1.5rem;
 }
+
+@media (max-width: 1080px) {
+    .title {
+        font-size: 1.5rem;
+    }
+    .no-data-message {
+        margin-top: 7em;
+    }
+    .search-bar {
+        margin-right: 10px;
+    }
+}
