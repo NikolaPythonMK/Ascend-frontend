@@ -8,6 +8,7 @@ import { Sort } from "../../ui/table/models/sort.model";
 export class TableStateService {
     searchTerm = signal<SearchTerm[]>([]);
     sort = signal<Sort | undefined>(undefined);
+    view = signal<string>('table')
 
     setSort(sort: Sort | null, map: Map<string, string>) {
       this.sort.set(

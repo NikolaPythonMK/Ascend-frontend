@@ -24,8 +24,21 @@ mat-sidenav-content {
     padding: 30px;
 }
 
+.content-wrapper-padding {
+    padding: 30px;
+}
+
 .select-country {
     margin-left: auto;
+}
+
+
+.mobile-menu-btn {
+    position: absolute;
+    top: 1%;
+    left: 2%;
+    z-index: 100;
+    color: #737387;
 }
 
 @media (max-width: 1280px) {

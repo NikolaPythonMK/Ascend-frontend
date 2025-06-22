@@ -36,14 +36,14 @@
   }
 
   <div class="canvas-container">
-    @if (!isEdit()) {
-      <button mat-fab color="secondary" class="canvas-edit-btn" (click)="onCanvasEditButtonClick()">
-        <mat-icon>edit</mat-icon>
-      </button> 
-    }
     <div class="zoom-buttons">
       <button (click)="zoomIn()"><i class="material-icons">add</i></button>
       <button (click)="zoomOut()"><i class="material-icons">remove</i></button>
+          @if (!isEdit()) {
+          <button class="canvas-edit-btn" (click)="onCanvasEditButtonClick()">
+            <i class="material-icons">edit</i>
+          </button> 
+          }
     </div>
     <div id="container" style="width: 100%; height: 100%; z-index: 1;"></div>
 </div>

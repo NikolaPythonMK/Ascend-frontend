@@ -22,6 +22,7 @@ import { finalize } from 'rxjs';
 import { LoaderComponent } from "../../core/ui/loader/loader.component";
 import { BreakpointService } from '../../core/services/utility/breakpoint.service';
 import { ButtonComponent } from '../../core/ui/button/button.component';
+import { TableStateService } from '../../core/services/utility/table-state.service';
 
 @Component({
   selector: 'ascend-tables',
@@ -53,6 +54,7 @@ export class TablesComponent implements OnInit{
   readonly route = inject(ActivatedRoute);
   readonly viewportScroller = inject(ViewportScroller);
   readonly breakpointService = inject(BreakpointService);
+  readonly tableStateService = inject(TableStateService);
 
   ngOnInit(): void {
     this.viewportScroller.scrollToPosition([0, 0])
@@ -66,6 +68,7 @@ export class TablesComponent implements OnInit{
 
   handleViewChange(view: string): void {
     this.selectedView.set(view);
+    this.tableStateService.view.set(view);
     this.router.navigate([], {
       queryParams: { view: this.selectedView() },
       queryParamsHandling: 'merge',

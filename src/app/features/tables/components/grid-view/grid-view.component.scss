@@ -121,3 +121,12 @@
 .light-font {
  color: #737387;
 }
+
+
+@media (max-width: 599px) {
+  .grid-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+}
