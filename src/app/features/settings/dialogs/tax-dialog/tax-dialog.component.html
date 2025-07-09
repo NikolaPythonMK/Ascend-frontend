@@ -1,0 +1,37 @@
+<ascend-loader [loading]="loading()" />
+<h2 mat-dialog-title class="dialog-title">Add Tax</h2>
+<div class="content">
+  <form [formGroup]="taxForm" (ngSubmit)="onSubmit()" class="dialog-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Tax Name</mat-label>
+      <input matInput formControlName="name" placeholder="Enter tax name" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Tax Percentage</mat-label>
+      <input matInput type="number" formControlName="percentage" min="0" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Reason</mat-label>
+      <textarea
+        #qtyInput
+        matInput
+        type="text"
+        formControlName="reason"
+        (keydown.enter)="onSubmit()"
+      ></textarea>
+    </mat-form-field>
+
+    <div class="actions">
+      <button mat-button type="button" (click)="dialogRef.close()">
+        Откажи
+      </button>
+      <ascend-button
+        type="primary"
+        [label]="'Add'"
+        [disabled]="taxForm.invalid"
+      />
+    </div>
+  </form>
+</div>

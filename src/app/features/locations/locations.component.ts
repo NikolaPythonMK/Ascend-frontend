@@ -11,6 +11,7 @@ import { UpdateLocationDialog } from "./components/update-location-dialog/update
 import { TableStateService } from "../../core/services/utility/table-state.service";
 import { Sort } from "../../core/ui/table/models/sort.model";
 import { Location } from "../../core/models/api/responses/location.model";
+import { DataRow } from "../../core/ui/table/models/data-row";
 
 @Component({
     imports: [TableComponent],
@@ -72,12 +73,15 @@ export class LocationsPage implements OnInit{
         this.getLocations();
     }
 
-    private mapToRows(locations: Location[]): LocationRow[] {
+    private mapToRows(locations: Location[]): DataRow[] {
         return locations.map(i => {
             return {
-                name: i.name,
-                tableCount: i.tableCount
-            }
+                id: i.id,
+                properties: {
+                    name: i.name,
+                    tableCount: i.tableCount
+                }
+            } as DataRow
         })
     }
 

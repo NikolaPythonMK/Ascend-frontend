@@ -1,18 +1,32 @@
-
-<ascend-loader [loading]="dialogLoading()"/>
+<ascend-loader [loading]="dialogLoading()" />
 <div class="container">
-    <div class="item-categories">
-      <p class="categories-title">Categories</p>
-      <div class="categories">
-      <display-list
-        [categories]="categories()"
-        [loading]="categoriesLoading()"
-        (selectedCategoryEvent)="onSelectCategory($event)"
-      />
+  <div class="products">
+    <div class="products-header item-header-products">
+      <div class="search-wrapper">
+        <div class="search-container">
+          <input
+            type="text"
+            placeholder="Пребарај продукт..."
+            class="search-input"
+            [formControl]="searchTerm"
+          />
+          <button mat-icon-button class="search-btn">
+            <mat-icon class="search-icon">search</mat-icon>
+          </button>
+          @if (searchTerm.value){
+          <button mat-icon-button class="close-btn" (click)="onClearSearch()">
+            <mat-icon class="close-icon">close</mat-icon>
+          </button>
+          }
+        </div>
       </div>
     </div>
+    <div class="products-content">
+      <display-products />
+    </div>
+  </div>
 
-    <div class="item-products">
+  <!-- <div class="item-products">
       <div class="item-header-products">
         <div class="search-wrapper">
           <div class="search-container">
@@ -46,59 +60,59 @@
           }
         </div>
       </div>
-    </div>
-    
-    <div class="order-items-wrapper">
-      <div class="table-items-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Code</th>
-              <th>Qty</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          @if (tableItemsLoading()) {
-            <tbody>
-              @for (x of [1, 2, 3]; track x) {
-                <tr class="skeleton-row">
-                  <td><div class="skeleton-cell"></div></td>
-                  <td><div class="skeleton-cell"></div></td>
-                  <td><div class="skeleton-cell"></div></td>
-                  <td><div class="skeleton-cell"></div></td>
-                </tr>
-              }
-            </tbody>
-          }
-          @else {
-            <tbody>
-              @for(item of tableItems(); track item.id; let idx = $index) 
-              { 
-                <tr (click)="onOpenItemDetails(item)" 
-                  [ngClass]="{'noted-row': item.note !== null && item.note !== ''}">
-                  <td>{{ item.product.name }}</td>
-                  <td>{{ item.product.code }}</td>
-                  <td>{{ item.quantity }}</td>
-                  <td>{{ item.totalPrice }}</td>
-                </tr>
+    </div> -->
 
-                @if (item.note !== null && item.note !== '') {
-                  <tr class="note-row" (click)="onOpenItemDetails(item)">
-                    <td class="note text-muted" colspan="4">
-                        <span class="note-text">
-                          <mat-icon class="note-icon">sticky_note_2</mat-icon>
-                          <p>{{ item.note }}</p>
-                        </span>
-                    </td>
-                  </tr>
-                }
-              }
-            </tbody>
+  <div class="order-items-wrapper">
+    <div class="table-items-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Qty</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        @if (tableItemsLoading()) {
+        <tbody>
+          @for (x of [1, 2, 3]; track x) {
+          <tr class="skeleton-row">
+            <td><div class="skeleton-cell"></div></td>
+            <td><div class="skeleton-cell"></div></td>
+            <td><div class="skeleton-cell"></div></td>
+            <td><div class="skeleton-cell"></div></td>
+          </tr>
           }
-        </table>
-      </div>
-      <div class="footer">
+        </tbody>
+        } @else {
+        <tbody>
+          @for(item of tableItems(); track item.id; let idx = $index) {
+          <tr
+            (click)="onOpenItemDetails(item)"
+            [ngClass]="{ 'noted-row': item.note !== null && item.note !== '' }"
+          >
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.product.code }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.totalPrice }}</td>
+          </tr>
+
+          @if (item.note !== null && item.note !== '') {
+          <tr class="note-row" (click)="onOpenItemDetails(item)">
+            <td class="note text-muted" colspan="4">
+              <span class="note-text">
+                <mat-icon class="note-icon">sticky_note_2</mat-icon>
+                <p>{{ item.note }}</p>
+              </span>
+            </td>
+          </tr>
+          } }
+        </tbody>
+        }
+      </table>
+    </div>
+    <div class="footer">
+      <div class="price-container">
         <div class="total-price-container">
           <div>
             <span class="total-label">Вкупно</span>
@@ -113,12 +127,30 @@
             >
           </div>
         </div>
-        <div class="transaction-container">
-          <button class="cash-btn">Cash</button>
-          <button class="card-btn">Card</button>
-          <button>Split Bill</button>
+        <div class="calculated-prices">
+          <div class="calculated-tax">
+            <span>Tax:</span>
+            <span>12.5$</span>
+          </div>
+          <div class="calculated-discount">
+            <span>Discounts:</span>
+            <span>0.00$</span>
+          </div>
+          <div class="calculated-net">
+            <span>Net:</span>
+            <span>112.5$</span>
+          </div>
         </div>
       </div>
+      <div class="assigned-user">
+        <mat-icon>person_apron</mat-icon><span> Assigned: </span
+        ><span class="user">Nikola Nikolovski</span>
+      </div>
+      <div class="transaction-container">
+        <button class="cash-btn">Cash</button>
+        <button class="card-btn">Card</button>
+        <button>Split Bill</button>
+      </div>
     </div>
-
+  </div>
 </div>

@@ -68,3 +68,17 @@
     font-weight: 600;
   }
 }
+
+
+ @media (min-width: 600px) and (max-width: 1080px) {
+  .dialog-wrapper {
+    width: 80vw;
+    /* 80% of viewport height, always */
+    max-height: 80vh !important;
+    overflow-y: auto; /* scroll if content overflows */
+  }
+
+  .actions {
+    margin-top: 0.5rem;
+  }
+}

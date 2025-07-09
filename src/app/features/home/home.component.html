@@ -16,7 +16,7 @@
             <ascend-custom-navbar [collapsed]="collapsed()" (collapseEvent)="onCollapse($event)" />
         </mat-sidenav>
         <mat-sidenav-content [style.margin-left]="'0px'">
-            <div class="content-wrapper">
+            <div class="content-wrapper" [ngClass]="{'content-wrapper-padding': tableView() == 'drag'}">
                 <router-outlet />
             </div>
         </mat-sidenav-content>
@@ -29,7 +29,7 @@
         <ascend-custom-navbar [collapsed]="collapsed()" (collapseEvent)="onCollapse($event)" />
     </mat-sidenav>
     <mat-sidenav-content [style.margin-left]="sidenavWidth()">
-        <div class="content-wrapper" [ngClass]="{'content-wrapper-padding': tableStateService.view() !== 'drag'}">
+        <div [ngClass]="{'content-wrapper': tableView() != 'drag', 'content-wrapper-drag-view': tableView() == 'drag'}">
             <router-outlet />
         </div>
     </mat-sidenav-content>

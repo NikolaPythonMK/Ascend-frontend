@@ -2,15 +2,8 @@
 
 .wrapper {
   height: 100vh;
+  width: 100%;
 }
-
-.cards {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: center;
-    align-content: center;
-  }
 
   .example-header-image {
     background-size: cover;
@@ -23,9 +16,6 @@
     width: 100%;
   }
 
-  .full-width {
-    width: 100%;
-  }
   .mat-mdc-card-header{
     padding: 1em;
   }
@@ -38,12 +28,14 @@
   }
 
   mat-card img{
-    width: 100%;
-    height: 200px;
+    // width: 100%;
+    // height: 200px;
   }
 
   .card-container {
     position: relative;
+    width: 100%;
+    height: 100%;
   }
   .card-label { 
     position: absolute;
@@ -53,7 +45,7 @@
     background-color: rgba($color: #000000, $alpha: 0.7);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center;  
   }
   .card-price{
     position: absolute;
@@ -72,28 +64,47 @@
   }
   
 .test-card {
-    width: 200px;
-    height: 200px;
-    box-sizing: border-box; 
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 5px;
-    transition: 0.3s ease, transform 0.2s ease;
-    cursor: pointer;
+  position: relative;
+  box-sizing: border-box;
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  // Maintain a 4:3 (or 1:1) aspect ratio—change as you like
+  aspect-ratio: 4 / 3;
+
+    &:hover {
+    transform: scale(1.02);
+  }
 }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit:fill;     // cropped to fill
+    display: block;        // remove inline-img gaps
+  }
 // .test-card:hover {
 //   transform: scale(1.01);
 // }
 
-.test-card img {
-    width: 100%; 
-    height: 100%;
-    object-fit: cover;
+// .test-card img {
+//     width: 100%; 
+//     height: 100%;
+//     //object-fit: cover;
+// }
+
+@media (max-width: 320px) {
+  .cards-grid {
+    gap: 0.75rem;
+    padding: 0 0.5rem;
+  }
 }
 
-
-@media (max-width: 973px) {
-
+// 4. Optional: very large wide screens
+@media (min-width: 1440px) {
+  .cards-grid {
+    gap: 2rem;
+    padding: 0 2rem;
+  }
 }

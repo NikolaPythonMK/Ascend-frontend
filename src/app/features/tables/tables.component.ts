@@ -23,6 +23,7 @@ import { LoaderComponent } from "../../core/ui/loader/loader.component";
 import { BreakpointService } from '../../core/services/utility/breakpoint.service';
 import { ButtonComponent } from '../../core/ui/button/button.component';
 import { TableStateService } from '../../core/services/utility/table-state.service';
+import { DisplayTablesHeaderComponent } from "./components/display-tables-header/display-tables-header.component";
 
 @Component({
   selector: 'ascend-tables',
@@ -38,7 +39,8 @@ import { TableStateService } from '../../core/services/utility/table-state.servi
     DragViewComponent,
     SkeletonCardComponent,
     LoaderComponent,
-    ButtonComponent
+    ButtonComponent,
+    DisplayTablesHeaderComponent
 ],
   templateUrl: 'tables.component.html',
   styleUrls: ['tables.component.scss'],
@@ -68,11 +70,15 @@ export class TablesComponent implements OnInit{
 
   handleViewChange(view: string): void {
     this.selectedView.set(view);
-    this.tableStateService.view.set(view);
+    this.tableStateService.view.next(view);
     this.router.navigate([], {
       queryParams: { view: this.selectedView() },
       queryParamsHandling: 'merge',
     });
+
+    this.tableStateService.view.subscribe(view => {
+      this.selectedView.set(view);
+    })
     
   }
 

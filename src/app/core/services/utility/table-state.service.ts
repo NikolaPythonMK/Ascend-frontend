@@ -1,14 +1,16 @@
 import { Injectable, signal } from "@angular/core";
 import { SearchTerm } from "../../models/api/search-term.model";
 import { Sort } from "../../ui/table/models/sort.model";
+import { BehaviorSubject } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
 })
-export class TableStateService {
+export class 
+TableStateService {
     searchTerm = signal<SearchTerm[]>([]);
     sort = signal<Sort | undefined>(undefined);
-    view = signal<string>('table')
+    view = new BehaviorSubject<string>('table')
 
     setSort(sort: Sort | null, map: Map<string, string>) {
       this.sort.set(

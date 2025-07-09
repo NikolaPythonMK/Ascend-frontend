@@ -1,6 +1,8 @@
 @use "variables" as vars;
 
-
+.dialog-wrapper {
+  height: 100%;
+}
 
 .dialog-title {
   color: vars.$primary-font-color;
@@ -84,11 +86,15 @@
  }
 
  @media (min-width: 600px) and (max-width: 1080px) {
+
   .dialog-form {
     width: 80vw;
-    max-height: 80vh;
+    /* 80% of viewport height, always */
+    max-height: 80vh !important;
+    overflow-y: auto; /* scroll if content overflows */
   }
+
   .actions {
     margin-top: 0.5rem;
   }
- }
+}

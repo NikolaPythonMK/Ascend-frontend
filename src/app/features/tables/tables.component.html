@@ -1,6 +1,7 @@
 
+<div class="table-wrapper">
 <ascend-loader [loading]="tablesLoading()" />
-<div class="tables-header" [ngClass]="{'floating-header': selectedView() == 'drag' && breakpointService.isMobile()}">
+<!-- <div class="tables-header" [ngClass]="{'floating-header': selectedView() == 'drag'}">
   <div class="left-part">
     <div class="title">{{ "tables.title" | translate }}</div>
     <div class="grid-buttons">
@@ -31,52 +32,16 @@
     </div>
   </div>
 
-  <!-- @if (breakpointService.isDesktop() && selectedView() !== 'drag') {
-      <div class="status-filter">
-    <div>
-      <div class="filter-all selected-filter">
-        <span class="filter-label">
-          All
-        </span>
-        <span class="status-count">
-          15
-        </span>
-      </div>
-    </div>
-    <div class="filter-available">
-      <span class="filter-label">
-        Available
-      </span>
-      <span class="status-count">
-        10
-      </span>
-    </div>
-    <div class="filter-occupied">
-      <span class="filter-label">
-        Occupied
-      </span>
-      <span class="status-count">
-        5
-      </span>
-    </div>
-   </div>
-  } -->
-  <!-- @else if (!breakpointService.isDesktop() && selectedView() !== 'drag') {
-    <div class="status-dropdown-wrapper">
-      <select class="status-dropdown">
-        <option>All</option>
-        <option>Available</option>
-        <option>Occupied</option>
-      </select>
-    </div>
-  } -->
-
   @if (selectedView() !== 'drag') {
     <div class="search-container">
       <ascend-search-bar  (onSearchTerm)="onSearchTerm($event)" />
     </div>
   }
-</div>
+</div> -->
+
+@if (selectedView() != 'drag') {
+  <tables-header [selectedView]="selectedView()" (onViewChange)="handleViewChange($event)" (searchTerm)="onSearchTerm($event)"/>
+}
 
 @if (tables().length === 0) {
   <div class="no-tables-message">
@@ -101,3 +66,4 @@
   }
   </div>
 }
+</div>

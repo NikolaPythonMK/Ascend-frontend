@@ -64,7 +64,9 @@ export class ProductDialog implements OnInit {
         description: [''],
         image: [''],
         category: [''],
-        price: ['']
+        price: [''],
+        taxPercent: [''],
+        discount: ['']
     })
     categories = signal<Category[]>([]);
     selectedCategory = signal<Category | undefined>(undefined);
@@ -93,6 +95,8 @@ export class ProductDialog implements OnInit {
                     this.getCodeControl().setValue(product.code);
                     this.getPriceControl().setValue(product.price);
                     this.getDescriptionControl().setValue(product.description);
+                    this.getTaxPercentControl().setValue(product.taxPercent);
+                    this.getDiscountControl().setValue(product.discount);
                     this.getCategoryControl().setValue(this.categories().find(c => c.id === product.categoryID));
                     this.imageUrl.set(product.image);
                     this.loading.set(false);
@@ -128,6 +132,14 @@ export class ProductDialog implements OnInit {
         return this.productForm.get('price')!;
     }
 
+    getTaxPercentControl(): AbstractControl {
+        return this.productForm.get('taxPercent')!;
+    }
+
+    getDiscountControl(): AbstractControl {
+        return this.productForm.get('discount')!;
+    }
+
     onSubmit(): void {
         if(this.productForm.invalid){
             return;
@@ -138,6 +150,8 @@ export class ProductDialog implements OnInit {
         form.append("code", this.getCodeControl().value);
         form.append("price", this.getPriceControl().value);
         form.append("description", this.getDescriptionControl().value);
+        form.append("taxPercent", this.getTaxPercentControl().value);
+        form.append('discount', this.getDiscountControl().value);
         form.append("fileBytes", this.getImageControl().value);
         form.append("categoryId", (this.getCategoryControl().value as Category).id.toString());
         form.append("sourceLocation", "1");

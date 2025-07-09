@@ -13,16 +13,24 @@ import { TableStateService } from "../../core/services/utility/table-state.servi
 
 @Component({
     selector: 'ascend-navbar',
-    imports: [MatToolbarModule, CommonModule, MatButtonModule, MatIconModule, MatSidenavModule, CustomNavbarComponent, RouterOutlet, CountrySelectComponent, TranslateModule],
+    imports: [MatToolbarModule, CommonModule, MatButtonModule, MatIconModule, MatSidenavModule, CustomNavbarComponent, RouterOutlet, TranslateModule],
     templateUrl: 'home.component.html',
     styleUrls: ['home.component.scss']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit{
     collapsed = signal(true);
     sidenavWidth = computed(() => this.collapsed() ? '65px' : '280px');
     mobileSidenavWidth = computed(() => this.collapsed() ? '0px' : '450px');
+    tableView = signal<string>('');
     breakpointService = inject(BreakpointService);
     tableStateService = inject(TableStateService);
+
+    ngOnInit(): void {
+        this.tableStateService.view.subscribe((value) => {
+            this.tableView.set(value)
+            console.log('v: ', this.tableView());
+        })
+    }
 
     onCollapse(isCollapsed: boolean): void {
         console.log(isCollapsed);

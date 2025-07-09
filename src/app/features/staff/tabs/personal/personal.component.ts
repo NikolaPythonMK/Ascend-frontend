@@ -11,6 +11,7 @@ import { filter, Observer, switchMap } from "rxjs";
 import { Sort } from "../../../../core/ui/table/models/sort.model";
 import { TableStateService } from "../../../../core/services/utility/table-state.service";
 import type { StaffUser } from "../../../../core/models/api/responses/staff-user.model";
+import { DataRow } from "../../../../core/ui/table/models/data-row";
 
 
 @Component({
@@ -26,7 +27,7 @@ export class PersonalComponent implements OnInit{
     private readonly tableState = inject(TableStateService);
     readonly dialog = inject(MatDialog);
     staffUsers = signal<StaffUser[]>([]);
-    staffUsersRows = signal<StaffUserRow[]>([]);
+    staffUsersRows = signal<DataRow[]>([]);
     map = new Map<string, string>([
         ['Name', 'name'],
         ['Last Name', 'lastName'],
@@ -81,15 +82,18 @@ export class PersonalComponent implements OnInit{
         }
     }
 
-    private mapToStaffUserRows(staffUsers: StaffUser[]): StaffUserRow[] {
-        const staffUserRows: StaffUserRow[] = staffUsers.map(i => {
+    private mapToStaffUserRows(staffUsers: StaffUser[]): DataRow[] {
+        const staffUserRows: DataRow[] = staffUsers.map(i => {
             const joinedRoles = i.staffUserRoles!.map(s => s.name).join(", ");
             return {
+                id: i.id,
+                properties: {
                 name: i.name!,
                 lastName: i.lastName!,
                 phoneNumber: i.phoneNumber!,
                 roles: joinedRoles
-            }
+                }
+            } as DataRow
         })
         return staffUserRows;
     }

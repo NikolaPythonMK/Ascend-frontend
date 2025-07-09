@@ -48,6 +48,18 @@
         <textarea matInput formControlName="description"></textarea>
       </mat-form-field>
 
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Tax (%)</mat-label>
+        <input type="number" matInput formControlName="taxPercent" />
+      </mat-form-field>
+
+      @if (isUpdateDialog()) {
+        <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Discount</mat-label>
+        <input type="number" matInput formControlName="discount" />
+      </mat-form-field>
+      }
+
       @if (categories().length) {
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Categories</mat-label>

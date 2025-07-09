@@ -5,6 +5,7 @@ import { Page } from "../../models/api/page.model";
 import { SearchTerm } from "../../models/api/search-term.model";
 import { environment } from "../../../../environments/environment";
 import { Sort } from "../../ui/table/models/sort.model";
+import { Filter } from "../../models/api/value-objects/filter.model";
 
 @Injectable({
     providedIn: 'root'
@@ -15,7 +16,7 @@ export abstract class BaseService<TRes, TReq> {
 
     constructor(private endpoint: string) {}
 
-    getAll(searchTerm?: SearchTerm[], sort?: Sort): Observable<Page<TRes>> {
+    getAll(searchTerm?: SearchTerm[], sort?: Sort, filter?: Filter[]): Observable<Page<TRes>> {
         const filters: any = {};
 
         if (searchTerm) {
@@ -24,6 +25,10 @@ export abstract class BaseService<TRes, TReq> {
 
         if (sort) {
             filters.sort = [sort];
+        }
+
+        if (filter) {
+            filters.filter = filter
         }
 
         return this.http.post<Page<TRes>>(`${this.domain}/${this.endpoint}/all`, filters, { withCredentials: true });

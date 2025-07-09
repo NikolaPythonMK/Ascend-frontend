@@ -28,10 +28,11 @@ import { ButtonComponent } from "../../../../core/ui/button/button.component";
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { BreakpointService } from '../../../../core/services/utility/breakpoint.service';
+import { DisplayTablesHeaderComponent } from "../display-tables-header/display-tables-header.component";
 
 @Component({
   selector: 'drag-view',
-  imports: [FormsModule, NgxColorsModule, CommonModule, LoaderComponent, ButtonComponent, MatIconModule, MatButtonModule],
+  imports: [FormsModule, NgxColorsModule, CommonModule, LoaderComponent, ButtonComponent, MatIconModule, MatButtonModule, DisplayTablesHeaderComponent],
   templateUrl: './drag-view.component.html',
   styleUrl: './drag-view.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -345,7 +346,6 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
 
 
     group.on('transformend', () => {
-      debugger
       const item = this.floors[this.currentFloorIndex].items.find(
         (i) => i.id === group.id()
       );
@@ -399,10 +399,8 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
   }
 
   switchShapeType(id: string | null, newType: 'rect' | 'circle' | 'oval') {
-    debugger;
     if (!id) return;
 
-    debugger;
     const item = this.floors[this.currentFloorIndex].items.find(
       (i) => i.id === id
     );

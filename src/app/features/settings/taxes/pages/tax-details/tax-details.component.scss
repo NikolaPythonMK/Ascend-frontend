@@ -1,0 +1,93 @@
+@use "variables" as vars;
+
+.content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.header {
+    padding-bottom: 2em;
+}
+
+.body {
+  display: flex;
+  height: 100%;
+}
+
+.dialog-title {
+  color: vars.$primary-font-color;
+  padding-top: 1em;
+}
+
+.title {
+  color: vars.$primary-font-color;
+  font-size: vars.$title-font-size;
+}
+
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* space between form fields */
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  width: 400px; /* optional max-width for the dialog */
+  box-sizing: border-box;
+  border-right: 1px solid #737387;
+}
+
+.tax-history {
+  padding-left: 3em;
+}
+
+/* Make form fields take full width */
+.full-width {
+  width: 100%;
+}
+
+/* Style the dialog title */
+.dialog-title {
+  margin-bottom: 0.5rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* Style the mat-form-field for consistent spacing */
+mat-form-field {
+  width: 100%;
+}
+
+/* Actions container: align buttons to the right */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 1.5rem;
+  gap: 1rem;
+}
+
+.trash-btn {
+  color: #d9534f;
+  margin-right: auto;
+  cursor: pointer;
+}
+
+/* Additional styling for the multi-select trigger extra text */
+.additional-selection {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.9rem;
+  margin-left: 0.3rem;
+}
+
+@media (min-width: 600px) and (max-width: 1080px) {
+  .dialog-form {
+    width: 80vw;
+    /* 80% of viewport height, always */
+    max-height: 80vh !important;
+    overflow-y: auto; /* scroll if content overflows */
+  }
+
+  .actions {
+    margin-top: 0.5rem;
+  }
+}

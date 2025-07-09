@@ -28,15 +28,126 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { SearchTerm } from "../../../../core/models/api/search-term.model";
 import { ProductQuantityDialogResponse } from "../../models/product-quantity-dialog-response";
 import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
+import { BreakpointService } from "../../../../core/services/utility/breakpoint.service";
+import { SearchBarComponent } from "../../../../core/ui/search-bar/search-bar.component";
+import { Order } from "../../models/order.model";
+import { OrderedItemsComponent } from "../ordered-items/ordered-items.component";
+import { DisplayProductsComponent } from "../display-products/display-products.component";
+
+const PRODUCTS: Product[] = [
+  {
+      id: 1, name: 'Туна сендвич', code: '3243', price: 120,
+      description: "",
+      image: null,
+      categoryID: 0,
+      organizationID: 0
+  },
+  {
+      id: 2, name: 'Пица сендвич', code: '6443', price: 120,
+      description: "",
+      image: null,
+      categoryID: 0,
+      organizationID: 0
+  },
+  {
+      id: 3, name: 'Фанта', code: '1235', price: 120,
+      description: "",
+      image: null,
+      categoryID: 0,
+      organizationID: 0
+  },
+  {
+      id: 4, name: 'Кока кола', code: '8980', price: 120,
+      description: "",
+      image: null,
+      categoryID: 0,
+      organizationID: 0
+  },
+  {
+      id: 5, name: 'Нес кафе', code: '1515', price: 120,
+      description: "",
+      image: null,
+      categoryID: 0,
+      organizationID: 0
+  },
+];
+
+const ORDERS: Order[] = [
+  {
+    id: 23,
+    totalPrice: 1000,
+    paymentMethod: 'cash',
+    dateTime: new Date(),
+    staffId: 1,
+    table: '2',
+    status: 1,
+    orderItems: [
+      { id: 1, orderId: 23, product: { id: 1, name: 'Туна сендвич', code: '3243', price: 120, description: '' }, quantity: 2, price: 100 },
+      { id: 2, orderId: 23, product: { id: 1, name: 'Фанта', code: '1443', price: 120, description: '' }, quantity: 1, price: 100 },
+      { id: 3, orderId: 23, product: { id: 1, name: 'Нес кафе', code: '1515', price: 120, description: '' }, quantity: 3, price: 100 },
+    ],
+  },
+  {
+    id: 2,
+    totalPrice: 2500,
+    paymentMethod: 'cash',
+    dateTime: new Date(),
+    staffId: 1,
+    table: '2',
+    status: 1,
+    orderItems: [
+      { id: 1, orderId: 2, product: {
+          id: 1, name: 'Кока кола', code: '3003', price: 120,
+          description: ""
+      }, quantity: 1, price: 100 },
+      { id: 2, orderId: 2, product: {
+          id: 1, name: 'Пица сендвич', code: '1212', price: 120,
+          description: ""
+      }, quantity: 2, price: 100 },
+      { id: 3, orderId: 2, product: {
+          id: 1, name: 'Туна сендвич', code: '3243', price: 120,
+          description: ""
+      }, quantity: 1, price: 100 },
+    ],
+  },
+  {
+    id: 15,
+    totalPrice: 4325,
+    paymentMethod: 'card',
+    dateTime: new Date(),
+    staffId: 1,
+    table: '2',
+    status: 1,
+    orderItems: [
+      { id: 1, orderId: 15, product: {
+          id: 1, name: 'Нес кафе', code: '1515', price: 120,
+          description: ""
+      }, quantity: 2, price: 100 },
+      { id: 2, orderId: 15, product: {
+          id: 1, name: 'Нес кафе', code: '1515', price: 120,
+          description: ""
+      }, quantity: 1, price: 100 },
+      { id: 3, orderId: 15, product: {
+          id: 1, name: 'Туна сендвич', code: '3243', price: 120,
+          description: ""
+      }, quantity: 1, price: 100 },
+    ],
+  },
+];
 
 
 @Component({
     selector: 'table-items',
-    imports: [DisplayListComponent, MatFormFieldModule, MatIconModule, DisplayCardsComponent, CommonModule, ReactiveFormsModule, LoaderComponent],
+    imports: [DisplayListComponent, MatFormFieldModule, MatIconModule, DisplayCardsComponent, CommonModule, ReactiveFormsModule, LoaderComponent, SearchBarComponent, OrderedItemsComponent, DisplayProductsComponent],
     templateUrl: 'table.component.html',
     styleUrls: ['table.component.scss']
 })
 export class TableComponent implements OnInit{
+  orders = signal(ORDERS);
+  selectedOrderId = signal<number | null>(null);
+  selectedOrder = computed<Order | undefined>(() => this.orders().find(i => i.id === this.selectedOrderId()));
+
+
     readonly categoryService = inject(CategoriesService);
     readonly productService = inject(ProductsService);
     readonly tableService = inject(TablesService);
@@ -46,6 +157,7 @@ export class TableComponent implements OnInit{
     readonly route = inject(ActivatedRoute);
     readonly staffStore = inject(EmployeeStore);
     readonly quantityDialog = inject(MatDialog);
+    readonly breakpointService = inject(BreakpointService);
 
     productsLoading = signal<boolean>(false);
     categoriesLoading = signal<boolean>(false);
