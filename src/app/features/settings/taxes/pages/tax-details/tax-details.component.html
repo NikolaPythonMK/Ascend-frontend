@@ -5,7 +5,7 @@
     <h2 class="title">Tax Details</h2>
   </div>
   <div class="body">
-    <form [formGroup]="taxForm" (ngSubmit)="onSubmit()" class="dialog-form">
+    <form [formGroup]="taxForm" (ngSubmit)="onUpdate(this.id())" class="dialog-form">
       <span class="title">Current Tax</span>
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Tax Name</mat-label>
@@ -24,7 +24,7 @@
           matInput
           type="text"
           formControlName="reason"
-          (keydown.enter)="onSubmit()"
+          (keydown.enter)="onUpdate(this.id())"
         ></textarea>
       </mat-form-field>
 

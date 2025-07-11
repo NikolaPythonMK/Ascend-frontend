@@ -46,14 +46,13 @@ export class LocationsPage implements OnInit{
         dialogRef.afterClosed().subscribe((result: Location) => {
             if (result) {
                 this.getLocations();
-                //this.locations.update(values => [result, ...values]);
             }
         })
     }
 
-    onUpdate(index: number): void {
+    onUpdate(id: number): void {
         const dialogRef = this.dialog.open(UpdateLocationDialog, {
-            data: this.locations()[index]
+            data: id
         });
         dialogRef.afterClosed().subscribe((result: Location | number) => {
             if(result) {

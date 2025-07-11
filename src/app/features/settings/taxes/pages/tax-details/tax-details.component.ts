@@ -58,10 +58,11 @@ export class TaxDetailsPage {
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private filter: Filter = {
-    propName: 'Name',
-    operator: '=',
+    propName: '',
+    operator: '',
     value: ''
   }
+
   id = signal<number>(0);
   taxForm = this.fb.group({
     name: ['', Validators.required],
@@ -75,24 +76,16 @@ export class TaxDetailsPage {
   ngOnInit(): void {
     this.id.set(Number(this.route.snapshot.paramMap.get('id')));
     this.loading.set(true);
-
+    
     this.taxService.getById(this.id())
     .pipe(
-      tap(i => this.filter.value = i.name),
-      switchMap(tax =>
-        this.taxHistoryService.getAll(undefined, undefined, [this.filter])
-          .pipe(
-            map(page => ({ page, tax }))
-          )
-      ),
       finalize(() => this.loading.set(false))
     )
     .subscribe({
-      next: ({page, tax}) => {
+      next: (tax) => {
         this.getNameControl().setValue(tax.name);
         this.getPercentageControl().setValue(tax.percentage);
-        this.getReasonControl().setValue(tax.reason);
-        this.dataRows.set(this.mapToRows(page.data));
+        this.dataRows.set(this.mapToRows(tax.taxHistory));
       },
       error: (error: HttpErrorResponse) => {
         this.snackbarService.error(error.message);
@@ -111,38 +104,7 @@ export class TaxDetailsPage {
   getReasonControl(): AbstractControl {
     return this.taxForm.get('reason')!;
   }
-
-  onSubmit(): void {
-    if (this.taxForm.invalid) {
-      return;
-    }
-    const request: TaxRequest = {
-      name: this.getNameControl().value,
-      percentage: this.getPercentageControl().value,
-      reason: this.getReasonControl().value,
-    };
-
-    this.loading.set(true);
-
-    this.taxService.update(request)
-    .pipe(
-      switchMap(tax =>
-        this.taxHistoryService.getAll(undefined, undefined, [this.filter])
-          .pipe(
-            map(page => ({ page, tax }))
-          )
-      ),
-      finalize(() => this.loading.set(false))
-    ).subscribe({
-      next: ({page, tax}) => {
-        this.dataRows.set(this.mapToRows(page.data));
-      },
-      error: (error: HttpErrorResponse) => {
-        this.snackbarService.error(error.message);
-      }
-    })
-  }
-
+  
   onDelete(): void {
     const dialogRef = this.dialog.open(ConfirmationDialog);
     dialogRef.afterClosed().subscribe(result => {
@@ -158,6 +120,45 @@ export class TaxDetailsPage {
         this.snackbarService.error(error.message);
       }
     })      
+    })
+  }
+
+  onUpdate(id: number): void {
+    if (this.taxForm.invalid) {
+      return;
+    }
+    const request: TaxRequest = {
+      id: id,
+      name: this.getNameControl().value,
+      percentage: this.getPercentageControl().value,
+      reason: this.getReasonControl().value,
+    };
+
+    this.loading.set(true);
+
+    this.taxService.update(request)
+    .pipe(
+      finalize(() => this.loading.set(false))
+    ).subscribe({
+      next: () => {
+        this.taxService.getById(id)
+          .pipe(
+            finalize(() => this.loading.set(false))
+          )
+          .subscribe({
+            next: (tax) => {
+              this.getNameControl().setValue(tax.name);
+              this.getPercentageControl().setValue(tax.percentage);
+              this.dataRows.set(this.mapToRows(tax.taxHistory));
+            },
+            error: (error: HttpErrorResponse) => {
+              this.snackbarService.error(error.message);
+            },
+          });
+      },
+      error: (error: HttpErrorResponse) => {
+        this.snackbarService.error(error.message);
+      }
     })
   }
 

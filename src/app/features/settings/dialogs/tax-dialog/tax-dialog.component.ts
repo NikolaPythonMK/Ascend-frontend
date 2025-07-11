@@ -39,8 +39,7 @@ export class TaxDialog{
     taxHistory = signal(DATA);
     taxForm = this.fb.group({
         name: ['', Validators.required],
-        percentage: [0, Validators.required],
-        reason: ['', Validators.required]
+        percentage: [0, Validators.required]
     })
     loading = signal<boolean>(false);
     errorMessages = signal<string[]>([]);
@@ -54,18 +53,15 @@ export class TaxDialog{
         return this.taxForm.get('percentage')!;
     }
 
-    getReasonControl(): AbstractControl {
-        return this.taxForm.get('reason')!;
-    }
-
     onSubmit(): void {
         if (this.taxForm.invalid){
             return;
         }
         const request: TaxRequest = {
+            id: 0,
             name: this.getNameControl().value,
             percentage: this.getPercentageControl().value,
-            reason: this.getReasonControl().value
+            reason: ''
         }
         this.loading.set(true);
 

@@ -38,7 +38,7 @@
     </thead>
     <tbody>
       @for (row of dataRows(); track row; let idx = $index) {
-      <tr (click)="onRowClick(idx)">
+      <tr (click)="onRowClick(row.id)">
         @for (cell of getValues(row.properties); track idx; let idx = $index){
         <td>{{ cell }}</td>
         }

@@ -25,7 +25,7 @@ import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
 })
 export class UpdateLocationDialog implements OnInit{
     readonly dialogRef = inject(MatDialogRef<CreateLocatinDialog>);
-    readonly data = inject<Location>(MAT_DIALOG_DATA);
+    readonly data = inject<number>(MAT_DIALOG_DATA);
     private readonly dialog = inject(MatDialog);
     private readonly fb = inject(FormBuilder);
     private readonly locationsService = inject(LocationService)
@@ -36,7 +36,18 @@ export class UpdateLocationDialog implements OnInit{
     loading = signal<boolean>(false);
 
     ngOnInit(): void {
-        this.getNameControl().setValue(this.data.name);
+        this.locationsService.getById(this.data)
+          .pipe(
+            finalize(() => this.loading.set(false))
+          )
+          .subscribe({
+            next: (location) => {
+              this.getNameControl().setValue(location.name)
+            },
+            error: (error: HttpErrorResponse) => {
+              this.snackbarService.error(error.message)
+            },
+          });
     }
 
     getNameControl(): AbstractControl {
@@ -49,7 +60,7 @@ export class UpdateLocationDialog implements OnInit{
         }
     
         const request: LocationRequest = {
-            id: this.data.id,
+            id: this.data,
             name: this.getNameControl().value,
             tabbleLocationMapping: ''
         };
@@ -67,7 +78,7 @@ export class UpdateLocationDialog implements OnInit{
             }
             this.loading.set(true);
             this.handleRequest(
-                this.locationsService.delete(this.data.id),
+                this.locationsService.delete(this.data),
                 'Успешно'
             );
         });

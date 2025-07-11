@@ -44,23 +44,15 @@
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Description (optional)</mat-label>
-        <textarea matInput formControlName="description"></textarea>
+        <mat-label>Tax</mat-label>
+        <mat-select formControlName="category" [compareWith]="compareWith">
+          @for (category of categories(); track category.id) {
+          <mat-option [value]="category">{{ category.name }}</mat-option>
+          }
+        </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Tax (%)</mat-label>
-        <input type="number" matInput formControlName="taxPercent" />
-      </mat-form-field>
-
-      @if (isUpdateDialog()) {
-        <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Discount</mat-label>
-        <input type="number" matInput formControlName="discount" />
-      </mat-form-field>
-      }
-
-      @if (categories().length) {
+      <!-- @if (categories().length) { -->
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Categories</mat-label>
         <mat-select formControlName="category" [compareWith]="compareWith">
@@ -68,6 +60,18 @@
           <mat-option [value]="category">{{ category.name }}</mat-option>
           }
         </mat-select>
+      </mat-form-field>
+      <!-- } -->
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Description (optional)</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field>
+
+      @if (isUpdateDialog()) {
+        <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Discount</mat-label>
+        <input type="number" matInput formControlName="discount" />
       </mat-form-field>
       }
     </div>

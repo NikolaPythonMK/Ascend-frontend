@@ -9,7 +9,7 @@
   <div class="actions">
     @if (data) {
         <mat-icon class="trash-btn" (click)="onDelete()">delete</mat-icon>
-      }
+    }
     <button mat-button type="button" (click)="dialogRef.close()">Cancel</button>
     <ascend-button type="primary" label="Ажурирај" [disabled]="locationForm.invalid"/>
   </div>
