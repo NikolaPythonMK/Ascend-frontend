@@ -69,6 +69,7 @@ export class DisplayProductsComponent implements OnInit{
    */
       @HostListener('window:keydown', ['$event'])  
       handleKeyDown(event: KeyboardEvent) {
+        console.log(event)
         const products = this.products();
         const currentIndex = products.findIndex(i => i.id === this.selectedProductID());
         const lastIndex = products.length - 1;
@@ -94,6 +95,13 @@ export class DisplayProductsComponent implements OnInit{
                 this.products.set(products.data);
                 this.totalCounts.set(products.count);
                 this.selectedProductID.set(products.data[0].id);
+
+                this.products.set(this.products().map((i, index) => {
+                    if (index == 0 || index == 1) {
+                        i.discount = 5
+                    }
+                    return i;
+                }))
             },
             error: (error: HttpErrorResponse) => {
                 console.log(error);

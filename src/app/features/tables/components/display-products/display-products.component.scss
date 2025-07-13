@@ -1,24 +1,16 @@
 @use "variables" as vars;
 
-$card-min-width: 150px;
-
 .product-wrapper {
   height: 100%;
 }
 
-.products-header {
-}
-
 .products-display {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  gap: .5em;
-  // padding: 0 2em;
-  // margin: 2rem auto;
+  padding: 1em;
+  gap: .7em;
   box-sizing: border-box;
-
-  // Fluid columns: grow to fill, but never below your min width
-  grid-template-columns: repeat(auto-fit, minmax($card-min-width, 1fr));
 }
 
 .product-card {
@@ -26,16 +18,40 @@ $card-min-width: 150px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 0.5em;
-  border: 2px solid #89ac46;
-  border-radius: 5px;
-  background-color: rgba($color: #89ac46, $alpha: 0.2);
-  .product-details {
-    display: flex;
-    justify-content: space-between;
-  }
+  padding: 1em;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 
-.product-name {
-  font-size: 1.1rem;
+.card-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.price, .card-code {
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.card-title {
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.card-category {
+  padding: .5em;
+  background-color: rgba($color: #89AC46, $alpha: 0.2);
+  display: inline;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+.active {
+  border: 2px solid #89ac46;
 }

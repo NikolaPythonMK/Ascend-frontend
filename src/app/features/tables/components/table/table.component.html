@@ -26,42 +26,6 @@
     </div>
   </div>
 
-  <!-- <div class="item-products">
-      <div class="item-header-products">
-        <div class="search-wrapper">
-          <div class="search-container">
-            <input
-              type="text"
-              placeholder="Пребарај продукт..."
-              class="search-input"
-              [formControl]="searchTerm"
-            />
-            <button mat-icon-button class="search-btn">
-              <mat-icon class="search-icon">search</mat-icon>
-            </button>
-            @if (searchTerm.value){
-              <button mat-icon-button
-                      class="close-btn"
-                      (click)="onClearSearch()">
-                <mat-icon class="close-icon">close</mat-icon>
-              </button>
-            }
-          </div>
-        </div>
-        <div class="products">
-          @if (productCards().length || productsLoading()) {
-          <ascend-display-cards
-            [elements]="productCards()"
-            [loading]="productsLoading()"
-            (selectedCard)="onSelectCard($event)"
-          />
-          }@else {
-          <p class="no-data-message">Нема продукти за оваа категорија</p>
-          }
-        </div>
-      </div>
-    </div> -->
-
   <div class="order-items-wrapper">
     <div class="table-items-container">
       <table>

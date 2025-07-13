@@ -1,18 +1,25 @@
 <div class="products-wrapper">
-  <div class="products-header">
-
-  </div>
+  <div class="products-header"></div>
   <div class="products-display">
-    @for(product of products(); track product.id) {
-      <div class="product-card">
-        <div class="product-name">
-          <p class="product-name">{{ product.name }}</p>
-        </div>
-        <div class="product-details">
-          <p>{{ product.code }}</p>
-          <p>{{ product.price }}$</p>
-        </div>
+    @for(product of products(); track product.id; let idx = $index) {
+    <div class="product-card" [ngClass]="{ active: idx == 0 }">
+      <div class="card-header">
+        <span class="card-title">{{ product.name }}</span>
+        <span class="card-code">#{{ product.code }}</span>
       </div>
+      <div class="middle">
+        <div class="price">{{ product.price }}$</div>
+      </div>
+      <div class="footer">
+        <div class="card-category">Пијалоци</div>
+        @if (product.discount) {
+        <div class="discount">Discount: {{ product.discount }}%</div>
+        }
+        @else {
+          <div></div>
+        }
+      </div>
+    </div>
     }
   </div>
 </div>
