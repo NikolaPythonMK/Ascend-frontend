@@ -20,7 +20,7 @@
         <textarea matInput formControlName="description"></textarea>
       </mat-form-field>
 
-    @if (data.categories) {
+    @if (this.categories()) {
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Categories</mat-label>
         <mat-select formControlName="selectedCategories" multiple>
@@ -33,7 +33,7 @@
               </span>
             }
           </mat-select-trigger>
-          @for (category of data.categories; track category.id) {
+          @for (category of this.categories(); track category.id) {
             <mat-option [value]="category.id">{{ category.name }}</mat-option>
           }
         </mat-select>

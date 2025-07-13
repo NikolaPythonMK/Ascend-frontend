@@ -3,7 +3,7 @@
     <div class="cards-header">
       <div class="left-part">
         <span class="title">Category Groups</span>
-          <ascend-header-counter [value]="categoryGroupCards().length" />
+        <ascend-header-counter [value]="categoryGroupCards().length" />
       </div>
       <div class="right-part">
         <button
@@ -22,9 +22,9 @@
     </div>
     @if (categoryGroupCards().length) {
       <ascend-display-cards
-      [loading]="categoryGroupLoading()"
-      (selectedCard)="onUpdateCategoryGroup($event)"
-      [elements]="categoryGroupCards()"
+        [loading]="categoryGroupLoading()"
+        (selectedCard)="onUpdateCategoryGroup($event)"
+        [elements]="categoryGroupCards()"
     />
     } @else {
       <p class="no-data-message">No category groups have been found</p>

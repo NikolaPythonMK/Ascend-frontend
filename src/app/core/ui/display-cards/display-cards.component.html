@@ -5,7 +5,7 @@
     <div class="cards-grid">
         @for(element of elements(); track element.id){
             <div class="card-container">
-                <div class="test-card" appearance="outlined" (click)="onSelect(element)">
+                <div class="test-card" appearance="outlined" (click)="onSelect(element.id)">
                     <img mat-card-image 
                     [src]="element.image && element.image.trim() !== '' ? 'http://localhost:5073' + element.image : 'assets/images/no-image-icon.png'" 
                     [alt]="element.description">               

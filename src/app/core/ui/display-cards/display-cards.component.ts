@@ -13,13 +13,13 @@ import { SkeletonCardComponent } from "./skeleton-card/skeleton-card.component";
 export class DisplayCardsComponent implements OnInit {
     elements = input.required<Card[]>();
     loading = input<boolean>(false);
-    @Output() selectedCard = new EventEmitter<any>();
+    @Output() selectedCard = new EventEmitter<number>();
     
     ngOnInit(): void {
         console.log('cards: ', this.elements());
     }
 
-    onSelect(card: any): void {
-        this.selectedCard.emit(card);
+    onSelect(id: number): void {
+        this.selectedCard.emit(id);
     }
 }
