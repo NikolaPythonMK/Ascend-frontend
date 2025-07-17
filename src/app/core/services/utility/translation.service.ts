@@ -21,4 +21,14 @@ export default class TranslationService {
         const lang = localStorage.getItem('language');
         this.translateService.setDefaultLang(lang || 'mk');
     }
+
+    getTranslationForKey(key: string): string {
+        const lang = localStorage.getItem('language');
+        const translation = this.translateService.instant(key);
+        
+        if(translation == null || translation == undefined)
+            return key
+
+        return translation;
+    }
 }

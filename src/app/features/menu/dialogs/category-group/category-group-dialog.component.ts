@@ -70,22 +70,21 @@ export class CategoryGroupDialog implements OnInit{
 
     ngOnInit(): void {
       this.getAllCategories();
+  
+      if(this.data != null){
+        this.isUpdateDialog.set(true);
+        this.title.set('Ажурирај Група')
+        this.submitBtnLabel.set('Ажурирај');
+        this.loading.set(true);
 
-      this.loading.set(true);
-      this.isUpdateDialog.set(true);
-      this.title.set('Ажурирај Група')
-      this.submitBtnLabel.set('Ажурирај');
-
-
-      this.categoryGroupService.getById(this.data)
+        this.categoryGroupService.getById(this.data)
           .pipe(
             finalize(() => this.loading.set(false))
           )
           .subscribe({
             next: (categoryGroup) => {
-              console.log(categoryGroup)
               this.getNameControl().setValue(categoryGroup.name);
-              this.getDescriptionControl().setValue(categoryGroup.descripton);
+              this.getDescriptionControl().setValue(categoryGroup.description);
               this.getSelectedCategoriesControl().setValue(categoryGroup.categories.map(i => i.id))
               this.imageUrl.set(categoryGroup.image);
             },
@@ -93,6 +92,7 @@ export class CategoryGroupDialog implements OnInit{
               this.snackbarService.error(error.message)
             },
           });
+      }
     }
 
     getNameControl(): AbstractControl {

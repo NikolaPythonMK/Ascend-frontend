@@ -57,11 +57,6 @@ export class TaxDetailsPage {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
-  private filter: Filter = {
-    propName: '',
-    operator: '',
-    value: ''
-  }
 
   id = signal<number>(0);
   taxForm = this.fb.group({

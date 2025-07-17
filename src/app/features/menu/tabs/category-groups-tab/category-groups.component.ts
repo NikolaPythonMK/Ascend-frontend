@@ -16,10 +16,11 @@ import { CategoryGroupDialog } from "../../dialogs/category-group/category-group
 import { SearchTerm } from "../../../../core/models/api/search-term.model";
 import { finalize } from "rxjs";
 import { BreakpointService } from "../../../../core/services/utility/breakpoint.service";
+import { TranslateModule } from "@ngx-translate/core";
 
 @Component({
     selector: 'category-groups-component',
-    imports: [DisplayCardsComponent, SearchBarComponent, MatIconModule, MatButtonModule, HeaderCounterComponent],
+    imports: [DisplayCardsComponent, SearchBarComponent, MatIconModule, MatButtonModule, HeaderCounterComponent, TranslateModule],
     templateUrl: 'category-groups.component.html',
     styleUrls: ['category-groups.component.scss']
 })
@@ -75,8 +76,9 @@ export class CategoryGroupsComponent implements OnInit{
     private getAllCategoryGroups(): void {
         this.categoryGroupLoading.set(true);
         const searchFilter: SearchTerm[] = this.filterData.createSearchTermFilter(this.searchTerm(), ['Name'])
-        this.categoryGroupService.getAll(searchFilter).pipe(
-         finalize(() => this.categoryGroupLoading.set(false))   
+        this.categoryGroupService.getAll(searchFilter)
+        .pipe(
+            finalize(() => this.categoryGroupLoading.set(false))   
         )    
         .subscribe({
             next: (result: Page<CategoryGroup>) => {

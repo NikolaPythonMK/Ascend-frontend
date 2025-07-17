@@ -1,4 +1,5 @@
 <div class="dialog-wrapper">
+<ascend-loader [loading]="loading()" />
 <h2 mat-dialog-title class="dialog-title">{{ title() }}</h2>
 
 <form [formGroup]="staffUser" (ngSubmit)="onSubmit()" class="dialog-form">

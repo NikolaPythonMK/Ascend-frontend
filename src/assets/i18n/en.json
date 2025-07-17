@@ -51,7 +51,38 @@
     "menu": {
         "tab-title-products": "Products",
         "tab-title-categories": "Categories",
-        "tab-title-categorygroups": "Category Groups"
+        "tab-title-categorygroups": "Category Groups",
+        "products" : {
+            "products": "Products",
+            "product": "Product",
+            "no-products-found": "No products found",
+            "add-product": "Add Product",
+            "update-product": "Update Product",
+            "name": "Product Name",
+            "name-exists": "Product with the same name already exists",
+            "code": "Product Code",
+            "code-exists": "Product with the same code already exists",
+            "price": "Price",
+            "tax": "Tax",
+            "category-group": "Category Group",
+            "description": "Description",
+            "discountpercent": "Discount Percent",
+            "discountamount": "Discount Amount",
+            "reason": "Reason",
+            "image": "Attach Image"
+        },
+        "categories" : {
+            "categories": "Categories",
+            "category": "Category",
+            "all-categories": "All Categories",
+            "no-categories-found": "No categories found"
+        },
+        "category-groups" : {
+            "category-groups": "Category Groups",
+            "group": "Group",
+            "all-groups": "All Groups",
+            "no-category-groups-found": "No category groups found"
+        }
     },
     "ui": {
         "button": {
@@ -72,5 +103,15 @@
             "cancel-button": "Cancel",
             "submit-button": "Submit"  
         }
+    },
+    "shared": { 
+        "discard": "Discard",
+        "add": "Add",
+        "delete": "Delete",
+        "update": "Update",
+        "updated": "Updated",
+        "added": "Added",
+        "succesfully": "Succesfully",
+        "deleted": "Deleted"
     }
 }

@@ -6,6 +6,6 @@ export interface Category {
     description: string,
     image: any | null,
     organizationID: number,
-    categoryGroupId: number,
+    categoryGroupID: number,
     products: Product[]
 }

@@ -58,7 +58,7 @@ export class PersonalComponent implements OnInit{
 
     onUpdateStaff(id: number): void {
         const dialogRef = this.dialog.open(StaffUserDialog, {
-            data: this.staffUsers()[id]
+            data: id
         })
         dialogRef.afterClosed().pipe(
             filter((value: StaffUser | number | undefined) => value != null),

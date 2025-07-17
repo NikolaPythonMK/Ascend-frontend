@@ -17,7 +17,6 @@ import { ButtonComponent } from "../../../../core/ui/button/button.component";
 import { UploadImageComponent } from "../../../../core/ui/upload-img/upload-img.component";
 import { Category } from "../../../../core/models/api/responses/category.model";
 import { HttpErrorResponse } from "@angular/common/http";
-import { Page } from "../../../../core/models/api/page.model";
 import { ProductsService } from "../../../../core/services/api/products.service";
 import { ProductDialogData } from "../../models/product-dialog-data.dto";
 import { Product } from "../../../../core/models/api/responses/product.model";
@@ -25,6 +24,11 @@ import { Observable } from 'rxjs';
 import { ConfirmationDialog } from "../../../../core/ui/confirmation-dialog/confirmation-dialog.component";
 import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
 import { ErrorDetails } from "../../../../core/models/error-details";
+import { Page } from "../../../../core/models/api/page.model";
+import { TaxService } from "../../../../core/services/api/tax.service";
+import { Tax } from "../../../../core/models/api/responses/tax.model";
+import { TranslateModule } from "@ngx-translate/core";
+import TranslationService from "../../../../core/services/utility/translation.service";
 
 
 @Component({
@@ -42,7 +46,8 @@ import { ErrorDetails } from "../../../../core/models/error-details";
     UploadImageComponent,
     MatCheckboxModule,
     ButtonComponent,
-    LoaderComponent
+    LoaderComponent,
+    TranslateModule
 ],
     templateUrl: 'product-dialog.component.html',
     styleUrls: ['product-dialog.component.scss', '../../styles/dialog-style.scss'],
@@ -55,31 +60,39 @@ export class ProductDialog implements OnInit {
     readonly fb = inject(FormBuilder);
     readonly categoryService = inject(CategoriesService);
     readonly productService = inject(ProductsService);
+    readonly taxService = inject(TaxService);
     readonly snackbar = inject(SnackbarService);
     readonly imageService = inject(ImageService);
+    readonly translationService = inject(TranslationService);
 
     productForm = this.fb.group({
         name: ['', Validators.required],
-        code: [''],
+        code: ['', Validators.required],
         description: [''],
         image: [''],
-        category: [''],
-        price: [''],
-        taxPercent: [''],
-        discount: ['']
+        category: ['', Validators.required],
+        price: ['', Validators.required],
+        tax: ['', Validators.required],
+        discountAmount: ['0'],
+        discountPercent: ['0'],
+        reason: [null]
     })
     categories = signal<Category[]>([]);
-    selectedCategory = signal<Category | undefined>(undefined);
+    taxes = signal<Tax[]>([]);
+    selectedCategory = signal<number>(0);
+    selectedTax = signal<number>(0);
     isUpdateDialog = signal<boolean>(false);
-    title = signal<string>('Додади Продукт');
-    submitBtnLabel = signal<string>('Додади');
+    title = signal<string>(this.translationService.getTranslationForKey("menu.products.add-product"));
+    submitBtnLabel = signal<string>(this.translationService.getTranslationForKey("shared.add"));
     imageUrl = signal<string | null>("");
     loading = signal<boolean>(false);
     errorMessages = signal<string[]>([]);
 
 
     ngOnInit(): void {
-        this.categories.set(this.data.categories);
+        this.getAllCategories();
+        this.getAllTaxes();
+        
         if (this.data.selectedCategory) {
             this.getCategoryControl().setValue(this.data.selectedCategory);
         }
@@ -87,18 +100,23 @@ export class ProductDialog implements OnInit {
         if (this.data.id) {
             this.loading.set(true);
             this.isUpdateDialog.set(true);
-            this.title.set('Ажурирај Продукт')
-            this.submitBtnLabel.set('Ажурирај');
+            this.title.set(this.translationService.getTranslationForKey("menu.products.update-product"))
+            this.submitBtnLabel.set(this.translationService.getTranslationForKey("menu.shared.update"));
             this.productService.getById(this.data.id).subscribe({
                 next: (product: Product) => {
                     this.getNameControl().setValue(product.name);
                     this.getCodeControl().setValue(product.code);
                     this.getPriceControl().setValue(product.price);
                     this.getDescriptionControl().setValue(product.description);
-                    this.getTaxPercentControl().setValue(product.taxPercent);
-                    this.getDiscountControl().setValue(product.discount);
-                    this.getCategoryControl().setValue(this.categories().find(c => c.id === product.categoryID));
+                    this.getDiscountAmountControl().setValue(product.discountAmount);
+                    this.getDiscountPercentControl().setValue(product.discountPercent);
                     this.imageUrl.set(product.image);
+                    if(product.categoryID){
+                        this.getCategoryControl().setValue(product.categoryID);                        
+                    }
+                    if(product.taxID){
+                        this.getTaxControl().setValue(product.taxID);                        
+                    }
                     this.loading.set(false);
                 },
                 error: (error: HttpErrorResponse) => {
@@ -132,14 +150,21 @@ export class ProductDialog implements OnInit {
         return this.productForm.get('price')!;
     }
 
-    getTaxPercentControl(): AbstractControl {
-        return this.productForm.get('taxPercent')!;
+    getTaxControl(): AbstractControl {
+        return this.productForm.get('tax')!;
     }
 
-    getDiscountControl(): AbstractControl {
-        return this.productForm.get('discount')!;
+    getDiscountAmountControl(): AbstractControl {
+        return this.productForm.get('discountAmount')!;
     }
 
+    getDiscountPercentControl(): AbstractControl {
+        return this.productForm.get('discountPercent')!;
+    }
+
+    getReasonControl(): AbstractControl {
+        return this.productForm.get('reason')!;
+    }
     onSubmit(): void {
         if(this.productForm.invalid){
             return;
@@ -150,12 +175,15 @@ export class ProductDialog implements OnInit {
         form.append("code", this.getCodeControl().value);
         form.append("price", this.getPriceControl().value);
         form.append("description", this.getDescriptionControl().value);
-        form.append("taxPercent", this.getTaxPercentControl().value);
-        form.append('discount', this.getDiscountControl().value);
+        form.append("taxId", this.getTaxControl().value);
+        form.append('discountAmount', this.getDiscountAmountControl().value);
+        form.append('discountPercent', this.getDiscountPercentControl().value);
         form.append("fileBytes", this.getImageControl().value);
-        form.append("categoryId", (this.getCategoryControl().value as Category).id.toString());
+        form.append("categoryId", this.getCategoryControl().value);
+        form.append("reason", this.getReasonControl().value);
         form.append("sourceLocation", "1");
 
+        console.log(form)
         if (this.data.id) {
             form.append("id", this.data.id.toString());
         }
@@ -165,8 +193,8 @@ export class ProductDialog implements OnInit {
             ? this.productService.update(form)
             : this.productService.add(form);
 
-        const action = isEdit ? 'ажуриран' : 'додаден';
-        const message = `Успешно е ${action} продуктот`;
+        const action = isEdit ? this.translationService.getTranslationForKey("shared.updated") : this.translationService.getTranslationForKey("shared.added");
+        const message = `${this.translationService.getTranslationForKey("shared.succesfully")} ${action} ${this.translationService.getTranslationForKey("menu.products.product")}`;
 
         this.handleRequest(request$, message);
     }
@@ -179,7 +207,7 @@ export class ProductDialog implements OnInit {
             }
             this.handleRequest<number>(
                 this.productService.delete(this.data.id!),
-                'Продуктот е успешно избришан'
+                `${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.deleted")} ${this.translationService.getTranslationForKey("menu.products.product")}`
             )            
         })
     }
@@ -213,4 +241,26 @@ export class ProductDialog implements OnInit {
                 }
             });
         }
+
+    private getAllCategories(): void {
+        this.categoryService.getAll().subscribe({
+            next: (result: Page<Category>) => {
+              this.categories.set(result.data);
+            },
+            error: (error: HttpErrorResponse) => {
+              this.snackbar.error(error.message);
+            }
+        })
+    }
+
+    private getAllTaxes(): void {
+        this.taxService.getAll().subscribe({
+            next: (result: Page<Tax>) => {
+              this.taxes.set(result.data);
+            },
+            error: (error: HttpErrorResponse) => {
+              this.snackbar.error(error.message);
+            }
+        })
+      }
 }

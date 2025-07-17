@@ -10,11 +10,11 @@
       @if(errorMessages().includes('name.exists')) {
       <div class="error-message">
         <mat-icon>error</mat-icon>
-        <span>Product with that name already exists.</span>
+        <span>{{ 'menu.products.name-exists' | translate }}</span>
       </div>
       }
       <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Product Name</mat-label>
+        <mat-label>{{ 'menu.products.name' | translate }}</mat-label>
         <input
           matInput
           formControlName="name"
@@ -26,11 +26,11 @@
       @if(errorMessages().includes('code.exists')) {
       <div class="error-message">
         <mat-icon>error</mat-icon>
-        <span>Product with that code already exists.</span>
+        <span>{{ 'menu.products.code-exists' | translate }}</span>
       </div>
       }
       <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Code</mat-label>
+        <mat-label>{{ 'menu.products.code' | translate }}</mat-label>
         <input
           matInput
           formControlName="code"
@@ -39,46 +39,65 @@
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Price</mat-label>
+        <mat-label>{{ 'menu.products.price' | translate }}</mat-label>
         <input type="number" matInput formControlName="price" required />
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Tax</mat-label>
-        <mat-select formControlName="category" [compareWith]="compareWith">
-          @for (category of categories(); track category.id) {
-          <mat-option [value]="category">{{ category.name }}</mat-option>
+        <mat-label>{{ 'menu.products.tax' | translate }}</mat-label>
+        <mat-select formControlName="tax">
+          @for (tax of this.taxes(); track tax.id) {
+          <mat-option [value]="tax.id" selected>{{ tax.name }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
 
       <!-- @if (categories().length) { -->
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Categories</mat-label>
-        <mat-select formControlName="category" [compareWith]="compareWith">
-          @for (category of categories(); track category.id) {
-          <mat-option [value]="category">{{ category.name }}</mat-option>
+            <mat-form-field appearance="fill" class="full-width">
+        <mat-label>{{ 'menu.products.category-group' | translate }}</mat-label>
+        <mat-select formControlName="category">
+          @for (category of this.categories(); track category.id) {
+          <mat-option [value]="category.id" selected>{{ category.name }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
       <!-- } -->
 
       <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Description (optional)</mat-label>
+        <mat-label>{{ 'menu.products.description' | translate }}</mat-label>
         <textarea matInput formControlName="description"></textarea>
       </mat-form-field>
 
-      @if (isUpdateDialog()) {
-        <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Discount</mat-label>
-        <input type="number" matInput formControlName="discount" />
+      @if (isUpdateDialog()){
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>{{ 'menu.products.discountpercent' | translate }}</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="discountPercent"
+        />
       </mat-form-field>
-      }
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>{{ 'menu.products.discountpercent' | translate }}</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="discountAmount"
+        />
+      </mat-form-field>
+        <mat-form-field appearance="fill" class="full-width">
+        <mat-label>{{ 'menu.products.reason' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="reason"
+        />
+      </mat-form-field>
+      } 
     </div>
 
     <div>
       <div class="full-width upload-container">
-        <span>Прикачи слика (optional)</span>
+        <span>{{ 'menu.products.image' | translate }}</span>
         <ascend-upload-image
           (uploadEvent)="onUpload($event)"
           (deleteEvent)="onDeleteImage()"
@@ -105,7 +124,7 @@
       <mat-icon>delete</mat-icon>
     </button>
     }
-    <button mat-button type="button" (click)="dialogRef.close()">Откажи</button>
+    <button mat-button type="button" (click)="dialogRef.close()">{{ 'shared.discard' | translate }}</button>
     <ascend-button
       type="primary"
       [label]="submitBtnLabel()"

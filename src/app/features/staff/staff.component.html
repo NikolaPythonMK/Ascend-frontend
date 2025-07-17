@@ -1,13 +1,18 @@
-<mat-tab-group>
-    <mat-tab [label]="'staff.tab-title-staff' | translate">
-           <div class="content-wrapper">
-                <personal-component />
-           </div>
-    </mat-tab>
-    <mat-tab [label]="'staff.tab-title-roles' | translate">
-        <div class="content-wrapper">
-            <roles-component />
-        </div>
-    </mat-tab>
+<div class="tabs-wrapper">
+  <mat-tab-group>
+  <mat-tab [label]="'menu.tab-title-products' | translate">
+    <div class="content-wrapper">
+      <ng-template matTabContent>
+        <personal-component />
+      </ng-template>
+    </div>
+  </mat-tab>
+  <mat-tab [label]="'staff.tab-title-roles' | translate">
+    <div class="content-wrapper">
+      <ng-template matTabContent>
+        <roles-component />
+      </ng-template>
+    </div>
+  </mat-tab>
 </mat-tab-group>
-  
+</div>

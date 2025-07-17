@@ -34,43 +34,43 @@ import { Order } from "../../models/order.model";
 import { OrderedItemsComponent } from "../ordered-items/ordered-items.component";
 import { DisplayProductsComponent } from "../display-products/display-products.component";
 
-const PRODUCTS: Product[] = [
-  {
-      id: 1, name: 'Туна сендвич', code: '3243', price: 120,
-      description: "",
-      image: null,
-      categoryID: 0,
-      organizationID: 0
-  },
-  {
-      id: 2, name: 'Пица сендвич', code: '6443', price: 120,
-      description: "",
-      image: null,
-      categoryID: 0,
-      organizationID: 0
-  },
-  {
-      id: 3, name: 'Фанта', code: '1235', price: 120,
-      description: "",
-      image: null,
-      categoryID: 0,
-      organizationID: 0
-  },
-  {
-      id: 4, name: 'Кока кола', code: '8980', price: 120,
-      description: "",
-      image: null,
-      categoryID: 0,
-      organizationID: 0
-  },
-  {
-      id: 5, name: 'Нес кафе', code: '1515', price: 120,
-      description: "",
-      image: null,
-      categoryID: 0,
-      organizationID: 0
-  },
-];
+// const PRODUCTS: Product[] = [
+//   {
+//       id: 1, name: 'Туна сендвич', code: '3243', price: 120,
+//       description: "",
+//       image: null,
+//       categoryID: 0,
+//       organizationID: 0
+//   },
+//   {
+//       id: 2, name: 'Пица сендвич', code: '6443', price: 120,
+//       description: "",
+//       image: null,
+//       categoryID: 0,
+//       organizationID: 0
+//   },
+//   {
+//       id: 3, name: 'Фанта', code: '1235', price: 120,
+//       description: "",
+//       image: null,
+//       categoryID: 0,
+//       organizationID: 0
+//   },
+//   {
+//       id: 4, name: 'Кока кола', code: '8980', price: 120,
+//       description: "",
+//       image: null,
+//       categoryID: 0,
+//       organizationID: 0
+//   },
+//   {
+//       id: 5, name: 'Нес кафе', code: '1515', price: 120,
+//       description: "",
+//       image: null,
+//       categoryID: 0,
+//       organizationID: 0
+//   },
+// ];
 
 const ORDERS: Order[] = [
   {

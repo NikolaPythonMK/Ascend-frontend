@@ -70,8 +70,8 @@ export class TableComponent {
             this.searchEvent.emit(searchTerm);
         }
 
-        onRowClick(row: number): void {
-            this.clickedRowEvent.emit(row);
+        onRowClick(id: number): void {
+            this.clickedRowEvent.emit(id);
         }
 
         getValues(obj: any): any[] {

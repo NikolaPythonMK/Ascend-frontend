@@ -8,28 +8,23 @@
   @if (breakpointService.isDesktop()) {
   <div class="list-container">
     <div class="sidebar-header">
-      <p class="title title-sidebar-list">Група на категории</p>
+      <p class="title title-sidebar-list">{{ 'menu.category-groups.category-groups' | translate }}</p>
     </div>
     <ascend-display-list
       [elements]="categoryGroupElements()"
-      selectAllButtonLabel="Сите категории"
       (selectedEvent)="onSelectedCategoryGroup($event)"
       [setDeleteButton]="false"
       [setSelectAllButton]="false"
       [isLoading]="categoryGroupsLoading()"
       [setSelectAllButton]="true"
-      [selectAllButtonLabel]="'All Groups'"
+      [selectAllButtonLabel]="'menu.category-groups.all-groups | translate'"
     />
   </div>
   }
   <div class="cards-container">
     <div class="cards-header">
       <div class="left-part">
-        @if (selectedCategoryGroup()){
-        <span class="title">Categories > <span class="select-category" (click)="openCategoryGroupSelectDialog()">{{ selectedCategoryGroup()!.name }}</span></span>
-        }@else {
-        <span class="title">Category > <span class="select-category" (click)="openCategoryGroupSelectDialog()">All Categories</span></span>
-        }
+        <span class="title">{{ 'menu.categories.categories' | translate }}</span>
         @if (!breakpointService.isHandsetLandscape() && !breakpointService.isMobile()) {
           <ascend-header-counter [value]="categories().length" />
         }
@@ -43,7 +38,7 @@
           (click)="onAddCategory()"
         >
           <mat-icon>add</mat-icon>
-          Category
+          {{ 'menu.categories.category' | translate }}
         </button>
 
         <ascend-search-bar (onSearchTerm)="onSearchCategory($event)"  />
@@ -57,7 +52,7 @@
       [elements]="categoryCards()"
     />
     } @else {
-      <p class="no-data-message">No categories have been found</p>
+      <p class="no-data-message">{{ 'menu.categories.no-categories-found' | translate }}</p>
     }
     </div>
   </div>
