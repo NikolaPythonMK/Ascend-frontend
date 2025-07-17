@@ -15,21 +15,18 @@ import { MatSelectModule } from '@angular/material/select';
 import { ButtonComponent } from '../../../../../core/ui/button/button.component';
 import { LoaderComponent } from '../../../../../core/ui/loader/loader.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { finalize, Observable, switchMap, of, map, tap } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { finalize } from 'rxjs';
 import { TaxRequest } from '../../../../../core/models/api/requests/tax.request';
-import { Tax } from '../../../../../core/models/api/responses/tax.model';
-import { ErrorDetails } from '../../../../../core/models/error-details';
 import { TaxService } from '../../../../../core/services/api/tax.service';
 import { SnackbarService } from '../../../../../core/services/utility/snackbar.service';
-import { TaxDialogData } from '../../../models/tax-dialog-data.dto';
 import { TableComponent } from '../../../../../core/ui/table/table.component';
-import { TaxHistoryService } from '../../../../../core/services/api/tax-history.service';
-import { Filter } from '../../../../../core/models/api/value-objects/filter.model';
 import { DataRow } from '../../../../../core/ui/table/models/data-row';
 import { TaxHistory } from '../../../../../core/models/api/responses/tax-history.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationDialog } from '../../../../../core/ui/confirmation-dialog/confirmation-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
+import TranslationService from '../../../../../core/services/utility/translation.service';
 
 @Component({
   imports: [
@@ -45,6 +42,7 @@ import { ConfirmationDialog } from '../../../../../core/ui/confirmation-dialog/c
     LoaderComponent,
     MatIconModule,
     TableComponent,
+    TranslateModule
   ],
   templateUrl: 'tax-details.component.html',
   styleUrls: ['tax-details.component.scss'],
@@ -52,11 +50,11 @@ import { ConfirmationDialog } from '../../../../../core/ui/confirmation-dialog/c
 export class TaxDetailsPage {
   private readonly fb = inject(FormBuilder);
   private readonly taxService = inject(TaxService);
-  private readonly taxHistoryService = inject(TaxHistoryService);
   private readonly snackbarService = inject(SnackbarService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
+  private readonly translationService = inject(TranslationService);
 
   id = signal<number>(0);
   taxForm = this.fb.group({
@@ -108,8 +106,8 @@ export class TaxDetailsPage {
       }
     this.taxService.delete(this.id()).subscribe({
       next: (id: number) => {
-        this.snackbarService.success('Успешно е избришан данокот');
-        this.router.navigate(['/settings']); // ???
+        this.snackbarService.success(`${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.deleted")}`);
+        this.router.navigate(['/settings']);
       },
       error: (error: HttpErrorResponse) => {
         this.snackbarService.error(error.message);

@@ -4,7 +4,6 @@ import { StaffService } from "../../../../core/services/api/staff.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { SnackbarService } from "../../../../core/services/utility/snackbar.service";
 import type { Page } from "../../../../core/models/api/page.model";
-import { StaffUserRow } from "../../models/staff-user-row.model";
 import { MatDialog } from "@angular/material/dialog";
 import { StaffUserDialog } from "../../dialogs/staff-user-dialog/staff-user.component";
 import { filter, Observer, switchMap } from "rxjs";
@@ -12,11 +11,12 @@ import { Sort } from "../../../../core/ui/table/models/sort.model";
 import { TableStateService } from "../../../../core/services/utility/table-state.service";
 import type { StaffUser } from "../../../../core/models/api/responses/staff-user.model";
 import { DataRow } from "../../../../core/ui/table/models/data-row";
+import { TranslateModule } from "@ngx-translate/core";
 
 
 @Component({
     selector: 'personal-component',
-    imports: [TableComponent],
+    imports: [TableComponent, TranslateModule],
     providers: [TableStateService],
     templateUrl: 'personal.component.html',
     styleUrls: ['personal.component.scss']

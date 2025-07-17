@@ -26,6 +26,7 @@ import { CategoryGroupService } from "../../../../core/services/api/category-gro
 import { Page } from "../../../../core/models/api/page.model";
 import { CategoryGroup } from "../../../../core/models/api/responses/category-group.model";
 import { TranslateModule } from "@ngx-translate/core";
+import TranslationService from "../../../../core/services/utility/translation.service";
 
 
 @Component({
@@ -58,6 +59,7 @@ export class CategoryDialog implements OnInit{
     readonly categoryGroupService = inject(CategoryGroupService);
     readonly snackbar = inject(SnackbarService);
     readonly imageService = inject(ImageService);
+    readonly translationService = inject(TranslationService);
 
     categoryForm = this.fb.group({
         name: ['', Validators.required],
@@ -67,8 +69,8 @@ export class CategoryDialog implements OnInit{
     })
     staffUser: any;
     isUpdateDialog = signal<boolean>(false);
-    title = signal<string>('Додади Категорија');
-    submitBtnLabel = signal<string>('Додади');
+    title = signal<string>(this.translationService.getTranslationForKey("menu.categories.add-category"));
+    submitBtnLabel = signal<string>(this.translationService.getTranslationForKey("shared.add"));
     imageUrl = signal<string>('');
     loading = signal<boolean>(false);
     errorMessages = signal<string[]>([]);
@@ -98,8 +100,8 @@ export class CategoryDialog implements OnInit{
         }
 
         this.isUpdateDialog.set(true);
-        this.title.set('Ажурирај Категорија')
-        this.submitBtnLabel.set('Ажурирај');
+        this.title.set(this.translationService.getTranslationForKey("menu.categories.update-category"))
+        this.submitBtnLabel.set(this.translationService.getTranslationForKey("shared.update"));
 
         this.loading.set(true);
         this.categoryService.getById(this.data.id)
@@ -156,13 +158,18 @@ export class CategoryDialog implements OnInit{
 
         this.isUpdateDialog() && form.append("id", String(this.data.id));
 
+        const isEdit = !!this.data.id;
+
         const action$ = this.isUpdateDialog() ?
             this.categoryService.update(form) :
             this.categoryService.add(form);
 
+        const action = isEdit ? this.translationService.getTranslationForKey("shared.updated") : this.translationService.getTranslationForKey("shared.added");
+        const message = `${this.translationService.getTranslationForKey("shared.succesfully")} ${action} ${this.translationService.getTranslationForKey("menu.categories.category")}`;
+
         this.handleRequest<Category>(
             action$,
-            'Успешно е додадена категоријата'
+            message
         );
     }
 
@@ -174,7 +181,7 @@ export class CategoryDialog implements OnInit{
             }
             this.handleRequest<number>(
                 this.categoryService.delete(this.data.id!),
-                'Категоријата е успешно избришана'
+                `${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.deleted")} ${this.translationService.getTranslationForKey("menu.categories.category")}`
             )            
         })
     }

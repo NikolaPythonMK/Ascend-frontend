@@ -1,24 +1,24 @@
 <ascend-loader [loading]="loading()" />
-<h2 mat-dialog-title class="dialog-title">Add Tax</h2>
+<h2 mat-dialog-title class="dialog-title">{{ 'settings.taxes.add-tax' | translate }}</h2>
 <div class="content">
   <form [formGroup]="taxForm" (ngSubmit)="onSubmit()" class="dialog-form">
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Tax Name</mat-label>
-      <input matInput formControlName="name" placeholder="Enter tax name" />
+      <mat-label>{{ 'settings.taxes.name' | translate }}</mat-label>
+      <input matInput formControlName="name" />
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Tax Percentage</mat-label>
+      <mat-label>{{ 'settings.taxes.percentage' | translate }}</mat-label>
       <input matInput type="number" formControlName="percentage" min="0" (keydown.enter)="onSubmit()" />
     </mat-form-field>
 
     <div class="actions">
       <button mat-button type="button" (click)="dialogRef.close()">
-        Откажи
+        {{ 'shared.cancel' | translate }}
       </button>
       <ascend-button
         type="primary"
-        [label]="'Add'"
+        [label]="'shared.add | translate'"
         [disabled]="taxForm.invalid"
       />
     </div>

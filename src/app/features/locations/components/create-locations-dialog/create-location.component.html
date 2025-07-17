@@ -1,21 +1,18 @@
 <ascend-loader [loading]="loading()" />
-<h2 mat-dialog-title class="dialog-title">Add Location</h2>
+<h2 mat-dialog-title class="dialog-title">{{ 'locations.add-location' | translate }}</h2>
 <form [formGroup]="locationForm" (ngSubmit)="onSubmit()" class="dialog-form">
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Location Name</mat-label>
-    <input matInput formControlName="name" placeholder="Enter location name" />
+    <mat-label>{{ 'locations.name' | translate}}</mat-label>
+    <input matInput formControlName="name"/>
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Table Count</mat-label>
+    <mat-label>{{ 'locations.table-count' | translate }}</mat-label>
     <input matInput type="number" formControlName="tableCount" min="0" />
   </mat-form-field>
 
   <div class="actions">
-    <button mat-button type="button" (click)="dialogRef.close()">Cancel</button>
-    <!-- <button mat-flat-button color="primary" type="submit" [disabled]="locationForm.invalid">
-      Save
-    </button> -->
-    <ascend-button type="primary" label="Додади" [disabled]="locationForm.invalid"/>
+    <button mat-button type="button" (click)="dialogRef.close()">{{ 'shared.cancel' | translate }}</button>
+    <ascend-button type="primary" [label]="'shared.add'" [disabled]="locationForm.invalid"/>
   </div>
 </form>

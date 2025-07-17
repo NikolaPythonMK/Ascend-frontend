@@ -13,14 +13,14 @@
             @if (errorKey) {
                             <div class="error-container">
                 <mat-icon class="error-icon">error</mat-icon>
-                <p class="error-message">Invalid Credentials</p>
+                <p class="error-message">{{ 'auth.invalid-credentials' | translate }}</p>
                 <mat-icon class="close-btn" (click)="onCloseErrorMessage()">close</mat-icon>
             </div>
             }
 
             <div class="input-group">
                 <ascend-input-field [type]="'text'"
-                                    [placeholder]="'auth.username'"
+                                    [placeholder]="'auth.username | translate'"
                                     [autoFocus]="true"
                                     [hasError]="getUsernameControl().invalid && formSubmitted"
                                     formControlName="username"
@@ -33,12 +33,6 @@
                        [ngClass]="{'error-input': getPasswordControl().invalid && formSubmitted}">
             </div>
             @if (locations().length > 0) {
-                <!-- <select>
-                    @for (location of locations(); track location.id; let index = $index) {
-                        <option [value]="location.id" [selected]="index === 0">{{ location.name }}</option>
-                    }
-                </select> -->
-
                 <mat-form-field>
                     <mat-label>{{ 'auth.location' | translate }}</mat-label>
                     <mat-select matNativeControl formControlName="location">
@@ -46,10 +40,7 @@
                         <mat-option [value]="location.id" >{{ location.name }}</mat-option>
                       }
                     </mat-select>
-                  </mat-form-field>
-                  
-            }@else {
-                <p>0 locations</p>
+                  </mat-form-field> 
             }
             <button type="submit" (click)="onSubmit()" class="submit-btn">{{ 'auth.login' | translate }}</button>
         </form>

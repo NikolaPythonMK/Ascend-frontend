@@ -14,16 +14,17 @@ import { UploadImageComponent } from '../../../../core/ui/upload-img/upload-img.
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CategoryGroupService } from '../../../../core/services/api/category-group.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { CategoryGroup } from '../../../../core/models/api/responses/category-group.model';
 import { SnackbarService } from '../../../../core/services/utility/snackbar.service';
 import { Category } from '../../../../core/models/api/responses/category.model';
-import { CategoryGroupDialogData } from '../../models/category-group-dialog-data.dto';
 import { CategoriesService } from '../../../../core/services/api/categories.service';
 import { finalize, Observable } from 'rxjs';
 import { ConfirmationDialog } from '../../../../core/ui/confirmation-dialog/confirmation-dialog.component';
 import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
 import { ErrorDetails } from '../../../../core/models/error-details';
 import { Page } from '../../../../core/models/api/page.model';
+import { TranslateModule } from '@ngx-translate/core';
+import TranslationService from '../../../../core/services/utility/translation.service';
+
 
 @Component({
   imports: [
@@ -39,7 +40,8 @@ import { Page } from '../../../../core/models/api/page.model';
     UploadImageComponent,
     MatCheckboxModule,
     ButtonComponent,
-    LoaderComponent
+    LoaderComponent,
+    TranslateModule
 ],
   templateUrl: 'category-group-dialog.component.html',
   styleUrls: ['category-group-dialog.component.scss', '../../styles/dialog-style.scss'],
@@ -52,6 +54,7 @@ export class CategoryGroupDialog implements OnInit{
     readonly categoryService = inject(CategoriesService);
     readonly snackbarService = inject(SnackbarService);
     readonly dialog = inject(MatDialog);
+    readonly translationService = inject(TranslationService);
 
     categoryGroupForm = this.fb.group({
         name: ['', Validators.required],
@@ -63,8 +66,8 @@ export class CategoryGroupDialog implements OnInit{
     imageUrl = signal<string>('');
     categories = signal<Category[]>([]);
     isUpdateDialog = signal<boolean>(false);
-    title = signal<string>('Додади Група');
-    submitBtnLabel = signal<string>('Додади');
+    title = signal<string>(this.translationService.getTranslationForKey("menu.category-groups.add-group"));
+    submitBtnLabel = signal<string>(this.translationService.getTranslationForKey("shared.add"));
     loading = signal<boolean>(false);
     errorMessages = signal<string[]>([]);
 
@@ -73,8 +76,8 @@ export class CategoryGroupDialog implements OnInit{
   
       if(this.data != null){
         this.isUpdateDialog.set(true);
-        this.title.set('Ажурирај Група')
-        this.submitBtnLabel.set('Ажурирај');
+        this.title.set(this.translationService.getTranslationForKey("menu.category-groups.update-group"))
+        this.submitBtnLabel.set(this.translationService.getTranslationForKey("menu.shared.update"));
         this.loading.set(true);
 
         this.categoryGroupService.getById(this.data)
@@ -136,8 +139,8 @@ export class CategoryGroupDialog implements OnInit{
             ? this.categoryGroupService.update(formData)
             : this.categoryGroupService.add(formData);
 
-        const action = isEdit ? 'ажурирана' : 'додадена';
-        const message = `Успешно е ${action} групата`;
+        const action = isEdit ? this.translationService.getTranslationForKey("shared.updated") : this.translationService.getTranslationForKey("shared.added");
+        const message = `${this.translationService.getTranslationForKey("shared.succesfully")} ${action} ${this.translationService.getTranslationForKey("menu.category-groups.group")}`;
 
         this.handleRequest(request$, message);
 
@@ -151,7 +154,7 @@ export class CategoryGroupDialog implements OnInit{
             }
             this.handleRequest<number>(
                 this.categoryGroupService.delete(this.data!),
-                'Групата е успешно избришана'
+                `${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.deleted")} ${this.translationService.getTranslationForKey("menu.category-groups.group")}`
             )            
         })
     }

@@ -183,7 +183,6 @@ export class ProductDialog implements OnInit {
         form.append("reason", this.getReasonControl().value);
         form.append("sourceLocation", "1");
 
-        console.log(form)
         if (this.data.id) {
             form.append("id", this.data.id.toString());
         }

@@ -12,22 +12,25 @@ import { ButtonComponent } from "../../../../core/ui/button/button.component";
 import { TaxRequest } from "../../../../core/models/api/requests/tax.request";
 import { TaxService } from "../../../../core/services/api/tax.service";
 import { HttpErrorResponse } from "@angular/common/http";
-import { finalize, Observable } from "rxjs";
-import { ErrorDetails } from "../../../../core/models/error-details";
+import { finalize } from "rxjs";
 import { MatIconModule } from "@angular/material/icon";
-import { TableComponent } from "../../../../core/ui/table/table.component";
 import { Tax } from "../../../../core/models/api/responses/tax.model";
-
-
-const DATA = [
-    {name: 'Name1', taxValueCurrent: 1.5, taxValuePrevious: 1.0, date: '03-05-2012', user: 'Nikola'},
-    {name: 'Name1', taxValueCurrent: 1.5, taxValuePrevious: 1.0, date: '03-05-2012', user: 'Nikola'},
-    {name: 'Name1', taxValueCurrent: 1.5, taxValuePrevious: 1.0, date: '03-05-2012', user: 'Nikola'},
-    {name: 'Name1', taxValueCurrent: 1.5, taxValuePrevious: 1.0, date: '03-05-2012', user: 'Nikola'},
-]
+import TranslationService from "../../../../core/services/utility/translation.service";
+import { TranslateModule } from "@ngx-translate/core";
 
 @Component({
-    imports: [MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatInputModule, ButtonComponent, MatLabel, CommonModule, MatButtonModule, LoaderComponent, MatIconModule, TableComponent],
+    imports: [MatFormFieldModule, 
+        MatSelectModule, 
+        FormsModule, 
+        ReactiveFormsModule, 
+        MatInputModule, 
+        ButtonComponent, 
+        MatLabel, 
+        CommonModule, 
+        MatButtonModule, 
+        LoaderComponent, 
+        MatIconModule,
+        TranslateModule],
     templateUrl: 'tax-dialog.component.html',
     styleUrls: ['tax-dialog.component.scss']
 })
@@ -36,7 +39,8 @@ export class TaxDialog{
     private readonly fb = inject(FormBuilder);
     private readonly taxService = inject(TaxService);
     private readonly snackbarService = inject(SnackbarService);
-    taxHistory = signal(DATA);
+    private readonly translationService = inject(TranslationService);
+
     taxForm = this.fb.group({
         name: ['', Validators.required],
         percentage: [0, Validators.required]
@@ -69,7 +73,7 @@ export class TaxDialog{
             finalize(() => this.loading.set(false))
         ).subscribe({
             next: (tax: Tax) => {
-                this.snackbarService.success('Успешно');
+                this.snackbarService.success(this.translationService.getTranslationForKey("shared.succesfully"));
                 this.dialogRef.close(tax);
             },
             error: (error: HttpErrorResponse) => {

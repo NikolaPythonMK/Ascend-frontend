@@ -17,6 +17,7 @@ import { Permission } from "../../../../core/models/api/responses/permission.mod
 import { Role } from "../../../../core/models/api/responses/role.model";
 import { RoleRequest } from "../../../../core/models/api/requests/role.request";
 import { PermissionsService } from "../../../../core/services/api/permissions.service";
+import TranslationService from "../../../../core/services/utility/translation.service";
 
 interface GroupPermission {
     groupName: string,
@@ -39,7 +40,8 @@ interface UpdatedPermission {
               FormsModule,
               MatIconModule,
               InputFieldComponent,
-              ReactiveFormsModule],
+              ReactiveFormsModule,
+                TranslateModule],
     templateUrl: 'roles.component.html',
     styleUrls: ['roles.component.scss']
 })
@@ -51,6 +53,8 @@ export class RolesComponent implements OnInit{
     readonly snackbarService = inject(SnackbarService);
     readonly fb = inject(FormBuilder);
     readonly cdr = inject(ChangeDetectorRef);
+    readonly translationService = inject(TranslationService);
+
     toggleAddRole = signal<boolean>(false);
     roles = signal<Role[]>([]);
     selectedRole = signal<Role | null>(null);

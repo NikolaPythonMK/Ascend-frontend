@@ -30,7 +30,7 @@
   <img
     class="selected-image"
     [src]="imageUrl()"
-    alt="Image Preview"
+    [alt]="'shared.image-preview | translate'"
     (click)="onChooseImage(imgInput)"
   />
   <div>{{ fileName() }}</div>

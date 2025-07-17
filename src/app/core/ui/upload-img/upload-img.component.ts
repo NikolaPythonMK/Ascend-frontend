@@ -1,10 +1,11 @@
 import { Component, input, linkedSignal, output, signal } from "@angular/core";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
+import { TranslateModule } from "@ngx-translate/core";
 
 @Component({
     selector: 'ascend-upload-image',
-    imports: [MatIcon, MatIconButton],
+    imports: [MatIcon, MatIconButton, TranslateModule],
     templateUrl: 'upload-img.component.html',
     styleUrls: ['upload-img.component.scss']
 })

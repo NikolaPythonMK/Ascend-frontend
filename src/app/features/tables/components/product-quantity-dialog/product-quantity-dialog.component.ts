@@ -56,8 +56,8 @@ import { ProductQuantityDialogResponse } from '../../models/product-quantity-dia
 
     quantityLabel = signal<string>('tableItems.add-dialog.quantity-label');
     noteLabel = signal<string>('tableItems.add-dialog.note-label');
-    cancelLabel = signal<string>('tableItems.dialog-buttons.cancel-button');
-    submitLabel = signal<string>('tableItems.dialog-buttons.submit-button');
+    cancelLabel = signal<string>('shared.cancel');
+    submitLabel = signal<string>('shared.submit');
 
     ngOnInit(): void {
         if(!this.data.id){

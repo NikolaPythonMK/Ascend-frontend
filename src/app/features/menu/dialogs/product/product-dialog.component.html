@@ -117,7 +117,7 @@
       type="button"
       mat-icon-button
       color="warn"
-      aria-label="Delete item"
+      [ariaLabel]="'shared.delete-item' | translate"
       class="trash-btn"
       (click)="onDelete()"
     >

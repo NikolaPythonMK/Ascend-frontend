@@ -3,10 +3,11 @@ import { MAT_SNACK_BAR_DATA, MatSnackBar, MatSnackBarRef } from '@angular/materi
 import { SnackbarData } from './models/snackbar-data';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-custom-snackbar',
-    imports: [MatIconModule, MatButtonModule],
+    imports: [MatIconModule, MatButtonModule, TranslateModule],
     templateUrl: 'snackbar.component.html',
     styleUrl: 'snackbar.component.scss'
 })

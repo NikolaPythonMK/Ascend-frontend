@@ -13,10 +13,11 @@ import { SnackbarService } from "../../../core/services/utility/snackbar.service
 import { HttpErrorResponse } from "@angular/common/http";
 import { LoaderComponent } from "../../../core/ui/loader/loader.component";
 import { DataRow } from "../../../core/ui/table/models/data-row";
+import { TranslateModule } from "@ngx-translate/core";
 
 @Component({
     selector: 'settings-taxes',
-    imports: [MatTabsModule, TableComponent, LoaderComponent],
+    imports: [MatTabsModule, TableComponent, LoaderComponent, TranslateModule],
     templateUrl: 'settings-taxes.component.html',
     styleUrls: ['settings-taxes.component.scss']
 })
@@ -52,8 +53,6 @@ export class SettingsTaxesComponent implements OnInit {
     }
 
     onUpdate(id: number): void {
-        console.log(this.taxRows())
-        console.log('Joci: ' + id);
         this.router.navigate(['tax-details', id])
     }
 

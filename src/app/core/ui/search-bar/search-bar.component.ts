@@ -6,6 +6,7 @@ import { MatInputModule } from "@angular/material/input";
 import { debounceTime, distinctUntilChanged } from "rxjs";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from "@angular/material/dialog";
+import TranslationService from "../../services/utility/translation.service";
 
 @Component({
     selector: 'ascend-search-bar',
@@ -16,7 +17,9 @@ import { MatDialog } from "@angular/material/dialog";
 export class SearchBarComponent implements OnInit {
     @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>
     private readonly dialog = inject(MatDialog);
-    placeholder = input<string>('Пребарај')
+    readonly translationService = inject(TranslationService);
+
+    placeholder = input<string>(this.translationService.getTranslationForKey("shared.search"))
     onSearchTerm = output<string>();
     searchTerm = new FormControl('');
 
