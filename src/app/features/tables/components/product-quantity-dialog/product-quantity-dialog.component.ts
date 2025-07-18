@@ -76,6 +76,7 @@ import { ProductQuantityDialogResponse } from '../../models/product-quantity-dia
 
 
     onSubmit(): void {
+      console.log('HELO')
       const quantity = this.getQuantityFormControl().value;
       const note = this.getNoteFormControl().value;
 

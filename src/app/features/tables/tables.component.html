@@ -1,5 +1,5 @@
 
-<div class="table-wrapper">
+<div class="table-wrapper" [ngClass]="{'page-padding': selectedView() !== 'drag'}">
 <ascend-loader [loading]="tablesLoading()" />
 <!-- <div class="tables-header" [ngClass]="{'floating-header': selectedView() == 'drag'}">
   <div class="left-part">
@@ -54,7 +54,8 @@
   </div>
 }
 @else {
-  <div [ngClass]="{'display-tables': selectedView() !== 'drag', 'display-tables-grid': selectedView() == 'drag'}">
+  <div [ngClass]="{'display-tables': selectedView() !== 'drag',
+                   'display-tables-grid': selectedView() == 'drag'}">
   @if (selectedView() === 'table') {
     <table-view [dataSource]="tables()" (clickedTableId)="onClickTable($event)"  />
   }

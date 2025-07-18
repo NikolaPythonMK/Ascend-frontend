@@ -1,10 +1,13 @@
 <div class="quantity-dialog-container">
-<ascend-loader [loading]="isLoading()" />
+  <ascend-loader [loading]="isLoading()" />
 
   <h2 class="quantity-dialog-title">{{ data.title }}</h2>
 
   <form [formGroup]="itemForm">
-    <mat-form-field appearance="outline" class="quantity-dialog-content full-width">
+    <mat-form-field
+      appearance="outline"
+      class="quantity-dialog-content full-width"
+    >
       <mat-label>{{ quantityLabel() | translate }}</mat-label>
       <input
         #qtyInput
@@ -17,7 +20,10 @@
       />
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="quantity-dialog-content full-width">
+    <mat-form-field
+      appearance="outline"
+      class="quantity-dialog-content full-width"
+    >
       <mat-label>{{ noteLabel() | translate }}</mat-label>
       <textarea
         #qtyInput
@@ -29,34 +35,59 @@
     </mat-form-field>
 
     @if (data.id) {
-      <div class="dialog-actions" mat-dialog-actions>
-        <button mat-icon-button
-                color="warn" 
-                aria-label="Delete item"
-                (click)="onDelete()">
-           <mat-icon>delete</mat-icon>
+    <div class="dialog-actions" mat-dialog-actions>
+      <button
+        mat-icon-button
+        color="warn"
+        aria-label="Delete item"
+        (click)="onDelete()"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+
+      <div>
+        <button mat-stroked-button color="warn" (click)="dialogRef.close()">
+          {{ cancelLabel() | translate }}
         </button>
-  
-        <div>
-          <button mat-stroked-button color="warn" (click)="dialogRef.close()">{{ cancelLabel() | translate }}</button>
-          <button mat-flat-button color="primary" class="custom-color" (click)="onSubmit()">{{ submitLabel() | translate }}</button>
-        </div>
-      </div>       
+        <button
+          mat-flat-button
+          color="primary"
+          class="custom-color"
+          (click)="onSubmit()"
+        >
+          {{ submitLabel() | translate }}
+        </button>
+      </div>
+    </div>
     } @else {
-      <div class="dialog-actions-del" mat-dialog-actions>
-        <button mat-icon-button
-                type="button"
-                color="warn" 
-                aria-label="Delete item"
-                (click)="onDelete()">
-           <mat-icon>delete</mat-icon>
+    <div class="dialog-actions-del" mat-dialog-actions>
+      @if (this.data.id) {
+      <button
+        mat-icon-button
+        type="button"
+        color="warn"
+        aria-label="Delete item"
+        (click)="onDelete()"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+      }
+
+      <div>
+        <button mat-stroked-button type="button" mat-dialog-close color="warn" (click)="dialogRef.close()">
+          {{ cancelLabel() | translate }}
         </button>
-  
-        <div>
-          <button mat-stroked-button color="warn" (click)="dialogRef.close()">{{ cancelLabel() | translate }}</button>
-          <button mat-flat-button color="primary" class="custom-color" (click)="onSubmit()">{{ submitLabel() | translate }}</button>
-        </div>
-      </div>    
+        <button
+          mat-flat-button
+          color="primary"
+          class="custom-color"
+          type="submit"
+          (click)="onSubmit()"
+        >
+          {{ submitLabel() | translate }}
+        </button>
+      </div>
+    </div>
     }
   </form>
 </div>

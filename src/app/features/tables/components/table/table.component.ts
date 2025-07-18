@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, OnInit, signal } from "@angular/core";
+import { Component, computed, DestroyRef, ElementRef, HostListener, inject, OnInit, signal, viewChild } from "@angular/core";
 import { DisplayListComponent } from "../display-list/display-list.component";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
@@ -22,7 +22,7 @@ import { TableItemsService } from "../../../../core/services/api/table-items.ser
 import { CommonModule } from "@angular/common";
 import { MatDialog } from "@angular/material/dialog";
 import { ProductQuantityComponent } from "../product-quantity-dialog/product-quantity-dialog.component";
-import { debounceTime, distinctUntilChanged, finalize } from "rxjs";
+import { debounceTime, distinctUntilChanged, finalize, Subject } from "rxjs";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { SearchTerm } from "../../../../core/models/api/search-term.model";
@@ -33,6 +33,7 @@ import { SearchBarComponent } from "../../../../core/ui/search-bar/search-bar.co
 import { Order } from "../../models/order.model";
 import { OrderedItemsComponent } from "../ordered-items/ordered-items.component";
 import { DisplayProductsComponent } from "../display-products/display-products.component";
+import { KeyEventEmitter } from "./services/key-event-emitter.service";
 
 const PRODUCTS: Product[] = [
   {
@@ -147,7 +148,6 @@ export class TableComponent implements OnInit{
   selectedOrderId = signal<number | null>(null);
   selectedOrder = computed<Order | undefined>(() => this.orders().find(i => i.id === this.selectedOrderId()));
 
-
     readonly categoryService = inject(CategoriesService);
     readonly productService = inject(ProductsService);
     readonly tableService = inject(TablesService);
@@ -185,6 +185,10 @@ export class TableComponent implements OnInit{
         } as Card
     }))
 
+    keyEventSubject = inject(KeyEventEmitter);
+    searchInput = viewChild<ElementRef>('searchInput');
+
+
     ngOnInit(): void {
         this.tableId.set(Number(this.route.snapshot.paramMap.get('table')));
         this.getAllCategories();
@@ -201,6 +205,15 @@ export class TableComponent implements OnInit{
         })
     }
 
+    @HostListener('window:keydown', ['$event'])
+    handleKeydown(event: KeyboardEvent) {
+         if (/^[A-Za-z0-9]$/.test(event.key)) {
+            this.searchInput()?.nativeElement.focus();
+         }else {
+            this.keyEventSubject.emitKey(event.key);
+         }
+    }
+
     onSelectCategory(id: number | null): void {
         if (!id){
             this.getAllProducts();
@@ -209,19 +222,21 @@ export class TableComponent implements OnInit{
         this.getProductsByCategory(id);
     }
 
-    onSelectCard(card: any): void {
+    onSelectCard(product: any): void {
+       this.keyEventSubject.stop(); 
        const dialogRef = this.quantityDialog.open(ProductQuantityComponent, {
             width: '400px',
-            data: { title: card.title }
+            data: { title: product.title }
        })
-       this.dialogLoading.set(true);
+       //this.dialogLoading.set(true);
        dialogRef.afterClosed()
-       .pipe(finalize(() => this.dialogLoading.set(false)))
+       //.pipe(finalize(() => this.dialogLoading.set(false)))
        .subscribe((result: ProductQuantityDialogResponse) => {
+        this.keyEventSubject.start();
         if (result != null) {
             const request: TableItemRequest = {
                 tableID: this.tableId(),
-                productID: card.id,
+                productID: product.id,
                 staffUserID: this.staffStore.id()!,
                 quantity: result.data.quantity,
                 note: result.data.note

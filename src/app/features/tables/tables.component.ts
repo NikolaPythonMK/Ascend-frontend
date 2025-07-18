@@ -43,7 +43,7 @@ import { DisplayTablesHeaderComponent } from "./components/display-tables-header
     DisplayTablesHeaderComponent
 ],
   templateUrl: 'tables.component.html',
-  styleUrls: ['tables.component.scss'],
+  styleUrls: ['tables.component.scss', '../../core/styles/menu-item-page.scss'],
 })
 export class TablesComponent implements OnInit{
   readonly dialog = inject(MatDialog);

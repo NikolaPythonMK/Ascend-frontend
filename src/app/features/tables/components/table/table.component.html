@@ -1,5 +1,5 @@
 <ascend-loader [loading]="dialogLoading()" />
-<div class="container">
+<div class="container" tabindex="0">
   <div class="products">
     <div class="products-header item-header-products">
       <div class="search-wrapper">
@@ -9,6 +9,7 @@
             placeholder="Пребарај продукт..."
             class="search-input"
             [formControl]="searchTerm"
+            #searchInput
           />
           <button mat-icon-button class="search-btn">
             <mat-icon class="search-icon">search</mat-icon>
@@ -22,7 +23,7 @@
       </div>
     </div>
     <div class="products-content">
-      <display-products />
+      <display-products [products]="products()" (selected)="onSelectCard($event)" [loading]="productsLoading()" (activeProduct)="onSelectCard($event)" />
     </div>
   </div>
 
