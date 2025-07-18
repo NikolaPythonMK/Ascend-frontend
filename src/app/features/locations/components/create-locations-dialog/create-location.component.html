@@ -13,6 +13,6 @@
 
   <div class="actions">
     <button mat-button type="button" (click)="dialogRef.close()">{{ 'shared.cancel' | translate }}</button>
-    <ascend-button type="primary" [label]="'shared.add'" [disabled]="locationForm.invalid"/>
+    <ascend-button type="primary" [label]="'shared.add' | translate" [disabled]="locationForm.invalid"/>
   </div>
 </form>

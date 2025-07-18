@@ -77,7 +77,7 @@ export class CategoryGroupDialog implements OnInit{
       if(this.data != null){
         this.isUpdateDialog.set(true);
         this.title.set(this.translationService.getTranslationForKey("menu.category-groups.update-group"))
-        this.submitBtnLabel.set(this.translationService.getTranslationForKey("menu.shared.update"));
+        this.submitBtnLabel.set(this.translationService.getTranslationForKey("shared.update"));
         this.loading.set(true);
 
         this.categoryGroupService.getById(this.data)

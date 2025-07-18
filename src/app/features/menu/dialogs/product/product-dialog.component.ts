@@ -101,7 +101,7 @@ export class ProductDialog implements OnInit {
             this.loading.set(true);
             this.isUpdateDialog.set(true);
             this.title.set(this.translationService.getTranslationForKey("menu.products.update-product"))
-            this.submitBtnLabel.set(this.translationService.getTranslationForKey("menu.shared.update"));
+            this.submitBtnLabel.set(this.translationService.getTranslationForKey("shared.update"));
             this.productService.getById(this.data.id).subscribe({
                 next: (product: Product) => {
                     this.getNameControl().setValue(product.name);

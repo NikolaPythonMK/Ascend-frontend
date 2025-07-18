@@ -20,7 +20,7 @@
 
             <div class="input-group">
                 <ascend-input-field [type]="'text'"
-                                    [placeholder]="'auth.username | translate'"
+                                    [placeholder]="'auth.username' | translate"
                                     [autoFocus]="true"
                                     [hasError]="getUsernameControl().invalid && formSubmitted"
                                     formControlName="username"
@@ -29,7 +29,7 @@
             <div class="input-group">
                 <input type="password"
                        formControlName="password"
-                       [placeholder]= '"auth.password" | translate'
+                       [placeholder] = "'auth.password' | translate"
                        [ngClass]="{'error-input': getPasswordControl().invalid && formSubmitted}">
             </div>
             @if (locations().length > 0) {

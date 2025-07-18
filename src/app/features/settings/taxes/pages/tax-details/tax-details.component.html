@@ -32,7 +32,7 @@
           type="button"
           mat-icon-button
           color="warn"
-          [ariaLabel]="'shared.delete-item | translate'"
+          [ariaLabel]="'shared.delete-item' | translate"
           class="trash-btn"
           (click)="onDelete()"
         >
@@ -41,7 +41,7 @@
 
         <ascend-button
           type="primary"
-          [label]="'shared.update | translate'"
+          [label]="'shared.update' | translate"
           [disabled]="taxForm.invalid"
         />
       </div>
@@ -57,7 +57,7 @@
             'Changed By',
             'Reason'
           ]"
-          [title]="'settings.taxes.history-of-tax-changes | translate'"
+          [title]="'settings.taxes.history-of-tax-changes' | translate"
           [hasAddBtn]="false"
           [hasSearchBar]="false"
         />

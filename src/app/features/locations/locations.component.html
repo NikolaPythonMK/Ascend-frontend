@@ -2,7 +2,7 @@
   <ascend-table
     [displayedColumns]="colDisplayNames()"
     [dataRows]="locationRows()"
-    [title]="'locations.locations | translate'"
+    [title]="'locations.locations' | translate"
     (addEvent)="onAdd()"
     (clickedRowEvent)="onUpdate($event)"
     (searchEvent)="onSearch($event)"

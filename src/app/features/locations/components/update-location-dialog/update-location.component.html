@@ -11,6 +11,6 @@
         <mat-icon class="trash-btn" (click)="onDelete()">delete</mat-icon>
     }
     <button mat-button type="button" (click)="dialogRef.close()">{{ 'shared.cancel' | translate }}</button>
-    <ascend-button type="primary" [label]="'shared.update | translate'" [disabled]="locationForm.invalid"/>
+    <ascend-button type="primary" [label]="'shared.update' | translate" [disabled]="locationForm.invalid"/>
   </div>
 </form>
