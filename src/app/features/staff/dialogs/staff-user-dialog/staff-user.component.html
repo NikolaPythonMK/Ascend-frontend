@@ -4,34 +4,34 @@
 
 <form [formGroup]="staffUser" (ngSubmit)="onSubmit()" class="dialog-form">
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Name</mat-label>
+    <mat-label>{{ 'staff.roles.name' | translate }}</mat-label>
     <input matInput formControlName="name" required />
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Last Name</mat-label>
+    <mat-label>{{ 'staff.roles.lastname' | translate }}</mat-label>
     <input matInput formControlName="lastName"  />
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Phone Number</mat-label>
+    <mat-label>{{ 'staff.roles.phonenumber' | translate }}</mat-label>
     <input matInput formControlName="phoneNumber" />
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Code</mat-label>
+    <mat-label>{{ 'staff.roles.code' | translate }}</mat-label>
     <input matInput formControlName="code" required />
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Roles</mat-label>
+    <mat-label>{{ 'staff.roles.roles' | translate }}</mat-label>
     <mat-select formControlName="selectedRoles" multiple>
       <mat-select-trigger>
         {{ getSelectedRolesControl().value ? getRoleName(getSelectedRolesControl().value[0]) : '' }}
         @if ((getSelectedRolesControl().value?.length || 0) > 1) {
           <span class="additional-selection">
             (+{{ (getSelectedRolesControl().value?.length || 0) - 1 }}
-            {{ getSelectedRolesControl().value?.length === 2 ? 'other' : 'others' }})
+            {{ getSelectedRolesControl().value?.length === 2 ? "'shared.other | translate'" : "'shared.others | translate'" }})
           </span>
         }
       </mat-select-trigger>
@@ -45,7 +45,7 @@
     @if (data) {
       <mat-icon class="trash-btn" (click)="onDelete()">delete</mat-icon>
     }
-    <button mat-button type="button" (click)="dialogRef.close()">Откажи</button>
+    <button mat-button type="button" (click)="dialogRef.close()">{{ 'shared.cancel' | translate }}</button>
     <ascend-button type="primary" [label]="submitBtnlabel()" [disabled]="staffUser.invalid" />
   </div>
 </form>

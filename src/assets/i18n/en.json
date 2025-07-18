@@ -49,10 +49,20 @@
         "tab-title-roles": "Roles",
         "add-role-btn": "Add role",
         "personal":{
-            "personal": "Personal"
+            "personal": "Personal",
+            "name": "Name",
+            "code": "Code",
+            "lastname": "Last Name",
+            "phonenumber": "Phone Number",
+            "roles": "Roles",
+            "add-staff": "Add Staff",
+            "update-staff": "Update Staff"
         },
         "roles":{
-
+            "roles": "Roles",
+            "permissions": "Permissions",
+            "view": "View",
+            "name": "Name"
         }
     },
     "menu": {
@@ -142,13 +152,38 @@
             "note-label": "Note"         
         }
     },
+    "ordered-items": {
+        "no": "No",
+        "name": "Name",
+        "quantity": "Quantity",
+        "code": "Code",
+        "price": "Price",
+        "total": "Total"
+    },
     "filter": {
         "all-categories":"All Categories"
+    },
+    "drag-view": {
+        "add-obstacle": "Add Obstacle",
+        "obstacle": "Obstacle",
+        "add-rectangle": "Add Rectangle",
+        "rectangle": "Rectangle",
+        "add-circle": "Add Circle",
+        "circle": "Circle",
+        "save": "Save",
+        "floors": "Floors",
+        "floor": "Floor",
+        "add-floor": "Add Floor"
+    },
+    "quantity-dialog":{
+        "increase-value": "Increase Value",
+        "decrease-value": "Decrease Value"
     },
     "shared": { 
         "homepage-back": "Go back to Homepage",
         "discard": "Discard",
         "add": "Add",
+        "edit": "Edit",
         "delete": "Delete",
         "update": "Update",
         "updated": "Updated",
@@ -164,6 +199,8 @@
         "close": "Close",
         "image-preview": "Image preview",
         "submit": "Submit",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "save": "Save",
+        "all": "All"
     }
 }

@@ -5,7 +5,7 @@
 
   <form [formGroup]="itemForm">
     <mat-form-field appearance="outline" class="quantity-dialog-content full-width">
-      <mat-label>{{ quantityLabel() | translate }}</mat-label>
+      <mat-label>{{ quantityLabel()  }}</mat-label>
       <input
         #qtyInput
         matInput
@@ -13,12 +13,11 @@
         formControlName="quantity"
         (keydown.enter)="onSubmit()"
         min="1"
-        placeholder="Enter Quantity"
       />
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="quantity-dialog-content full-width">
-      <mat-label>{{ noteLabel() | translate }}</mat-label>
+      <mat-label>{{ noteLabel() }}</mat-label>
       <textarea
         #qtyInput
         matInput
@@ -32,14 +31,14 @@
       <div class="dialog-actions" mat-dialog-actions>
         <button mat-icon-button
                 color="warn" 
-                aria-label="Delete item"
+                [ariaLabel]="'shared.delete-item | translate'"
                 (click)="onDelete()">
            <mat-icon>delete</mat-icon>
         </button>
   
         <div>
-          <button mat-stroked-button color="warn" (click)="dialogRef.close()">{{ cancelLabel() | translate }}</button>
-          <button mat-flat-button color="primary" class="custom-color" (click)="onSubmit()">{{ submitLabel() | translate }}</button>
+          <button mat-stroked-button color="warn" (click)="dialogRef.close()">{{ cancelLabel() }}</button>
+          <button mat-flat-button color="primary" class="custom-color" (click)="onSubmit()">{{ submitLabel() }}</button>
         </div>
       </div>       
     } @else {
@@ -47,14 +46,14 @@
         <button mat-icon-button
                 type="button"
                 color="warn" 
-                aria-label="Delete item"
+                [ariaLabel]="'shared.delete-item | translate'"
                 (click)="onDelete()">
            <mat-icon>delete</mat-icon>
         </button>
   
         <div>
-          <button mat-stroked-button color="warn" (click)="dialogRef.close()">{{ cancelLabel() | translate }}</button>
-          <button mat-flat-button color="primary" class="custom-color" (click)="onSubmit()">{{ submitLabel() | translate }}</button>
+          <button mat-stroked-button color="warn" (click)="dialogRef.close()">{{ cancelLabel() }}</button>
+          <button mat-flat-button color="primary" class="custom-color" (click)="onSubmit()">{{ submitLabel() }}</button>
         </div>
       </div>    
     }

@@ -41,7 +41,7 @@ interface UpdatedPermission {
               MatIconModule,
               InputFieldComponent,
               ReactiveFormsModule,
-                TranslateModule],
+              TranslateModule],
     templateUrl: 'roles.component.html',
     styleUrls: ['roles.component.scss']
 })
@@ -94,7 +94,7 @@ export class RolesComponent implements OnInit{
         }
         this.rolesService.add(addRoleRequest).subscribe({
             next: () => {
-                this.snackbarService.success('Успешно додавање улога')
+                this.snackbarService.success(`${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.added")}`)
                 this.getRoles();
                 this.toggleAddRole.set(false);
 
@@ -113,7 +113,7 @@ export class RolesComponent implements OnInit{
             }
             this.rolesService.delete(id).subscribe({
                 next: () => {
-                    this.snackbarService.success('Успешно е избришана улогата');
+                    this.snackbarService.success(`${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.deleted")}`);
                     this.getRoles();
                 },
                 error: (error: HttpErrorResponse) => {
@@ -210,7 +210,7 @@ export class RolesComponent implements OnInit{
         }
         this.rolesService.update(request).subscribe({
             next: () => {
-                this.snackbarService.success('Успешно')
+                this.snackbarService.success(this.translationService.getTranslationForKey("shared.succesfully"))
                 this.rolesService.getById(this.selectedRole()!.id).subscribe({
                     next: (roleSelected: Role) => {
                         this.selectedRole.set(roleSelected);

@@ -18,9 +18,22 @@ import type { StaffUserRequest } from "../../../../core/models/api/requests/staf
 import type { Role } from "../../../../core/models/api/responses/role.model";
 import type { StaffUser } from "../../../../core/models/api/responses/staff-user.model";
 import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
+import { TranslateModule } from "@ngx-translate/core";
+import TranslationService from "../../../../core/services/utility/translation.service";
 
 @Component({
-    imports: [MatFormFieldModule, MatLabel, ReactiveFormsModule, CommonModule, MatInputModule, MatButtonModule, MatSelectModule, FormsModule, ButtonComponent, MatIconModule, LoaderComponent],
+    imports: [MatFormFieldModule, 
+        MatLabel, 
+        ReactiveFormsModule, 
+        CommonModule, 
+        MatInputModule, 
+        MatButtonModule, 
+        MatSelectModule, 
+        FormsModule, 
+        ButtonComponent, 
+        MatIconModule, 
+        LoaderComponent,
+        TranslateModule],
     templateUrl: 'staff-user.component.html',
     styleUrls: ['staff-user.component.scss']
 })
@@ -32,9 +45,11 @@ export class StaffUserDialog implements OnInit{
     readonly staffService = inject(StaffService);
     readonly snackbarService = inject(SnackbarService);
     readonly data = inject<number>(MAT_DIALOG_DATA);
+    readonly translationService = inject(TranslationService);
+
     roles = signal<Role[]>([])
-    title = signal<string>('Add New Staff');
-    submitBtnlabel = signal<string>('Додади');
+    title = signal<string>(this.translationService.getTranslationForKey("staff.personal.add-staff"));
+    submitBtnlabel = signal<string>(this.translationService.getTranslationForKey("shared.add"));
     loading = signal<boolean>(false);
 
     staffUser = this.fb.group({
@@ -72,8 +87,8 @@ export class StaffUserDialog implements OnInit{
 
         if (this.data) {
                 this.loading.set(true);
-                this.title.set('Update Staff');
-                this.submitBtnlabel.set('Ажурирај');
+                this.title.set(this.translationService.getTranslationForKey("staff.personal.update-staff"));
+                this.submitBtnlabel.set(this.translationService.getTranslationForKey("shared.update"));
                 this.staffService.getById(this.data).subscribe({
                     next: (user: StaffUser) => {
                         this.getNameControl().setValue(user.name);
@@ -110,7 +125,7 @@ export class StaffUserDialog implements OnInit{
     
         action$.subscribe({
             next: (staffUser: StaffUser) => {
-                this.snackbarService.success('Успешно');
+                this.snackbarService.success(`${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.added")}`);
                 this.dialogRef.close(staffUser);
             },
             error: (error: HttpErrorResponse) => {
@@ -128,7 +143,7 @@ export class StaffUserDialog implements OnInit{
             }
             this.staffService.delete(this.data).subscribe({
                 next: (result: number) => {
-                    this.snackbarService.success('Успешно');
+                    this.snackbarService.success(`${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.deleted")}`);
                     this.dialogRef.close(result);
                 },
                 error: (error: HttpErrorResponse) => {

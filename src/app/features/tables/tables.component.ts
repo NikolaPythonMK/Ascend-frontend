@@ -3,11 +3,9 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { TableDialogComponent } from './components/table-dialog/table-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { TableViewComponent } from './components/table-view/table-view.component';
 import { GridViewComponent } from './components/grid-view/grid-view.component';
-import { SearchBarComponent } from '../../core/ui/search-bar/search-bar.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { DragViewComponent } from './components/drag-view/drag-view.component';
 import { TablesService } from '../../core/services/api/tables.service';
@@ -17,13 +15,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SnackbarService } from '../../core/services/utility/snackbar.service';
 import { Page } from '../../core/models/api/page.model';
 import { TableRequest } from '../../core/models/api/requests/table.request';
-import { SkeletonCardComponent } from "../../core/ui/display-cards/skeleton-card/skeleton-card.component";
 import { finalize } from 'rxjs';
 import { LoaderComponent } from "../../core/ui/loader/loader.component";
 import { BreakpointService } from '../../core/services/utility/breakpoint.service';
-import { ButtonComponent } from '../../core/ui/button/button.component';
 import { TableStateService } from '../../core/services/utility/table-state.service';
 import { DisplayTablesHeaderComponent } from "./components/display-tables-header/display-tables-header.component";
+import TranslationService from '../../core/services/utility/translation.service';
 
 @Component({
   selector: 'ascend-tables',
@@ -34,13 +31,11 @@ import { DisplayTablesHeaderComponent } from "./components/display-tables-header
     TranslateModule,
     TableViewComponent,
     GridViewComponent,
-    SearchBarComponent,
     MatButtonToggleModule,
     DragViewComponent,
-    SkeletonCardComponent,
     LoaderComponent,
-    ButtonComponent,
-    DisplayTablesHeaderComponent
+    DisplayTablesHeaderComponent,
+    TranslateModule
 ],
   templateUrl: 'tables.component.html',
   styleUrls: ['tables.component.scss'],
@@ -57,6 +52,7 @@ export class TablesComponent implements OnInit{
   readonly viewportScroller = inject(ViewportScroller);
   readonly breakpointService = inject(BreakpointService);
   readonly tableStateService = inject(TableStateService);
+  readonly translationService = inject(TranslationService);
 
   ngOnInit(): void {
     this.viewportScroller.scrollToPosition([0, 0])
@@ -101,7 +97,7 @@ export class TablesComponent implements OnInit{
     })
     this.tablesService.updateTablePositions(request).subscribe({
       next: (result: number[]) => {
-        this.snackbarService.success('Успешно')
+        this.snackbarService.success(`${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.updated")}`)
         this.getTables();
       },
       error: (error: HttpErrorResponse) => {

@@ -1,5 +1,4 @@
 import { Component, HostListener, inject, OnInit, output, signal } from "@angular/core";
-import { SearchBarComponent } from "../../../../core/ui/search-bar/search-bar.component";
 import { ProductsService } from "../../../../core/services/api/products.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { CategoriesService } from "../../../../core/services/api/categories.service";
@@ -11,7 +10,7 @@ import { Product } from "../../../../core/models/api/responses/product.model";
 
 @Component({
     selector: 'display-products',
-    imports: [SearchBarComponent, CommonModule],
+    imports: [CommonModule],
     templateUrl: 'display-products.component.html',
     styleUrls: ['display-products.component.scss']
 })

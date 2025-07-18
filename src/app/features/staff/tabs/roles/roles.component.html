@@ -4,7 +4,7 @@
       (clickEvent)="onUpdatePermissions()"
       class="update-btn"
       type="primary" 
-      label="Save" 
+      [label]="'shared.save | translate'" 
       icon="save" 
       [style.visibility]="updatedPermissions.length ? 'visible' : 'hidden'" 
     />
@@ -14,12 +14,12 @@
   <div class="roles">
     <div class="roles-header">
         <div>
-            <span>Улоги</span>
+            <span>{{ 'staff.roles.roles' | translate }}</span>
             <span class="counter">{{ roles().length }}</span>
         </div>
         <ascend-button
         type="primary"
-        label="staff.add-role-btn"
+        [label]="'staff.add-role-btn | translate'"
         (clickEvent)="onAddRole()"
       />
         
@@ -29,7 +29,7 @@
         <li>
             <form [formGroup]="roleForm" class="add-element">
                 <ascend-input-field formControlName="name" [autoFocus]="true" />
-                <ascend-button type="secondary" label="Додади" class="submit-add-btn" (clickEvent)="onSubmitRole()" />
+                <ascend-button type="secondary" [label]="'shared.add | translate'" class="submit-add-btn" (clickEvent)="onSubmitRole()" />
             </form>
         </li>
       }
@@ -53,22 +53,22 @@
         <thead>
             <tr>
                 <th class="permissions-header">
-                    Permissions > {{ selectedRole()?.name }}
+                    {{ 'staff.roles.permissions' | translate }} > {{ selectedRole()?.name }}
                 </th>
                 <th class="cell-align-center">
-                    View
+                    {{ 'staff.roles.view' | translate }} > {{ selectedRole()?.name }}
                 </th>
                 <th class="cell-align-center">
-                    Add
+                    {{ 'shared.add' | translate }} > {{ selectedRole()?.name }}
                 </th>
                 <th class="cell-align-center">
-                    Edit
+                    {{ 'shared.edit' | translate }} > {{ selectedRole()?.name }}
                 </th>
                 <th class="cell-align-center">
-                    Delete
+                    {{ 'shared.delete' | translate }} > {{ selectedRole()?.name }}
                 </th>
                 <th class="cell-align-center">
-                    All
+                    {{ 'shared.all' | translate }} > {{ selectedRole()?.name }}
                 </th>
             </tr>
         </thead>
