@@ -16,18 +16,28 @@ import { NgxColorsModule } from 'ngx-colors';
 import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LocationService } from '../../../../core/services/api/locations.service';
-import { LocationRequest } from '../../../../core/models/api/requests/location.request';
 import { LocationTablesRequest } from '../../../../core/models/api/requests/location-tables.request';
 import { SnackbarService } from '../../../../core/services/utility/snackbar.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '../../../../core/models/api/responses/location.model';
 import { catchError, finalize, map, Observable, of } from 'rxjs';
-import { Layer } from 'konva/lib/Layer';
 import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { BreakpointService } from '../../../../core/services/utility/breakpoint.service';
+import { DisplayTablesHeaderComponent } from "../display-tables-header/display-tables-header.component";
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'drag-view',
-  imports: [FormsModule, NgxColorsModule, CommonModule, LoaderComponent],
+  imports: [FormsModule, 
+    NgxColorsModule, 
+    CommonModule, 
+    LoaderComponent, 
+    MatIconModule, 
+    MatButtonModule, 
+    DisplayTablesHeaderComponent,
+    TranslateModule],
   templateUrl: './drag-view.component.html',
   styleUrl: './drag-view.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,6 +45,7 @@ import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
 export class DragViewComponent implements OnInit {
   private readonly locationService = inject(LocationService);
   private readonly snackbarService = inject(SnackbarService);
+  readonly breakpointService = inject(BreakpointService);
   clickedTableId = output<number>();
   isEdit = signal<boolean>(false);
   stage!: Konva.Stage;
@@ -340,7 +351,6 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
 
 
     group.on('transformend', () => {
-      debugger
       const item = this.floors[this.currentFloorIndex].items.find(
         (i) => i.id === group.id()
       );
@@ -394,10 +404,8 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
   }
 
   switchShapeType(id: string | null, newType: 'rect' | 'circle' | 'oval') {
-    debugger;
     if (!id) return;
 
-    debugger;
     const item = this.floors[this.currentFloorIndex].items.find(
       (i) => i.id === id
     );
@@ -538,5 +546,13 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
         return of(false);
       })
     );
+  }
+
+  onCanvasEditButtonClick(): void {
+    this.isEdit.set(true);
+  }
+
+  onCancel(): void {
+    this.isEdit.set(false);
   }
 }

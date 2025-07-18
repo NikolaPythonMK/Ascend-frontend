@@ -1,27 +1,55 @@
-<div class="products-header">
-    <div class="title-header">
-      <h3 class="title">Продукти</h3>
-      <span class="counter">{{ totalCounts() }}</span>
-    </div>
-    <div class="products-filter">
-      <select class="category-select" (change)="onCategoryChange($event)">
-        <option defaultSelected [value]="null">Сите</option>
-        @for (category of categories(); track category.id) {
-          <option [value]="category.id">{{ category.name }}</option>
+<!-- <div class="products-wrapper">
+  <div class="products-header"></div>
+  <div class="products-display">
+    @for(product of products(); track product.id; let idx = $index) {
+    <div class="product-card" [ngClass]="{ active: idx == 0 }" (click)="onSelectProduct(product)">
+      <div class="card-header">
+        <span class="card-title">{{ product.name }}</span>
+        <span class="card-code">#{{ product.code }}</span>
+      </div>
+      <div class="middle">
+        <div class="price">{{ product.price }}$</div>
+      </div>
+      <div class="footer">
+        <div class="card-category">Пијалоци</div>
+        @if (product.discount) {
+        <div class="discount">Discount: {{ product.discount }}%</div>
         }
-      </select>
-      <ascend-search-bar class="search-bar" (onSearchTerm)="onSearchTerm($event)" />
+        @else {
+          <div></div>
+        }
+      </div>
     </div>
-  </div>
-  <ul
-  >
-    @for (product of products(); track product.id; let i = $index) {
-        <li [ngClass]="{'selected-product': selectedProductID() === product.id}"
-            (click)="onActiveProduct(product)"
-        >
-          <p class="li-code">{{ product.code }}</p>
-          <p>{{ product.name }}</p>
-          <img src="https://www.foodiesfeed.com/wp-content/uploads/2023/06/burger-with-melted-cheese.jpg" />
-        </li>
     }
-  </ul>
+  </div>
+</div> -->
+
+<div class="products-wrapper">
+  <div class="products-header"></div>
+  <div class="products-display" #productsContainer tabindex="0">
+    @if (products.length == 0) {
+      <p>No products have been found</p>
+    }
+    @if (loading()){
+      <div class="skeleton-rect"></div>
+      <div class="skeleton-rect"></div>
+      <div class="skeleton-rect"></div>
+      <div class="skeleton-rect"></div>
+      <div class="skeleton-rect"></div>
+    }
+    @else {
+          @for(product of products; track product.id; let idx = $index) {
+    <div class="product-card" [ngClass]="{ active: (selectedProduct()?.id === product.id) ||
+                                                   (selectedProduct() == null && idx == 0)}"
+      (click)="onSelectProduct(product)">
+      <div class="title">
+        <span>{{ product.name }}</span><span>{{ product.code }}</span>
+      </div>
+      <div class="price">
+        {{ product.price }}
+      </div>
+    </div>
+    }
+    }
+  </div>
+</div>

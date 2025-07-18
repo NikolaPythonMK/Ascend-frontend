@@ -1,29 +1,35 @@
-<div class="container">
+<div
+  [ngClass]="{
+    'container-pc': breakpointService.isDesktop(),
+    'container-tablet':
+      breakpointService.isTablet() ||
+      breakpointService.isMobile() ||
+      breakpointService.isHandsetLandscape()
+  }"
+>
+  @if(breakpointService.isDesktop()){
   <div class="list-container">
     <div class="sidebar-header">
-      <p class="title title-sidebar-list">Categories</p>
+      <p class="title title-sidebar-list">{{ 'menu.categories.categories' | translate }}</p>
     </div>
     <ascend-display-list
       [elements]="categoryListElements()"
-      selectAllButtonLabel="Сите категории"
-      (selectedEvent)="onSelectCategory($event)"
+      (selectedEvent)="onSelectCategoryId($event)"
       [setDeleteButton]="false"
       [setSelectAllButton]="false"
       [isLoading]="categoriesLoading()"
       [setSelectAllButton]="true"
-      [selectAllButtonLabel]="'All Categories'"
-      
+      [selectAllButtonLabel] = "'menu.categories.all-categories' | translate"
     />
   </div>
+  }
   <div class="cards-container">
     <div class="cards-header">
       <div class="left-part">
-        @if (selectedCategory()){
-        <span class="title">Products > {{ selectedCategory()!.name }}</span>
-        }@else {
-        <span class="title">Products > All Products</span>
+        <span class="title">{{ 'menu.products.products' | translate }}</span>
+        @if (!breakpointService.isHandsetLandscape() && !breakpointService.isMobile()) {
+          <ascend-header-counter [value]="products().length" />
         }
-        <ascend-header-counter [value]="products().length" />
       </div>
       <div class="right-part">
         <button
@@ -34,20 +40,21 @@
           (click)="onAddProduct()"
         >
           <mat-icon>add</mat-icon>
-          Product
+          {{ 'menu.products.product' | translate }}
         </button>
-
-        <ascend-search-bar (onSearchTerm)="onSearchProducts($event)"  />
+        <ascend-search-bar (onSearchTerm)="onSearchProducts($event)" class="search-bar"/>
       </div>
     </div>
-    @if (productCards().length) {
+    <div class="cards-layout">
+      @if (productCards().length) {
       <ascend-display-cards
-      [loading]="productsLoading()"
-      (selectedCard)="onProductedit($event)"
-      [elements]="productCards()"
-    />
-    } @else {
-      <p class="no-data-message">No products have been found</p>
-    }
+        [loading]="productsLoading()"
+        (selectedCard)="onProductEdit($event)"
+        [elements]="productCards()"
+      />
+      } @else {
+      <p class="no-data-message">{{ 'menu.products.no-products-found' | translate }}</p>
+      }
+    </div>
   </div>
 </div>

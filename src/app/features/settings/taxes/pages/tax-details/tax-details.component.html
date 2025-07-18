@@ -1,0 +1,70 @@
+<ascend-loader [loading]="loading()" />
+<div class="content">
+  <div class="header">
+    <h2 class="title">{{ 'settings.taxes.tax-details' | translate }}</h2>
+  </div>
+  <div class="body">
+    <form [formGroup]="taxForm" (ngSubmit)="onUpdate(this.id())" class="dialog-form">
+      <span class="title">{{ 'settings.taxes.current-tax' | translate }}</span>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'settings.taxes.name' | translate }}</mat-label>
+        <input matInput formControlName="name"/>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'settings.taxes.percentage' | translate }}</mat-label>
+        <input matInput type="number" formControlName="percentage" min="0" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'settings.taxes.reason' | translate }}</mat-label>
+        <textarea
+          #qtyInput
+          matInput
+          type="text"
+          formControlName="reason"
+          (keydown.enter)="onUpdate(this.id())"
+        ></textarea>
+      </mat-form-field>
+
+      <div class="actions">
+        <button
+          type="button"
+          mat-icon-button
+          color="warn"
+          [ariaLabel]="'shared.delete-item' | translate"
+          class="trash-btn"
+          (click)="onDelete()"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+
+        <ascend-button
+          type="primary"
+          [label]="'shared.update' | translate"
+          [disabled]="taxForm.invalid"
+        />
+      </div>
+    </form>
+
+    <div class="tax-history">
+      <div class="tax-history-table">
+        <ascend-table
+          [dataRows]="dataRows()"
+          [displayedColumns]="[
+            'Percentage',
+            'Changed At',
+            'Changed By',
+            'Reason'
+          ]"
+          [title]="'settings.taxes.history-of-tax-changes' | translate"
+          [hasAddBtn]="false"
+          [hasSearchBar]="false"
+        />
+        @if (dataRows().length == 0) {
+        <p>{{ 'settings.taxes.no-history' | translate }}</p>
+        }
+      </div>
+    </div>
+  </div>
+</div>

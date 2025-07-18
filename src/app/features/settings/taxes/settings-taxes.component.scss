@@ -1,0 +1,21 @@
+@use "variables" as vars;
+
+.title {
+  color: vars.$primary-font-color;
+  font-size: vars.$title-font-size;
+}
+
+.content {
+  margin-top: 1em;
+}
+
+.no-data-container {
+  width: 100%;
+  margin-top: 7em;
+  display: flex;
+  justify-content: center;
+  .no-data-msg {
+    color: vars.$primary-font-color;
+    font-size: vars.$title-font-size;
+  }
+}

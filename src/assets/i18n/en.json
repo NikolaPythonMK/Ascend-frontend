@@ -11,10 +11,11 @@
         "password": "Password",
         "location": "Location",
         "auth.invalid-credential": "Wrong credentials",
-        "staffuser.notfound": "Wrong code"
-    },
-    "common": {
-        "homepage-back": "Go back to Homepage"
+        "staffuser.notfound": "Wrong code",
+        "logout": "Logout",
+        "logout-succesfull": "Logout Succesfull",
+        "login-succesfull": "Logged In Succesfully",
+        "invalid-credentials": "Invalid Credentials"
     },
     "navbar-items": {
        "tables": "Tables" ,
@@ -46,17 +47,99 @@
     "staff": {
         "tab-title-staff": "Staff",
         "tab-title-roles": "Roles",
-        "add-role-btn": "Add role"
+        "add-role-btn": "Add role",
+        "personal":{
+            "personal": "Personal",
+            "name": "Name",
+            "code": "Code",
+            "lastname": "Last Name",
+            "phonenumber": "Phone Number",
+            "roles": "Roles",
+            "add-staff": "Add Staff",
+            "update-staff": "Update Staff"
+        },
+        "roles":{
+            "roles": "Roles",
+            "permissions": "Permissions",
+            "view": "View",
+            "name": "Name"
+        }
     },
     "menu": {
         "tab-title-products": "Products",
         "tab-title-categories": "Categories",
-        "tab-title-categorygroups": "Category Groups"
+        "tab-title-categorygroups": "Category Groups",
+        "products" : {
+            "products": "Products",
+            "product": "Product",
+            "no-products-found": "No products found",
+            "add-product": "Add Product",
+            "update-product": "Update Product",
+            "name": "Name",
+            "name-exists": "Product with the same name already exists",
+            "code": "Code",
+            "code-exists": "Product with the same code already exists",
+            "price": "Price",
+            "tax": "Tax",
+            "category-group": "Category Group",
+            "description": "Description",
+            "discountpercent": "Discount Percent",
+            "discountamount": "Discount Amount",
+            "reason": "Reason",
+            "image": "Attach Image"
+        },
+        "categories" : {
+            "categories": "Categories",
+            "category": "Category",
+            "all-categories": "All Categories",
+            "no-categories-found": "No categories found",
+            "add-category": "Add Category",
+            "update-category": "Update Category",
+            "name": "Name",
+            "name-exists": "Category with the same name already exists",
+            "description": "Description",
+            "category-group": "Category Group",
+            "image": "Attach Image"
+        },
+        "category-groups" : {
+            "category-groups": "Category Groups",
+            "group": "Group",
+            "all-groups": "All Groups",
+            "no-category-groups-found": "No category groups found",
+            "add-group": "Add Group",
+            "update-group": "Update Group",
+            "name": "Name",
+            "name-exists": "Category group with the same name already exists",
+            "description": "Description",
+            "categories": "Categories",
+            "image": "Attach Image"
+        }
+    },
+    "locations": {
+        "locations": "Locations",
+        "add-location": "Add Location",
+        "update-location": "Update Location",
+        "name": "Name",
+        "table-count": "Table Count"
+    },
+    "settings": {
+        "site-settings": "Site settings",
+        "taxes": {
+            "taxes": "Taxes",
+            "no-taxes-found": "No taxes found",
+            "tax-details": "Tax Details",
+            "name": "Name",
+            "percentage": "Percentage",
+            "reason": "Reason",
+            "history-of-tax-changes": "History of tax changes",
+            "no-history": "No history for tax",
+            "current-tax": "Current tax",
+            "add-tax": "Add Tax"
+        }
     },
     "ui": {
-        "button": {
-            "primary": "Submit",
-            "secondary": "Cancel"
+        "loader": {
+            "loading": "Loading..."
         }
     },
     "tableItems": {
@@ -67,10 +150,57 @@
         "update-dialog": {
             "quantity-label": "Quantity",
             "note-label": "Note"         
-        },
-        "dialog-buttons": {
-            "cancel-button": "Cancel",
-            "submit-button": "Submit"  
         }
+    },
+    "ordered-items": {
+        "no": "No",
+        "name": "Name",
+        "quantity": "Quantity",
+        "code": "Code",
+        "price": "Price",
+        "total": "Total"
+    },
+    "filter": {
+        "all-categories":"All Categories"
+    },
+    "drag-view": {
+        "add-obstacle": "Add Obstacle",
+        "obstacle": "Obstacle",
+        "add-rectangle": "Add Rectangle",
+        "rectangle": "Rectangle",
+        "add-circle": "Add Circle",
+        "circle": "Circle",
+        "save": "Save",
+        "floors": "Floors",
+        "floor": "Floor",
+        "add-floor": "Add Floor"
+    },
+    "quantity-dialog":{
+        "increase-value": "Increase Value",
+        "decrease-value": "Decrease Value"
+    },
+    "shared": { 
+        "homepage-back": "Go back to Homepage",
+        "discard": "Discard",
+        "add": "Add",
+        "edit": "Edit",
+        "delete": "Delete",
+        "update": "Update",
+        "updated": "Updated",
+        "added": "Added",
+        "succesfully": "Succesfully",
+        "deleted": "Deleted",
+        "delete-item": "Delete Item",
+        "other": "Other",
+        "others": "Others",
+        "accept": "Accept",
+        "check-continue": "Are you sure you want to continue?",
+        "search": "Search",
+        "close": "Close",
+        "image-preview": "Image preview",
+        "submit": "Submit",
+        "cancel": "Cancel",
+        "save": "Save",
+        "all": "All"
     }
 }

@@ -1,5 +1,4 @@
 import { Component, computed, inject, OnDestroy, OnInit, signal } from "@angular/core";
-import { ButtonComponent } from "../../../../core/ui/button/button.component";
 import { MatDialog } from "@angular/material/dialog";
 import { ListElement } from "../../../../core/ui/display-list/models/list-element.model";
 import { DisplayListComponent } from "../../../../core/ui/display-list/display-list.component";
@@ -19,28 +18,29 @@ import { CategoryGroupService } from "../../../../core/services/api/category-gro
 import { SnackbarService } from "../../../../core/services/utility/snackbar.service";
 import type { CategoryGroup } from "../../../../core/models/api/responses/category-group.model";
 import type { CategoryDialogData } from "../../models/category-dialog-data.dto";
-import type { CategoryGroupDialogData } from "../../models/category-group-dialog-data.dto";
-import { CategoryGroupDialog } from "../../dialogs/category-group/category-group-dialog.component";
 import { CategoryDialog } from "../../dialogs/category/category-dialog.component";
-import loadesh from 'lodash';
 import { ImageService } from "../../../../core/services/utility/image.service";
-import { ConfirmationDialog } from "../../../../core/ui/confirmation-dialog/confirmation-dialog.component";
 import { finalize } from "rxjs";
+import { CommonModule } from "@angular/common";
+import { BreakpointService } from "../../../../core/services/utility/breakpoint.service";
+import { Filter } from "../../../../core/models/api/value-objects/filter.model";
+import { TranslateModule } from "@ngx-translate/core";
 
 @Component({
     selector: 'categories-component',
-    imports: [ButtonComponent, DisplayListComponent, DisplayCardsComponent, SearchBarComponent, MatIconModule, MatButtonModule, HeaderCounterComponent],
+    imports: [DisplayListComponent, DisplayCardsComponent, SearchBarComponent, MatIconModule, MatButtonModule, HeaderCounterComponent, CommonModule, TranslateModule],
     templateUrl: 'categories.component.html',
     styleUrls: ['categories.component.scss', '../../styles/tab-style.scss']
 })
-export class CategoriesComponent implements OnInit, OnDestroy{
+export class CategoriesComponent implements OnInit{
     private readonly dialog = inject(MatDialog);
     readonly categoryService = inject(CategoriesService);
     readonly categoryGroupService = inject(CategoryGroupService);
     readonly filterData = inject(FilterDataService);
     readonly snackbar = inject(SnackbarService);
     readonly imageService = inject(ImageService);
-    selectedCategoryGroup = signal<CategoryGroup | null>(null)
+    readonly breakpointService = inject(BreakpointService)
+    selectedCategoryGroup = signal<number | null>(null)
     searchTerm = signal<string>('');
     categories = signal<Category[]>([]);
     categoryGroups = signal<CategoryGroup[]>([]);
@@ -63,19 +63,16 @@ export class CategoriesComponent implements OnInit, OnDestroy{
     }))
 
     ngOnInit(): void {
-        this.getAllCategoryGroups();
         this.getAllCategories();
-    }
-
-    ngOnDestroy(): void {
-        this.categories().forEach(c => URL.revokeObjectURL(c.image));
+        if(this.breakpointService.isDesktop()){
+            this.getAllCategoryGroups();
+        }      
     }
 
     onAddCategory(): void {
         const dialogRef = this.dialog.open(CategoryDialog, {
             data: {
-                categoryGroups: this.categoryGroups(),
-                selectedGroupId: this.selectedCategoryGroup()?.id
+                selectedGroupId: this.selectedCategoryGroup()
             } as CategoryDialogData
         });
         dialogRef.afterClosed().subscribe((result: Category) => {
@@ -84,22 +81,17 @@ export class CategoriesComponent implements OnInit, OnDestroy{
             }
 
             if (this.selectedCategoryGroup()) {
-                this.getCategoriesByGroupId(this.selectedCategoryGroup()!.id);
+                this.getCategoriesByGroupId(this.selectedCategoryGroup());
             } else {
                 this.getAllCategories();
             }
-            
-            // if (!this.selectedCategoryGroup() || (result.categoryGroupId === this.selectedCategoryGroup()?.id)){
-            //     this.categories.set([result, ...this.categories()])
-            // }
         })
     }
 
-    onUpdateCategory(card: any): void {
+    onUpdateCategory(id: number): void {
         const dialogRef = this.dialog.open(CategoryDialog, {
             data: {
-                categoryGroups: this.categoryGroups(),
-                categoryId: card.id,
+                id: id
             } as CategoryDialogData
         })
         dialogRef.afterClosed().subscribe((result) => {
@@ -108,28 +100,9 @@ export class CategoriesComponent implements OnInit, OnDestroy{
             }
 
             if (this.selectedCategoryGroup()) {
-                this.getCategoriesByGroupId(this.selectedCategoryGroup()!.id);
+                this.getCategoriesByGroupId(this.selectedCategoryGroup());
             } else {
                 this.getAllCategories();
-            }
-        })
-    }
-
-    onDeleteCategoryGroup(id: number): void {
-        const dialogRef = this.dialog.open(ConfirmationDialog);
-        dialogRef.afterClosed().subscribe((result: boolean) => {
-            if(result) {
-                this.categoryGroupService.delete(id).subscribe({
-                    next: () => {
-                        this.categoryGroups.set(this.categoryGroups().filter(c => c.id !== id));
-                        this.getAllCategories();
-                        this.selectedCategoryGroup.set(null);
-                        this.snackbar.success('Успешно е избришана групата на категории');
-                    },
-                    error: (error: HttpErrorResponse) => {
-                        this.snackbar.error(error.message);
-                    }
-                });
             }
         })
     }
@@ -148,24 +121,32 @@ export class CategoriesComponent implements OnInit, OnDestroy{
         this.getAllCategories();
     }
 
-    private getCategoriesByGroupId(id: number): void {
+    private getCategoriesByGroupId(id: number | null): void {
+        if(id == null){
+            return;
+        }
+
         this.categoryLoading.set(true);
-        this.categoryGroupService.getById(id).pipe(
+        const filter: Filter = {
+            propName: "CategoryGroupID",
+            operator: "=",
+            value: id.toString()
+        };
+            
+        this.categoryService.getAll([], undefined, [filter])
+        .pipe(
             finalize(() => this.categoryLoading.set(false))
         )
         .subscribe({
-            next: (result: CategoryGroup) => {
-                this.categories.set(result.categories.map(c => {
+            next: (result: Page<Category>) => {
+                this.categories.set(result.data.map(c => {
                     return {
                         id: c.id,
                         name: c.name,
                         image: c.image,
-                        description: c.description,
-                        categoryGroupId: c.categoryGroupId
-                        
+                        description: c.description
                     } as Category;
                 }));
-                this.selectedCategoryGroup.set(result);
             },
             error: (error: HttpErrorResponse) => {
                 this.snackbar.error(error.message);
@@ -177,7 +158,8 @@ export class CategoriesComponent implements OnInit, OnDestroy{
     private getAllCategories(): void {
         this.categoryLoading.set(true)
         const searchFilter: SearchTerm[] = this.filterData.createSearchTermFilter(this.searchTerm(), ['Name'])
-        this.categoryService.getAll(searchFilter).pipe(
+        this.categoryService.getAll(searchFilter)
+        .pipe(
             finalize(() => this.categoryLoading.set(false))
         )
         .subscribe({
@@ -199,7 +181,8 @@ export class CategoriesComponent implements OnInit, OnDestroy{
 
     private getAllCategoryGroups(): void {
         this.categoryGroupsLoading.set(true);
-        this.categoryGroupService.getAll().pipe(
+        this.categoryGroupService.getAll()
+        .pipe(
             finalize(() => this.categoryGroupsLoading.set(false))
         )
         .subscribe({

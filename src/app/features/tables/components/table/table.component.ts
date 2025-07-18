@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, OnInit, signal } from "@angular/core";
+import { Component, computed, DestroyRef, ElementRef, HostListener, inject, OnInit, signal, viewChild } from "@angular/core";
 import { DisplayListComponent } from "../display-list/display-list.component";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
@@ -22,21 +22,132 @@ import { TableItemsService } from "../../../../core/services/api/table-items.ser
 import { CommonModule } from "@angular/common";
 import { MatDialog } from "@angular/material/dialog";
 import { ProductQuantityComponent } from "../product-quantity-dialog/product-quantity-dialog.component";
-import { debounceTime, distinctUntilChanged, finalize } from "rxjs";
+import { debounceTime, distinctUntilChanged, finalize, Subject } from "rxjs";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { SearchTerm } from "../../../../core/models/api/search-term.model";
 import { ProductQuantityDialogResponse } from "../../models/product-quantity-dialog-response";
 import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
+import { BreakpointService } from "../../../../core/services/utility/breakpoint.service";
+import { SearchBarComponent } from "../../../../core/ui/search-bar/search-bar.component";
+import { Order } from "../../models/order.model";
+import { OrderedItemsComponent } from "../ordered-items/ordered-items.component";
+import { DisplayProductsComponent } from "../display-products/display-products.component";
+import { KeyEventEmitter } from "./services/key-event-emitter.service";
+
+// const PRODUCTS: Product[] = [
+//   {
+//       id: 1, name: 'Туна сендвич', code: '3243', price: 120,
+//       description: "",
+//       image: null,
+//       categoryID: 0,
+//       organizationID: 0
+//   },
+//   {
+//       id: 2, name: 'Пица сендвич', code: '6443', price: 120,
+//       description: "",
+//       image: null,
+//       categoryID: 0,
+//       organizationID: 0
+//   },
+//   {
+//       id: 3, name: 'Фанта', code: '1235', price: 120,
+//       description: "",
+//       image: null,
+//       categoryID: 0,
+//       organizationID: 0
+//   },
+//   {
+//       id: 4, name: 'Кока кола', code: '8980', price: 120,
+//       description: "",
+//       image: null,
+//       categoryID: 0,
+//       organizationID: 0
+//   },
+//   {
+//       id: 5, name: 'Нес кафе', code: '1515', price: 120,
+//       description: "",
+//       image: null,
+//       categoryID: 0,
+//       organizationID: 0
+//   },
+// ];
+
+const ORDERS: Order[] = [
+  {
+    id: 23,
+    totalPrice: 1000,
+    paymentMethod: 'cash',
+    dateTime: new Date(),
+    staffId: 1,
+    table: '2',
+    status: 1,
+    orderItems: [
+      { id: 1, orderId: 23, product: { id: 1, name: 'Туна сендвич', code: '3243', price: 120, description: '' }, quantity: 2, price: 100 },
+      { id: 2, orderId: 23, product: { id: 1, name: 'Фанта', code: '1443', price: 120, description: '' }, quantity: 1, price: 100 },
+      { id: 3, orderId: 23, product: { id: 1, name: 'Нес кафе', code: '1515', price: 120, description: '' }, quantity: 3, price: 100 },
+    ],
+  },
+  {
+    id: 2,
+    totalPrice: 2500,
+    paymentMethod: 'cash',
+    dateTime: new Date(),
+    staffId: 1,
+    table: '2',
+    status: 1,
+    orderItems: [
+      { id: 1, orderId: 2, product: {
+          id: 1, name: 'Кока кола', code: '3003', price: 120,
+          description: ""
+      }, quantity: 1, price: 100 },
+      { id: 2, orderId: 2, product: {
+          id: 1, name: 'Пица сендвич', code: '1212', price: 120,
+          description: ""
+      }, quantity: 2, price: 100 },
+      { id: 3, orderId: 2, product: {
+          id: 1, name: 'Туна сендвич', code: '3243', price: 120,
+          description: ""
+      }, quantity: 1, price: 100 },
+    ],
+  },
+  {
+    id: 15,
+    totalPrice: 4325,
+    paymentMethod: 'card',
+    dateTime: new Date(),
+    staffId: 1,
+    table: '2',
+    status: 1,
+    orderItems: [
+      { id: 1, orderId: 15, product: {
+          id: 1, name: 'Нес кафе', code: '1515', price: 120,
+          description: ""
+      }, quantity: 2, price: 100 },
+      { id: 2, orderId: 15, product: {
+          id: 1, name: 'Нес кафе', code: '1515', price: 120,
+          description: ""
+      }, quantity: 1, price: 100 },
+      { id: 3, orderId: 15, product: {
+          id: 1, name: 'Туна сендвич', code: '3243', price: 120,
+          description: ""
+      }, quantity: 1, price: 100 },
+    ],
+  },
+];
 
 
 @Component({
     selector: 'table-items',
-    imports: [DisplayListComponent, MatFormFieldModule, MatIconModule, DisplayCardsComponent, CommonModule, ReactiveFormsModule, LoaderComponent],
+    imports: [DisplayListComponent, MatFormFieldModule, MatIconModule, DisplayCardsComponent, CommonModule, ReactiveFormsModule, LoaderComponent, SearchBarComponent, OrderedItemsComponent, DisplayProductsComponent],
     templateUrl: 'table.component.html',
     styleUrls: ['table.component.scss']
 })
 export class TableComponent implements OnInit{
+  orders = signal(ORDERS);
+  selectedOrderId = signal<number | null>(null);
+  selectedOrder = computed<Order | undefined>(() => this.orders().find(i => i.id === this.selectedOrderId()));
+
     readonly categoryService = inject(CategoriesService);
     readonly productService = inject(ProductsService);
     readonly tableService = inject(TablesService);
@@ -46,6 +157,7 @@ export class TableComponent implements OnInit{
     readonly route = inject(ActivatedRoute);
     readonly staffStore = inject(EmployeeStore);
     readonly quantityDialog = inject(MatDialog);
+    readonly breakpointService = inject(BreakpointService);
 
     productsLoading = signal<boolean>(false);
     categoriesLoading = signal<boolean>(false);
@@ -73,11 +185,13 @@ export class TableComponent implements OnInit{
         } as Card
     }))
 
+    keyEventSubject = inject(KeyEventEmitter);
+    searchInput = viewChild<ElementRef>('searchInput');
+
+
     ngOnInit(): void {
         this.tableId.set(Number(this.route.snapshot.paramMap.get('table')));
-        this.getAllCategories();
         this.getAllProducts();
-        console.log(this,this.tableId());
         this.getTableItems();
 
         this.searchTerm.valueChanges.pipe(
@@ -85,31 +199,34 @@ export class TableComponent implements OnInit{
             distinctUntilChanged(),
             takeUntilDestroyed(this.destroyRef)
         ).subscribe(value => {
-            this.getAllProducts([{propName: 'Name', searchValue: value ?? ''}])
+            this.getAllProducts([{propName: 'Name;Code', searchValue: value ?? ''}])
         })
     }
 
-    onSelectCategory(id: number | null): void {
-        if (!id){
-            this.getAllProducts();
-            return;
-        }
-        this.getProductsByCategory(id);
+    @HostListener('window:keydown', ['$event'])
+    handleKeydown(event: KeyboardEvent) {
+         if (/^[A-Za-z0-9]$/.test(event.key)) {
+            this.searchInput()?.nativeElement.focus();
+         }else {
+            this.keyEventSubject.emitKey(event.key);
+         }
     }
 
-    onSelectCard(card: any): void {
+    onSelectCard(product: any): void {
+       this.keyEventSubject.stop(); 
        const dialogRef = this.quantityDialog.open(ProductQuantityComponent, {
             width: '400px',
-            data: { title: card.title }
+            data: { title: product.title }
        })
-       this.dialogLoading.set(true);
+       //this.dialogLoading.set(true);
        dialogRef.afterClosed()
-       .pipe(finalize(() => this.dialogLoading.set(false)))
+       //.pipe(finalize(() => this.dialogLoading.set(false)))
        .subscribe((result: ProductQuantityDialogResponse) => {
+        this.keyEventSubject.start();
         if (result != null) {
             const request: TableItemRequest = {
                 tableID: this.tableId(),
-                productID: card.id,
+                productHistoryID: product.productHistoryID,
                 staffUserID: this.staffStore.id()!,
                 quantity: result.data.quantity,
                 note: result.data.note
@@ -130,7 +247,7 @@ export class TableComponent implements OnInit{
     onOpenItemDetails(item: TableItem): void {
         const dialogRef = this.quantityDialog.open(ProductQuantityComponent, {
             width: '400px',
-            data: { id: item.id, title: item.product.name }
+            data: { id: item.id, title: item.productName }
         });
         dialogRef.afterClosed().subscribe((result: ProductQuantityDialogResponse) => {
             if (!result){
@@ -141,7 +258,7 @@ export class TableComponent implements OnInit{
                 const request: TableItemRequest = {
                     id: item.id,
                     tableID: this.tableId(),
-                    productID: item.product.id,
+                    productHistoryID: item.product.productHistoryID,
                     staffUserID: this.staffStore.id()!,
                     quantity: result.data.quantity,
                     note: result.data.note
@@ -197,34 +314,6 @@ export class TableComponent implements OnInit{
           });
     }
 
-    private getProductsByCategory(id: number): void {
-        this.productsLoading.set(true);
-
-        this.categoryService.getById(id).pipe(
-            finalize(() => this.productsLoading.set(false))
-        ).subscribe({
-            next: (category: Category) => {
-                this.products.set(category.products);
-            },
-            error: (error: HttpErrorResponse) => {
-                this.snackbarService.error(error.message);
-            }
-        })
-    }
-
-    private getAllCategories(): void {
-        this.categoriesLoading.set(true);
-        this.categoryService.getAll().pipe(
-            finalize(() => this.categoriesLoading.set(false))
-        ).subscribe({
-            next: (result: Page<Category>) => {
-                this.categories.set(result.data);
-            },
-            error: (error: HttpErrorResponse) => {
-                this.snackbarService.error(error.message);
-            }
-        })
-    }
 
     private getTableItems(): void {
         this.tableItemsLoading.set(true);

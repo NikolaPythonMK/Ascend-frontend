@@ -4,6 +4,7 @@ export interface TableItem {
     id: number,
     product: Product, 
     quantity: number,
-    totalPrice: number,
+    totalGrossPrice: number,
+    productName: string,
     note?: string,
 }

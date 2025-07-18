@@ -1,28 +1,33 @@
-<div class="container">
+<div   [ngClass]="{
+    'container-pc': breakpointService.isDesktop(),
+    'container-tablet':
+      breakpointService.isTablet() ||
+      breakpointService.isMobile() ||
+      breakpointService.isHandsetLandscape()
+  }">
+  @if (breakpointService.isDesktop()) {
   <div class="list-container">
     <div class="sidebar-header">
-      <p class="title title-sidebar-list">Група на категории</p>
+      <p class="title title-sidebar-list">{{ 'menu.category-groups.category-groups' | translate }}</p>
     </div>
     <ascend-display-list
       [elements]="categoryGroupElements()"
-      selectAllButtonLabel="Сите категории"
       (selectedEvent)="onSelectedCategoryGroup($event)"
       [setDeleteButton]="false"
       [setSelectAllButton]="false"
       [isLoading]="categoryGroupsLoading()"
       [setSelectAllButton]="true"
-      [selectAllButtonLabel]="'All Groups'"
+      [selectAllButtonLabel]="'menu.category-groups.all-groups' | translate"
     />
   </div>
+  }
   <div class="cards-container">
     <div class="cards-header">
       <div class="left-part">
-        @if (selectedCategoryGroup()){
-        <span class="title">Categories > {{ selectedCategoryGroup()!.name }}</span>
-        }@else {
-        <span class="title">Category > All Categories</span>
+        <span class="title">{{ 'menu.categories.categories' | translate }}</span>
+        @if (!breakpointService.isHandsetLandscape() && !breakpointService.isMobile()) {
+          <ascend-header-counter [value]="categories().length" />
         }
-        <ascend-header-counter [value]="categories().length" />
       </div>
       <div class="right-part">
         <button
@@ -33,12 +38,13 @@
           (click)="onAddCategory()"
         >
           <mat-icon>add</mat-icon>
-          Category
+          {{ 'menu.categories.category' | translate }}
         </button>
 
         <ascend-search-bar (onSearchTerm)="onSearchCategory($event)"  />
       </div>
     </div>
+    <div class="cards-layout">
     @if (categoryCards().length) {
       <ascend-display-cards
       [loading]="categoryLoading()"
@@ -46,7 +52,8 @@
       [elements]="categoryCards()"
     />
     } @else {
-      <p class="no-data-message">No categories have been found</p>
+      <p class="no-data-message">{{ 'menu.categories.no-categories-found' | translate }}</p>
     }
+    </div>
   </div>
 </div>

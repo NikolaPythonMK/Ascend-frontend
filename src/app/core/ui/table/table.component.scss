@@ -1,17 +1,25 @@
-@use 'variables' as vars;
+@use "variables" as vars;
+
+.wrapper {
+  // height: 100%;
+  // overflow-y: scroll;
+}
 
 .title {
   color: vars.$primary-font-color;
   font-size: vars.$title-font-size;
 }
 
-
 .table-header {
-  // width: 95%;
+  position: sticky;
+  top: 0;
   display: flex;
+  background-color: #fff;
   justify-content: space-between;
   align-items: center;
-  .left-part, .filters {
+  padding-bottom: .5em;
+  .left-part,
+  .filters {
     display: flex;
     align-items: center;
   }
@@ -24,58 +32,60 @@
 }
 
 table {
-    width: 100%;
-    margin: 20px auto;
-    border-collapse: collapse;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-  }
+  width: 100%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
 
-  thead {
-    background: linear-gradient(135deg, #6c63ff, #a29bfe);
-    color: vars.$white-color;
-  }
+thead {
+  background: linear-gradient(135deg, #6c63ff, #a29bfe);
+  color: vars.$white-color;
+}
 
-  th, td {
-    padding: 12px 20px;
-    text-align: center;
-  }
+th,
+td {
+  padding: 12px 20px;
+  text-align: center;
+}
 
-  th {
-    text-transform: uppercase;
-    font-size: 14px;
-    letter-spacing: 1px;
-  }
+th {
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
 
-  tbody tr:nth-child(odd) {
-    background-color: #f9f9f9;
-  }
+tbody tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
 
-  tbody tr:nth-child(even) {
-    background-color: #ffffff;
-  }
+tbody tr:nth-child(even) {
+  background-color: #ffffff;
+}
 
-  tbody tr:hover {
-    background-color: #f1f5fc;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-    transform: scale(1.02);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
+tbody tr:hover {
+  background-color: #f1f5fc;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease,
+  background-color 0.3s ease;
+  // transform: scale(1.01);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-  tbody td {
-    color: #555;
-    border-bottom: 1px solid #ddd;
-  }
+tbody td {
+  color: #555;
+  border-bottom: 1px solid #ddd;
+}
 
-  tbody td:first-child {
-    font-weight: bold;
-    color: #333;
-  }
+tbody td:first-child {
+  font-weight: bold;
+  color: #333;
+}
 
-
-.available, .occupied, .reserved {
+.available,
+.occupied,
+.reserved {
   padding: 5px;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
@@ -84,7 +94,7 @@ table {
 }
 
 .available {
-  background-color: #ACE1AF !important;
+  background-color: #ace1af !important;
   padding: 0.5em;
 }
 .occupied {
@@ -96,18 +106,18 @@ table {
   background-color: #f1f5fc !important;
 }
 
-.price{
+.price {
   font-weight: bold;
   font-size: large;
 }
 
-td{
+td {
   padding: 1.2em;
   font-size: 1.2rem;
 }
 
 .primary-button {
-  padding: .5em;
+  padding: 0.5em;
   border-radius: 8px;
   border: 0;
   background-color: #a29bfe;

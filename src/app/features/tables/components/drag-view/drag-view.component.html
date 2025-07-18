@@ -1,45 +1,104 @@
 <div class="layout">
   <ascend-loader [loading]="loader()" />
+  @if (!isEdit()) {
+    <tables-header [selectedView]="'drag'" [float]="true" [subscribe]="true"/>
+  }
+
+  @if (isEdit()) {
   <div class="toolbar" [class.editMode]="isEdit()">
-  <div class="toolbar-group">
-    <button title="Add Obstacle" [disabled]="!isEdit()" (click)="addObstacle()"><i class="material-icons">fence</i>Obstacle</button>
+    <div class="toolbar-group">
+    <tables-header [selectedView]="'drag'" [float]="false" [subscribe]="true" />
   </div>
+    <div class="toolbar-group">
+      <button
+        [title]="'drag-view.add-obstacle| translate'"
+        [disabled]="!isEdit()"
+        (click)="addObstacle()"
+      >
+        <i class="material-icons">fence</i>{{ 'drag-view.obstacle' | translate }}
+      </button>
+    </div>
 
-  <div class="toolbar-group">
-    <button title="Rectangle" [disabled]="!isEdit()"  (click)="switchShapeType(selectedId, 'rect')"><i class="material-icons">rectangle</i>Rectange</button>
-    <button title="Circle" [disabled]="!isEdit()"  (click)="switchShapeType(selectedId, 'circle')"><i class="material-icons">circle</i>Circle</button>
-    <ngx-colors ngx-colors-trigger [(ngModel)]="color" (slider)="changeShapeColor($event, selectedId)" (ngModelChange)="changeShapeColor($event, selectedId)"></ngx-colors>
-  </div>
+    <div class="toolbar-group">
+      <button
+        [title]="'drag-view.add-rectangle| translate'"
+        [disabled]="!isEdit()"
+        (click)="switchShapeType(selectedId, 'rect')"
+      >
+        <i class="material-icons">rectangle</i>{{ 'drag-view.rectangle' | translate }}
+      </button>
+      <button
+        title="Circle"
+        [title]="'drag-view.add-circle | translate'"
+        [disabled]="!isEdit()"
+        (click)="switchShapeType(selectedId, 'circle')"
+      >
+        <i class="material-icons">circle</i>{{ 'drag-view.circle' | translate }}
+      </button>
+      <ngx-colors
+        ngx-colors-trigger
+        [(ngModel)]="color"
+        (slider)="changeShapeColor($event, selectedId)"
+        (ngModelChange)="changeShapeColor($event, selectedId)"
+      ></ngx-colors>
+    </div>
 
-  <div class="toolbar-group">
-    <button title="Save Layout" [disabled]="!isEdit()"  (click)="saveLayout()"><i class="material-icons">save</i> Save</button>
+    <div class="toolbar-group">
+      <button title="Save Layout" [disabled]="!isEdit()" (click)="saveLayout()">
+        <i class="material-icons">save</i> {{ 'shared.save' | translate }}
+      </button>
 
-    <button title="Toggle Edit Mode" (click)="onEditClick()">
-      <i class="material-icons">edit</i> {{ true ? 'Editing' : 'View' }}
-    </button>
-  </div>
+      <button title="Toggle Edit Mode" (click)="onCancel()">
+        <i class="material-icons">close</i> {{ 'shared.cancel' | translate }}
+      </button>
+    </div>
 
-  <div class="floors-section">
-    <span class="floors-span">Floors:</span>
-    @for (floor of layers(); track floor; let i = $index) {
-      <button (click)="switchFloor(i)" [title]="'Floor ' + (i + 1)"
-              [ngClass]="{'activeFloor': i === currentFloorIndex}">
+    <div class="floors-section">
+      <span class="floors-span">{{ 'drag-view.floors' | translate }}</span>
+      @for (floor of layers(); track floor; let i = $index) {
+      <button
+        (click)="switchFloor(i)"
+        [title]="'drag-view.floor | translate' + (i + 1)"
+        [ngClass]="{ activeFloor: i === currentFloorIndex }"
+      >
         {{ i + 1 }}
       </button>
-    }
-    <button [disabled]="!isEdit()"  (click)="addFloor({ id: (layers.length + 1).toString(), name: 'Floor ' + (layers.length + 1), items: [] })" title="Add Floor">
-      ＋
-    </button>
+      }
+      <button
+        [disabled]="!isEdit()"
+        (click)="
+          addFloor({
+            id: (layers.length + 1).toString(),
+            name: 'drag-view.floor | translate' + (layers.length + 1),
+            items: []
+          })
+        "
+        [title]="'drag-view.add-floor | translate'"
+      >
+        ＋
+      </button>
+    </div>
   </div>
-</div>
-
+  }
 
   <div class="canvas-container">
-  <div class="zoom-buttons">
-    <button (click)="zoomIn()"><i class="material-icons">add</i></button>
-    <button (click)="zoomOut()"><i class="material-icons">remove</i></button>
+    <div class="canvas-buttons">
+      <button (click)="zoomIn()"><i class="material-icons">add</i></button>
+      <button (click)="zoomOut()"><i class="material-icons">remove</i></button>
+      @if (!isEdit()) {
+      <button class="canvas-edit-btn" (click)="onCanvasEditButtonClick()">
+        <i class="material-icons">edit</i>
+      </button>
+      } @for (floor of layers(); track floor; let i = $index) {
+      <button
+        (click)="switchFloor(i)"
+        [title]="'drag-view.floor | translate' + (i + 1)"
+        [ngClass]="{ activeFloor: i === currentFloorIndex }"
+      >
+        {{ i + 1 }}
+      </button>
+      }
+    </div>
+    <div id="container" style="width: 100%; height: 100%; z-index: 1"></div>
   </div>
-  <div id="container" style="width: 100%; height: 100%; z-index: 1;"></div>
-</div>
-
 </div>

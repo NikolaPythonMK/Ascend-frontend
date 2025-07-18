@@ -2,7 +2,7 @@
     <ascend-skeleton-item [count]="5"/>
 }@else {
     <ul class="data-list">
-        <li (click)="onSelectCategory(null)">All</li>
+        <li (click)="onSelectCategory(null)">{{ 'shared.all' | translate }}</li>
         @for (category of categories(); track category.id) {
             <li (click)="onSelectCategory(category.id)" [ngClass]="{'selected-li': category.id === selectedId()}">
                 {{ category.name }}

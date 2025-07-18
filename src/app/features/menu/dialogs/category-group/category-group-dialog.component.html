@@ -7,33 +7,33 @@
       @if(errorMessages().includes('name.exists')) {
       <div class="error-message">
         <mat-icon>error</mat-icon>
-        <span>Group with that name already exists.</span>
+        <span>{{ 'menu.category-groups.name-exists' | translate }}</span>
       </div>
       }
       <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Name</mat-label>
+        <mat-label>{{ 'menu.category-groups.name' | translate }}</mat-label>
         <input matInput formControlName="name" required />
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Description (optional)</mat-label>
+        <mat-label>{{ 'menu.category-groups.description' | translate }}</mat-label>
         <textarea matInput formControlName="description"></textarea>
       </mat-form-field>
 
-    @if (data.categories) {
+    @if (this.categories()) {
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Categories</mat-label>
+        <mat-label>{{ 'menu.category-groups.categories' | translate }}</mat-label>
         <mat-select formControlName="selectedCategories" multiple>
           <mat-select-trigger>
             {{ getSelectedCategoriesControl().value ? getCategoryName(getSelectedCategoriesControl().value[0]) : '' }}
             @if ((getSelectedCategoriesControl().value?.length || 0) > 1) {
               <span class="additional-selection">
                 (+{{ (getSelectedCategoriesControl().value?.length || 0) - 1 }}
-                {{ getSelectedCategoriesControl().value?.length === 2 ? 'other' : 'others' }})
+                {{ getSelectedCategoriesControl().value?.length === 2 ? "'shared.other | translate'" : "'shared.others | translate'" }})
               </span>
             }
           </mat-select-trigger>
-          @for (category of data.categories; track category.id) {
+          @for (category of this.categories(); track category.id) {
             <mat-option [value]="category.id">{{ category.name }}</mat-option>
           }
         </mat-select>
@@ -42,7 +42,7 @@
     </div>
     <div>
       <div class="full-width upload-container">
-        <span>Прикачи слика (optional)</span>
+        <span>{{ 'menu.category-groups.image' | translate }}</span>
         <ascend-upload-image
           (uploadEvent)="onUpload($event)"
           [imageUrl]="
@@ -61,14 +61,14 @@
       type="button"
       mat-icon-button
       color="warn"
-      aria-label="Delete item"
+      [ariaLabel]="'shared.delete-item | translate'"
       class="trash-btn"
       (click)="onDelete()"
     >
       <mat-icon>delete</mat-icon>
     </button>
     }
-    <button mat-button type="button" (click)="dialogRef.close()">Откажи</button>
+    <button mat-button type="button" (click)="dialogRef.close()">{{ 'shared.discard' | translate }}</button>
     <ascend-button
       type="primary"
       [label]='submitBtnLabel()'

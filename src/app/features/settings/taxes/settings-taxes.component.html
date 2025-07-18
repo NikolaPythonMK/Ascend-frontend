@@ -1,0 +1,17 @@
+<ascend-loader [loading]="loading()" />
+<div class="container">
+  <div class="content">
+    <ascend-table
+      [dataRows]="taxRows()"
+      [displayedColumns]="colDisplayNames()"
+      [title]="'settings.taxes.taxes' | translate"
+      (addEvent)="onAdd()"
+      (clickedRowEvent)="onUpdate($event)"
+    />
+    @if (taxes().length == 0) {
+      <div class="no-data-container">
+        <p class="no-data-msg">{{ 'settings.taxes.no-taxes-found' | translate }}</p>
+      </div>
+    }
+  </div>
+</div>

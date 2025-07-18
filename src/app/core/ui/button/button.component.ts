@@ -1,4 +1,4 @@
-import { Component, input, OnInit, output, signal } from "@angular/core";
+import { Component, inject, input, OnInit, output, signal } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { TranslateModule } from "@ngx-translate/core";
 import { ButtonType } from "./button.type";
@@ -28,9 +28,9 @@ export class ButtonComponent implements OnInit{
         }
 
         if (this.type() === 'primary'){
-            this.computedLabel.set('ui.button.primary')
+            this.computedLabel.set('shared.submit')
         } else {
-            this.computedLabel.set('ui.button.secondary')
+            this.computedLabel.set('shared.cancel')
         }
     }
 

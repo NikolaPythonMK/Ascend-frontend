@@ -12,9 +12,11 @@
   align-items: center;
   gap: 0.5em;
   padding: 0.5em;
-  border: 1px dashed #aaa;
+  //border: 1px dashed #aaa;
   box-sizing: border-box;
   overflow-y: none;
+  //background-color: #F0F8FF !important;
+  border-bottom: 2px solid #eee;
 }
 
 .toolbar button {
@@ -56,9 +58,9 @@ ngx-colors {
   flex: 1;
   position: relative;
   overflow: hidden;
-  border: 1px dashed #999;
-  border-radius: 8px;
-  margin: 0.5em;
+  // border: 1px dashed #999;
+  // border-radius: 8px;
+  // margin: 0.5em;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -70,7 +72,7 @@ ngx-colors {
   height: 100%;
 }
 
-.zoom-buttons {
+.canvas-buttons {
   position: absolute;
   top: 8px;
   right: 8px;
@@ -80,7 +82,7 @@ ngx-colors {
   z-index: 10;
 }
 
-.zoom-buttons button {
+.canvas-buttons button {
   background-color: #f0f0f0;
   border: 1px solid #ccc;
   padding: 0.5em;
@@ -88,6 +90,10 @@ ngx-colors {
   cursor: pointer;
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.canvas-edit-btn {
+  margin-bottom: 2em;
 }
 
 .zoom-buttons button:hover {
@@ -129,4 +135,24 @@ ngx-colors {
   height: 35px !important;
   border-radius: 50% !important; 
   border: 1px solid #fff;
+}
+
+
+@media (min-width: 1081px) {
+  .toolbar {
+    //margin-top: .5em;
+  }
+}
+
+@media (max-width: 914px) {
+  .toolbar button {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 0.5em .8em;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+  }
 }

@@ -54,3 +54,10 @@
     margin-right: auto;
     cursor: pointer;
   }
+
+
+  @media (max-width: 1080px) {
+    .dialog-wrapper {
+      max-height: 90vh;
+    }
+  }

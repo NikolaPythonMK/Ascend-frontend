@@ -4,18 +4,19 @@ import { StaffService } from "../../../../core/services/api/staff.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { SnackbarService } from "../../../../core/services/utility/snackbar.service";
 import type { Page } from "../../../../core/models/api/page.model";
-import { StaffUserRow } from "../../models/staff-user-row.model";
 import { MatDialog } from "@angular/material/dialog";
 import { StaffUserDialog } from "../../dialogs/staff-user-dialog/staff-user.component";
 import { filter, Observer, switchMap } from "rxjs";
 import { Sort } from "../../../../core/ui/table/models/sort.model";
 import { TableStateService } from "../../../../core/services/utility/table-state.service";
 import type { StaffUser } from "../../../../core/models/api/responses/staff-user.model";
+import { DataRow } from "../../../../core/ui/table/models/data-row";
+import { TranslateModule } from "@ngx-translate/core";
 
 
 @Component({
     selector: 'personal-component',
-    imports: [TableComponent],
+    imports: [TableComponent, TranslateModule],
     providers: [TableStateService],
     templateUrl: 'personal.component.html',
     styleUrls: ['personal.component.scss']
@@ -26,7 +27,7 @@ export class PersonalComponent implements OnInit{
     private readonly tableState = inject(TableStateService);
     readonly dialog = inject(MatDialog);
     staffUsers = signal<StaffUser[]>([]);
-    staffUsersRows = signal<StaffUserRow[]>([]);
+    staffUsersRows = signal<DataRow[]>([]);
     map = new Map<string, string>([
         ['Name', 'name'],
         ['Last Name', 'lastName'],
@@ -57,7 +58,7 @@ export class PersonalComponent implements OnInit{
 
     onUpdateStaff(id: number): void {
         const dialogRef = this.dialog.open(StaffUserDialog, {
-            data: this.staffUsers()[id]
+            data: id
         })
         dialogRef.afterClosed().pipe(
             filter((value: StaffUser | number | undefined) => value != null),
@@ -81,15 +82,18 @@ export class PersonalComponent implements OnInit{
         }
     }
 
-    private mapToStaffUserRows(staffUsers: StaffUser[]): StaffUserRow[] {
-        const staffUserRows: StaffUserRow[] = staffUsers.map(i => {
+    private mapToStaffUserRows(staffUsers: StaffUser[]): DataRow[] {
+        const staffUserRows: DataRow[] = staffUsers.map(i => {
             const joinedRoles = i.staffUserRoles!.map(s => s.name).join(", ");
             return {
+                id: i.id,
+                properties: {
                 name: i.name!,
                 lastName: i.lastName!,
                 phoneNumber: i.phoneNumber!,
                 roles: joinedRoles
-            }
+                }
+            } as DataRow
         })
         return staffUserRows;
     }

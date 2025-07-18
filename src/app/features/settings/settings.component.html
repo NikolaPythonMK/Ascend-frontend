@@ -1,0 +1,24 @@
+<div class="settings-container">
+  <header class="settings-header">
+    <h2 class="title">{{ 'settings.site-settings' | translate }}</h2>
+  </header>
+
+  <div class="settings-body">
+    <nav class="sidebar">
+      <ul>
+        <li
+          *ngFor="let item of menuItems"
+          (click)="setActive(item)"
+          [class.active]="item === activeItem">
+          {{ item }}
+        </li>
+      </ul>
+    </nav>
+
+    <section class="content">
+        @if (activeItem == 'Taxes') {
+            <settings-taxes />
+        }
+    </section>
+  </div>
+</div>

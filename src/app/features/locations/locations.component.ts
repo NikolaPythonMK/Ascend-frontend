@@ -4,16 +4,17 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { SnackbarService } from "../../core/services/utility/snackbar.service";
 import { Page } from "../../core/models/api/page.model";
 import { TableComponent } from "../../core/ui/table/table.component";
-import type { LocationRow } from "./models/location-row.model";
 import { MatDialog } from "@angular/material/dialog";
 import { CreateLocatinDialog } from "./components/create-locations-dialog/create-location.component";
 import { UpdateLocationDialog } from "./components/update-location-dialog/update-location.component";
 import { TableStateService } from "../../core/services/utility/table-state.service";
 import { Sort } from "../../core/ui/table/models/sort.model";
 import { Location } from "../../core/models/api/responses/location.model";
+import { DataRow } from "../../core/ui/table/models/data-row";
+import { TranslateModule } from "@ngx-translate/core";
 
 @Component({
-    imports: [TableComponent],
+    imports: [TableComponent, TranslateModule],
     providers: [TableStateService],
     templateUrl: 'locations.component.html',
     styleUrls: ['locations.component.scss']
@@ -45,14 +46,13 @@ export class LocationsPage implements OnInit{
         dialogRef.afterClosed().subscribe((result: Location) => {
             if (result) {
                 this.getLocations();
-                //this.locations.update(values => [result, ...values]);
             }
         })
     }
 
-    onUpdate(index: number): void {
+    onUpdate(id: number): void {
         const dialogRef = this.dialog.open(UpdateLocationDialog, {
-            data: this.locations()[index]
+            data: id
         });
         dialogRef.afterClosed().subscribe((result: Location | number) => {
             if(result) {
@@ -72,12 +72,15 @@ export class LocationsPage implements OnInit{
         this.getLocations();
     }
 
-    private mapToRows(locations: Location[]): LocationRow[] {
+    private mapToRows(locations: Location[]): DataRow[] {
         return locations.map(i => {
             return {
-                name: i.name,
-                tableCount: i.tableCount
-            }
+                id: i.id,
+                properties: {
+                    name: i.name,
+                    tableCount: i.tableCount
+                }
+            } as DataRow
         })
     }
 

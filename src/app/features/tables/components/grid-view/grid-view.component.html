@@ -6,7 +6,7 @@
                     <span>{{ table.code }}</span>
                 </div>
                 <div class="grid-row row-status">
-                    <span class="status-available">Available</span>
+                    <span class="status-available">{{ 'tables.status.status-available' | translate }}</span>
                 </div>
             </div>
         } @else {
@@ -19,7 +19,7 @@
                     </span>
                 </div>
                 <div class="grid-row row-status">
-                    <span class="status-occupied">Occupied</span>
+                    <span class="status-occupied">{{ 'tables.status.status-occupied' | translate }}</span>
                     <span>{{ table.totalPrice }} MKD</span>
                 </div>
                 <div class="grid-row">

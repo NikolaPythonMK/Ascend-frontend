@@ -1,9 +1,10 @@
 import { Component, inject } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { ButtonComponent } from "../button/button.component";
+import { TranslateModule } from "@ngx-translate/core";
 
 @Component({
-    imports: [ButtonComponent],
+    imports: [ButtonComponent, TranslateModule],
     templateUrl: 'confirmation-dialog.component.html',
     styleUrls: ['confirmation-dialog.component.scss']
 })

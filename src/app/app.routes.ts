@@ -37,6 +37,14 @@ export const routes: Routes = [
             {
                 path: 'menu',
                 loadComponent: () => import('./features/menu/menu.component').then((m) => m.MenuPage)
+            },
+            {
+                path: 'settings',
+                loadComponent: () => import('./features/settings/settings.component').then((m) => m.SettingsPage)
+            },
+            {
+                path: 'tax-details/:id',
+                loadComponent: () => import('./features/settings/taxes/pages/tax-details/tax-details.component').then((m) => m.TaxDetailsPage)
             }
         ]
     },

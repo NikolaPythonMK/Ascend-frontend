@@ -1,29 +1,31 @@
   .grid-container {
+    // display: grid;
+    // gap: 10px;
+    // grid-template-columns: repeat(
+    //   auto-fill,
+    //   minmax(200px, 1fr)
+    // );
     display: grid;
-    grid-template-columns: repeat(auto-fit, 260px); //170
     gap: 10px;
     width: 100%;
     margin: 20px auto;
-  }
+    grid-template-columns: 1fr;  // normalni telefoni
 
-  // .grid-item {
-  //   background-color: #4caf50;
-  //   color: white;
-  //   display: flex;
-  //   flex-direction: column;
-  //   align-items: center;
-  //   justify-content: space-evenly;
-  //   height: 100px;
-  //   border-radius: 8px;
-  //   cursor: pointer;
-  //   width: 170px; 
-  //   height: 115px; 
-  //   width: 220px;
-  //   height: 150px;
-  // }
+    @media (min-width: 481px) AND (max-width: 768px) {   // golemi telefoni i mali tabletcinja
+      grid-template-columns: repeat(2, 1fr);
+    }
 
-  .grid-item:hover {
-      transform: scale(1.05);
+    @media (min-width: 769px) AND (max-width: 999px) {  // tableti
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (min-width: 1000px) AND (max-width: 1480px) {  // laptopi, desktopi
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media (min-width: 1481px) {  // golemi desktopi
+      grid-template-columns: repeat(6, 1fr);
+    }
   }
 
   .table-name {
@@ -55,9 +57,6 @@
   }
 
  
-
-
-
 .grid-item {
   height: 220px;
   cursor: pointer;
@@ -88,10 +87,6 @@
   font-size: .9rem;
   font-weight: bold;
 }
-
-// .row-status {
-//   background-color: #fefeff;
-// }
 
 .item-occupied {
   border: 2px solid #FF9999;

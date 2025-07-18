@@ -1,0 +1,24 @@
+<div class="dialog-wrapper">
+  <button
+    type="button"
+    mat-icon-button
+    [ariaLabel]="'shared.delete-item' | translate"
+    class="close-btn"
+    (click)="onClose()"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <p class="title">{{ data.title }}</p>
+  <div class="list-container">
+    <p class="list-item" (click)="onSelect(null)">{{ 'filter.all-categories' | translate }}</p>
+    @for (item of data.selectList; track item.id) {
+    <p
+      class="list-item"
+      [class.selected]="item.id === selectedItem()"
+      (click)="onSelect(item.id)"
+    >
+      {{ item.name }}
+    </p>
+    }
+  </div>
+</div>

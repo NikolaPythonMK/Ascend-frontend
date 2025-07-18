@@ -8,6 +8,7 @@ import { SearchBarComponent } from "../search-bar/search-bar.component";
 import { ButtonComponent } from "../button/button.component";
 import { SortType } from "./types/sort-type.enum";
 import { Sort } from "./models/sort.model";
+import { DataRow } from "./models/data-row";
 
 @Component({
     selector: 'ascend-table',
@@ -18,8 +19,10 @@ import { Sort } from "./models/sort.model";
 export class TableComponent {
         title = input.required<string>();
         displayedColumns = input.required<string[]>();
-        dataRows = input.required<any[]>();
+        dataRows = input.required<DataRow[]>();
         nonSortableColumns = input<string[]>([]);
+        hasAddBtn = input<boolean>(true);
+        hasSearchBar = input<boolean>(true);
         //nonSearchableColumns = input<string[]>([]);
 
         addEvent = output<void>();
@@ -67,8 +70,8 @@ export class TableComponent {
             this.searchEvent.emit(searchTerm);
         }
 
-        onRowClick(row: number): void {
-            this.clickedRowEvent.emit(row);
+        onRowClick(id: number): void {
+            this.clickedRowEvent.emit(id);
         }
 
         getValues(obj: any): any[] {

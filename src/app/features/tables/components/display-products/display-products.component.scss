@@ -1,95 +1,108 @@
-@use 'variables' as vars;
+@use "variables" as vars;
 
-* {
-  margin: 0;
-  padding: 0;
+.product-wrapper {
+  height: 100%;
+}
+
+.products-display {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 1em;
+  gap: 0.7em;
   box-sizing: border-box;
-}
+  overflow-y: auto; /* ← make it scrollable */
+    transition: max-height 1.3s ease-in-out, opacity 1.3s ease-in-out;
 
-.title-header{
-  display: flex;
-  align-items: center;
-  color: vars.$primary-font-color;
-}
 
-.title {
-  font-size: 1.2rem;
-}
-
-.counter {
-  background-color: #e3f2fd;
-  border-radius: 50%;
-  padding: 8px 12px 8px 12px;
-  margin-left: .5em;
-  font-weight: bold;
-  color: #6c63ff;
-}
-
-.products-header {
-  display: flex;
-  justify-content: space-between;
-  padding-left: .5em;
-  padding-right: .5em;
-}
-
-.products-filter {
-  display: flex;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-  margin-top: 1.5em;
-}
-
-ul li {
-  margin-bottom: 10px;
-  // padding: 2em;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  border-radius: 8px;
-  background: linear-gradient(135deg, #f7f9fc, #e3f2fd);
-  transition: 0.3s ease, transform 0.2s ease;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  p {
-    font-size: 1.2rem;
+    @keyframes shimmer {
+    100% {
+      transform: translateX(150%);
+    }
   }
 }
 
-ul li:hover, ul li.selected-product {
-    background: linear-gradient(135deg, #e3f2fd, #f0f7ff);
-    transform: scale(1.02);
-}
-
-ul li.selected-order {
-  border-color: #6c63ff;
-}
-
-.search-bar {
-  margin-right: 1.5em;
-}
-
-.category-select {
-  margin-right: 1em;
-  border: 1px solid #ccc;
+.product-card {
+  // height: 100px;
+  display: flex;
+  flex-direction: column;
+  // justify-content: space-between;
+  //justify-content: space-between;
+  padding: 1em;
   border-radius: 10px;
-  outline: none;
+  background-color: #fff;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 
-select option {
-  text-align: center;
+.card-header {
+  display: flex;
+  justify-content: space-between;
 }
 
-.li-code {
-  padding-left: 1em;
+.footer {
+  display: flex;
+  justify-content: space-between;
 }
 
-img {
-  height: 100px;
-  width: 100px;
-  object-fit: contain;
+.price,
+.card-code,
+.title,
+.code {
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.card-category {
+  padding: 0.5em;
+  background-color: rgba($color: #89ac46, $alpha: 0.2);
+  display: inline;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+.active {
+  border: 2px solid #89ac46;
+}
+
+.products-display {
+  &:focus {
+    outline: none;
+  }
+}
+
+.skeleton-rect {
+  width: 100%; // ← fill the full li width (300px minus padding)
+  height: 1.5rem; // match your font-size or tweak as needed
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  padding-bottom: 1.5em;
+  overflow: hidden;
+  margin-bottom: 0.5em; // same spacing you use between .category-element
+
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 150%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    animation: shimmer 1.5s infinite;
+  }
 }
