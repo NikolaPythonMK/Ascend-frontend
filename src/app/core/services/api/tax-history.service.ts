@@ -14,6 +14,6 @@ export class TaxHistoryService extends BaseService<TaxHistory, TaxHistoryRequest
     protected override domain = environment.domain;
 
     constructor() {
-        super('tax-history');
+        super('taxhistory');
     }
 }

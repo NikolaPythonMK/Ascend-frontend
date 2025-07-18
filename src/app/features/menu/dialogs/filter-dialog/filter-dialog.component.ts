@@ -7,9 +7,10 @@ import { FilterDialogData } from "../../models/filter-dialog-data.dto";
 import { CommonModule } from "@angular/common";
 import { MatIcon } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
+import { TranslateModule } from "@ngx-translate/core";
 
 @Component({
-    imports: [CommonModule, MatIcon, MatButtonModule],
+    imports: [CommonModule, MatIcon, MatButtonModule, TranslateModule],
     templateUrl: 'filter-dialog.component.html',
     styleUrls: ['filter-dialog.component.scss']
 })

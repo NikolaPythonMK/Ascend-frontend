@@ -4,13 +4,13 @@
     <ascend-table
       [dataRows]="taxRows()"
       [displayedColumns]="colDisplayNames()"
-      [title]="'Taxes'"
+      [title]="'settings.taxes.taxes' | translate"
       (addEvent)="onAdd()"
       (clickedRowEvent)="onUpdate($event)"
     />
     @if (taxes().length == 0) {
       <div class="no-data-container">
-        <p class="no-data-msg">No taxes have been found.</p>
+        <p class="no-data-msg">{{ 'settings.taxes.no-taxes-found' | translate }}</p>
       </div>
     }
   </div>

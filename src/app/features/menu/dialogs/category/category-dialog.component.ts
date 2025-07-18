@@ -13,18 +13,20 @@ import { UploadImageComponent } from "../../../../core/ui/upload-img/upload-img.
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { ButtonComponent } from "../../../../core/ui/button/button.component";
 import { Category } from "../../../../core/models/api/responses/category.model";
-import { CategoryGroup } from "../../../../core/models/api/responses/category-group.model";
-import { Image } from "../../../../core/ui/upload-img/models/image.model";
-import { CategoryRequest } from "../../../../core/models/api/requests/category.request";
 import { CategoriesService } from "../../../../core/services/api/categories.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { SnackbarService } from "../../../../core/services/utility/snackbar.service";
 import type { CategoryDialogData } from "../../models/category-dialog-data.dto";
 import { ConfirmationDialog } from "../../../../core/ui/confirmation-dialog/confirmation-dialog.component";
-import { Observable } from "rxjs";
+import { finalize, Observable } from "rxjs";
 import { ImageService } from "../../../../core/services/utility/image.service";
 import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
 import { ErrorDetails } from "../../../../core/models/error-details";
+import { CategoryGroupService } from "../../../../core/services/api/category-group.service";
+import { Page } from "../../../../core/models/api/page.model";
+import { CategoryGroup } from "../../../../core/models/api/responses/category-group.model";
+import { TranslateModule } from "@ngx-translate/core";
+import TranslationService from "../../../../core/services/utility/translation.service";
 
 
 @Component({
@@ -41,7 +43,8 @@ import { ErrorDetails } from "../../../../core/models/error-details";
     UploadImageComponent,
     MatCheckboxModule,
     ButtonComponent,
-    LoaderComponent
+    LoaderComponent,
+    TranslateModule
 ],
     templateUrl: 'category-dialog.component.html',
     styleUrls: ['category-dialog.component.scss', '../../styles/dialog-style.scss'],
@@ -53,8 +56,10 @@ export class CategoryDialog implements OnInit{
     readonly dialog = inject(MatDialog);
     readonly fb = inject(FormBuilder);
     readonly categoryService = inject(CategoriesService);
+    readonly categoryGroupService = inject(CategoryGroupService);
     readonly snackbar = inject(SnackbarService);
     readonly imageService = inject(ImageService);
+    readonly translationService = inject(TranslationService);
 
     categoryForm = this.fb.group({
         name: ['', Validators.required],
@@ -64,32 +69,52 @@ export class CategoryDialog implements OnInit{
     })
     staffUser: any;
     isUpdateDialog = signal<boolean>(false);
-    title = signal<string>('Додади Категорија');
-    submitBtnLabel = signal<string>('Додади');
-    imageUrl = signal('');
+    title = signal<string>(this.translationService.getTranslationForKey("menu.categories.add-category"));
+    submitBtnLabel = signal<string>(this.translationService.getTranslationForKey("shared.add"));
+    imageUrl = signal<string>('');
     loading = signal<boolean>(false);
     errorMessages = signal<string[]>([]);
+    categoryGroups = signal<CategoryGroup[]>([]);
 
     ngOnInit(): void {
         if (this.data.selectedGroupId) {
             this.getSelectedCategoryGroup().setValue(this.data.selectedGroupId);
         }
-        if(!this.data.categoryId){
+
+        this.loading.set(true);
+        this.categoryGroupService.getAll()
+            .pipe(
+                finalize(() => this.loading.set(false))   
+            )    
+            .subscribe({
+               next: (result: Page<CategoryGroup>) => {
+               this.categoryGroups.set(result.data);
+            },
+            error: (error: HttpErrorResponse) => {
+                this.snackbar.error(error.message);
+            }
+        })
+
+        if(!this.data.id){
             return;
         }
 
         this.isUpdateDialog.set(true);
-        this.title.set('Ажурирај Категорија')
-        this.submitBtnLabel.set('Ажурирај');
+        this.title.set(this.translationService.getTranslationForKey("menu.categories.update-category"))
+        this.submitBtnLabel.set(this.translationService.getTranslationForKey("shared.update"));
 
         this.loading.set(true);
-        this.categoryService.getById(this.data.categoryId).subscribe({
+        this.categoryService.getById(this.data.id)
+        .pipe(
+           finalize(() => this.loading.set(false))
+        )
+        .subscribe({
             next: (category: Category) => {
                 this.getNameControl().setValue(category.name);
                 this.getDescriptionControl().setValue(category.description);
                 this.imageUrl.set(category.image);
-                if(category.categoryGroupId){
-                    this.getSelectedCategoryGroup().setValue(category.categoryGroupId);
+                if(category.categoryGroupID){
+                    this.getSelectedCategoryGroup().setValue(category.categoryGroupID);
                 }
                 this.loading.set(false);
             },
@@ -131,15 +156,20 @@ export class CategoryDialog implements OnInit{
         form.append("categoryGroupId", this.getSelectedCategoryGroup().value);
         form.append("sourceLocation", "2");
 
-        this.isUpdateDialog() && form.append("id", String(this.data.categoryId));
+        this.isUpdateDialog() && form.append("id", String(this.data.id));
+
+        const isEdit = !!this.data.id;
 
         const action$ = this.isUpdateDialog() ?
             this.categoryService.update(form) :
             this.categoryService.add(form);
 
+        const action = isEdit ? this.translationService.getTranslationForKey("shared.updated") : this.translationService.getTranslationForKey("shared.added");
+        const message = `${this.translationService.getTranslationForKey("shared.succesfully")} ${action} ${this.translationService.getTranslationForKey("menu.categories.category")}`;
+
         this.handleRequest<Category>(
             action$,
-            'Успешно е додадена категоријата'
+            message
         );
     }
 
@@ -150,8 +180,8 @@ export class CategoryDialog implements OnInit{
                 return;
             }
             this.handleRequest<number>(
-                this.categoryService.delete(this.data.categoryId!),
-                'Категоријата е успешно избришана'
+                this.categoryService.delete(this.data.id!),
+                `${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.deleted")} ${this.translationService.getTranslationForKey("menu.categories.category")}`
             )            
         })
     }

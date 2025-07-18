@@ -3,7 +3,6 @@ import { CommonModule } from "@angular/common";
 import { TranslateModule } from "@ngx-translate/core";
 import { ButtonType } from "./button.type";
 import { MatIconModule } from "@angular/material/icon";
-import { BreakpointService } from "../../services/utility/breakpoint.service";
 
 @Component({
     selector: 'ascend-button',
@@ -29,9 +28,9 @@ export class ButtonComponent implements OnInit{
         }
 
         if (this.type() === 'primary'){
-            this.computedLabel.set('ui.button.primary')
+            this.computedLabel.set('shared.submit')
         } else {
-            this.computedLabel.set('ui.button.secondary')
+            this.computedLabel.set('shared.cancel')
         }
     }
 

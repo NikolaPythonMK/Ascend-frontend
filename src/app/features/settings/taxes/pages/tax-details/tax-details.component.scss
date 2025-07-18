@@ -37,6 +37,7 @@
 
 .tax-history {
   padding-left: 3em;
+  width: 100%;
 }
 
 /* Make form fields take full width */
@@ -77,6 +78,10 @@ mat-form-field {
   color: rgba(0, 0, 0, 0.6);
   font-size: 0.9rem;
   margin-left: 0.3rem;
+}
+
+.tax-history-table{
+  width: 100%;
 }
 
 @media (min-width: 600px) and (max-width: 1080px) {

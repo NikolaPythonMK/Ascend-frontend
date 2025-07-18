@@ -2,8 +2,8 @@
   <div class="cards-container">
     <div class="cards-header">
       <div class="left-part">
-        <span class="title">Category Groups</span>
-          <ascend-header-counter [value]="categoryGroupCards().length" />
+        <span class="title">{{ 'menu.category-groups.category-groups' | translate }}</span>
+        <ascend-header-counter [value]="categoryGroupCards().length" />
       </div>
       <div class="right-part">
         <button
@@ -14,7 +14,7 @@
           (click)="onAddCategoryGroup($event)"
         >
           <mat-icon>add</mat-icon>
-          Group
+          {{ 'menu.category-groups.group' | translate }}
         </button>
 
         <ascend-search-bar (onSearchTerm)="onSearchCategoryGroup($event)"  />
@@ -22,12 +22,12 @@
     </div>
     @if (categoryGroupCards().length) {
       <ascend-display-cards
-      [loading]="categoryGroupLoading()"
-      (selectedCard)="onUpdateCategoryGroup($event)"
-      [elements]="categoryGroupCards()"
+        [loading]="categoryGroupLoading()"
+        (selectedCard)="onUpdateCategoryGroup($event)"
+        [elements]="categoryGroupCards()"
     />
     } @else {
-      <p class="no-data-message">No category groups have been found</p>
+      <p class="no-data-message">{{ 'menu.category-groups.no-category-groups-found' | translate }}</p>
     }
   </div>
 </div>

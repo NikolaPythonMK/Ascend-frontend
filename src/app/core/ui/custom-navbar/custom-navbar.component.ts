@@ -8,10 +8,11 @@ import { CountrySelectComponent } from "../country-select/country-select.compone
 import { CommonModule } from "@angular/common";
 import { EmployeeStore } from "../../store/employee.store";
 import { SnackbarService } from "../../services/utility/snackbar.service";
+import TranslationService from "../../services/utility/translation.service";
 
 @Component({
     selector: 'ascend-custom-navbar',
-    imports: [MatListModule, MatIconModule, RouterModule, TranslateModule, CountrySelectComponent, CommonModule],
+    imports: [MatListModule, MatIconModule, RouterModule, TranslateModule, CountrySelectComponent, CommonModule, TranslateModule],
     templateUrl: 'custom-navbar.component.html',
     styleUrls: ['custom-navbar.component.scss']
 })
@@ -26,6 +27,7 @@ export class CustomNavbarComponent {
     snackbar = inject(SnackbarService);
 
     collapseEvent = output<boolean>();
+    readonly translationService = inject(TranslationService);
 
     menuItems = signal<MenuItem[]>([
         {
@@ -87,6 +89,6 @@ export class CustomNavbarComponent {
     logout(): void {
         this.staff.clearStore();
         this.router.navigate(['/staff']);
-        this.snackbar.success('Успешно одјавување')
+        this.snackbar.success(this.translationService.getTranslationForKey("auth.logout-succesfull"))
     }
 }

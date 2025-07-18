@@ -35,43 +35,43 @@ import { OrderedItemsComponent } from "../ordered-items/ordered-items.component"
 import { DisplayProductsComponent } from "../display-products/display-products.component";
 import { KeyEventEmitter } from "./services/key-event-emitter.service";
 
-const PRODUCTS: Product[] = [
-  {
-      id: 1, name: 'Туна сендвич', code: '3243', price: 120,
-      description: "",
-      image: null,
-      categoryID: 0,
-      organizationID: 0
-  },
-  {
-      id: 2, name: 'Пица сендвич', code: '6443', price: 120,
-      description: "",
-      image: null,
-      categoryID: 0,
-      organizationID: 0
-  },
-  {
-      id: 3, name: 'Фанта', code: '1235', price: 120,
-      description: "",
-      image: null,
-      categoryID: 0,
-      organizationID: 0
-  },
-  {
-      id: 4, name: 'Кока кола', code: '8980', price: 120,
-      description: "",
-      image: null,
-      categoryID: 0,
-      organizationID: 0
-  },
-  {
-      id: 5, name: 'Нес кафе', code: '1515', price: 120,
-      description: "",
-      image: null,
-      categoryID: 0,
-      organizationID: 0
-  },
-];
+// const PRODUCTS: Product[] = [
+//   {
+//       id: 1, name: 'Туна сендвич', code: '3243', price: 120,
+//       description: "",
+//       image: null,
+//       categoryID: 0,
+//       organizationID: 0
+//   },
+//   {
+//       id: 2, name: 'Пица сендвич', code: '6443', price: 120,
+//       description: "",
+//       image: null,
+//       categoryID: 0,
+//       organizationID: 0
+//   },
+//   {
+//       id: 3, name: 'Фанта', code: '1235', price: 120,
+//       description: "",
+//       image: null,
+//       categoryID: 0,
+//       organizationID: 0
+//   },
+//   {
+//       id: 4, name: 'Кока кола', code: '8980', price: 120,
+//       description: "",
+//       image: null,
+//       categoryID: 0,
+//       organizationID: 0
+//   },
+//   {
+//       id: 5, name: 'Нес кафе', code: '1515', price: 120,
+//       description: "",
+//       image: null,
+//       categoryID: 0,
+//       organizationID: 0
+//   },
+// ];
 
 const ORDERS: Order[] = [
   {
@@ -191,9 +191,7 @@ export class TableComponent implements OnInit{
 
     ngOnInit(): void {
         this.tableId.set(Number(this.route.snapshot.paramMap.get('table')));
-        this.getAllCategories();
         this.getAllProducts();
-        console.log(this,this.tableId());
         this.getTableItems();
 
         this.searchTerm.valueChanges.pipe(
@@ -201,7 +199,7 @@ export class TableComponent implements OnInit{
             distinctUntilChanged(),
             takeUntilDestroyed(this.destroyRef)
         ).subscribe(value => {
-            this.getAllProducts([{propName: 'Name', searchValue: value ?? ''}])
+            this.getAllProducts([{propName: 'Name;Code', searchValue: value ?? ''}])
         })
     }
 
@@ -212,14 +210,6 @@ export class TableComponent implements OnInit{
          }else {
             this.keyEventSubject.emitKey(event.key);
          }
-    }
-
-    onSelectCategory(id: number | null): void {
-        if (!id){
-            this.getAllProducts();
-            return;
-        }
-        this.getProductsByCategory(id);
     }
 
     onSelectCard(product: any): void {
@@ -236,7 +226,7 @@ export class TableComponent implements OnInit{
         if (result != null) {
             const request: TableItemRequest = {
                 tableID: this.tableId(),
-                productID: product.id,
+                productHistoryID: product.productHistoryID,
                 staffUserID: this.staffStore.id()!,
                 quantity: result.data.quantity,
                 note: result.data.note
@@ -257,7 +247,7 @@ export class TableComponent implements OnInit{
     onOpenItemDetails(item: TableItem): void {
         const dialogRef = this.quantityDialog.open(ProductQuantityComponent, {
             width: '400px',
-            data: { id: item.id, title: item.product.name }
+            data: { id: item.id, title: item.productName }
         });
         dialogRef.afterClosed().subscribe((result: ProductQuantityDialogResponse) => {
             if (!result){
@@ -268,7 +258,7 @@ export class TableComponent implements OnInit{
                 const request: TableItemRequest = {
                     id: item.id,
                     tableID: this.tableId(),
-                    productID: item.product.id,
+                    productHistoryID: item.product.productHistoryID,
                     staffUserID: this.staffStore.id()!,
                     quantity: result.data.quantity,
                     note: result.data.note
@@ -324,34 +314,6 @@ export class TableComponent implements OnInit{
           });
     }
 
-    private getProductsByCategory(id: number): void {
-        this.productsLoading.set(true);
-
-        this.categoryService.getById(id).pipe(
-            finalize(() => this.productsLoading.set(false))
-        ).subscribe({
-            next: (category: Category) => {
-                this.products.set(category.products);
-            },
-            error: (error: HttpErrorResponse) => {
-                this.snackbarService.error(error.message);
-            }
-        })
-    }
-
-    private getAllCategories(): void {
-        this.categoriesLoading.set(true);
-        this.categoryService.getAll().pipe(
-            finalize(() => this.categoriesLoading.set(false))
-        ).subscribe({
-            next: (result: Page<Category>) => {
-                this.categories.set(result.data);
-            },
-            error: (error: HttpErrorResponse) => {
-                this.snackbarService.error(error.message);
-            }
-        })
-    }
 
     private getTableItems(): void {
         this.tableItemsLoading.set(true);

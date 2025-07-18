@@ -33,7 +33,6 @@
         <thead>
           <tr>
             <th>Name</th>
-            <th>Code</th>
             <th>Qty</th>
             <th>Total</th>
           </tr>
@@ -56,10 +55,9 @@
             (click)="onOpenItemDetails(item)"
             [ngClass]="{ 'noted-row': item.note !== null && item.note !== '' }"
           >
-            <td>{{ item.product.name }}</td>
-            <td>{{ item.product.code }}</td>
+            <td>{{ item.productName }}</td>
             <td>{{ item.quantity }}</td>
-            <td>{{ item.totalPrice }}</td>
+            <td>{{ item.totalGrossPrice }}</td>
           </tr>
 
           @if (item.note !== null && item.note !== '') {

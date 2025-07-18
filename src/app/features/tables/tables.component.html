@@ -1,44 +1,6 @@
 
 <div class="table-wrapper" [ngClass]="{'page-padding': selectedView() !== 'drag'}">
 <ascend-loader [loading]="tablesLoading()" />
-<!-- <div class="tables-header" [ngClass]="{'floating-header': selectedView() == 'drag'}">
-  <div class="left-part">
-    <div class="title">{{ "tables.title" | translate }}</div>
-    <div class="grid-buttons">
-      <mat-icon
-        ><span
-          [ngClass]="{ 'selected-header-item': selectedView() === 'table' }"
-          (click)="handleViewChange('table')"
-          class="clickable-item"
-          >table_view</span
-        ></mat-icon
-      >
-      <mat-icon
-        ><span
-          [ngClass]="{ 'selected-header-item': selectedView() === 'grid' }"
-          (click)="handleViewChange('grid')"
-          class="clickable-item"
-          >grid_view</span
-        ></mat-icon
-      >
-      <mat-icon
-        ><span
-          [ngClass]="{ 'selected-header-item': selectedView() === 'drag' }"
-          (click)="handleViewChange('drag')"
-          class="clickable-item"
-          >move_up</span
-        ></mat-icon
-      >
-    </div>
-  </div>
-
-  @if (selectedView() !== 'drag') {
-    <div class="search-container">
-      <ascend-search-bar  (onSearchTerm)="onSearchTerm($event)" />
-    </div>
-  }
-</div> -->
-
 @if (selectedView() != 'drag') {
   <tables-header [selectedView]="selectedView()" (onViewChange)="handleViewChange($event)" (searchTerm)="onSearchTerm($event)"/>
 }

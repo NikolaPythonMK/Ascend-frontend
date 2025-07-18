@@ -17,9 +17,23 @@ import { ConfirmationDialog } from "../../../../core/ui/confirmation-dialog/conf
 import type { StaffUserRequest } from "../../../../core/models/api/requests/staff-user.request";
 import type { Role } from "../../../../core/models/api/responses/role.model";
 import type { StaffUser } from "../../../../core/models/api/responses/staff-user.model";
+import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
+import { TranslateModule } from "@ngx-translate/core";
+import TranslationService from "../../../../core/services/utility/translation.service";
 
 @Component({
-    imports: [MatFormFieldModule, MatLabel, ReactiveFormsModule, CommonModule, MatInputModule, MatButtonModule, MatSelectModule, FormsModule, ButtonComponent, MatIconModule],
+    imports: [MatFormFieldModule, 
+        MatLabel, 
+        ReactiveFormsModule, 
+        CommonModule, 
+        MatInputModule, 
+        MatButtonModule, 
+        MatSelectModule, 
+        FormsModule, 
+        ButtonComponent, 
+        MatIconModule, 
+        LoaderComponent,
+        TranslateModule],
     templateUrl: 'staff-user.component.html',
     styleUrls: ['staff-user.component.scss']
 })
@@ -30,10 +44,13 @@ export class StaffUserDialog implements OnInit{
     readonly rolesService = inject(RolesService);
     readonly staffService = inject(StaffService);
     readonly snackbarService = inject(SnackbarService);
-    readonly data = inject<StaffUser>(MAT_DIALOG_DATA);
+    readonly data = inject<number>(MAT_DIALOG_DATA);
+    readonly translationService = inject(TranslationService);
+
     roles = signal<Role[]>([])
-    title = signal<string>('Add New Staff');
-    submitBtnlabel = signal<string>('Додади');
+    title = signal<string>(this.translationService.getTranslationForKey("staff.personal.add-staff"));
+    submitBtnlabel = signal<string>(this.translationService.getTranslationForKey("shared.add"));
+    loading = signal<boolean>(false);
 
     staffUser = this.fb.group({
         name: ['', Validators.required],
@@ -64,19 +81,28 @@ export class StaffUserDialog implements OnInit{
     }
 
     ngOnInit(): void {
-        if (this.data) {
-            this.title.set('Update Staff');
-            this.submitBtnlabel.set('Ажурирај');
-            this.getNameControl().setValue(this.data.name);
-            this.getCodeControl().setValue(this.data.code);
-            this.getLastNameControl().setValue(this.data.lastName);
-            this.getPhoneNumberControl().setValue(this.data.phoneNumber);
-            this.getSelectedRolesControl().setValue(this.data.staffUserRoles?.map(i => i.id))
-        }
-
         this.rolesService.getAll().subscribe((result: Page<Role>) => {
             this.roles.set(result.data);
         })
+
+        if (this.data) {
+                this.loading.set(true);
+                this.title.set(this.translationService.getTranslationForKey("staff.personal.update-staff"));
+                this.submitBtnlabel.set(this.translationService.getTranslationForKey("shared.update"));
+                this.staffService.getById(this.data).subscribe({
+                    next: (user: StaffUser) => {
+                        this.getNameControl().setValue(user.name);
+                        this.getCodeControl().setValue(user.code);
+                        this.getLastNameControl().setValue(user.lastName);
+                        this.getPhoneNumberControl().setValue(user.phoneNumber);
+                        this.getSelectedRolesControl().setValue(user.staffUserRoles?.map(i => i.id))
+                        this.loading.set(false);
+                    },
+                    error: (error: HttpErrorResponse) => {
+                        this.snackbarService.error(error.message)
+                    }
+                })
+            }
     }
 
     onSubmit(): void {
@@ -85,7 +111,7 @@ export class StaffUserDialog implements OnInit{
         }
     
         const request: StaffUserRequest = {
-            id: this.data?.id, // Include id only if updating
+            id: this.data == null ? 0 : this.data,
             name: this.getNameControl().value,
             lastName: this.getLastNameControl().value,
             phoneNumber: this.getPhoneNumberControl().value,
@@ -99,7 +125,7 @@ export class StaffUserDialog implements OnInit{
     
         action$.subscribe({
             next: (staffUser: StaffUser) => {
-                this.snackbarService.success('Успешно');
+                this.snackbarService.success(`${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.added")}`);
                 this.dialogRef.close(staffUser);
             },
             error: (error: HttpErrorResponse) => {
@@ -115,9 +141,9 @@ export class StaffUserDialog implements OnInit{
             if(!isConfirmed) {
                 return;
             }
-            this.staffService.delete(this.data.id!).subscribe({
+            this.staffService.delete(this.data).subscribe({
                 next: (result: number) => {
-                    this.snackbarService.success('Успешно');
+                    this.snackbarService.success(`${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.deleted")}`);
                     this.dialogRef.close(result);
                 },
                 error: (error: HttpErrorResponse) => {
@@ -131,5 +157,5 @@ export class StaffUserDialog implements OnInit{
 
     getRoleName(id: number): string {
         return this.roles().find(i => i.id === id)?.name ?? '';
-    }
+    }    
 }

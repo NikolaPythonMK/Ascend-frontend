@@ -17,26 +17,52 @@ import type { LocationRequest } from "../../../../core/models/api/requests/locat
 import { HttpErrorResponse } from "@angular/common/http";
 import { finalize, Observable } from "rxjs";
 import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
+import { TranslateModule } from "@ngx-translate/core";
+import TranslationService from "../../../../core/services/utility/translation.service";
 
 @Component({
-    imports: [MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatInputModule, ButtonComponent, MatLabel, CommonModule, MatButtonModule, MatIconModule, LoaderComponent],
+    imports: [MatFormFieldModule, 
+        MatSelectModule, 
+        FormsModule, 
+        ReactiveFormsModule, 
+        MatInputModule, 
+        ButtonComponent, 
+        MatLabel, 
+        CommonModule, 
+        MatButtonModule, 
+        MatIconModule, 
+        LoaderComponent,
+        TranslateModule],
     templateUrl: 'update-location.component.html',
     styleUrls: ['update-location.component.scss']
 })
 export class UpdateLocationDialog implements OnInit{
     readonly dialogRef = inject(MatDialogRef<CreateLocatinDialog>);
-    readonly data = inject<Location>(MAT_DIALOG_DATA);
+    readonly data = inject<number>(MAT_DIALOG_DATA);
     private readonly dialog = inject(MatDialog);
     private readonly fb = inject(FormBuilder);
     private readonly locationsService = inject(LocationService)
     private readonly snackbarService = inject(SnackbarService);
+    private readonly translationService = inject(TranslationService);
+
     locationForm = this.fb.group({
         name: ['', Validators.required],
     })
     loading = signal<boolean>(false);
 
     ngOnInit(): void {
-        this.getNameControl().setValue(this.data.name);
+        this.locationsService.getById(this.data)
+          .pipe(
+            finalize(() => this.loading.set(false))
+          )
+          .subscribe({
+            next: (location) => {
+              this.getNameControl().setValue(location.name)
+            },
+            error: (error: HttpErrorResponse) => {
+              this.snackbarService.error(error.message)
+            },
+          });
     }
 
     getNameControl(): AbstractControl {
@@ -49,14 +75,14 @@ export class UpdateLocationDialog implements OnInit{
         }
     
         const request: LocationRequest = {
-            id: this.data.id,
+            id: this.data,
             name: this.getNameControl().value,
             tabbleLocationMapping: ''
         };
         this.loading.set(true);
         this.handleRequest(
             this.locationsService.update(request),
-            'Успешно'
+            this.translationService.getTranslationForKey("shared.succesfully")
         );
     }
     
@@ -67,8 +93,8 @@ export class UpdateLocationDialog implements OnInit{
             }
             this.loading.set(true);
             this.handleRequest(
-                this.locationsService.delete(this.data.id),
-                'Успешно'
+                this.locationsService.delete(this.data),
+                this.translationService.getTranslationForKey("shared.succesfully")
             );
         });
     }

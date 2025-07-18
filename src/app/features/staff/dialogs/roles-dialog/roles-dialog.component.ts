@@ -11,9 +11,10 @@ import { Page } from "../../../../core/models/api/page.model";
 import type { Permission } from "../../../../core/models/api/responses/permission.model";
 import { PermissionsService } from "../../../../core/services/api/permissions.service";
 import type { RoleRequest } from "../../../../core/models/api/requests/role.request";
+import { TranslateModule } from "@ngx-translate/core";
 
 @Component({
-    imports: [MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatInputModule, ButtonComponent],
+    imports: [MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatInputModule, ButtonComponent, TranslateModule],
     templateUrl: 'roles-dialog.component.html',
     styleUrls: ['roles-dialog.component.scss']
 })

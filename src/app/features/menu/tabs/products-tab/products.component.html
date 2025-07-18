@@ -10,40 +10,23 @@
   @if(breakpointService.isDesktop()){
   <div class="list-container">
     <div class="sidebar-header">
-      <p class="title title-sidebar-list">Categories</p>
+      <p class="title title-sidebar-list">{{ 'menu.categories.categories' | translate }}</p>
     </div>
     <ascend-display-list
       [elements]="categoryListElements()"
-      selectAllButtonLabel="Сите категории"
-      (selectedEvent)="onSelectCategory($event)"
+      (selectedEvent)="onSelectCategoryId($event)"
       [setDeleteButton]="false"
       [setSelectAllButton]="false"
       [isLoading]="categoriesLoading()"
       [setSelectAllButton]="true"
-      [selectAllButtonLabel]="'All Categories'"
+      [selectAllButtonLabel] = "'menu.categories.all-categories' | translate"
     />
   </div>
   }
   <div class="cards-container">
     <div class="cards-header">
       <div class="left-part">
-        @if (selectedCategory()){
-        <span class="title"
-          >Products >
-          <span
-            class="select-category"
-            (click)="onOpenCategorySelectDialog()"
-            >{{ selectedCategory()!.name }}</span
-          ></span
-        >
-        }@else {
-        <span class="title"
-          >Products >
-          <span class="select-category" (click)="onOpenCategorySelectDialog()"
-            >All Products</span
-          ></span
-        >
-        }
+        <span class="title">{{ 'menu.products.products' | translate }}</span>
         @if (!breakpointService.isHandsetLandscape() && !breakpointService.isMobile()) {
           <ascend-header-counter [value]="products().length" />
         }
@@ -57,7 +40,7 @@
           (click)="onAddProduct()"
         >
           <mat-icon>add</mat-icon>
-          Product
+          {{ 'menu.products.product' | translate }}
         </button>
         <ascend-search-bar (onSearchTerm)="onSearchProducts($event)" class="search-bar"/>
       </div>
@@ -66,11 +49,11 @@
       @if (productCards().length) {
       <ascend-display-cards
         [loading]="productsLoading()"
-        (selectedCard)="onProductedit($event)"
+        (selectedCard)="onProductEdit($event)"
         [elements]="productCards()"
       />
       } @else {
-      <p class="no-data-message">No products have been found</p>
+      <p class="no-data-message">{{ 'menu.products.no-products-found' | translate }}</p>
       }
     </div>
   </div>

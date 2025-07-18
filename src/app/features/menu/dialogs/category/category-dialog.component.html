@@ -1,5 +1,4 @@
- <ascend-loader [loading]="loading()" />
-
+<ascend-loader [loading]="loading()" />
 
 <h2 mat-dialog-title class="dialog-title">{{ this.title() }}</h2>
 
@@ -9,25 +8,25 @@
       @if(errorMessages().includes('name.exists')) {
       <div class="error-message">
         <mat-icon>error</mat-icon>
-        <span>Category with that name already exists.</span>
+        <span>{{ 'menu.categories.name-exists' | translate }}</span>
       </div>
       }
       <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Category Name</mat-label>
+        <mat-label>{{ 'menu.categories.name' | translate }}</mat-label>
         <input matInput formControlName="name" required />
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Description (optional)</mat-label>
+        <mat-label>{{ 'menu.categories.description' | translate }}</mat-label>
         <textarea matInput formControlName="description"></textarea>
       </mat-form-field>
 
-      @if (data.categoryGroups.length) {
+      @if (this.categoryGroups()) {
       <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Category Group</mat-label>
+        <mat-label>{{ 'menu.categories.category-group' | translate }}</mat-label>
         <mat-select formControlName="selectedCategoryGroup">
-          @for (group of data.categoryGroups; track group.id) {
-          <mat-option [value]="group.id">{{ group.name }}</mat-option>
+          @for (group of this.categoryGroups(); track group.id) {
+          <mat-option [value]="group.id" selected>{{ group.name }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
@@ -35,7 +34,7 @@
     </div>
     <div>
       <div class="full-width upload-container">
-        <span>Прикачи слика (optional)</span>
+        <span>{{ 'menu.categories.image' | translate }}</span>
         <ascend-upload-image
           (uploadEvent)="onUpload($event)"
           [imageUrl]="
@@ -54,14 +53,14 @@
       type="button"
       mat-icon-button
       color="warn"
-      aria-label="Delete item"
+      [ariaLabel]="'shared.delete-item' | translate"
       class="trash-btn"
       (click)="onDelete()"
     >
       <mat-icon>delete</mat-icon>
     </button>
     }
-    <button mat-button type="button" (click)="dialogRef.close()">Откажи</button>
+    <button mat-button type="button" (click)="dialogRef.close()">{{ 'shared.discard' | translate }}</button>
     <ascend-button
       type="primary"
       [label]="submitBtnLabel()"

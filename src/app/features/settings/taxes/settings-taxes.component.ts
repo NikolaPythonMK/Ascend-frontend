@@ -13,10 +13,11 @@ import { SnackbarService } from "../../../core/services/utility/snackbar.service
 import { HttpErrorResponse } from "@angular/common/http";
 import { LoaderComponent } from "../../../core/ui/loader/loader.component";
 import { DataRow } from "../../../core/ui/table/models/data-row";
+import { TranslateModule } from "@ngx-translate/core";
 
 @Component({
     selector: 'settings-taxes',
-    imports: [MatTabsModule, TableComponent, LoaderComponent],
+    imports: [MatTabsModule, TableComponent, LoaderComponent, TranslateModule],
     templateUrl: 'settings-taxes.component.html',
     styleUrls: ['settings-taxes.component.scss']
 })
@@ -39,16 +40,6 @@ export class SettingsTaxesComponent implements OnInit {
     loading = signal<boolean>(false);
 
     ngOnInit(): void {
-        this.taxes.set([
-            {id: 1, name: 'Tax1', percentage: 1.5, reason: ''},
-            {id: 2, name: 'Tax2', percentage: 2.5, reason: ''},
-            {id: 3, name: 'Tax3', percentage: 3.5, reason: ''},
-            {id: 4, name: 'Tax4', percentage: 4.5, reason: ''},
-            {id: 5, name: 'Tax5', percentage: 5.5, reason: ''},
-            {id: 6, name: 'Tax6', percentage: 6.5, reason: ''},
-            {id: 7, name: 'Tax7', percentage: 7.5, reason: ''}
-        ])
-
         this.getTaxes();
     }
 
@@ -62,7 +53,6 @@ export class SettingsTaxesComponent implements OnInit {
     }
 
     onUpdate(id: number): void {
-        console.log(id);
         this.router.navigate(['tax-details', id])
     }
 

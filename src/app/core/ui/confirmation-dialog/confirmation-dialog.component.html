@@ -1,7 +1,7 @@
 <div class="confirmation-dialog">
     <div class="dialog-content">
-      <h2 class="dialog-title">Потврди</h2>
-      <p class="dialog-message">Дали сте сигурни дека сакате да продолжите?</p>
+      <h2 class="dialog-title">{{ 'shared.accept' | translate }}</h2>
+      <p class="dialog-message">{{ 'shared.check-continue' | translate }}</p>
       <div class="dialog-actions">
         <ascend-button type="primary" (clickEvent)="onConfirm()"/>
         <ascend-button type="secondary" (clickEvent)="onCancel()"/>

@@ -1,17 +1,6 @@
 @if (loading()){
-<div class="loader-container">
-  <mat-spinner></mat-spinner>
-  <div class="loading-text">Loading…</div>
-</div>
-}
-
-
-<!-- 
-@if (loading()) {
-  <div class="cdk-overlay-backdrop custom-loader-backdrop">
-    <div class="loader-container">
-      <mat-spinner></mat-spinner>
-      <div class="loading-text">Loading…</div>
-    </div>
+  <div class="loader-container">
+    <mat-spinner></mat-spinner>
+    <div class="loading-text">{{  'ui.loader.loading' | translate }}</div>
   </div>
-} -->
+}

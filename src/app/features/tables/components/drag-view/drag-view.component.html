@@ -11,28 +11,29 @@
   </div>
     <div class="toolbar-group">
       <button
-        title="Add Obstacle"
+        [title]="'drag-view.add-obstacle| translate'"
         [disabled]="!isEdit()"
         (click)="addObstacle()"
       >
-        <i class="material-icons">fence</i>Obstacle
+        <i class="material-icons">fence</i>{{ 'drag-view.obstacle' | translate }}
       </button>
     </div>
 
     <div class="toolbar-group">
       <button
-        title="Rectangle"
+        [title]="'drag-view.add-rectangle| translate'"
         [disabled]="!isEdit()"
         (click)="switchShapeType(selectedId, 'rect')"
       >
-        <i class="material-icons">rectangle</i>Rectange
+        <i class="material-icons">rectangle</i>{{ 'drag-view.rectangle' | translate }}
       </button>
       <button
         title="Circle"
+        [title]="'drag-view.add-circle | translate'"
         [disabled]="!isEdit()"
         (click)="switchShapeType(selectedId, 'circle')"
       >
-        <i class="material-icons">circle</i>Circle
+        <i class="material-icons">circle</i>{{ 'drag-view.circle' | translate }}
       </button>
       <ngx-colors
         ngx-colors-trigger
@@ -44,20 +45,20 @@
 
     <div class="toolbar-group">
       <button title="Save Layout" [disabled]="!isEdit()" (click)="saveLayout()">
-        <i class="material-icons">save</i> Save
+        <i class="material-icons">save</i> {{ 'shared.save' | translate }}
       </button>
 
       <button title="Toggle Edit Mode" (click)="onCancel()">
-        <i class="material-icons">close</i> Cancel
+        <i class="material-icons">close</i> {{ 'shared.cancel' | translate }}
       </button>
     </div>
 
     <div class="floors-section">
-      <span class="floors-span">Floors:</span>
+      <span class="floors-span">{{ 'drag-view.floors' | translate }}</span>
       @for (floor of layers(); track floor; let i = $index) {
       <button
         (click)="switchFloor(i)"
-        [title]="'Floor ' + (i + 1)"
+        [title]="'drag-view.floor | translate' + (i + 1)"
         [ngClass]="{ activeFloor: i === currentFloorIndex }"
       >
         {{ i + 1 }}
@@ -68,11 +69,11 @@
         (click)="
           addFloor({
             id: (layers.length + 1).toString(),
-            name: 'Floor ' + (layers.length + 1),
+            name: 'drag-view.floor | translate' + (layers.length + 1),
             items: []
           })
         "
-        title="Add Floor"
+        [title]="'drag-view.add-floor | translate'"
       >
         ＋
       </button>
@@ -91,7 +92,7 @@
       } @for (floor of layers(); track floor; let i = $index) {
       <button
         (click)="switchFloor(i)"
-        [title]="'Floor ' + (i + 1)"
+        [title]="'drag-view.floor | translate' + (i + 1)"
         [ngClass]="{ activeFloor: i === currentFloorIndex }"
       >
         {{ i + 1 }}

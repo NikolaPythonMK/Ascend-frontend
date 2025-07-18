@@ -16,23 +16,28 @@ import { NgxColorsModule } from 'ngx-colors';
 import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LocationService } from '../../../../core/services/api/locations.service';
-import { LocationRequest } from '../../../../core/models/api/requests/location.request';
 import { LocationTablesRequest } from '../../../../core/models/api/requests/location-tables.request';
 import { SnackbarService } from '../../../../core/services/utility/snackbar.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '../../../../core/models/api/responses/location.model';
 import { catchError, finalize, map, Observable, of } from 'rxjs';
-import { Layer } from 'konva/lib/Layer';
 import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
-import { ButtonComponent } from "../../../../core/ui/button/button.component";
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { BreakpointService } from '../../../../core/services/utility/breakpoint.service';
 import { DisplayTablesHeaderComponent } from "../display-tables-header/display-tables-header.component";
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'drag-view',
-  imports: [FormsModule, NgxColorsModule, CommonModule, LoaderComponent, ButtonComponent, MatIconModule, MatButtonModule, DisplayTablesHeaderComponent],
+  imports: [FormsModule, 
+    NgxColorsModule, 
+    CommonModule, 
+    LoaderComponent, 
+    MatIconModule, 
+    MatButtonModule, 
+    DisplayTablesHeaderComponent,
+    TranslateModule],
   templateUrl: './drag-view.component.html',
   styleUrl: './drag-view.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,6 +1,6 @@
 <div>
   <ascend-table
-    title="Personal"
+    [title]="'staff.personal.personal' | translate"
     [dataRows]="staffUsersRows()"
     [displayedColumns]="colDisplayNames()"
     [nonSortableColumns]="nonSortableColumns()"
