@@ -2,12 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { SettingsTaxesComponent } from "./taxes/settings-taxes.component";
 import { TranslateModule } from '@ngx-translate/core';
+import { SettingsDiscountsComponent } from './discounts/settings-discounts.component';
 
 @Component({
   selector: 'app-site-settings',
-  imports: [CommonModule, SettingsTaxesComponent, TranslateModule],
+  imports: [CommonModule, SettingsTaxesComponent, TranslateModule, SettingsDiscountsComponent],
   templateUrl: 'settings.component.html',
-  styleUrls: ['settings.component.scss']
+  styleUrls: ['settings.component.scss', '../../core/styles/menu-item-page.scss']
 })
 export class SettingsPage {
   menuItems = [

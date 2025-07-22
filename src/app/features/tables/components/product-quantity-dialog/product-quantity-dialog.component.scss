@@ -1,3 +1,20 @@
+@use '@angular/material' as mat;
+
+.mat-mdc-form-field-appearance-outline .mat-mdc-form-field-outline {
+  color: red !important; /* Changes the outline color */
+}
+
+/* For focused state */
+.mat-mdc-form-field-appearance-outline.mat-focused .mat-mdc-form-field-outline {
+  color: red !important;
+}
+
+/* For error state */
+.mat-mdc-form-field-appearance-outline.mat-form-field-invalid .mat-mdc-form-field-outline {
+  color: red !important; /* Example for error color */
+}
+
+
 .quantity-dialog-container {
     padding: 20px;
     max-width: 400px;
@@ -20,16 +37,16 @@
     width: 100%;
   }
   
-  .dialog-actions {
+  .dialog-actions-update {
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
     align-items: center;
     gap: 10px;
   }
 
-  .dialog-actions-del {
+  .dialog-actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     align-items: center;
     gap: 10px; 
   }

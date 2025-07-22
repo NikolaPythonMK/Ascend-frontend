@@ -1,4 +1,4 @@
-<div class="settings-container">
+<div class="settings-container page-padding">
   <header class="settings-header">
     <h2 class="title">{{ 'settings.site-settings' | translate }}</h2>
   </header>
@@ -18,6 +18,9 @@
     <section class="content">
         @if (activeItem == 'Taxes') {
             <settings-taxes />
+        }
+        @if (activeItem == 'Discounts') {
+            <settings-discounts />
         }
     </section>
   </div>

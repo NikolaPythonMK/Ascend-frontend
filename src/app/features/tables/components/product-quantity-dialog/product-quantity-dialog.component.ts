@@ -22,6 +22,7 @@ import {  MatIconModule } from '@angular/material/icon';
 import { ConfirmationDialog } from '../../../../core/ui/confirmation-dialog/confirmation-dialog.component';
 import { ProductQuantityDialogResponse } from '../../models/product-quantity-dialog-response';
 import TranslationService from '../../../../core/services/utility/translation.service';
+import { ButtonComponent } from '../../../../core/ui/button/button.component';
   
   @Component({
     selector: 'app-product-quantity',
@@ -37,7 +38,8 @@ import TranslationService from '../../../../core/services/utility/translation.se
       ReactiveFormsModule,
       TranslateModule,
       LoaderComponent,
-      MatIconModule
+      MatIconModule,
+      ButtonComponent
     ]
   })
   export class ProductQuantityComponent implements OnInit{
@@ -78,7 +80,6 @@ import TranslationService from '../../../../core/services/utility/translation.se
 
 
     onSubmit(): void {
-      console.log('HELO')
       const quantity = this.getQuantityFormControl().value;
       const note = this.getNoteFormControl().value;
 

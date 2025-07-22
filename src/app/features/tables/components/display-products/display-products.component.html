@@ -27,29 +27,33 @@
 <div class="products-wrapper">
   <div class="products-header"></div>
   <div class="products-display" #productsContainer tabindex="0">
-    @if (products.length == 0) {
-      <p>No products have been found</p>
+    @if (!loading() && products.length == 0) {
+    <p class="no-data-msg">No products have been found</p>
     }
     @if (loading()){
-      <div class="skeleton-rect"></div>
-      <div class="skeleton-rect"></div>
-      <div class="skeleton-rect"></div>
-      <div class="skeleton-rect"></div>
-      <div class="skeleton-rect"></div>
-    }
-    @else {
-          @for(product of products; track product.id; let idx = $index) {
-    <div class="product-card" [ngClass]="{ active: (selectedProduct()?.id === product.id) ||
-                                                   (selectedProduct() == null && idx == 0)}"
-      (click)="onSelectProduct(product)">
+    <div class="skeleton-rect"></div>
+    <div class="skeleton-rect"></div>
+    <div class="skeleton-rect"></div>
+    <div class="skeleton-rect"></div>
+    <div class="skeleton-rect"></div>
+    } @else { @for(product of products; track product.id; let idx = $index) {
+    <div
+      class="product-card"
+      [ngClass]="{
+        active:
+          selectedProduct()?.id === product.id ||
+          (selectedProduct() == null && idx == 0)
+      }"
+      (click)="onSelectProduct(product)"
+    >
       <div class="title">
-        <span>{{ product.name }}</span><span>{{ product.code }}</span>
+        <span>{{ product.name }}</span
+        ><span>{{ product.code }}</span>
       </div>
       <div class="price">
         {{ product.price }}
       </div>
     </div>
-    }
-    }
+    } }
   </div>
 </div>

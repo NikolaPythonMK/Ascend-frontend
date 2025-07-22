@@ -8,7 +8,7 @@ import { PersonalComponent } from "./tabs/personal/personal.component";
 @Component({
     imports: [MatTabsModule, TranslateModule, RolesComponent, PersonalComponent],
     templateUrl: 'staff.component.html',
-    styleUrls: ['staff.component.scss']
+    styleUrls: ['staff.component.scss', '../../core/styles/menu-item-page.scss']
 })
 export class StaffPage {
 
