@@ -11,10 +11,10 @@
 
 .dialog-form {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 1rem; /* space between form fields */
   padding: 1.5rem;
-  width: 400px; /* optional max-width for the dialog */
+  width: 900px; /* optional max-width for the dialog */
   box-sizing: border-box;
 }
 
@@ -23,6 +23,9 @@
   width: 100%;
 }
 
+.half-width {
+  width: calc(50% - .5rem);
+}
 /* Style the dialog title */
 .dialog-title {
   margin-bottom: 0.5rem;
@@ -45,6 +48,12 @@ mat-form-field {
   gap: 1rem;
 }
 
+
+.input-group {
+  display: flex;
+  width: 100%;
+  gap: 1em;
+}
 
 
 .trash-btn {

@@ -5,66 +5,118 @@
 </h2>
 <div class="content">
   <form [formGroup]="discountForm" (ngSubmit)="onSubmit()" class="dialog-form">
-    <!-- Name -->
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>{{ "settings.discounts.name" | translate }}</mat-label>
-      <input matInput formControlName="name" />
-    </mat-form-field>
-
     <!-- Code -->
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>{{ "settings.discounts.code" | translate }}</mat-label>
       <input matInput formControlName="code" />
     </mat-form-field>
 
-    <!-- Discount Type -->
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>{{ "settings.discounts.discountType" | translate }}</mat-label>
-      <mat-select formControlName="discountType">
-        <mat-option [value]="1">{{
-          "settings.discounts.percent" | translate
-        }}</mat-option>
-        <mat-option [value]="2">{{
-          "settings.discounts.amount" | translate
-        }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
     <!-- Value -->
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>{{ "settings.discounts.value" | translate }}</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="value"
-        min="0"
-        (keydown.enter)="onSubmit()"
-      />
-    </mat-form-field>
 
-    <!-- Expiry Date -->
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>{{ "settings.discounts.expiryDate" | translate }}</mat-label>
-      <input
-        matInput
-        [matDatepicker]="expiryPicker"
-        formControlName="expiryDate"
-        (click)="expiryPicker.open()"
-        (keydown.enter)="onSubmit()"
-      />
-      <mat-datepicker-toggle
-        matSuffix
-        [for]="expiryPicker"
-      ></mat-datepicker-toggle>
-      <mat-datepicker #expiryPicker></mat-datepicker>
-    </mat-form-field>
+    <!-- Discount Type -->
+    <div class="input-group">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>{{
+          "settings.discounts.discountType" | translate
+        }}</mat-label>
+        <mat-select formControlName="discountType">
+          <mat-option [value]="1">{{
+            "settings.discounts.percent" | translate
+          }}</mat-option>
+          <mat-option [value]="2">{{
+            "settings.discounts.amount" | translate
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>{{ "settings.discounts.value" | translate }}</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="value"
+          min="0"
+          (keydown.enter)="onSubmit()"
+        />
+      </mat-form-field>
+    </div>
+    <mat-accordion class="full-width">
+      <mat-expansion-panel
+        (opened)="panelOpenState.set(true)"
+        (closed)="panelOpenState.set(false)"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title> Additonal settings </mat-panel-title>
+          <mat-panel-description> Additonal settings </mat-panel-description>
+        </mat-expansion-panel-header>
 
-    <!-- Is Occurring -->
-    <mat-checkbox formControlName="isOccuring">
-      <span class="is-occuring">{{
-        "settings.discounts.isRecurring" | translate
-      }}</span>
-    </mat-checkbox>
+        <div class="input-group">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{
+              'Start Date'
+            }}</mat-label>
+            <input
+              matInput
+              [matDatepicker]="startDatePicker"
+              formControlName="startDate"
+              (click)="startDatePicker.open()"
+              (keydown.enter)="onSubmit()"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="startDatePicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #startDatePicker></mat-datepicker>
+          </mat-form-field>
+
+          <!-- Expiry Date -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{
+              'End Date'
+            }}</mat-label>
+            <input
+              matInput
+              formControlName="endDate"
+              [matDatepicker]="endDatePicker"
+              (click)="endDatePicker.open()"
+              (keydown.enter)="onSubmit()"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="endDatePicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #endDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="input-group">
+          <mat-form-field>
+            <mat-label>Start time</mat-label>
+            <input
+              matInput
+              [matTimepicker]="startTimepicker"
+              formControlName="startTime"
+            />
+            <mat-timepicker #startTimepicker />
+            <mat-timepicker-toggle [for]="startTimepicker" matSuffix />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>End time</mat-label>
+            <input
+              matInput
+              formControlName="endTime"
+              [matTimepicker]="endTimepicker"
+            />
+            <mat-timepicker #endTimepicker />
+            <mat-timepicker-toggle [for]="endTimepicker" matSuffix />
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ "settings.discounts.name" | translate }}</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+      </mat-expansion-panel>
+    </mat-accordion>
 
     <!-- Actions -->
     <div class="actions" [ngClass]="{ 'actions-flex': isUpdate() }">
@@ -80,14 +132,14 @@
         <mat-icon>delete</mat-icon>
       </button>
       }
-        <button mat-button type="button" (click)="dialogRef.close()">
-          {{ "shared.cancel" | translate }}
-        </button>
-        <ascend-button
-          type="primary"
-          [label]="submitBtn() | translate"
-          [disabled]="discountForm.invalid"
-        />
+      <button mat-button type="button" (click)="dialogRef.close()">
+        {{ "shared.cancel" | translate }}
+      </button>
+      <ascend-button
+        type="primary"
+        [label]="submitBtn() | translate"
+        [disabled]="discountForm.invalid"
+      />
     </div>
   </form>
 </div>

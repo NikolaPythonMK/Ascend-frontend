@@ -33,11 +33,14 @@ export class SettingsDiscountsComponent {
     searchTerm = this.tableState.searchTerm;
     sort = this.tableState.sort;
     map = new Map<string, string>([
-        ['Name', 'name'],
         ['Code', 'code'],
-        ['Value', 'value'],
-        ['Recurring', 'isReccuring'],
-        ['Expiry Date', 'expiryDate']
+        ['Name', 'name'],
+        ['Discount Type', 'discountType'],
+        ['Amount', 'amount'],
+        ['Start Date', 'startDate'],
+        ['End Date', 'endDate'],
+        ['Start Time', 'startTime'],
+        ['End Time', 'endTime']
     ]);
     colDisplayNames = computed(() => [...this.map.keys()]);
     nonSortableColumns = signal<string[]>([])
@@ -72,9 +75,13 @@ export class SettingsDiscountsComponent {
                 properties: {
                     name: i.name,
                     code: i.code,
-                    type: i.type,
+                    discountType: i.discountType,
                     value: i.value,
-                    isRecurring: i.isRecurring ? 'Yes' : 'No'
+                    startDate: i.startDate,
+                    endDate: i.endDate,
+                    startTime: i.startTime,
+                    endTime: i.endTime
+                
                 }
             }
         })

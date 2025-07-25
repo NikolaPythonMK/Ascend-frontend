@@ -2,12 +2,14 @@ import { DiscountType } from "../../enums/discount-type.enum";
 
 export interface DiscountRequest {
     id?: number,
-    name: string,
+    name?: string,
     code: string,
     value: number,
-    type: DiscountType,
-    isRecurring: boolean,
-    expiryDate: string
+    discountType: DiscountType,
+    startDate?: Date,
+    endDate?: Date,
+    startTime?: Date,
+    endTime?: Date
 }
 
 export interface ApplyDiscountRequest {
