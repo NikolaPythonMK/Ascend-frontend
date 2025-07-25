@@ -115,8 +115,8 @@
           <mat-icon>{{ tableStaff()?.name ? 'person_apron' : '' }}</mat-icon><span class="user">{{ tableStaff()?.name }} {{ tableStaff()?.lastName }}</span>
         </div>
         <div class="discount-container">
-          <input type="text" class="discount-input" placeholder="Discount code"/>
-          <button matFab class="discount-button">
+          <input type="text" #discountInput class="discount-input" placeholder="Discount code"/>
+          <button matFab class="discount-button" (click)="applyDiscount(discountInput.value)">
             <mat-icon>redeem</mat-icon>
           </button>
         </div>

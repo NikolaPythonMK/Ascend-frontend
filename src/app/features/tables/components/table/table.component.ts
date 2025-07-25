@@ -37,6 +37,7 @@ import { KeyEventEmitter } from "./services/key-event-emitter.service";
 import { ButtonComponent } from "../../../../core/ui/button/button.component";
 import { StaffUser } from "../../../../core/models/api/responses/staff-user.model";
 import TranslationService from "../../../../core/services/utility/translation.service";
+import { ApplyDiscountRequest } from "../../../../core/models/api/requests/discount.request";
 
 
 
@@ -71,6 +72,7 @@ export class TableComponent implements OnInit{
     readonly destroyRef = inject(DestroyRef)
 
     tableId = signal<number>(0);
+    discountCode: string = '';
     tableStatus = signal<string>('');
     products = signal<Product[]>([]);
     categories = signal<Category[]>([]);
@@ -231,6 +233,26 @@ export class TableComponent implements OnInit{
           });
     }
 
+    applyDiscount(code: string) : void{
+        this.tableItemsLoading.set(true);
+        
+        const request: ApplyDiscountRequest = {
+                tableID: this.tableId(),
+                code: 'test123'
+        }
+        this.tableService.setTableDiscount(request).pipe(
+            finalize(() => this.tableItemsLoading.set(false))
+        )
+        .subscribe({
+            next: () => {
+               this.getTableItems();
+                this.snackbarService.success('Успешно');
+            },
+            error: (error: HttpErrorResponse) => {
+                this.snackbarService.error(error.message);
+            }
+        })
+    }
 
     private getTableItems(): void {
         this.tableItemsLoading.set(true);

@@ -9,3 +9,8 @@ export interface DiscountRequest {
     isRecurring: boolean,
     expiryDate: string
 }
+
+export interface ApplyDiscountRequest {
+    tableID: number,
+    code: string
+}
