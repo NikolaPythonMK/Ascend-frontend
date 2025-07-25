@@ -4,5 +4,6 @@ export interface TableItemRequest {
     productHistoryID: number,
     tableID: number,
     staffUserID: number,
+    tableDiscountAmount: number,
     note?: string
 }

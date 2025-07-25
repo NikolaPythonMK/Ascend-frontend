@@ -174,7 +174,9 @@ export class TableComponent implements OnInit{
     tableItems = signal<TableItem[]>([]);
     totalItems = signal<number>(0);
     totalQuantity = signal<number>(0);
-    totalPrice = signal<number>(0);
+    totalGrossPrice = signal<number>(0);
+    totalNetPrice = signal<number>(0);
+    totalTaxAmount = signal<number>(0);
     selectedCategoryId = signal<number | null>(null);
     productCards = computed(() => this.products().map(i => {
         return {
@@ -193,6 +195,8 @@ export class TableComponent implements OnInit{
         this.tableId.set(Number(this.route.snapshot.paramMap.get('table')));
         this.getAllProducts();
         this.getTableItems();
+
+        console.log(this.totalGrossPrice() + "jovan");
 
         this.searchTerm.valueChanges.pipe(
             debounceTime(300),
@@ -229,6 +233,7 @@ export class TableComponent implements OnInit{
                 productHistoryID: product.productHistoryID,
                 staffUserID: this.staffStore.id()!,
                 quantity: result.data.quantity,
+                tableDiscountAmount: 50,
                 note: result.data.note
             }
             this.tableItemsService.add(request).subscribe({
@@ -261,6 +266,7 @@ export class TableComponent implements OnInit{
                     productHistoryID: item.product.productHistoryID,
                     staffUserID: this.staffStore.id()!,
                     quantity: result.data.quantity,
+                    tableDiscountAmount: 50,
                     note: result.data.note
                 }
                 this.dialogLoading.set(true);
@@ -322,12 +328,14 @@ export class TableComponent implements OnInit{
         )
         .subscribe({
             next: (table: Table) => {
+                console.log(table);
                 this.tableItems.set(table.tableItems);
                 this.totalItems.set(table.tableItems.length);
                 this.totalQuantity.set(table.tableItems.reduce((acc, cur) => acc + cur.quantity, 0));
-                this.totalPrice.set(table.totalPrice);
+                this.totalGrossPrice.set(table.totalGrossPrice);
+                this.totalNetPrice.set(table.totalNetPrice);
+                this.totalTaxAmount.set(table.totalTaxAmount);
                 this.tableStatus.set(table.status);
-                
             },
             error: (error: HttpErrorResponse) => {
                 this.snackbarService.error(error.message);

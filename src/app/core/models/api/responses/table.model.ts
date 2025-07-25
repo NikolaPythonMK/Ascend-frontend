@@ -6,9 +6,11 @@ export interface Table {
     id: number,
     code: string,
     status: string,
-    totalPrice: number,
     locationID: number,
     staffUserID: number,
+    totalGrossPrice: number,
+    totalNetPrice: number,
+    totalTaxAmount: number,
     staffUser: StaffUser,
     position: TablePosition,
     tableItems: TableItem[]
