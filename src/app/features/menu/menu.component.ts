@@ -9,7 +9,7 @@ import { CategoryGroupsComponent } from "./tabs/category-groups-tab/category-gro
 @Component({
     imports: [MatTabsModule, TranslateModule, CategoriesComponent, ProuctsComponent, ButtonComponent, CategoryGroupsComponent],
     templateUrl: 'menu.component.html',
-    styleUrls: ['menu.component.scss']
+    styleUrls: ['menu.component.scss', '../../core/styles/menu-item-page.scss']
 })
 export class MenuPage {
 

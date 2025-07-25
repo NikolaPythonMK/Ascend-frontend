@@ -13,8 +13,9 @@ export class KeyEventEmitter {
     }
 
     emitKey(key: string): void {
-        if(this.emittingStatus())
+        if(this.emittingStatus()){
             this.keySubject.next(key);
+        }
     }
 
     stop(): void {
@@ -23,5 +24,9 @@ export class KeyEventEmitter {
 
     start(): void {
         this.emittingStatus.set(true);
+    }
+
+    isPaused(): boolean {
+        return !this.emittingStatus();
     }
 }

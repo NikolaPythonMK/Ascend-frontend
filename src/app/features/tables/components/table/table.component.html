@@ -23,7 +23,12 @@
       </div>
     </div>
     <div class="products-content">
-      <display-products [products]="products()" (selected)="onSelectCard($event)" [loading]="productsLoading()" (activeProduct)="onSelectCard($event)" />
+      <display-products
+        [products]="products()"
+        (selected)="onSelectCard($event)"
+        [loading]="productsLoading()"
+        (activeProduct)="onSelectCard($event)"
+      />
     </div>
   </div>
 
@@ -90,7 +95,7 @@
             >
           </div>
         </div>
-        <div class="calculated-prices">
+        <!-- <div class="calculated-prices">
           <div class="calculated-tax">
             <span>Tax:</span>
             <span>12.5$</span>
@@ -103,11 +108,18 @@
             <span>Net:</span>
             <span>112.5$</span>
           </div>
-        </div>
+        </div> -->
       </div>
-      <div class="assigned-user">
-        <mat-icon>person_apron</mat-icon><span> Assigned: </span
-        ><span class="user">Nikola Nikolovski</span>
+      <div class="footer-middle-part">
+        <div class="assigned-user">
+          <mat-icon>{{ tableStaff()?.name ? 'person_apron' : '' }}</mat-icon><span class="user">{{ tableStaff()?.name }} {{ tableStaff()?.lastName }}</span>
+        </div>
+        <div class="discount-container">
+          <input type="text" class="discount-input" placeholder="Discount code"/>
+          <button matFab class="discount-button">
+            <mat-icon>redeem</mat-icon>
+          </button>
+        </div>
       </div>
       <div class="transaction-container">
         <button class="cash-btn">Cash</button>

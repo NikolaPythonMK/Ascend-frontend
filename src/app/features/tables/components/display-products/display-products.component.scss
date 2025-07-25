@@ -106,3 +106,10 @@
     animation: shimmer 1.5s infinite;
   }
 }
+
+
+.no-data-msg {
+  margin: 5em auto;
+  font-size: 1.3rem;
+  color: vars.$primary-font-color;
+}

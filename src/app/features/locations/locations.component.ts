@@ -17,7 +17,7 @@ import { TranslateModule } from "@ngx-translate/core";
     imports: [TableComponent, TranslateModule],
     providers: [TableStateService],
     templateUrl: 'locations.component.html',
-    styleUrls: ['locations.component.scss']
+    styleUrls: ['locations.component.scss', '../../core/styles/menu-item-page.scss']
 })
 export class LocationsPage implements OnInit{
     private readonly locationsService = inject(LocationService);

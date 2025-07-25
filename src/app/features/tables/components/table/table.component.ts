@@ -34,119 +34,20 @@ import { Order } from "../../models/order.model";
 import { OrderedItemsComponent } from "../ordered-items/ordered-items.component";
 import { DisplayProductsComponent } from "../display-products/display-products.component";
 import { KeyEventEmitter } from "./services/key-event-emitter.service";
+import { ButtonComponent } from "../../../../core/ui/button/button.component";
+import { StaffUser } from "../../../../core/models/api/responses/staff-user.model";
+import TranslationService from "../../../../core/services/utility/translation.service";
 
-// const PRODUCTS: Product[] = [
-//   {
-//       id: 1, name: 'Туна сендвич', code: '3243', price: 120,
-//       description: "",
-//       image: null,
-//       categoryID: 0,
-//       organizationID: 0
-//   },
-//   {
-//       id: 2, name: 'Пица сендвич', code: '6443', price: 120,
-//       description: "",
-//       image: null,
-//       categoryID: 0,
-//       organizationID: 0
-//   },
-//   {
-//       id: 3, name: 'Фанта', code: '1235', price: 120,
-//       description: "",
-//       image: null,
-//       categoryID: 0,
-//       organizationID: 0
-//   },
-//   {
-//       id: 4, name: 'Кока кола', code: '8980', price: 120,
-//       description: "",
-//       image: null,
-//       categoryID: 0,
-//       organizationID: 0
-//   },
-//   {
-//       id: 5, name: 'Нес кафе', code: '1515', price: 120,
-//       description: "",
-//       image: null,
-//       categoryID: 0,
-//       organizationID: 0
-//   },
-// ];
-
-const ORDERS: Order[] = [
-  {
-    id: 23,
-    totalPrice: 1000,
-    paymentMethod: 'cash',
-    dateTime: new Date(),
-    staffId: 1,
-    table: '2',
-    status: 1,
-    orderItems: [
-      { id: 1, orderId: 23, product: { id: 1, name: 'Туна сендвич', code: '3243', price: 120, description: '' }, quantity: 2, price: 100 },
-      { id: 2, orderId: 23, product: { id: 1, name: 'Фанта', code: '1443', price: 120, description: '' }, quantity: 1, price: 100 },
-      { id: 3, orderId: 23, product: { id: 1, name: 'Нес кафе', code: '1515', price: 120, description: '' }, quantity: 3, price: 100 },
-    ],
-  },
-  {
-    id: 2,
-    totalPrice: 2500,
-    paymentMethod: 'cash',
-    dateTime: new Date(),
-    staffId: 1,
-    table: '2',
-    status: 1,
-    orderItems: [
-      { id: 1, orderId: 2, product: {
-          id: 1, name: 'Кока кола', code: '3003', price: 120,
-          description: ""
-      }, quantity: 1, price: 100 },
-      { id: 2, orderId: 2, product: {
-          id: 1, name: 'Пица сендвич', code: '1212', price: 120,
-          description: ""
-      }, quantity: 2, price: 100 },
-      { id: 3, orderId: 2, product: {
-          id: 1, name: 'Туна сендвич', code: '3243', price: 120,
-          description: ""
-      }, quantity: 1, price: 100 },
-    ],
-  },
-  {
-    id: 15,
-    totalPrice: 4325,
-    paymentMethod: 'card',
-    dateTime: new Date(),
-    staffId: 1,
-    table: '2',
-    status: 1,
-    orderItems: [
-      { id: 1, orderId: 15, product: {
-          id: 1, name: 'Нес кафе', code: '1515', price: 120,
-          description: ""
-      }, quantity: 2, price: 100 },
-      { id: 2, orderId: 15, product: {
-          id: 1, name: 'Нес кафе', code: '1515', price: 120,
-          description: ""
-      }, quantity: 1, price: 100 },
-      { id: 3, orderId: 15, product: {
-          id: 1, name: 'Туна сендвич', code: '3243', price: 120,
-          description: ""
-      }, quantity: 1, price: 100 },
-    ],
-  },
-];
 
 
 @Component({
     selector: 'table-items',
-    imports: [DisplayListComponent, MatFormFieldModule, MatIconModule, DisplayCardsComponent, CommonModule, ReactiveFormsModule, LoaderComponent, SearchBarComponent, OrderedItemsComponent, DisplayProductsComponent],
+    imports: [DisplayListComponent, MatFormFieldModule, MatIconModule, DisplayCardsComponent, CommonModule, ReactiveFormsModule, LoaderComponent, SearchBarComponent, OrderedItemsComponent, DisplayProductsComponent, ButtonComponent],
     templateUrl: 'table.component.html',
     styleUrls: ['table.component.scss']
 })
 export class TableComponent implements OnInit{
-  orders = signal(ORDERS);
   selectedOrderId = signal<number | null>(null);
-  selectedOrder = computed<Order | undefined>(() => this.orders().find(i => i.id === this.selectedOrderId()));
 
     readonly categoryService = inject(CategoriesService);
     readonly productService = inject(ProductsService);
@@ -158,7 +59,9 @@ export class TableComponent implements OnInit{
     readonly staffStore = inject(EmployeeStore);
     readonly quantityDialog = inject(MatDialog);
     readonly breakpointService = inject(BreakpointService);
-
+    readonly tableStaff = signal<StaffUser | null>(null);
+    private readonly translationService = inject(TranslationService);
+    
     productsLoading = signal<boolean>(false);
     categoriesLoading = signal<boolean>(false);
     tableItemsLoading = signal<boolean>(false);
@@ -209,6 +112,8 @@ export class TableComponent implements OnInit{
 
     @HostListener('window:keydown', ['$event'])
     handleKeydown(event: KeyboardEvent) {
+        if(this.keyEventSubject.isPaused()) return;
+
          if (/^[A-Za-z0-9]$/.test(event.key)) {
             this.searchInput()?.nativeElement.focus();
          }else {
@@ -222,9 +127,7 @@ export class TableComponent implements OnInit{
             width: '400px',
             data: { title: product.title }
        })
-       //this.dialogLoading.set(true);
        dialogRef.afterClosed()
-       //.pipe(finalize(() => this.dialogLoading.set(false)))
        .subscribe((result: ProductQuantityDialogResponse) => {
         this.keyEventSubject.start();
         if (result != null) {
@@ -236,20 +139,26 @@ export class TableComponent implements OnInit{
                 tableDiscountAmount: 50,
                 note: result.data.note
             }
-            this.tableItemsService.add(request).subscribe({
+            this.dialogLoading.set(true);
+            this.tableItemsService.add(request)
+            .pipe(finalize(() => this.dialogLoading.set(false)))
+            .subscribe({
                 next: () => {
                     this.getTableItems();
                     this.snackbarService.success('Успешно е додадена нарачка');
                 },
                 error: (error: HttpErrorResponse) => {
-                    this.snackbarService.error(error.message);
+                    console.log(error);
+                    this.snackbarService.error(this.translationService.getTranslationForKey(error.error.detail));
                 }
             })
+            this.resetProducts();
         }
       });
     }
 
     onOpenItemDetails(item: TableItem): void {
+        this.keyEventSubject.stop(); 
         const dialogRef = this.quantityDialog.open(ProductQuantityComponent, {
             width: '400px',
             data: { id: item.id, title: item.productName }
@@ -296,7 +205,9 @@ export class TableComponent implements OnInit{
                         this.snackbarService.error(error.message);
                     }
                 })                  
-            }        
+            }
+            
+            this.keyEventSubject.start(); 
         })
     }   
 
@@ -336,10 +247,15 @@ export class TableComponent implements OnInit{
                 this.totalNetPrice.set(table.totalNetPrice);
                 this.totalTaxAmount.set(table.totalTaxAmount);
                 this.tableStatus.set(table.status);
+                this.tableStaff.set(table.staffUser);
             },
             error: (error: HttpErrorResponse) => {
                 this.snackbarService.error(error.message);
             }
         })
+    }
+
+    private resetProducts(): void {
+        this.searchTerm.setValue('')
     }
 }

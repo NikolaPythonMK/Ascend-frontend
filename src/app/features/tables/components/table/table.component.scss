@@ -80,7 +80,7 @@
 
   .search-input {
     flex: 1;
-    padding: 0.8em 0.8em 0.8em 2em;
+    padding: 0.8em 0.8em 0.8em 2.2em;
     font-size: 1.3rem;
     border: 0;
     border: 1px solid #89ac46;
@@ -88,13 +88,10 @@
     outline: none;
   }
 
+
   .search-icon,
   .close-icon {
     color: #89ac46;
-  }
-
-  .search-input:focus {
-    border-color: #3f51b5;
   }
 
   button {
@@ -263,7 +260,7 @@ tbody tr:last-child td {
   display: flex;
   flex-direction: column;
   border-top: 2px solid #e0e0e0;
-  flex: 1.5;
+  flex: 1;
   // height: 30%;
 
   .calculated-prices {
@@ -285,7 +282,7 @@ tbody tr:last-child td {
     .total-price {
       font-size: 1.7rem;
       font-weight: bold;
-      color: #3f51b5;
+      color: #89ac46;
     }
     .price-info {
       font-size: 1.2rem;
@@ -323,8 +320,6 @@ tbody tr:last-child td {
   }
 
   .assigned-user {
-    padding-top: 0.5em;
-    padding-left: 1.5em;
     display: flex;
     align-items: center;
     .user {
@@ -393,6 +388,27 @@ tbody tr:last-child td {
   }
   100% {
     background-position: 800px 0;
+  }
+}
+
+.discount-container {
+  display: flex;
+}
+
+.footer-middle-part {
+  padding: 0.5em 1.5em 0em 1.5em;
+  display: flex;
+  justify-content: space-between;
+  .discount-input {
+    margin-right: 5px;
+    border-radius: 5px;
+    border: 1px solid vars.$primary-font-color;
+    padding: .5em;
+    font-size: 1.1rem;
+    max-width: 150px;
+  }
+  .discount-button {
+    padding: 0 .5em;
   }
 }
 

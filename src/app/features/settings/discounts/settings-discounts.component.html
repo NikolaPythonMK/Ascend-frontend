@@ -1,0 +1,17 @@
+<ascend-loader [loading]="loading()" />
+<div class="container">
+  <div class="content">
+    <ascend-table
+      [dataRows]="discountRows()"
+      [displayedColumns]="colDisplayNames()"
+      [title]="'settings.discounts.discounts' | translate"
+      (addEvent)="onAdd()"
+      (clickedRowEvent)="onUpdate($event)"
+    />
+    @if (discounts().length == 0) {
+      <div class="no-data-container">
+        <p class="no-data-msg">{{ 'settings.discounts.no-discounts-found' | translate }}</p>
+      </div>
+    }
+  </div>
+</div>

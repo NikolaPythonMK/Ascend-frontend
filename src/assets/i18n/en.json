@@ -135,6 +135,21 @@
             "no-history": "No history for tax",
             "current-tax": "Current tax",
             "add-tax": "Add Tax"
+        },
+        "discounts": {
+            "discounts": "Discounts",
+            "no-discounts-found": "No discounts found",
+            "percent": "Percent",
+            "amount": "Amount",
+            "code": "Code",
+            "name": "Name",
+            
+            "value": "Value",
+            "discountType": "Type",
+            "isRecurring": "Reccuring Discount",
+            "expiryDate": "Expiry Date",
+            "add-discount": "Add Discount",
+            "update-discount": "Update Discount"
         }
     },
     "ui": {
@@ -150,6 +165,9 @@
         "update-dialog": {
             "quantity-label": "Quantity",
             "note-label": "Note"         
+        },
+        "errors": {
+            "table-has-staff-user": "You don't have permission to edit this table"
         }
     },
     "ordered-items": {

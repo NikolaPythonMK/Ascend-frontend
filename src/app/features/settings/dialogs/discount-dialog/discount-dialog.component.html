@@ -1,0 +1,93 @@
+<ascend-loader [loading]="loading()" />
+<h2 mat-dialog-title class="dialog-title">
+  @if (isUpdate()){ {{ "settings.discounts.update-discount" | translate }} }
+  @else { {{ "settings.discounts.add-discount" | translate }} }
+</h2>
+<div class="content">
+  <form [formGroup]="discountForm" (ngSubmit)="onSubmit()" class="dialog-form">
+    <!-- Name -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ "settings.discounts.name" | translate }}</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+
+    <!-- Code -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ "settings.discounts.code" | translate }}</mat-label>
+      <input matInput formControlName="code" />
+    </mat-form-field>
+
+    <!-- Discount Type -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ "settings.discounts.discountType" | translate }}</mat-label>
+      <mat-select formControlName="discountType">
+        <mat-option [value]="1">{{
+          "settings.discounts.percent" | translate
+        }}</mat-option>
+        <mat-option [value]="2">{{
+          "settings.discounts.amount" | translate
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Value -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ "settings.discounts.value" | translate }}</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="value"
+        min="0"
+        (keydown.enter)="onSubmit()"
+      />
+    </mat-form-field>
+
+    <!-- Expiry Date -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ "settings.discounts.expiryDate" | translate }}</mat-label>
+      <input
+        matInput
+        [matDatepicker]="expiryPicker"
+        formControlName="expiryDate"
+        (click)="expiryPicker.open()"
+        (keydown.enter)="onSubmit()"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="expiryPicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #expiryPicker></mat-datepicker>
+    </mat-form-field>
+
+    <!-- Is Occurring -->
+    <mat-checkbox formControlName="isOccuring">
+      <span class="is-occuring">{{
+        "settings.discounts.isRecurring" | translate
+      }}</span>
+    </mat-checkbox>
+
+    <!-- Actions -->
+    <div class="actions" [ngClass]="{ 'actions-flex': isUpdate() }">
+      @if (isUpdate()) {
+      <button
+        type="button"
+        mat-icon-button
+        color="warn"
+        [ariaLabel]="'shared.delete-item' | translate"
+        class="trash-btn"
+        (click)="onDelete()"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+      }
+        <button mat-button type="button" (click)="dialogRef.close()">
+          {{ "shared.cancel" | translate }}
+        </button>
+        <ascend-button
+          type="primary"
+          [label]="submitBtn() | translate"
+          [disabled]="discountForm.invalid"
+        />
+    </div>
+  </form>
+</div>
