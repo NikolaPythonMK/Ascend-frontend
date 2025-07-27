@@ -113,10 +113,10 @@ export class DiscountDialog implements OnInit {
           this.getCodeControl().setValue(discount.code);
           //this.getDiscountTypeControl().setValue(discount.type);
           this.getValueControl().setValue(discount.value);
-          this.getStartDate().setValue(discount.startDate);
-          this.getEndDate().setValue(discount.endDate);
-          this.getStartTime().setValue(discount.startTime);
-          this.getEndTime().setValue(discount.endTime)
+          this.getStartDate().setValue(discount.startDate?.toISOString());
+          this.getEndDate().setValue(discount.endDate?.toISOString());
+          this.getStartTime().setValue(discount.startTime?.toISOString());
+          this.getEndTime().setValue(discount.endTime?.toISOString())
         },
         error: (error: HttpErrorResponse) => {
           this.snackbarService.error(error.message);
