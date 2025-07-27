@@ -48,6 +48,9 @@ import { ButtonComponent } from '../../../../core/ui/button/button.component';
 import { StaffUser } from '../../../../core/models/api/responses/staff-user.model';
 import TranslationService from '../../../../core/services/utility/translation.service';
 import { ApplyDiscountRequest } from '../../../../core/models/api/requests/discount.request';
+import { TransactionService } from '../../../../core/services/api/transaction.service';
+import { Transaction } from '../../../../core/models/api/responses/transaction.model';
+import { TransactionRequest } from '../../../../core/models/api/requests/transaction.request';
 
 @Component({
   selector: 'table-items',
@@ -82,6 +85,7 @@ export class TableComponent implements OnInit {
   readonly breakpointService = inject(BreakpointService);
   readonly tableStaff = signal<StaffUser | null>(null);
   private readonly translationService = inject(TranslationService);
+  private readonly transactionService = inject(TransactionService);
 
   productsLoading = signal<boolean>(false);
   categoriesLoading = signal<boolean>(false);
@@ -319,4 +323,23 @@ export class TableComponent implements OnInit {
   private resetProducts(): void {
     this.searchTerm.setValue('');
   }
+
+  CreateTransaction(): void {
+      const request: TransactionRequest = {
+          id: this.tableId(),
+          paymentMethod: 1,
+          timeStamp: new Date().toISOString()
+        };
+        this.transactionService
+          .add(request)
+          .pipe(finalize(() => this.tableItemsLoading.set(false)))
+          .subscribe({
+            next: (transaction: Transaction) => {
+             console.log(transaction);
+            },
+            error: (error: HttpErrorResponse) => {
+              this.snackbarService.error(error.message);
+            },
+          });
+    }
 }
