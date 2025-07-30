@@ -141,9 +141,7 @@ export class TableComponent implements OnInit {
 
   @HostListener('window:keydown', ['$event'])
   handleKeydown(event: KeyboardEvent) {
-    console.log('YAY');
     if (this.keyEventSubject.isPaused()) return;
-    console.log('YAY 2')
 
     if (/^[A-Za-z0-9]$/.test(event.key)) {
       this.searchInput()?.nativeElement.focus();
