@@ -39,6 +39,8 @@ import { ConfirmationDialog } from '../../../../core/ui/confirmation-dialog/conf
 import { ChangeDetectionStrategy } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTimepickerModule } from '@angular/material/timepicker';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+
 
 @Component({
   imports: [
@@ -63,6 +65,7 @@ import { MatTimepickerModule } from '@angular/material/timepicker';
     MatDatepickerModule,
     MatTimepickerModule,
     FormsModule,
+    MatSlideToggleModule
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: 'discount-dialog.component.html',
@@ -92,7 +95,13 @@ export class DiscountDialog implements OnInit {
     startDate: [null],
     endDate: [null],
     startTime: null,
-    endTime: null
+    endTime: null,
+    isActive: true,
+    recurrenceType: '',
+    minPurchase: null,
+    maxPurchase: null,
+    usageLimit: null,
+    usageLimitPerCustomer: null,
   });
   loading = signal<boolean>(false);
   errorMessages = signal<string[]>([]);

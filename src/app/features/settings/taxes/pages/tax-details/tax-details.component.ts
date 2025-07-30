@@ -45,7 +45,7 @@ import TranslationService from '../../../../../core/services/utility/translation
     TranslateModule
   ],
   templateUrl: 'tax-details.component.html',
-  styleUrls: ['tax-details.component.scss'],
+  styleUrls: ['tax-details.component.scss', '../../../../../core/styles/menu-item-page.scss'],
 })
 export class TaxDetailsPage {
   private readonly fb = inject(FormBuilder);

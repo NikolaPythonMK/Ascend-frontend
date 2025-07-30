@@ -6,6 +6,12 @@
   box-sizing: border-box;
 }
 
+.container:focus {
+  outline: none;      /* remove the blue/auto focus ring */
+  box-shadow: none;   /* remove any shadow (e.g. in WebKit) */
+  border-color: inherit; /* optionally keep the normal border color */
+}
+
 .container {
   display: flex;
   height: 100%;

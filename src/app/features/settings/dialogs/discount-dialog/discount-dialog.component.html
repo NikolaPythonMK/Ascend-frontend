@@ -115,6 +115,84 @@
           <mat-label>{{ "settings.discounts.name" | translate }}</mat-label>
           <input matInput formControlName="name" />
         </mat-form-field>
+
+
+  <!-- Recurrence type -->
+  <div class="input-group">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'settings.discounts.recurrenceType' | translate }}</mat-label>
+      <mat-select formControlName="recurrenceType">
+        <mat-option value="none">
+          {{ 'settings.discounts.recurrence.none' | translate }}
+        </mat-option>
+        <mat-option value="daily">
+          {{ 'settings.discounts.recurrence.daily' | translate }}
+        </mat-option>
+        <mat-option value="weekly">
+          {{ 'settings.discounts.recurrence.weekly' | translate }}
+        </mat-option>
+        <mat-option value="monthly">
+          {{ 'settings.discounts.recurrence.monthly' | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Purchase amount limits -->
+  <div class="input-group">
+    <mat-form-field appearance="outline" class="half-width">
+      <mat-label>{{ 'settings.discounts.minPurchase' | translate }}</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="minPurchase"
+        min="0"
+        (keydown.enter)="onSubmit()"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="half-width">
+      <mat-label>{{ 'settings.discounts.maxPurchase' | translate }}</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="maxPurchase"
+        min="0"
+        (keydown.enter)="onSubmit()"
+      />
+    </mat-form-field>
+  </div>
+
+  <!-- Usage limits -->
+  <div class="input-group">
+    <mat-form-field appearance="outline" class="half-width">
+      <mat-label>{{ 'settings.discounts.usageLimit' | translate }}</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="usageLimit"
+        min="0"
+        (keydown.enter)="onSubmit()"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="half-width">
+      <mat-label>{{ 'settings.discounts.usageLimitPerCustomer' | translate }}</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="usageLimitPerCustomer"
+        min="0"
+        (keydown.enter)="onSubmit()"
+      />
+    </mat-form-field>
+  </div>
+
+            <!-- Active toggle -->
+  <div class="input-group is-active-group">
+    <mat-slide-toggle formControlName="isActive">
+      {{ 'settings.discounts.isActive' | translate }}
+    </mat-slide-toggle>
+  </div>
+
       </mat-expansion-panel>
     </mat-accordion>
 

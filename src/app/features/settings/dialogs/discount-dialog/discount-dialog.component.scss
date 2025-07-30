@@ -2,6 +2,8 @@
 
 .content {
   display: flex;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .dialog-title {
@@ -77,6 +79,10 @@ mat-form-field {
   color: #d9534f;
   margin-right: auto;
   cursor: pointer;
+}
+
+.is-active-group {
+  padding-top: 1em;
 }
 
 @media (min-width: 600px) and (max-width: 1080px) {

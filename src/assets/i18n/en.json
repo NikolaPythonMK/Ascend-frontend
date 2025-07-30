@@ -143,13 +143,25 @@
             "amount": "Amount",
             "code": "Code",
             "name": "Name",
-            
             "value": "Value",
             "discountType": "Type",
-            "isRecurring": "Reccuring Discount",
+            "isRecurring": "Recurring Discount",
             "expiryDate": "Expiry Date",
             "add-discount": "Add Discount",
-            "update-discount": "Update Discount"
+            "update-discount": "Update Discount",
+
+            "isActive": "Active",
+            "recurrenceType": "Recurrence Type",
+            "minPurchase": "Minimum Purchase",
+            "maxPurchase": "Maximum Purchase",
+            "usageLimit": "Usage Limit",
+            "usageLimitPerCustomer": "Usage Limit per Customer",
+
+            "recurrence.none": "None",
+            "recurrence.daily": "Daily",
+            "recurrence.weekly": "Weekly",
+            "recurrence.monthly": "Monthly",
+            "recurrence.custom": "Custom"
         }
     },
     "ui": {

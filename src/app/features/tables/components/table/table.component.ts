@@ -122,8 +122,6 @@ export class TableComponent implements OnInit {
     this.getAllProducts();
     this.getTableItems();
 
-    console.log(this.totalGrossPrice() + 'jovan');
-
     this.searchTerm.valueChanges
       .pipe(
         debounceTime(300),
@@ -139,7 +137,9 @@ export class TableComponent implements OnInit {
 
   @HostListener('window:keydown', ['$event'])
   handleKeydown(event: KeyboardEvent) {
+    console.log('YAY');
     if (this.keyEventSubject.isPaused()) return;
+    console.log('YAY 2')
 
     if (/^[A-Za-z0-9]$/.test(event.key)) {
       this.searchInput()?.nativeElement.focus();
@@ -198,6 +198,7 @@ export class TableComponent implements OnInit {
     dialogRef
       .afterClosed()
       .subscribe((result: ProductQuantityDialogResponse) => {
+        this.keyEventSubject.start();
         if (!result) {
           return;
         }
@@ -239,8 +240,6 @@ export class TableComponent implements OnInit {
               },
             });
         }
-
-        this.keyEventSubject.start();
       });
   }
 
@@ -268,6 +267,10 @@ export class TableComponent implements OnInit {
     this.keyEventSubject.stop();
   };
 
+  codeInputLoseFocus(): void {
+    this.keyEventSubject.start();
+  }
+
   applyDiscount(code: string): void {
     this.tableItemsLoading.set(true);
 
@@ -287,8 +290,11 @@ export class TableComponent implements OnInit {
           this.snackbarService.error(error.message);
         },
       });
-
     this.keyEventSubject.start();
+  }
+
+  removeDiscount(discount: any): void {
+
   }
 
   private getTableItems(): void {
