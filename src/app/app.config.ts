@@ -5,8 +5,6 @@ import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideServiceWorker } from '@angular/service-worker';
-
 
 // Handles the loading of the translations
 export function HttpLoaderFactory(http: HttpClient): TranslateLoader {
@@ -30,9 +28,6 @@ export const appConfig: ApplicationConfig = {
     ),
     {
       provide: TranslateStore
-    }, provideAnimationsAsync(), provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            registrationStrategy: 'registerWhenStable:30000'
-          }),
+    }, provideAnimationsAsync()
   ]
 };
