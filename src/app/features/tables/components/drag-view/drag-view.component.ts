@@ -220,10 +220,6 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
 
     this.currentFloorIndex = index;
 
-    // this.layers().forEach((layer:Layer, i:number) => {
-    //   layer.visible(i === index);
-    // });
-
     this.layers.set(this.layers().map((q, i)=> q.visible(i === index)))
 
     const newLayer = this.layers()[this.currentFloorIndex];
@@ -334,8 +330,11 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
     layer.add(group);
 
     const selectShape = (e: any) => {
+      console.log(item);
       if (!this.isEdit()) {
-        this.clickedTableId.emit(item.tableId);
+        if(item.tableId !== 0){
+          this.clickedTableId.emit(item.tableId);
+        }
       } else {
         e.cancelBubble = true;
         this.selectedId = item.id;
@@ -469,6 +468,11 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
       this.isEdit.set(!this.isEdit());
     }
     
+    // Add a small delay to allow DOM to update, then resize canvas
+    setTimeout(() => {
+      this.resizeCanvas();
+    }, 100);
+    
      if (!this.isEdit()) {
       this.transformer.nodes([]);
       this.transformer.enabledAnchors([]);
@@ -491,6 +495,21 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
         });
         layer.draw();
       });
+    }
+  }
+
+  private resizeCanvas() {
+    const containerElement = document.querySelector('#container') as HTMLElement;
+    if (containerElement && this.stage) {
+      const newWidth = containerElement.clientWidth;
+      const newHeight = containerElement.clientHeight;
+      
+      this.stage.size({
+        width: newWidth,
+        height: newHeight,
+      });
+      
+      this.stage.batchDraw();
     }
   }
 
@@ -531,7 +550,6 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
 
         const savedFloors: Floor[] = JSON.parse(raw);
 
-        //this.layers().forEach((layer: Layer) => layer.destroy());
         this.layers.set(this.layers().map(q => q.destroy()));
         this.layers.set([]);
         this.floors = [];
@@ -550,9 +568,11 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
 
   onCanvasEditButtonClick(): void {
     this.isEdit.set(true);
+    this.onEditClick(false);
   }
 
   onCancel(): void {
     this.isEdit.set(false);
+    this.onEditClick(false);
   }
 }
