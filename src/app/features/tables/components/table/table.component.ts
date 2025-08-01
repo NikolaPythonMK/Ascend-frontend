@@ -10,11 +10,9 @@ import {
   ViewChild,
   viewChild,
 } from '@angular/core';
-import { DisplayListComponent } from '../display-list/display-list.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { Card } from '../../../../core/ui/display-cards/models/card.model';
-import { DisplayCardsComponent } from '../../../../core/ui/display-cards/display-cards.component';
 import { CategoriesService } from '../../../../core/services/api/categories.service';
 import { ProductsService } from '../../../../core/services/api/products.service';
 import { SnackbarService } from '../../../../core/services/utility/snackbar.service';
@@ -40,35 +38,25 @@ import { SearchTerm } from '../../../../core/models/api/search-term.model';
 import { ProductQuantityDialogResponse } from '../../models/product-quantity-dialog-response';
 import { LoaderComponent } from '../../../../core/ui/loader/loader.component';
 import { BreakpointService } from '../../../../core/services/utility/breakpoint.service';
-import { SearchBarComponent } from '../../../../core/ui/search-bar/search-bar.component';
-import { Order } from '../../models/order.model';
-import { OrderedItemsComponent } from '../ordered-items/ordered-items.component';
 import { DisplayProductsComponent } from '../display-products/display-products.component';
 import { KeyEventEmitter } from './services/key-event-emitter.service';
-import { ButtonComponent } from '../../../../core/ui/button/button.component';
 import { StaffUser } from '../../../../core/models/api/responses/staff-user.model';
 import TranslationService from '../../../../core/services/utility/translation.service';
 import { ApplyDiscountRequest } from '../../../../core/models/api/requests/discount.request';
 import { TransactionService } from '../../../../core/services/api/transaction.service';
 import { Transaction } from '../../../../core/models/api/responses/transaction.model';
 import { TransactionRequest } from '../../../../core/models/api/requests/transaction.request';
-import { TableRequest } from '../../../../core/models/api/requests/table.request';
 import { TemporaryTableRequest } from '../../../../core/models/api/requests/temp-table.request';
 
 @Component({
   selector: 'table-items',
   imports: [
-    DisplayListComponent,
     MatFormFieldModule,
     MatIconModule,
-    DisplayCardsComponent,
     CommonModule,
     ReactiveFormsModule,
     LoaderComponent,
-    SearchBarComponent,
-    OrderedItemsComponent,
     DisplayProductsComponent,
-    ButtonComponent,
     FormsModule
   ],
   templateUrl: 'table.component.html',
@@ -125,12 +113,14 @@ export class TableComponent implements OnInit {
     })
   );
 
-  labelText = 'Table';
+  tableName = signal<string>('');
   editing = false;  
 
   @ViewChild('editInput') editInput!: ElementRef<HTMLInputElement>;
 
   startEdit() {
+    if (!this.isTemporaryTable()) return;
+
     this.editing = true;
     // wait for the input to appear, then focus it
     setTimeout(() => this.editInput.nativeElement.focus());
@@ -138,6 +128,7 @@ export class TableComponent implements OnInit {
 
   finishEdit() {
     this.editing = false;
+    this.keyEventSubject.start();
     // here you could emit an event or call a service to persist the change
   }
 
@@ -148,6 +139,7 @@ export class TableComponent implements OnInit {
     this.tableId.set(Number(this.route.snapshot.paramMap.get('table')));
     if (this.tableId() == 0) {
       this.isTemporaryTable.set(true);
+      this.tableName.set('Temporary Table')
     }
     this.getAllProducts();
     if (!this.isTemporaryTable()) {
@@ -226,7 +218,8 @@ export class TableComponent implements OnInit {
             }
 
             this.totalGrossPrice.set(this.tableItems().reduce((sum, acc) => {return sum + acc.totalGrossPrice}, 0))
-
+            this.totalItems.set(this.tableItems().length);
+            this.totalQuantity.set(this.tableItems().reduce((total, acc) => total + acc.quantity, 0));
             return;
           }
 
@@ -389,7 +382,6 @@ export class TableComponent implements OnInit {
       .pipe(finalize(() => this.tableItemsLoading.set(false)))
       .subscribe({
         next: (table: Table) => {
-          console.log(table);
           this.tableItems.set(table.tableItems);
           this.totalItems.set(table.tableItems.length);
           this.totalQuantity.set(
@@ -402,7 +394,7 @@ export class TableComponent implements OnInit {
           this.tableStaff.set(table.staffUser);
           this.discountCode.set(table.discount.code);
           this.isDiscountApplied.set(table.discount.code != null)
-
+          this.tableName.set(table.code);
         },
         error: (error: HttpErrorResponse) => {
           this.snackbarService.error(error.message);
@@ -438,10 +430,9 @@ export class TableComponent implements OnInit {
     const request: TemporaryTableRequest = {
       id: 0,
       tableItems: this.tableItems(),
-      name: this.labelText,
-      code: this.labelText,
+      name: this.tableName(),
+      code: this.tableName(),
       staffUserID: this.staffStore.id()!
-      //staffUserID: this.staffStore.id()!,
     }
     this.tableService
           .createTemporaryTable(request)

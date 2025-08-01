@@ -28,9 +28,6 @@
     overflow-y: scroll;
     flex: 1 1 auto;
   }
-  .products-header {
-    display: flex;
-  }
 }
 
 .order-items-wrapper {
@@ -57,14 +54,20 @@
 // }
 
 .item-header-products {
+  display: flex;
+  margin-top: 10px;
+  gap: 20px;
+  padding-right: 1.5em;
+
   .search-wrapper {
-    width: 100%;
     display: flex;
-    justify-content: center;
+    flex: 1 1 0%;   /* shorthand for flex-grow:1; flex-shrink:1; flex-basis:0% */
+    min-width: 0;   /* allow it to go below its content’s minimum width */
+    overflow: hidden; /* optional—hide any overflow if it collapses */
   }
   .search-container {
-    width: 90% !important;
-    margin-top: 10px;
+    width: 100% !important;
+    // margin-top: 10px;
     position: relative;
     display: flex;
     align-items: center;
@@ -387,6 +390,17 @@ tbody tr:last-child td {
   background-size: 800px 104px;
   animation: shimmer 1.5s infinite linear;
 }
+
+.table-name-wrapper {
+  flex: 0 0 auto; 
+  align-self: center;
+}
+
+.table-name {
+  font-size: 1.4rem;
+  padding-left: 1em;
+}
+
 
 @keyframes shimmer {
   0% {

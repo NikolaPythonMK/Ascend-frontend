@@ -1,19 +1,36 @@
 <ascend-loader [loading]="dialogLoading()" />
 <div class="container" tabindex="0">
   <div class="products">
-     <span *ngIf="!editing" (click)="startEdit()">
-        {{ labelText }}
+     <!-- <span *ngIf="!editing" (click)="startEdit()" class="table-name">
+        {{ tableName() }}
       </span>
       <input
         *ngIf="editing"
-        [(ngModel)]="labelText"
+        [(ngModel)]="tableName"
         (blur)="finishEdit()"
         (keydown.enter)="finishEdit()"
         (focus)="codeInputFocus()" 
         (blur)="codeInputLoseFocus()"
         #editInput
+      /> -->
+    <div class="item-header-products">
+      <div class="table-name-wrapper">
+       <span *ngIf="!editing" (click)="startEdit()" class="table-name">
+        {{ tableName() }}
+      </span>
+      @if (isTemporaryTable()) {
+      <input
+        *ngIf="editing"
+        class="table-name"
+        [(ngModel)]="tableName"
+        [attr.size]="tableName().length || 1"
+        (blur)="finishEdit()"
+        (keydown.enter)="finishEdit()"
+        (focus)="codeInputFocus()"
+        #editInput
       />
-    <div class="products-header item-header-products">
+      }
+      </div>
       <div class="search-wrapper">
         <div class="search-container">
           <input
