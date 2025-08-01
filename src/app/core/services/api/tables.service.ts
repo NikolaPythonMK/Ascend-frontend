@@ -25,4 +25,8 @@ export class TablesService extends BaseService<Table, TableRequest> {
     setTableDiscount(request: ApplyDiscountRequest): Observable<Object>{
          return this.http.post(`${this.domain}/table/apply-discount`, request, { withCredentials: true });
     }
+
+    removeTableDiscount(request: ApplyDiscountRequest): Observable<Object>{
+         return this.http.post(`${this.domain}/table/remove-discount`, request, { withCredentials: true });
+    }
 }

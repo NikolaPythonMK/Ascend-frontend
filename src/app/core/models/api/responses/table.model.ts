@@ -1,4 +1,5 @@
 import { TablePosition } from "../value-objects/table-position.model";
+import { Discount } from "./discount.model";
 import { StaffUser } from "./staff-user.model";
 import { TableItem } from "./table-item.model";
 
@@ -13,5 +14,6 @@ export interface Table {
     totalTaxAmount: number,
     staffUser: StaffUser,
     position: TablePosition,
+    discount: Discount,
     tableItems: TableItem[]
 }

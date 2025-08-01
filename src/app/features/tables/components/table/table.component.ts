@@ -33,7 +33,7 @@ import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ProductQuantityComponent } from '../product-quantity-dialog/product-quantity-dialog.component';
 import { debounceTime, distinctUntilChanged, finalize, Subject } from 'rxjs';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SearchTerm } from '../../../../core/models/api/search-term.model';
 import { ProductQuantityDialogResponse } from '../../models/product-quantity-dialog-response';
@@ -66,6 +66,7 @@ import { TransactionRequest } from '../../../../core/models/api/requests/transac
     OrderedItemsComponent,
     DisplayProductsComponent,
     ButtonComponent,
+    FormsModule
   ],
   templateUrl: 'table.component.html',
   styleUrls: ['table.component.scss'],
@@ -84,6 +85,7 @@ export class TableComponent implements OnInit {
   readonly quantityDialog = inject(MatDialog);
   readonly breakpointService = inject(BreakpointService);
   readonly tableStaff = signal<StaffUser | null>(null);
+  readonly isDiscountApplied = signal<boolean>(false);
   private readonly translationService = inject(TranslationService);
   private readonly transactionService = inject(TransactionService);
 
@@ -96,7 +98,7 @@ export class TableComponent implements OnInit {
   readonly destroyRef = inject(DestroyRef);
 
   tableId = signal<number>(0);
-  discountCode: string = '';
+  discountCode = signal('');
   tableStatus = signal<string>('');
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
@@ -285,6 +287,7 @@ export class TableComponent implements OnInit {
       .pipe(finalize(() => this.tableItemsLoading.set(false)))
       .subscribe({
         next: () => {
+          this.isDiscountApplied.set(true);
           this.getTableItems();
           this.snackbarService.success('Успешно');
         },
@@ -295,8 +298,27 @@ export class TableComponent implements OnInit {
     this.keyEventSubject.start();
   }
 
-  removeDiscount(discount: any): void {
+  removeDiscount(code: string): void {
+    this.tableItemsLoading.set(true);
 
+    const request: ApplyDiscountRequest = {
+      tableID: this.tableId(),
+      code: code,
+    };
+    this.tableService
+      .removeTableDiscount(request)
+      .pipe(finalize(() => this.tableItemsLoading.set(false)))
+      .subscribe({
+        next: () => {
+          this.isDiscountApplied.set(false);
+          this.getTableItems();
+          this.snackbarService.success('Успешно');
+        },
+        error: (error: HttpErrorResponse) => {
+          this.snackbarService.error(error.message);
+        },
+      });
+    this.keyEventSubject.start();
   }
 
   private getTableItems(): void {
@@ -317,6 +339,7 @@ export class TableComponent implements OnInit {
           this.totalTaxAmount.set(table.totalTaxAmount);
           this.tableStatus.set(table.status);
           this.tableStaff.set(table.staffUser);
+          this.discountCode.set(table.discount.code);
         },
         error: (error: HttpErrorResponse) => {
           this.snackbarService.error(error.message);

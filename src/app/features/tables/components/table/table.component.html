@@ -115,13 +115,13 @@
           <mat-icon>{{ tableStaff()?.name ? 'person_apron' : '' }}</mat-icon><span class="user">{{ tableStaff()?.name }} {{ tableStaff()?.lastName }}</span>
         </div>
         <div class="discount-container">
-          <input type="text" #discountInput class="discount-input" placeholder="Discount code" (focus)="codeInputFocus()" (blur)="codeInputLoseFocus()"/>
-          @if (true) {
-            <button matFab class="discount-button" (click)="applyDiscount(discountInput.value)">
+          <input type="text" [(ngModel)]="discountCode" class="discount-input" placeholder="Discount code" (focus)="codeInputFocus()" (blur)="codeInputLoseFocus()"/>
+          @if (!isDiscountApplied()) {
+            <button matFab class="discount-button" (click)="applyDiscount(discountCode())">
               <mat-icon>redeem</mat-icon>
           </button>
           }@else {
-            <button matFab class="discount-button" (click)="removeDiscount(discountInput.value)">
+            <button matFab class="discount-button" (click)="removeDiscount(discountCode())">
               <mat-icon>delete</mat-icon>
             </button>
           }
