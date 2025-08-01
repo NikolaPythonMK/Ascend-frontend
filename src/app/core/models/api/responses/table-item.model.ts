@@ -7,4 +7,5 @@ export interface TableItem {
     totalGrossPrice: number,
     productName: string,
     note?: string,
+    productHistoryID?: number
 }

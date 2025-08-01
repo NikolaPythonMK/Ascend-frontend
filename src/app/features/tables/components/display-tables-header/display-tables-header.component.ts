@@ -4,11 +4,13 @@ import { SearchBarComponent } from "../../../../core/ui/search-bar/search-bar.co
 import { MatIconModule } from "@angular/material/icon";
 import { TranslateModule } from "@ngx-translate/core";
 import { TableStateService } from "../../../../core/services/utility/table-state.service";
+import { ButtonComponent } from "../../../../core/ui/button/button.component";
+import { Router } from "@angular/router";
 
 
 @Component({
     selector: 'tables-header',
-    imports: [CommonModule, SearchBarComponent, MatIconModule, TranslateModule],
+    imports: [CommonModule, SearchBarComponent, MatIconModule, TranslateModule, ButtonComponent],
     templateUrl: 'display-tables-header.component.html',
     styleUrls: ['display-tables-header.component.scss']
 })
@@ -19,6 +21,7 @@ export class DisplayTablesHeaderComponent {
     onViewChange = output<string>();
     searchTerm = output<string>();
     readonly tableStateService = inject(TableStateService);
+    readonly router = inject(Router);
 
     handleViewChange(view: string): void {
         if (this.subscribe()) {
@@ -31,5 +34,9 @@ export class DisplayTablesHeaderComponent {
 
     onSearchTerm(searchTerm: string): void {
         this.searchTerm.emit(searchTerm);
+    }
+
+    onAddTemporaryTable(): void {
+        this.router.navigate(['/tables', 0])
     }
 }

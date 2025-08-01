@@ -32,6 +32,8 @@
     </div>
   </div>
 
+  <ascend-button type="primary" label="Temporary"  (click)="onAddTemporaryTable()"/>
+
   @if (selectedView() !== 'drag') {
   <div class="search-container">
     <ascend-search-bar (onSearchTerm)="onSearchTerm($event)" />

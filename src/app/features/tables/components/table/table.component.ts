@@ -22,7 +22,7 @@ import { Page } from '../../../../core/models/api/page.model';
 import { Product } from '../../../../core/models/api/responses/product.model';
 import { Category } from '../../../../core/models/api/responses/category.model';
 import { ImageService } from '../../../../core/services/utility/image.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TablesService } from '../../../../core/services/api/tables.service';
 import { Table } from '../../../../core/models/api/responses/table.model';
 import { TableItem } from '../../../../core/models/api/responses/table-item.model';
@@ -51,6 +51,8 @@ import { ApplyDiscountRequest } from '../../../../core/models/api/requests/disco
 import { TransactionService } from '../../../../core/services/api/transaction.service';
 import { Transaction } from '../../../../core/models/api/responses/transaction.model';
 import { TransactionRequest } from '../../../../core/models/api/requests/transaction.request';
+import { TableRequest } from '../../../../core/models/api/requests/table.request';
+import { TemporaryTableRequest } from '../../../../core/models/api/requests/temp-table.request';
 
 @Component({
   selector: 'table-items',
@@ -88,7 +90,9 @@ export class TableComponent implements OnInit {
   readonly isDiscountApplied = signal<boolean>(false);
   private readonly translationService = inject(TranslationService);
   private readonly transactionService = inject(TransactionService);
+  private readonly router = inject(Router);
 
+  isTemporaryTable = signal<boolean>(false);
   productsLoading = signal<boolean>(false);
   categoriesLoading = signal<boolean>(false);
   tableItemsLoading = signal<boolean>(false);
@@ -125,9 +129,13 @@ export class TableComponent implements OnInit {
 
   ngOnInit(): void {
     this.tableId.set(Number(this.route.snapshot.paramMap.get('table')));
+    if (this.tableId() == 0) {
+      this.isTemporaryTable.set(true);
+    }
     this.getAllProducts();
-    this.getTableItems();
-
+    if (!this.isTemporaryTable()) {
+          this.getTableItems();
+    }
     this.searchTerm.valueChanges
       .pipe(
         debounceTime(300),
@@ -139,6 +147,7 @@ export class TableComponent implements OnInit {
           { propName: 'Name;Code', searchValue: value ?? '' },
         ]);
       });
+
   }
 
   @HostListener('window:keydown', ['$event'])
@@ -170,6 +179,40 @@ export class TableComponent implements OnInit {
             quantity: result.data.quantity,
             note: result.data.note,
           };
+
+          if (this.isTemporaryTable()) {
+            const item: TableItem = {
+              id: 0,
+              product: product,
+              productHistoryID: product.productHistoryID,
+              quantity: request.quantity,
+              totalGrossPrice: request.quantity * product.price,
+              productName: product.name,
+              note: request.note
+            }
+
+            const exists = this.tableItems().findIndex(i => i.product.id == item.product.id)
+            console.log(exists);
+
+            if (exists == -1) {
+              this.tableItems.set([
+              ...this.tableItems(),  // ← spread *old* items
+              item                    // ← then add the new one
+            ]);
+            }
+            else {
+              var tmp = this.tableItems();
+              tmp[exists].quantity += item.quantity;
+              tmp[exists].totalGrossPrice = this.tableItems()[exists].quantity * this.tableItems()[exists].product.price;
+              console.log(tmp);
+              this.tableItems.set(tmp);
+            }
+
+            this.totalGrossPrice.set(this.tableItems().reduce((sum, acc) => {return sum + acc.totalGrossPrice}, 0))
+
+            return;
+          }
+
           this.dialogLoading.set(true);
           this.tableItemsService
             .add(request)
@@ -287,9 +330,9 @@ export class TableComponent implements OnInit {
       .pipe(finalize(() => this.tableItemsLoading.set(false)))
       .subscribe({
         next: () => {
-          this.isDiscountApplied.set(true);
           this.getTableItems();
           this.snackbarService.success('Успешно');
+          this.isDiscountApplied.set(true);
         },
         error: (error: HttpErrorResponse) => {
           this.snackbarService.error(error.message);
@@ -310,9 +353,10 @@ export class TableComponent implements OnInit {
       .pipe(finalize(() => this.tableItemsLoading.set(false)))
       .subscribe({
         next: () => {
-          this.isDiscountApplied.set(false);
           this.getTableItems();
           this.snackbarService.success('Успешно');
+          this.isDiscountApplied.set(false);
+
         },
         error: (error: HttpErrorResponse) => {
           this.snackbarService.error(error.message);
@@ -340,6 +384,8 @@ export class TableComponent implements OnInit {
           this.tableStatus.set(table.status);
           this.tableStaff.set(table.staffUser);
           this.discountCode.set(table.discount.code);
+          this.isDiscountApplied.set(table.discount.code != null)
+
         },
         error: (error: HttpErrorResponse) => {
           this.snackbarService.error(error.message);
@@ -351,7 +397,7 @@ export class TableComponent implements OnInit {
     this.searchTerm.setValue('');
   }
 
-  CreateTransaction(): void {
+  createTransaction(): void {
       const request: TransactionRequest = {
           id: this.tableId(),
           paymentMethod: 1,
@@ -362,11 +408,35 @@ export class TableComponent implements OnInit {
           .pipe(finalize(() => this.tableItemsLoading.set(false)))
           .subscribe({
             next: (transaction: Transaction) => {
-             console.log(transaction);
+              this.router.navigate(['/tables']);
+              this.snackbarService.success('Успешно')
             },
             error: (error: HttpErrorResponse) => {
               this.snackbarService.error(error.message);
             },
           });
     }
+
+  createTemporaryTable(): void{
+    const request: TemporaryTableRequest = {
+      id: 0,
+      tableItems: this.tableItems(),
+      name: null,
+      code: null,
+      staffUserID: this.staffStore.id()!,
+    }
+    this.tableService
+          .createTemporaryTable(request)
+          .pipe(finalize(() => this.tableItemsLoading.set(false)))
+          .subscribe({
+            next: () => {
+              this.router.navigate(['/tables']);
+              this.snackbarService.success('Успешно')
+            },
+            error: (error: HttpErrorResponse) => {
+              this.snackbarService.error(error.message);
+            },
+    });
+  }
 }
+

@@ -6,6 +6,7 @@ import type { Table } from "../../models/api/responses/table.model";
 import { BaseService } from "./base.service";
 import { TableRequest } from "../../models/api/requests/table.request";
 import { ApplyDiscountRequest } from "../../models/api/requests/discount.request";
+import { TemporaryTableRequest } from "../../models/api/requests/temp-table.request";
 
 @Injectable({
     providedIn: 'root'
@@ -29,4 +30,8 @@ export class TablesService extends BaseService<Table, TableRequest> {
     removeTableDiscount(request: ApplyDiscountRequest): Observable<Object>{
          return this.http.post(`${this.domain}/table/remove-discount`, request, { withCredentials: true });
     }
-}
+
+    createTemporaryTable(request: TemporaryTableRequest): Observable<Object>{
+         return this.http.post(`${this.domain}/table/create-temporary`, request, { withCredentials: true });
+    }
+}   

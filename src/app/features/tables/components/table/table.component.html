@@ -114,8 +114,9 @@
         <div class="assigned-user">
           <mat-icon>{{ tableStaff()?.name ? 'person_apron' : '' }}</mat-icon><span class="user">{{ tableStaff()?.name }} {{ tableStaff()?.lastName }}</span>
         </div>
-        <div class="discount-container">
-          <input type="text" [(ngModel)]="discountCode" class="discount-input" placeholder="Discount code" (focus)="codeInputFocus()" (blur)="codeInputLoseFocus()"/>
+        @if (!isTemporaryTable()) {
+          <div class="discount-container">
+          <input [disabled]="isDiscountApplied()" type="text" [(ngModel)]="discountCode" class="discount-input" placeholder="Discount code" (focus)="codeInputFocus()" (blur)="codeInputLoseFocus()"/>
           @if (!isDiscountApplied()) {
             <button matFab class="discount-button" (click)="applyDiscount(discountCode())">
               <mat-icon>redeem</mat-icon>
@@ -125,12 +126,17 @@
               <mat-icon>delete</mat-icon>
             </button>
           }
-        </div>
+            </div>
+        }
       </div>
       <div class="transaction-container">
-        <button class="cash-btn" (click)="CreateTransaction()">Cash</button>
-        <button class="card-btn">Card</button>
-        <button>Split Bill</button>
+        @if (isTemporaryTable()){
+          <button class="submit-btn" (click)="createTemporaryTable()">Submit</button>
+        }@else {
+          <button class="cash-btn" (click)="createTransaction()">Cash</button>
+          <button class="card-btn">Card</button>
+          <button>Split Bill</button>
+        }
       </div>
     </div>
   </div>
