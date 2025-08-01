@@ -7,6 +7,7 @@ import {
   inject,
   OnInit,
   signal,
+  ViewChild,
   viewChild,
 } from '@angular/core';
 import { DisplayListComponent } from '../display-list/display-list.component';
@@ -123,6 +124,22 @@ export class TableComponent implements OnInit {
       } as Card;
     })
   );
+
+  labelText = 'Table';
+  editing = false;  
+
+  @ViewChild('editInput') editInput!: ElementRef<HTMLInputElement>;
+
+  startEdit() {
+    this.editing = true;
+    // wait for the input to appear, then focus it
+    setTimeout(() => this.editInput.nativeElement.focus());
+  }
+
+  finishEdit() {
+    this.editing = false;
+    // here you could emit an event or call a service to persist the change
+  }
 
   keyEventSubject = inject(KeyEventEmitter);
   searchInput = viewChild<ElementRef>('searchInput');
@@ -421,9 +438,10 @@ export class TableComponent implements OnInit {
     const request: TemporaryTableRequest = {
       id: 0,
       tableItems: this.tableItems(),
-      name: null,
-      code: null,
-      staffUserID: this.staffStore.id()!,
+      name: this.labelText,
+      code: this.labelText,
+      staffUserID: this.staffStore.id()!
+      //staffUserID: this.staffStore.id()!,
     }
     this.tableService
           .createTemporaryTable(request)

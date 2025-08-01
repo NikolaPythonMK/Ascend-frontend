@@ -1,6 +1,18 @@
 <ascend-loader [loading]="dialogLoading()" />
 <div class="container" tabindex="0">
   <div class="products">
+     <span *ngIf="!editing" (click)="startEdit()">
+        {{ labelText }}
+      </span>
+      <input
+        *ngIf="editing"
+        [(ngModel)]="labelText"
+        (blur)="finishEdit()"
+        (keydown.enter)="finishEdit()"
+        (focus)="codeInputFocus()" 
+        (blur)="codeInputLoseFocus()"
+        #editInput
+      />
     <div class="products-header item-header-products">
       <div class="search-wrapper">
         <div class="search-container">
