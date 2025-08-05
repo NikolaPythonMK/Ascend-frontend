@@ -24,6 +24,7 @@
     "@ngrx/signals": "^19.0.0",
     "@ngx-translate/core": "^16.0.4",
     "@ngx-translate/http-loader": "^16.0.1",
+    "chart.js": "^4.5.0",
     "konva": "^9.3.20",
     "lodash": "^4.17.21",
     "ngx-colors": "^3.6.0",

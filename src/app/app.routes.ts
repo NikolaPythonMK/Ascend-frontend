@@ -45,6 +45,14 @@ export const routes: Routes = [
             {
                 path: 'tax-details/:id',
                 loadComponent: () => import('./features/settings/taxes/pages/tax-details/tax-details.component').then((m) => m.TaxDetailsPage)
+            },
+            {
+                path: 'reports',
+                loadComponent: () => import('./features/reports/dynamic-report.component').then((m) => m.DynamicQueryBuilderComponent)
+            },
+            {
+                path: 'reports-dashboard',
+                loadComponent: () => import('./features/reports-dashboard/report-dashboard.component').then((m) => m.DynamicReportsComponent)
             }
         ]
     },

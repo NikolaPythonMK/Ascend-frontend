@@ -58,7 +58,7 @@ export class CustomNavbarComponent {
         {
             icon: 'query_stats',
             label: 'navbar-items.reports-analysis',
-            route: '/reports',
+            route: '/reports-dashboard',
         },
         {
             icon: 'inventory_2',
