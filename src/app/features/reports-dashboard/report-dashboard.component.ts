@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Chart, ChartConfiguration, ChartType, registerables } from 'chart.js';
 import { ReportingService } from '../../core/services/api/reporting.service';
-import { finalize } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { SnackbarService } from '../../core/services/utility/snackbar.service';
 
 Chart.register(...registerables);
@@ -59,15 +60,33 @@ export interface ChartData {
   templateUrl: './report-dashboard.component.html',
   styleUrls: ['./report-dashboard.component.scss']
 })
-export class DynamicReportsComponent implements OnInit {
+export class DynamicReportsComponent implements OnInit, OnDestroy {
   @ViewChild('chartCanvas', { static: false }) chartCanvas!: ElementRef<HTMLCanvasElement>;
-  
-  private http = inject(HttpClient);
+
   private readonly reportingService = inject(ReportingService);
   private readonly snackbarService = inject(SnackbarService);
-  private chart: Chart | null = null;
-  // Component state
-  kpiData: KPIData = {
+  
+  // Subject for managing subscriptions
+  private readonly destroy$ = new Subject<void>();
+  
+  // Timeout references for cleanup
+  private chartInitTimeout?: ReturnType<typeof setTimeout>;
+  private chartUpdateTimeout?: ReturnType<typeof setTimeout>;
+
+  chart = signal<Chart | null>(null);
+
+  chartData = signal<ChartData>({
+    labels: [],
+    datasets: [{
+      label: '',
+      data: {},
+      backgroundColor: ['#8b5cf6'],
+      borderColor: ['#7c3aed'],
+      borderWidth: 1
+    }]
+  })
+
+  kpiData = signal<KPIData>({
     totalSales: 0,
     totalSalesChange: 0,
     transactions: 0,
@@ -76,7 +95,7 @@ export class DynamicReportsComponent implements OnInit {
     avgTransactionChange: 0,
     customers: 0,
     customersChange: 0
-  };
+  });
 
   // Chart configuration
   selectedChartType: ChartType = 'bar';
@@ -84,7 +103,7 @@ export class DynamicReportsComponent implements OnInit {
     { type: 'bar' as ChartType, label: 'Bar Chart', icon: '📊' },
     { type: 'line' as ChartType, label: 'Line Chart', icon: '📈' },
     { type: 'pie' as ChartType, label: 'Pie Chart', icon: '🥧' },
-    { type: 'doughnut' as ChartType, label: 'Area Chart', icon: '📊' }
+    { type: 'polarArea' as ChartType, label: 'Polar Chart', icon: '📊' }
   ];
 
   // Filter and query state
@@ -115,7 +134,7 @@ export class DynamicReportsComponent implements OnInit {
 
   // Loading state
   isLoading = false;
-  loading: any;
+  loading = signal(false);
 
   ngOnInit() {
     this.loadInitialData();
@@ -125,20 +144,40 @@ export class DynamicReportsComponent implements OnInit {
     this.initializeChartWithRetry();
   }
 
+  ngOnDestroy() {
+    // Complete the destroy subject to unsubscribe from all observables
+    this.destroy$.next();
+    this.destroy$.complete();
+
+    // Clear any pending timeouts
+    if (this.chartInitTimeout) {
+      clearTimeout(this.chartInitTimeout);
+    }
+    if (this.chartUpdateTimeout) {
+      clearTimeout(this.chartUpdateTimeout);
+    }
+
+    // Destroy chart instance
+    if (this.chart()) {
+      this.chart()!.destroy();
+      this.chart.set(null);
+    }
+  }
+
   private initializeChartWithRetry(maxAttempts = 10, currentAttempt = 0) {
     let canvas: HTMLCanvasElement | null = null;
-    
+
     if (this.chartCanvas && this.chartCanvas.nativeElement) {
-       canvas = this.chartCanvas.nativeElement;
+      canvas = this.chartCanvas.nativeElement;
     } else {
       const selectors = [
         '#chartCanvas',
-        'canvas#chartCanvas', 
+        'canvas#chartCanvas',
         '[data-chart="canvas"]',
         '.chart-container canvas',
         'canvas'
       ];
-      
+
       for (const selector of selectors) {
         const element = document.querySelector(selector) as HTMLCanvasElement;
         if (element) {
@@ -148,20 +187,34 @@ export class DynamicReportsComponent implements OnInit {
         }
       }
     }
-    
+
     if (canvas) {
       this.createChart(canvas);
     } else if (currentAttempt < maxAttempts - 1) {
-      const delay = 100 + (currentAttempt * 50); // Increasing delay
-      setTimeout(() => {
+      const delay = 100 + (currentAttempt * 50);
+      this.chartInitTimeout = setTimeout(() => {
         this.initializeChartWithRetry(maxAttempts, currentAttempt + 1);
       }, delay);
     }
   }
 
+  handleHover = (evt: any, item: any, legend: any) => {
+    legend.chart.data.datasets[0].backgroundColor.forEach((color: string | any[], index: string | number, colors: { [x: string]: any; }) => {
+      colors[index] = index === item.index || color.length === 9 ? color : color + '4D';
+    });
+    legend.chart.update();
+  }
+
+  handleLeave = (evt: any, item: any, legend: any) => {
+    legend.chart.data.datasets[0].backgroundColor.forEach((color: string | any[], index: string | number, colors: { [x: string]: any; }) => {
+      colors[index] = color.length === 9 ? color.slice(0, -2) : color;
+    });
+    legend.chart.update();
+  }
+
   private createChart(canvas: HTMLCanvasElement) {
     console.log('Creating chart on canvas:', canvas);
-    
+
     const ctx = canvas.getContext('2d');
     if (!ctx) {
       console.error('Cannot get 2D context from canvas');
@@ -169,23 +222,36 @@ export class DynamicReportsComponent implements OnInit {
     }
 
     try {
-      if (this.chart) {
-        this.chart.destroy();
-        this.chart = null;
+      if (this.chart()) {
+        this.chart()!.destroy();
+        this.chart.set(null);
       }
+
+      var delayed: boolean;
 
       const config: ChartConfiguration = {
         type: this.selectedChartType,
-        data: {
-          labels: ['All'],
-          datasets: []
-        },
+        data: this.chartData(),
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          animation: {
+            onComplete: () => {
+              delayed = true;
+            },
+            delay: (context) => {
+              var delay = 0;
+              if (context.type === 'data' && context.mode === 'default' && !delayed) {
+                delay = context.dataIndex * 30 + context.datasetIndex * 30;
+              }
+              return delay;
+            },
+          },
           plugins: {
             legend: {
-              display: false
+              display: true,
+              onHover: this.handleHover,
+              onLeave: this.handleLeave
             }
           },
           scales: this.selectedChartType === 'pie' || this.selectedChartType === 'doughnut' ? {} : {
@@ -204,15 +270,9 @@ export class DynamicReportsComponent implements OnInit {
         }
       };
 
-      this.chart = new Chart(ctx, config);
+      this.chart.set(new Chart(ctx, config));
     } catch (error) {
       console.error('Error creating chart:', error);
-    }
-  }
-
-  ngOnDestroy() {
-    if (this.chart) {
-      this.chart.destroy();
     }
   }
 
@@ -220,7 +280,7 @@ export class DynamicReportsComponent implements OnInit {
     this.isLoading = true;
     try {
       await this.loadKPIData();
-            await this.loadChartData();
+      await this.loadChartData();
     } catch (error) {
       console.error('Error loading initial data:', error);
     } finally {
@@ -233,7 +293,7 @@ export class DynamicReportsComponent implements OnInit {
       const now = new Date();
       const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
       const startOfPreviousMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-      const endOfPreviousMonth = new Date(startOfCurrentMonth.getTime() - 1);   
+      const endOfPreviousMonth = new Date(startOfCurrentMonth.getTime() - 1);
       const startOfCurrentMonthISO = startOfCurrentMonth.toISOString();
       const startOfPreviousMonthISO = startOfPreviousMonth.toISOString();
       const endOfPreviousMonthISO = endOfPreviousMonth.toISOString();
@@ -260,34 +320,32 @@ export class DynamicReportsComponent implements OnInit {
       };
 
       this.reportingService.execute(kpiQuery)
-          .pipe(
-            finalize(() => this.loading.set(false))
-          )
-          .subscribe({
-            next: (response: any) => {
-              console.log(response.result)
-              this.kpiData = {
-                  totalSales: response.result.aggregates.totalSales || this.kpiData.totalSales,
-                  totalSalesChange: response.result.aggregates.totalSalesChange || this.kpiData.totalSalesChange,
-                  transactions: response.result.aggregates.transactions || this.kpiData.transactions,
-                  transactionsChange: response.result.aggregates.transactionsChange || this.kpiData.transactionsChange,
-                  avgTransaction: response.result.aggregates.avgTransaction || this.kpiData.avgTransaction,
-                  avgTransactionChange: response.result.aggregates.avgTransactionChange || this.kpiData.avgTransactionChange,
-                  customers: response.result.aggregates.customers || this.kpiData.customers,
-                  customersChange: response.result.aggregates.customersChange || this.kpiData.customersChange
-                };
-            },
-            error: (error: HttpErrorResponse) => {
-              this.snackbarService.error(error.message);
-            },
-          });
-
-      const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        .pipe(
+          takeUntil(this.destroy$),
+          finalize(() => this.loading.set(false))
+        )
+        .subscribe({
+          next: (response: any) => {
+            console.log(response.result)
+            this.kpiData.set({
+              totalSales: response.result.aggregates.totalSales || this.kpiData().totalSales,
+              totalSalesChange: response.result.aggregates.totalSalesChange || this.kpiData().totalSalesChange,
+              transactions: response.result.aggregates.transactions || this.kpiData().transactions,
+              transactionsChange: response.result.aggregates.transactionsChange || this.kpiData().transactionsChange,
+              avgTransaction: response.result.aggregates.avgTransaction || this.kpiData().avgTransaction,
+              avgTransactionChange: response.result.aggregates.avgTransactionChange || this.kpiData().avgTransactionChange,
+              customers: response.result.aggregates.customers || this.kpiData().customers,
+              customersChange: response.result.aggregates.customersChange || this.kpiData().customersChange
+            });
+          },
+          error: (error: HttpErrorResponse) => {
+            this.snackbarService.error(error.message);
+          },
+        });
 
       const kpiQueryOneWeekBefore: DynamicQuery = {
         ...this.currentQuery,
-       Filters: {
+        Filters: {
           Operator: 'AND',
           Filters: [
             {
@@ -312,27 +370,28 @@ export class DynamicReportsComponent implements OnInit {
       };
 
       this.reportingService.execute(kpiQueryOneWeekBefore)
-          .pipe(
-            finalize(() => this.loading.set(false))
-          )
-          .subscribe({
-            next: (response: any) => {
-              console.log(response.result)
-              this.kpiData = {
-                  totalSalesChange: this.calculateChange(this.kpiData.totalSales, response.result.aggregates.totalSales),
-                  transactionsChange: this.calculateChange(this.kpiData.transactions, response.result.aggregates.transactions),
-                  avgTransactionChange: this.calculateChange(this.kpiData.avgTransaction, response.result.aggregates.avgTransaction),
-                  customersChange: this.calculateChange(this.kpiData.customers, response.result.aggregates.customers),
-                  totalSales: this.kpiData.totalSales,
-                  transactions: this.kpiData.transactions,
-                  avgTransaction: this.kpiData.avgTransaction,
-                  customers: this.kpiData.customers
-                };
-            },
-            error: (error: HttpErrorResponse) => {
-              this.snackbarService.error(error.message);
-            },
-          });
+        .pipe(
+          takeUntil(this.destroy$),
+          finalize(() => this.loading.set(false))
+        )
+        .subscribe({
+          next: (response: any) => {
+            console.log(response.result)
+            this.kpiData.set({
+              totalSalesChange: this.calculateChange(this.kpiData().totalSales, response.result.aggregates.totalSales),
+              transactionsChange: this.calculateChange(this.kpiData().transactions, response.result.aggregates.transactions),
+              avgTransactionChange: this.calculateChange(this.kpiData().avgTransaction, response.result.aggregates.avgTransaction),
+              customersChange: this.calculateChange(this.kpiData().customers, response.result.aggregates.customers),
+              totalSales: this.kpiData().totalSales,
+              transactions: this.kpiData().transactions,
+              avgTransaction: this.kpiData().avgTransaction,
+              customers: this.kpiData().customers
+            });
+          },
+          error: (error: HttpErrorResponse) => {
+            this.snackbarService.error(error.message);
+          },
+        });
     } catch (error) {
       console.error('Error loading KPI data:', error);
     }
@@ -340,79 +399,70 @@ export class DynamicReportsComponent implements OnInit {
 
   private calculateChange(current: number, previous: number) {
     if (previous === 0) {
-      return current === 0 ? 0 : 100; 
+      return current === 0 ? 0 : 100;
     }
     return ((current - previous) / previous) * 100;
   }
 
   async loadChartData() {
     try {
-        this.reportingService.chartdata()
-          .pipe(
-            finalize(() => this.loading.set(false))
-          )
-          .subscribe({
-            next: (result: any) => {
-              const response: ChartData = {
-                  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                    datasets: [{
-                      label: 'Value',
-                      data: result,
-                      backgroundColor: ['#8b5cf6'],
-                      borderColor: ['#7c3aed'],
-                      borderWidth: 1
-                    }]
-                }
-              
-              if (response) {
-                this.updateChart(response);
-              }
-            },
-            error: (error: HttpErrorResponse) => {
-              this.snackbarService.error(error.message);
-            },
-          });
+      this.reportingService.chartdata()
+        .pipe(
+          takeUntil(this.destroy$),
+          finalize(() => this.loading.set(false))
+        )
+        .subscribe({
+          next: (result: any) => {
+            const response: ChartData = {
+              labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+              datasets: [{
+                label: 'Value',
+                data: result,
+                backgroundColor: ['#1b5cf6', '#e91e63', '#4caf50', '#ff9800', '#9c27b0', '#03a9f4', '#8bc34a', '#ff5722', '#00bcd4', '#cddc39', '#673ab7', '#f44336'],
+                borderColor: ['#1b5cf6', '#e91e63', '#4caf50', '#ff9800', '#9c27b0', '#03a9f4', '#8bc34a', '#ff5722', '#00bcd4', '#cddc39', '#673ab7', '#f44336'],
+                borderWidth: 1
+              }]
+            }
+
+            if (response) {
+              this.chartData.set(response);
+              this.updateChart();
+            }
+          },
+          error: (error: HttpErrorResponse) => {
+            this.snackbarService.error(error.message);
+          },
+        });
     } catch (error) {
       console.error('Error loading chart data:', error);
     }
-  }
-
-  private async simulateChartApiCall(query: DynamicQuery): Promise<ChartData> {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve({
-          labels: ['All'],
-          datasets: [{
-            label: 'Value',
-            data: [1400, 500],
-            backgroundColor: ['#8b5cf6'],
-            borderColor: ['#7c3aed'],
-            borderWidth: 1
-          }]
-        });
-      }, 500);
-    });
   }
 
   initializeChart() {
     this.initializeChartWithRetry();
   }
 
-  updateChart(data: ChartData) {
-    if (this.chart) {
-      this.chart.data = data;
-      this.chart.update();
+  updateChart() {
+    if (this.chart()) {
+      this.chart()!.data = this.chartData();
+      this.chart()!.update();
     }
   }
 
   onChartTypeChange(chartType: ChartType) {
     this.selectedChartType = chartType;
-    
-    if (this.chart) {
-      this.chart.destroy();
+
+    if (this.chart()) {
+      this.chart()!.destroy();
+      this.chart.set(null);
     }
-    
-    setTimeout(() => {
+
+    // Clear any existing timeout before setting a new one
+    if (this.chartUpdateTimeout) {
+      clearTimeout(this.chartUpdateTimeout);
+    }
+
+    this.chartUpdateTimeout = setTimeout(() => {
       this.initializeChart();
     }, 100);
   }
@@ -428,7 +478,7 @@ export class DynamicReportsComponent implements OnInit {
       Operator: '==',
       Value: ''
     };
-    
+
     this.filters.push(newFilter);
     this.updateCurrentQuery();
   }
@@ -457,7 +507,6 @@ export class DynamicReportsComponent implements OnInit {
   async exportPDF() {
     try {
       const exportQuery = { ...this.currentQuery, format: 'PDF' };
-      // const response = await this.http.post('/api/analytics/export/pdf', exportQuery, { responseType: 'blob' }).toPromise();
       console.log('Exporting PDF...', exportQuery);
       alert('PDF export functionality would be implemented here');
     } catch (error) {
@@ -468,7 +517,6 @@ export class DynamicReportsComponent implements OnInit {
   async exportExcel() {
     try {
       const exportQuery = { ...this.currentQuery, format: 'Excel' };
-      // const response = await this.http.post('/api/analytics/export/excel', exportQuery, { responseType: 'blob' }).toPromise();
       console.log('Exporting Excel...', exportQuery);
       alert('Excel export functionality would be implemented here');
     } catch (error) {
@@ -478,8 +526,8 @@ export class DynamicReportsComponent implements OnInit {
 
   async exportImage() {
     try {
-      if (this.chart) {
-        const imageData = this.chart.toBase64Image();
+      if (this.chart()) {
+        const imageData = this.chart()!.toBase64Image();
         const link = document.createElement('a');
         link.download = 'chart.png';
         link.href = imageData;

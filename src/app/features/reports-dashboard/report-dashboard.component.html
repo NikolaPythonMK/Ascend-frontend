@@ -30,9 +30,9 @@
           <span class="kpi-title">Total Sales</span>
           <div class="kpi-icon sales">💰</div>
         </div>
-        <div class="kpi-value">{{ formatCurrency(kpiData.totalSales) }}</div>
-        <div class="kpi-change" [ngClass]="getChangeClass(kpiData.totalSalesChange)">
-          {{ formatPercentage(kpiData.totalSalesChange) }} from last month
+        <div class="kpi-value">{{ formatCurrency(kpiData().totalSales) }}</div>
+        <div class="kpi-change" [ngClass]="getChangeClass(kpiData().totalSalesChange)">
+          {{ formatPercentage(kpiData().totalSalesChange) }} from last month
         </div>
       </div>
     </div>
@@ -43,9 +43,9 @@
           <span class="kpi-title">Transactions</span>
           <div class="kpi-icon transactions">🛒</div>
         </div>
-        <div class="kpi-value">{{ kpiData.transactions }}</div>
-        <div class="kpi-change" [ngClass]="getChangeClass(kpiData.transactionsChange)">
-          {{ formatPercentage(kpiData.transactionsChange) }} from last month
+        <div class="kpi-value">{{ kpiData().transactions }}</div>
+        <div class="kpi-change" [ngClass]="getChangeClass(kpiData().transactionsChange)">
+          {{ formatPercentage(kpiData().transactionsChange) }} from last month
         </div>
       </div>
     </div>
@@ -56,9 +56,9 @@
           <span class="kpi-title">Avg. Transaction</span>
           <div class="kpi-icon avg-transaction">📈</div>
         </div>
-        <div class="kpi-value">{{ formatCurrency(kpiData.avgTransaction) }}</div>
-        <div class="kpi-change" [ngClass]="getChangeClass(kpiData.avgTransactionChange)">
-          {{ formatPercentage(kpiData.avgTransactionChange) }} from last month
+        <div class="kpi-value">{{ formatCurrency(kpiData().avgTransaction) }}</div>
+        <div class="kpi-change" [ngClass]="getChangeClass(kpiData().avgTransactionChange)">
+          {{ formatPercentage(kpiData().avgTransactionChange) }} from last month
         </div>
       </div>
     </div>
@@ -69,9 +69,9 @@
           <span class="kpi-title">Customers</span>
           <div class="kpi-icon customers">👥</div>
         </div>
-        <div class="kpi-value">{{ kpiData.customers }}</div>
-        <div class="kpi-change" [ngClass]="getChangeClass(kpiData.customersChange)">
-          {{ formatPercentage(kpiData.customersChange) }} from last month
+        <div class="kpi-value">{{ kpiData().customers }}</div>
+        <div class="kpi-change" [ngClass]="getChangeClass(kpiData().customersChange)">
+          {{ formatPercentage(kpiData().customersChange) }} from last month
         </div>
       </div>
     </div>
