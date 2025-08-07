@@ -53,6 +53,10 @@ export const routes: Routes = [
             {
                 path: 'reports-dashboard',
                 loadComponent: () => import('./features/reports-dashboard/report-dashboard.component').then((m) => m.DynamicReportsComponent)
+            },
+            {
+                path: 'reports-table',
+                loadComponent: () => import('./features/report-table/report-table.component').then((m) => m.QueryResultsDisplayComponent)
             }
         ]
     },

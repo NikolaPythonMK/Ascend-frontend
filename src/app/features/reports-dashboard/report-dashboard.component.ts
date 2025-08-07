@@ -1,12 +1,24 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, inject, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+  inject,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Chart, ChartConfiguration, ChartType, registerables } from 'chart.js';
 import { ReportingService } from '../../core/services/api/reporting.service';
-import { finalize, takeUntil } from 'rxjs';
+import { finalize, of, takeUntil } from 'rxjs';
 import { Subject } from 'rxjs';
 import { SnackbarService } from '../../core/services/utility/snackbar.service';
+import { Report } from '../../core/models/api/responses/report.model';
+import { Page } from '../../core/models/api/page.model';
+import { Router } from '@angular/router';
+import { QueryResultService } from '../../core/services/utility/query-result.service';
 
 Chart.register(...registerables);
 
@@ -58,33 +70,38 @@ export interface ChartData {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './report-dashboard.component.html',
-  styleUrls: ['./report-dashboard.component.scss']
+  styleUrls: ['./report-dashboard.component.scss'],
 })
 export class DynamicReportsComponent implements OnInit, OnDestroy {
-  @ViewChild('chartCanvas', { static: false }) chartCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('chartCanvas', { static: false })
+  chartCanvas!: ElementRef<HTMLCanvasElement>;
 
   private readonly reportingService = inject(ReportingService);
   private readonly snackbarService = inject(SnackbarService);
-  
+  private readonly routerService = inject(Router);
+  private readonly queryResultService = inject(QueryResultService);
   // Subject for managing subscriptions
   private readonly destroy$ = new Subject<void>();
-  
+
   // Timeout references for cleanup
   private chartInitTimeout?: ReturnType<typeof setTimeout>;
   private chartUpdateTimeout?: ReturnType<typeof setTimeout>;
 
   chart = signal<Chart | null>(null);
+  reports = signal<Report[]>([]);
 
   chartData = signal<ChartData>({
     labels: [],
-    datasets: [{
-      label: '',
-      data: {},
-      backgroundColor: ['#8b5cf6'],
-      borderColor: ['#7c3aed'],
-      borderWidth: 1
-    }]
-  })
+    datasets: [
+      {
+        label: '',
+        data: {},
+        backgroundColor: ['#8b5cf6'],
+        borderColor: ['#7c3aed'],
+        borderWidth: 1,
+      },
+    ],
+  });
 
   kpiData = signal<KPIData>({
     totalSales: 0,
@@ -94,7 +111,7 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
     avgTransaction: 0,
     avgTransactionChange: 0,
     customers: 0,
-    customersChange: 0
+    customersChange: 0,
   });
 
   // Chart configuration
@@ -103,22 +120,22 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
     { type: 'bar' as ChartType, label: 'Bar Chart', icon: '📊' },
     { type: 'line' as ChartType, label: 'Line Chart', icon: '📈' },
     { type: 'pie' as ChartType, label: 'Pie Chart', icon: '🥧' },
-    { type: 'polarArea' as ChartType, label: 'Polar Chart', icon: '📊' }
+    { type: 'polarArea' as ChartType, label: 'Polar Chart', icon: '📊' },
   ];
 
   // Filter and query state
   filters: QueryFilter[] = [];
   currentQuery: DynamicQuery = {
-    RootEntity: "Transaction",
-    Includes: ["TransactionItems"],
+    RootEntity: 'Transaction',
+    Includes: ['TransactionItems'],
     Filters: {
-      Operator: "AND",
+      Operator: 'AND',
       Filters: [],
-      Groups: []
+      Groups: [],
     },
     SelectFields: [],
     Aggregates: [],
-    TotalAggregates: []
+    TotalAggregates: [],
   };
 
   // Form fields
@@ -175,7 +192,7 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
         'canvas#chartCanvas',
         '[data-chart="canvas"]',
         '.chart-container canvas',
-        'canvas'
+        'canvas',
       ];
 
       for (const selector of selectors) {
@@ -191,7 +208,7 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
     if (canvas) {
       this.createChart(canvas);
     } else if (currentAttempt < maxAttempts - 1) {
-      const delay = 100 + (currentAttempt * 50);
+      const delay = 100 + currentAttempt * 50;
       this.chartInitTimeout = setTimeout(() => {
         this.initializeChartWithRetry(maxAttempts, currentAttempt + 1);
       }, delay);
@@ -199,18 +216,31 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
   }
 
   handleHover = (evt: any, item: any, legend: any) => {
-    legend.chart.data.datasets[0].backgroundColor.forEach((color: string | any[], index: string | number, colors: { [x: string]: any; }) => {
-      colors[index] = index === item.index || color.length === 9 ? color : color + '4D';
-    });
+    legend.chart.data.datasets[0].backgroundColor.forEach(
+      (
+        color: string | any[],
+        index: string | number,
+        colors: { [x: string]: any }
+      ) => {
+        colors[index] =
+          index === item.index || color.length === 9 ? color : color + '4D';
+      }
+    );
     legend.chart.update();
-  }
+  };
 
   handleLeave = (evt: any, item: any, legend: any) => {
-    legend.chart.data.datasets[0].backgroundColor.forEach((color: string | any[], index: string | number, colors: { [x: string]: any; }) => {
-      colors[index] = color.length === 9 ? color.slice(0, -2) : color;
-    });
+    legend.chart.data.datasets[0].backgroundColor.forEach(
+      (
+        color: string | any[],
+        index: string | number,
+        colors: { [x: string]: any }
+      ) => {
+        colors[index] = color.length === 9 ? color.slice(0, -2) : color;
+      }
+    );
     legend.chart.update();
-  }
+  };
 
   private createChart(canvas: HTMLCanvasElement) {
     console.log('Creating chart on canvas:', canvas);
@@ -241,7 +271,11 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
             },
             delay: (context) => {
               var delay = 0;
-              if (context.type === 'data' && context.mode === 'default' && !delayed) {
+              if (
+                context.type === 'data' &&
+                context.mode === 'default' &&
+                !delayed
+              ) {
                 delay = context.dataIndex * 30 + context.datasetIndex * 30;
               }
               return delay;
@@ -251,23 +285,27 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
             legend: {
               display: true,
               onHover: this.handleHover,
-              onLeave: this.handleLeave
-            }
-          },
-          scales: this.selectedChartType === 'pie' || this.selectedChartType === 'doughnut' ? {} : {
-            y: {
-              beginAtZero: true,
-              grid: {
-                color: '#f3f4f6'
-              }
+              onLeave: this.handleLeave,
             },
-            x: {
-              grid: {
-                display: false
-              }
-            }
-          }
-        }
+          },
+          scales:
+            this.selectedChartType === 'pie' ||
+            this.selectedChartType === 'doughnut'
+              ? {}
+              : {
+                  y: {
+                    beginAtZero: true,
+                    grid: {
+                      color: '#f3f4f6',
+                    },
+                  },
+                  x: {
+                    grid: {
+                      display: false,
+                    },
+                  },
+                },
+        },
       };
 
       this.chart.set(new Chart(ctx, config));
@@ -281,6 +319,7 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
     try {
       await this.loadKPIData();
       await this.loadChartData();
+      this.getAllReports();
     } catch (error) {
       console.error('Error loading initial data:', error);
     } finally {
@@ -291,8 +330,16 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
   async loadKPIData() {
     try {
       const now = new Date();
-      const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      const startOfPreviousMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const startOfCurrentMonth = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        1
+      );
+      const startOfPreviousMonth = new Date(
+        now.getFullYear(),
+        now.getMonth() - 1,
+        1
+      );
       const endOfPreviousMonth = new Date(startOfCurrentMonth.getTime() - 1);
       const startOfCurrentMonthISO = startOfCurrentMonth.toISOString();
       const startOfPreviousMonthISO = startOfPreviousMonth.toISOString();
@@ -306,36 +353,61 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
             {
               Field: 'Timestamp',
               Operator: '>=',
-              Value: startOfCurrentMonthISO
-            }
+              Value: startOfCurrentMonthISO,
+            },
           ],
-          Groups: []
+          Groups: [],
         },
         Aggregates: [
-          { Operation: "Sum", Field: "TotalGrossPrice", Alias: "totalSales" },
-          { Operation: "Count", Field: "Id", Alias: "transactions" },
-          { Operation: "Avg", Field: "TotalGrossPrice", Alias: "avgTransaction" },
-          { Operation: "Count", Field: "TransactionItems.Id", Alias: "customers" }
-        ]
+          { Operation: 'Sum', Field: 'TotalGrossPrice', Alias: 'totalSales' },
+          { Operation: 'Count', Field: 'Id', Alias: 'transactions' },
+          {
+            Operation: 'Avg',
+            Field: 'TotalGrossPrice',
+            Alias: 'avgTransaction',
+          },
+          {
+            Operation: 'Count',
+            Field: 'TransactionItems.Id',
+            Alias: 'customers',
+          },
+        ],
       };
 
-      this.reportingService.execute(kpiQuery)
+      this.reportingService
+        .execute(kpiQuery)
         .pipe(
           takeUntil(this.destroy$),
           finalize(() => this.loading.set(false))
         )
         .subscribe({
           next: (response: any) => {
-            console.log(response.result)
+            console.log(response.result);
             this.kpiData.set({
-              totalSales: response.result.aggregates.totalSales || this.kpiData().totalSales,
-              totalSalesChange: response.result.aggregates.totalSalesChange || this.kpiData().totalSalesChange,
-              transactions: response.result.aggregates.transactions || this.kpiData().transactions,
-              transactionsChange: response.result.aggregates.transactionsChange || this.kpiData().transactionsChange,
-              avgTransaction: response.result.aggregates.avgTransaction || this.kpiData().avgTransaction,
-              avgTransactionChange: response.result.aggregates.avgTransactionChange || this.kpiData().avgTransactionChange,
-              customers: response.result.aggregates.customers || this.kpiData().customers,
-              customersChange: response.result.aggregates.customersChange || this.kpiData().customersChange
+              totalSales:
+                response.result.aggregates.totalSales ||
+                this.kpiData().totalSales,
+              totalSalesChange:
+                response.result.aggregates.totalSalesChange ||
+                this.kpiData().totalSalesChange,
+              transactions:
+                response.result.aggregates.transactions ||
+                this.kpiData().transactions,
+              transactionsChange:
+                response.result.aggregates.transactionsChange ||
+                this.kpiData().transactionsChange,
+              avgTransaction:
+                response.result.aggregates.avgTransaction ||
+                this.kpiData().avgTransaction,
+              avgTransactionChange:
+                response.result.aggregates.avgTransactionChange ||
+                this.kpiData().avgTransactionChange,
+              customers:
+                response.result.aggregates.customers ||
+                this.kpiData().customers,
+              customersChange:
+                response.result.aggregates.customersChange ||
+                this.kpiData().customersChange,
             });
           },
           error: (error: HttpErrorResponse) => {
@@ -351,41 +423,62 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
             {
               Field: 'Timestamp',
               Operator: '>=',
-              Value: startOfPreviousMonthISO
+              Value: startOfPreviousMonthISO,
             },
             {
               Field: 'Timestamp',
               Operator: '<=',
-              Value: endOfPreviousMonthISO
-            }
+              Value: endOfPreviousMonthISO,
+            },
           ],
-          Groups: []
+          Groups: [],
         },
         Aggregates: [
-          { Operation: "Sum", Field: "TotalGrossPrice", Alias: "totalSales" },
-          { Operation: "Count", Field: "Id", Alias: "transactions" },
-          { Operation: "Avg", Field: "TotalGrossPrice", Alias: "avgTransaction" },
-          { Operation: "Count", Field: "TransactionItems.Id", Alias: "customers" }
-        ]
+          { Operation: 'Sum', Field: 'TotalGrossPrice', Alias: 'totalSales' },
+          { Operation: 'Count', Field: 'Id', Alias: 'transactions' },
+          {
+            Operation: 'Avg',
+            Field: 'TotalGrossPrice',
+            Alias: 'avgTransaction',
+          },
+          {
+            Operation: 'Count',
+            Field: 'TransactionItems.Id',
+            Alias: 'customers',
+          },
+        ],
       };
 
-      this.reportingService.execute(kpiQueryOneWeekBefore)
+      this.reportingService
+        .execute(kpiQueryOneWeekBefore)
         .pipe(
           takeUntil(this.destroy$),
           finalize(() => this.loading.set(false))
         )
         .subscribe({
           next: (response: any) => {
-            console.log(response.result)
+            console.log(response.result);
             this.kpiData.set({
-              totalSalesChange: this.calculateChange(this.kpiData().totalSales, response.result.aggregates.totalSales),
-              transactionsChange: this.calculateChange(this.kpiData().transactions, response.result.aggregates.transactions),
-              avgTransactionChange: this.calculateChange(this.kpiData().avgTransaction, response.result.aggregates.avgTransaction),
-              customersChange: this.calculateChange(this.kpiData().customers, response.result.aggregates.customers),
+              totalSalesChange: this.calculateChange(
+                this.kpiData().totalSales,
+                response.result.aggregates.totalSales
+              ),
+              transactionsChange: this.calculateChange(
+                this.kpiData().transactions,
+                response.result.aggregates.transactions
+              ),
+              avgTransactionChange: this.calculateChange(
+                this.kpiData().avgTransaction,
+                response.result.aggregates.avgTransaction
+              ),
+              customersChange: this.calculateChange(
+                this.kpiData().customers,
+                response.result.aggregates.customers
+              ),
               totalSales: this.kpiData().totalSales,
               transactions: this.kpiData().transactions,
               avgTransaction: this.kpiData().avgTransaction,
-              customers: this.kpiData().customers
+              customers: this.kpiData().customers,
             });
           },
           error: (error: HttpErrorResponse) => {
@@ -406,7 +499,8 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
 
   async loadChartData() {
     try {
-      this.reportingService.chartdata()
+      this.reportingService
+        .chartdata()
         .pipe(
           takeUntil(this.destroy$),
           finalize(() => this.loading.set(false))
@@ -414,15 +508,56 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (result: any) => {
             const response: ChartData = {
-              labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-              datasets: [{
-                label: 'Value',
-                data: result,
-                backgroundColor: ['#1b5cf6', '#e91e63', '#4caf50', '#ff9800', '#9c27b0', '#03a9f4', '#8bc34a', '#ff5722', '#00bcd4', '#cddc39', '#673ab7', '#f44336'],
-                borderColor: ['#1b5cf6', '#e91e63', '#4caf50', '#ff9800', '#9c27b0', '#03a9f4', '#8bc34a', '#ff5722', '#00bcd4', '#cddc39', '#673ab7', '#f44336'],
-                borderWidth: 1
-              }]
-            }
+              labels: [
+                'Jan',
+                'Feb',
+                'Mar',
+                'Apr',
+                'May',
+                'Jun',
+                'Jul',
+                'Aug',
+                'Sep',
+                'Oct',
+                'Nov',
+                'Dec',
+              ],
+              datasets: [
+                {
+                  label: 'Value',
+                  data: result,
+                  backgroundColor: [
+                    '#1b5cf6',
+                    '#e91e63',
+                    '#4caf50',
+                    '#ff9800',
+                    '#9c27b0',
+                    '#03a9f4',
+                    '#8bc34a',
+                    '#ff5722',
+                    '#00bcd4',
+                    '#cddc39',
+                    '#673ab7',
+                    '#f44336',
+                  ],
+                  borderColor: [
+                    '#1b5cf6',
+                    '#e91e63',
+                    '#4caf50',
+                    '#ff9800',
+                    '#9c27b0',
+                    '#03a9f4',
+                    '#8bc34a',
+                    '#ff5722',
+                    '#00bcd4',
+                    '#cddc39',
+                    '#673ab7',
+                    '#f44336',
+                  ],
+                  borderWidth: 1,
+                },
+              ],
+            };
 
             if (response) {
               this.chartData.set(response);
@@ -471,23 +606,6 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
     await this.loadChartData();
   }
 
-  // Filter methods
-  addFilter() {
-    const newFilter: QueryFilter = {
-      Field: 'Id',
-      Operator: '==',
-      Value: ''
-    };
-
-    this.filters.push(newFilter);
-    this.updateCurrentQuery();
-  }
-
-  removeFilter(index: number) {
-    this.filters.splice(index, 1);
-    this.updateCurrentQuery();
-  }
-
   updateCurrentQuery() {
     this.currentQuery.Filters.Filters = this.filters;
   }
@@ -495,12 +613,6 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
   async applyFilters() {
     this.updateCurrentQuery();
     await this.loadInitialData();
-  }
-
-  showSQL() {
-    // Generate SQL representation of the query
-    console.log('Current Query:', this.currentQuery);
-    alert('SQL query logged to console');
   }
 
   // Export methods
@@ -542,7 +654,7 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
   formatCurrency(value: number): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'USD',
     }).format(value);
   }
 
@@ -553,5 +665,43 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
 
   getChangeClass(value: number): string {
     return value >= 0 ? 'positive' : 'negative';
+  }
+
+  private getAllReports(): void {
+    this.reportingService.getAll().subscribe({
+      next: (result: Page<Report>) => {
+        this.reports.set(result.data);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.snackbarService.error(error.message);
+      },
+    });
+  }
+
+  displayReport(queryData: string) {
+    const query = JSON.parse(queryData);
+
+    this.reportingService
+      .execute(query)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (result: any) => {
+          if (result?.result) {
+            this.snackbarService.success(
+              'Success'
+            );
+            console.log(result.result)
+            this.queryResultService.setQueryResult(result.result!);
+            this.routerService.navigate(['reports-table']);
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Query execution failed:', error);
+          this.snackbarService.error(
+            'Query execution failed. Please check your parameters.'
+          );
+          return of(null);
+        },
+      });
   }
 }

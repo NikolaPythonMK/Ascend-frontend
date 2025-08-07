@@ -1,0 +1,215 @@
+<div class="query-results-container">
+  
+  <!-- Loading Indicator -->
+  <div *ngIf="loading" class="loading-section">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading results...</p>
+  </div>
+
+  <!-- Results Content -->
+  <div *ngIf="!loading && queryResult" class="results-content">
+    
+    <!-- Header Section -->
+    <div class="results-header">
+      <div class="title-section">
+        <h2>
+          <mat-icon>table_chart</mat-icon>
+          {{ title }}
+        </h2>
+      </div>
+      
+      <!-- Action Buttons -->
+      <div *ngIf="showActions" class="action-buttons">
+        <button mat-stroked-button (click)="refreshData()" matTooltip="Refresh data">
+          <mat-icon>refresh</mat-icon>
+          Refresh
+        </button>
+        
+        <button mat-stroked-button [matMenuTriggerFor]="exportMenu" matTooltip="Export data">
+          <mat-icon>download</mat-icon>
+          Export
+        </button>
+        
+        <mat-menu #exportMenu="matMenu">
+          <button mat-menu-item (click)="exportData('csv')">
+            <mat-icon>description</mat-icon>
+            Export as CSV
+          </button>
+          <button mat-menu-item (click)="exportData('json')">
+            <mat-icon>code</mat-icon>
+            Export as JSON
+          </button>
+          <button mat-menu-item (click)="exportData('excel')" disabled>
+            <mat-icon>table_view</mat-icon>
+            Export as Excel
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div *ngIf="showSummary" class="summary-section">
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <div class="summary-item">
+            <mat-icon class="summary-icon records">dataset</mat-icon>
+            <div class="summary-details">
+              <div class="summary-value">{{ getRecordCount() | number }}</div>
+              <div class="summary-label">Records Found</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="summary-card" *ngIf="getAggregateCount() > 0">
+        <mat-card-content>
+          <div class="summary-item">
+            <mat-icon class="summary-icon calculations">functions</mat-icon>
+            <div class="summary-details">
+              <div class="summary-value">{{ getAggregateCount() }}</div>
+              <div class="summary-label">Calculations</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Additional summary cards can be added here -->
+      <mat-card class="summary-card" *ngIf="displayedColumns.length > 0">
+        <mat-card-content>
+          <div class="summary-item">
+            <mat-icon class="summary-icon columns">view_column</mat-icon>
+            <div class="summary-details">
+              <div class="summary-value">{{ displayedColumns.length }}</div>
+              <div class="summary-label">Columns</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Aggregates Display -->
+    <div *ngIf="showAggregates && hasAggregates()" class="aggregates-results">
+      
+      <!-- Filtered Results Aggregates -->
+      <div *ngIf="aggregateKeys.length > 0" class="aggregate-section">
+        <div class="section-header">
+          <h3>
+            <mat-icon>filter_list</mat-icon>
+            Filtered Results
+          </h3>
+        </div>
+        <div class="aggregates-grid">
+          <mat-card *ngFor="let key of aggregateKeys; trackBy: trackByAggregateKey" 
+                   class="aggregate-card filtered">
+            <mat-card-content>
+              <div class="aggregate-item">
+                <div class="aggregate-label">{{ key }}</div>
+                <div class="aggregate-value">
+                  {{ queryResult!.aggregates![key] | number:'1.2-2' }}
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+
+      <!-- Total Results Aggregates -->
+      <div *ngIf="totalAggregateKeys.length > 0" class="aggregate-section">
+        <div class="section-header">
+          <h3>
+            <mat-icon>summarize</mat-icon>
+            Total Results
+          </h3>
+        </div>
+        <div class="aggregates-grid">
+          <mat-card *ngFor="let key of totalAggregateKeys; trackBy: trackByAggregateKey" 
+                   class="aggregate-card total">
+            <mat-card-content>
+              <div class="aggregate-item">
+                <div class="aggregate-label">{{ key }}</div>
+                <div class="aggregate-value">
+                  {{ queryResult!.totalAggregates![key] | number:'1.2-2' }}
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <mat-card *ngIf="showDataTable && hasData()" class="data-table-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>table_rows</mat-icon>
+          Data Results
+        </mat-card-title>
+        <mat-card-subtitle>
+          Showing {{ dataSource.data.length }} of {{ getRecordCount() }} records
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content class="table-content">
+        <div class="table-container">
+          <table mat-table [dataSource]="dataSource" class="results-table mat-elevation-0">
+            
+            <!-- Dynamic Columns -->
+            <ng-container *ngFor="let column of displayedColumns; trackBy: trackByString" 
+                         [matColumnDef]="column">
+              <th mat-header-cell *matHeaderCellDef class="table-header">
+                <div class="header-content">
+                  <span class="header-label">{{ getColumnLabel(column) }}</span>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let row" class="table-cell">
+                <span class="cell-content">
+                  {{ formatCellValue(getNestedValue(row, column)) }}
+                </span>
+              </td>
+            </ng-container>
+            
+            <!-- Table Rows -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="header-row"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns; trackBy: trackByIndex" 
+                class="data-row"></tr>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <mat-paginator 
+          #paginator
+          [length]="dataSource.data.length"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          [showFirstLastButtons]="true"
+          (page)="onPageChange($event)"
+          class="results-paginator">
+        </mat-paginator>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- No Data Message -->
+    <mat-card *ngIf="!hasData() && !loading" class="no-data-card">
+      <mat-card-content>
+        <div class="no-data-content">
+          <mat-icon class="no-data-icon">search_off</mat-icon>
+          <h3>No Data Found</h3>
+          <p>Your query didn't return any results. Try adjusting your filters or search criteria.</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!loading && !queryResult" class="error-section">
+    <mat-card class="error-card">
+      <mat-card-content>
+        <div class="error-content">
+          <mat-icon class="error-icon">error_outline</mat-icon>
+          <h3>No Results Available</h3>
+          <p>Please execute a query to see results here.</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
