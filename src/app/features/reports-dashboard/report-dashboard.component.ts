@@ -290,21 +290,21 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
           },
           scales:
             this.selectedChartType === 'pie' ||
-            this.selectedChartType === 'doughnut'
+              this.selectedChartType === 'doughnut'
               ? {}
               : {
-                  y: {
-                    beginAtZero: true,
-                    grid: {
-                      color: '#f3f4f6',
-                    },
-                  },
-                  x: {
-                    grid: {
-                      display: false,
-                    },
+                y: {
+                  beginAtZero: true,
+                  grid: {
+                    color: '#f3f4f6',
                   },
                 },
+                x: {
+                  grid: {
+                    display: false,
+                  },
+                },
+              },
         },
       };
 
@@ -692,7 +692,7 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
             );
             console.log(result.result)
             this.queryResultService.setQueryResult(result.result!);
-            this.routerService.navigate(['reports-table']);
+            this.routerService.navigate(['report-view']);
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -703,5 +703,8 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
           return of(null);
         },
       });
+  }
+  navigateToCreateReport() {
+    this.routerService.navigate(['dynamic-report'])
   }
 }

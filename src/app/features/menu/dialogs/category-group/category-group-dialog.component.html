@@ -46,7 +46,7 @@
         <ascend-upload-image
           (uploadEvent)="onUpload($event)"
           [imageUrl]="
-            imageUrl() && imageUrl()?.trim() !== ''
+            imageUrl() && imageUrl()!.trim() !== ''
               ? 'http://localhost:5073' + imageUrl()
               : null
           "

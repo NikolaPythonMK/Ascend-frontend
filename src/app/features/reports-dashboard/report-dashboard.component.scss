@@ -163,6 +163,8 @@
     overflow: hidden;
 
     .panel-header {
+      display: flex;
+      justify-content: space-between;
       padding: 20px 24px;
       border-bottom: 1px solid #f1f5f9;
       background: linear-gradient(135deg, #fafbfc 0%, #f8fafc 100%);
@@ -522,6 +524,15 @@
 
       &:hover {
         background: #b91c1c;
+      }
+    }
+
+    &.btn-success {
+      background: #5cb85c;
+      color: white;
+
+      &:hover {
+        background: #5cb85c;
       }
     }
 

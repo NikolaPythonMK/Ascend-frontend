@@ -1,18 +1,16 @@
-import { AfterViewInit, Component, computed, ElementRef, HostListener, inject, Input, input, OnInit, output, signal, ViewChild } from "@angular/core";
-import { SearchBarComponent } from "../../../../core/ui/search-bar/search-bar.component";
+import { Component, ElementRef, inject, Input, input, OnInit, output, signal, ViewChild } from "@angular/core";
 import { ProductsService } from "../../../../core/services/api/products.service";
 import { CategoriesService } from "../../../../core/services/api/categories.service";
 import { CommonModule } from "@angular/common";
 import { Category } from "../../../../core/models/api/responses/category.model";
 import { Product } from "../../../../core/models/api/responses/product.model";
-import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
 import { KeyEventEmitter } from "../table/services/key-event-emitter.service";
 import { Subject, takeUntil } from "rxjs";
 
 
 @Component({
     selector: 'display-products',
-    imports: [SearchBarComponent, CommonModule, LoaderComponent],
+    imports: [CommonModule],
     templateUrl: 'display-products.component.html',
     styleUrls: ['display-products.component.scss']
 })

@@ -29,6 +29,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
+    padding: 2em 0em;
 
     .title-section {
       h2 {
@@ -217,7 +218,7 @@
     }
 
     .table-content {
-      padding: 0;
+      margin: 2em 0em;
       
       .table-container {
         overflow: auto;
@@ -353,6 +354,7 @@
     .results-header {
       flex-direction: column;
       align-items: stretch;
+      padding: 2em 0em;
 
       .action-buttons {
         justify-content: center;

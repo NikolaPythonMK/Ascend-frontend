@@ -22,7 +22,6 @@ import {  MatIconModule } from '@angular/material/icon';
 import { ConfirmationDialog } from '../../../../core/ui/confirmation-dialog/confirmation-dialog.component';
 import { ProductQuantityDialogResponse } from '../../models/product-quantity-dialog-response';
 import TranslationService from '../../../../core/services/utility/translation.service';
-import { ButtonComponent } from '../../../../core/ui/button/button.component';
   
   @Component({
     selector: 'app-product-quantity',
@@ -38,8 +37,7 @@ import { ButtonComponent } from '../../../../core/ui/button/button.component';
       ReactiveFormsModule,
       TranslateModule,
       LoaderComponent,
-      MatIconModule,
-      ButtonComponent
+      MatIconModule
     ]
   })
   export class ProductQuantityComponent implements OnInit{
