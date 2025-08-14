@@ -1,3 +1,8 @@
+<ascend-loader [loading]=loading() /> 
+
 <div class="report-wrapper">
-    <report-table [queryResult]="this.queryResult()"></report-table>
+    <report-table 
+    (onRefreshEvent)="refreshData()"
+    [queryResult]="this.queryResult()"
+    [reportId]="this.reportId()"></report-table>
 </div>

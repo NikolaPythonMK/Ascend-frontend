@@ -6,6 +6,7 @@ import {
   SimpleChanges,
   ViewChild,
   inject,
+  output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -21,6 +22,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ReportingService } from '../../core/services/api/reporting.service';
+import { ReportRequest } from '../../core/models/api/requests/report.request';
+import { finalize } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 import { QueryResultService } from '../../core/services/utility/query-result.service';
 
 export interface QueryResult {
@@ -56,6 +61,7 @@ export interface DisplayColumn {
 })
 export class QueryResultsDisplayComponent implements OnInit, OnChanges {
   @Input() queryResult: QueryResult | null = null;
+  @Input() reportId: number | null = null;
   @Input() title: string = 'Query Results';
   @Input() showSummary: boolean = true;
   @Input() showAggregates: boolean = true;
@@ -64,11 +70,14 @@ export class QueryResultsDisplayComponent implements OnInit, OnChanges {
   @Input() pageSize: number = 25;
   @Input() pageSizeOptions: number[] = [10, 25, 50, 100];
   @Input() loading: boolean = false;
-  @Input() showActions: boolean = false;
+  @Input() showActions: boolean = true;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   private readonly queryResultService = inject(QueryResultService);
+  private readonly reportingService = inject(ReportingService);
+  
+  onRefreshEvent = output<void>()
   dataSource = new MatTableDataSource<any>([]);
   displayedColumns: string[] = [];
   aggregateKeys: string[] = [];
@@ -235,7 +244,7 @@ export class QueryResultsDisplayComponent implements OnInit, OnChanges {
     // This is already handled by MatTableDataSource automatically
   }
 
-  exportData(format: 'csv' | 'json' | 'excel') {
+  exportData(format: 'csv' | 'json' | 'excel' | 'pdf') {
     if (!this.hasData()) return;
 
     switch (format) {
@@ -248,41 +257,110 @@ export class QueryResultsDisplayComponent implements OnInit, OnChanges {
       case 'excel':
         this.exportToExcel();
         break;
+      case 'pdf':
+        this.exportToPdf();
+        break;
     }
   }
 
+  refreshData(): void{
+    this.onRefreshEvent.emit();
+  }
+
+  private exportToPdf() {
+    const request: ReportRequest = {
+      id: this.reportId!,
+      name: '',
+      requestData: ''
+    }
+
+    this.reportingService
+      .exportPdf(request)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (result: any) => {
+          console.error('Success');
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Fail', error);
+        },
+      });
+  }
+
   private exportToCsv() {
-    if (!this.queryResult?.data) return;
+    const request: ReportRequest = {
+      id: this.reportId!,
+      name: '',
+      requestData: ''
+    }
 
-    const headers = this.displayedColumns.map((col) =>
-      this.getColumnLabel(col)
-    );
-    const csvContent = [
-      headers.join(','),
-      ...this.queryResult.data.map((row) =>
-        this.displayedColumns
-          .map((col) => {
-            const value = this.getNestedValue(row, col);
-            const formatted = this.formatCellValue(value);
-            return `"${formatted.replace(/"/g, '""')}"`;
-          })
-          .join(',')
-      ),
-    ].join('\n');
-
-    this.downloadFile(csvContent, 'query-results.csv', 'text/csv');
+    this.reportingService
+      .exportCsv(request)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (result: any) => {
+          console.error('Success');
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Fail', error);
+        },
+      });
   }
 
   private exportToJson() {
-    if (!this.queryResult) return;
+    const request: ReportRequest = {
+      id: this.reportId!,
+      name: '',
+      requestData: ''
+    }
 
-    const jsonContent = JSON.stringify(this.queryResult, null, 2);
-    this.downloadFile(jsonContent, 'query-results.json', 'application/json');
+    this.reportingService
+      .exportJson(request)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (result: any) => {
+          console.error('Success');
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Fail', error);
+        },
+      });
   }
 
   private exportToExcel() {
-    // This would require a library like xlsx or similar
-    console.log('Excel export not implemented - requires additional library');
+    const request: ReportRequest = {
+      id: this.reportId!,
+      name: '',
+      requestData: ''
+    }
+
+    this.reportingService
+      .exportExcel(request)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (result: any) => {
+          console.error('Success');
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Fail', error);
+        },
+      });
   }
 
   private downloadFile(content: string, filename: string, mimeType: string) {
@@ -295,11 +373,6 @@ export class QueryResultsDisplayComponent implements OnInit, OnChanges {
     link.click();
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
-  }
-
-  refreshData() {
-    // Emit event for parent to refresh data
-    // You can add an @Output() event emitter here if needed
   }
 
   // TrackBy functions for performance

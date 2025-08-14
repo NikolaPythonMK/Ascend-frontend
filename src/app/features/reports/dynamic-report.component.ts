@@ -45,9 +45,7 @@ import { QueryResultsDisplayComponent } from '../report-table/report-table.compo
 import { ReportingService } from '../../core/services/api/reporting.service';
 import { ReportRequest } from '../../core/models/api/requests/report.request';
 import { SnackbarService } from '../../core/services/utility/snackbar.service';
-import { TranslateService } from '@ngx-translate/core';
 import TranslationService from '../../core/services/utility/translation.service';
-import { Router } from '@angular/router';
 import { QueryResultService } from '../../core/services/utility/query-result.service';
 
 // Optimized interfaces

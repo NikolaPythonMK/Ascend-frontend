@@ -35,4 +35,20 @@ export class ReportingService extends BaseService<Report, ReportRequest> {
     chartdata(): Observable<number[]> {
         return this.http.post<number[]>(`${this.domain}/reporting/chart-data`, {}, { withCredentials: true })
     }
+
+    exportExcel(request: ReportRequest): Observable<object> {
+        return this.http.post<object>(`${this.domain}/reporting/export-excel`, request, { withCredentials: true })
+    }
+
+    exportPdf(request: ReportRequest): Observable<object> {
+        return this.http.post<object>(`${this.domain}/reporting/export-pdf`, request, { withCredentials: true })
+    }
+
+    exportCsv(request: ReportRequest): Observable<object> {
+        return this.http.post<object>(`${this.domain}/reporting/export-csv`, request, { withCredentials: true })
+    }
+
+    exportJson(request: ReportRequest): Observable<object> {
+        return this.http.post<object>(`${this.domain}/reporting/export-json`, request, { withCredentials: true })
+    }
 }

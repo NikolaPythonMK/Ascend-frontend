@@ -39,9 +39,13 @@
             <mat-icon>code</mat-icon>
             Export as JSON
           </button>
-          <button mat-menu-item (click)="exportData('excel')" disabled>
+          <button mat-menu-item (click)="exportData('excel')">
             <mat-icon>table_view</mat-icon>
             Export as Excel
+          </button>
+          <button mat-menu-item (click)="exportData('pdf')">
+            <mat-icon>table_view</mat-icon>
+            Export as Pdf
           </button>
         </mat-menu>
       </div>
@@ -170,7 +174,7 @@
             
             <!-- Table Rows -->
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="header-row"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns; trackBy: trackByIndex" 
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
                 class="data-row"></tr>
           </table>
         </div>

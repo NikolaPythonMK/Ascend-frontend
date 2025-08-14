@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Chart, ChartConfiguration, ChartType, registerables } from 'chart.js';
 import { ReportingService } from '../../core/services/api/reporting.service';
 import { finalize, of, takeUntil } from 'rxjs';
@@ -18,7 +18,10 @@ import { SnackbarService } from '../../core/services/utility/snackbar.service';
 import { Report } from '../../core/models/api/responses/report.model';
 import { Page } from '../../core/models/api/page.model';
 import { Router } from '@angular/router';
+import { Filter } from '../../core/models/api/value-objects/filter.model';
 import { QueryResultService } from '../../core/services/utility/query-result.service';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 Chart.register(...registerables);
 
@@ -56,8 +59,8 @@ export interface KPIData {
   transactionsChange: number;
   avgTransaction: number;
   avgTransactionChange: number;
-  customers: number;
-  customersChange: number;
+  products: number;
+  productsChange: number;
 }
 
 export interface ChartData {
@@ -87,8 +90,10 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
   private chartInitTimeout?: ReturnType<typeof setTimeout>;
   private chartUpdateTimeout?: ReturnType<typeof setTimeout>;
 
+  spanOfData = signal<string>('month');
   chart = signal<Chart | null>(null);
   reports = signal<Report[]>([]);
+  reportsTitle = signal<string>('Reports - All');
 
   chartData = signal<ChartData>({
     labels: [],
@@ -110,8 +115,8 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
     transactionsChange: 0,
     avgTransaction: 0,
     avgTransactionChange: 0,
-    customers: 0,
-    customersChange: 0,
+    products: 0,
+    productsChange: 0,
   });
 
   // Chart configuration
@@ -290,21 +295,21 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
           },
           scales:
             this.selectedChartType === 'pie' ||
-              this.selectedChartType === 'doughnut'
+            this.selectedChartType === 'doughnut'
               ? {}
               : {
-                y: {
-                  beginAtZero: true,
-                  grid: {
-                    color: '#f3f4f6',
+                  y: {
+                    beginAtZero: true,
+                    grid: {
+                      color: '#f3f4f6',
+                    },
+                  },
+                  x: {
+                    grid: {
+                      display: false,
+                    },
                   },
                 },
-                x: {
-                  grid: {
-                    display: false,
-                  },
-                },
-              },
         },
       };
 
@@ -319,7 +324,7 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
     try {
       await this.loadKPIData();
       await this.loadChartData();
-      this.getAllReports();
+      this.allReports();
     } catch (error) {
       console.error('Error loading initial data:', error);
     } finally {
@@ -327,23 +332,29 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
     }
   }
 
-  async loadKPIData() {
+  loadKPIData(startDate?: Date, endDate?: Date) {
     try {
       const now = new Date();
-      const startOfCurrentMonth = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        1
-      );
-      const startOfPreviousMonth = new Date(
-        now.getFullYear(),
-        now.getMonth() - 1,
-        1
-      );
-      const endOfPreviousMonth = new Date(startOfCurrentMonth.getTime() - 1);
-      const startOfCurrentMonthISO = startOfCurrentMonth.toISOString();
-      const startOfPreviousMonthISO = startOfPreviousMonth.toISOString();
-      const endOfPreviousMonthISO = endOfPreviousMonth.toISOString();
+
+      let rangeStart: Date;
+      let rangeEnd: Date;
+      let prevRangeStart: Date;
+      let prevRangeEnd: Date;
+
+      if (startDate && endDate) {
+        rangeStart = startDate;
+        rangeEnd = endDate;
+        const rangeLengthMs = rangeEnd.getTime() - rangeStart.getTime();
+        prevRangeEnd = new Date(rangeStart.getTime() - 1);
+        prevRangeStart = new Date(prevRangeEnd.getTime() - rangeLengthMs);
+        this.spanOfData.set('day');
+      } else {
+        rangeStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        rangeEnd = now;
+        prevRangeStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        prevRangeEnd = new Date(rangeStart.getTime() - 1);
+        this.spanOfData.set('month');
+      }
 
       const kpiQuery: DynamicQuery = {
         ...this.currentQuery,
@@ -353,7 +364,12 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
             {
               Field: 'Timestamp',
               Operator: '>=',
-              Value: startOfCurrentMonthISO,
+              Value: rangeStart.toISOString(),
+            },
+            {
+              Field: 'Timestamp',
+              Operator: '<=',
+              Value: rangeEnd.toISOString(),
             },
           ],
           Groups: [],
@@ -369,53 +385,12 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
           {
             Operation: 'Count',
             Field: 'TransactionItems.Id',
-            Alias: 'customers',
+            Alias: 'products',
           },
         ],
       };
 
-      this.reportingService
-        .execute(kpiQuery)
-        .pipe(
-          takeUntil(this.destroy$),
-          finalize(() => this.loading.set(false))
-        )
-        .subscribe({
-          next: (response: any) => {
-            console.log(response.result);
-            this.kpiData.set({
-              totalSales:
-                response.result.aggregates.totalSales ||
-                this.kpiData().totalSales,
-              totalSalesChange:
-                response.result.aggregates.totalSalesChange ||
-                this.kpiData().totalSalesChange,
-              transactions:
-                response.result.aggregates.transactions ||
-                this.kpiData().transactions,
-              transactionsChange:
-                response.result.aggregates.transactionsChange ||
-                this.kpiData().transactionsChange,
-              avgTransaction:
-                response.result.aggregates.avgTransaction ||
-                this.kpiData().avgTransaction,
-              avgTransactionChange:
-                response.result.aggregates.avgTransactionChange ||
-                this.kpiData().avgTransactionChange,
-              customers:
-                response.result.aggregates.customers ||
-                this.kpiData().customers,
-              customersChange:
-                response.result.aggregates.customersChange ||
-                this.kpiData().customersChange,
-            });
-          },
-          error: (error: HttpErrorResponse) => {
-            this.snackbarService.error(error.message);
-          },
-        });
-
-      const kpiQueryOneWeekBefore: DynamicQuery = {
+      const kpiQueryPrev: DynamicQuery = {
         ...this.currentQuery,
         Filters: {
           Operator: 'AND',
@@ -423,12 +398,12 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
             {
               Field: 'Timestamp',
               Operator: '>=',
-              Value: startOfPreviousMonthISO,
+              Value: prevRangeStart.toISOString(),
             },
             {
               Field: 'Timestamp',
               Operator: '<=',
-              Value: endOfPreviousMonthISO,
+              Value: prevRangeEnd.toISOString(),
             },
           ],
           Groups: [],
@@ -444,45 +419,69 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
           {
             Operation: 'Count',
             Field: 'TransactionItems.Id',
-            Alias: 'customers',
+            Alias: 'products',
           },
         ],
       };
 
+      let currentData: any = null;
+
       this.reportingService
-        .execute(kpiQueryOneWeekBefore)
-        .pipe(
-          takeUntil(this.destroy$),
-          finalize(() => this.loading.set(false))
-        )
+        .execute(kpiQuery)
+        .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (response: any) => {
-            console.log(response.result);
+            currentData = response.result.aggregates;
             this.kpiData.set({
-              totalSalesChange: this.calculateChange(
-                this.kpiData().totalSales,
-                response.result.aggregates.totalSales
-              ),
-              transactionsChange: this.calculateChange(
-                this.kpiData().transactions,
-                response.result.aggregates.transactions
-              ),
-              avgTransactionChange: this.calculateChange(
-                this.kpiData().avgTransaction,
-                response.result.aggregates.avgTransaction
-              ),
-              customersChange: this.calculateChange(
-                this.kpiData().customers,
-                response.result.aggregates.customers
-              ),
-              totalSales: this.kpiData().totalSales,
-              transactions: this.kpiData().transactions,
-              avgTransaction: this.kpiData().avgTransaction,
-              customers: this.kpiData().customers,
+              totalSales: currentData.totalSales || 0,
+              transactions: currentData.transactions || 0,
+              avgTransaction: currentData.avgTransaction || 0,
+              products: currentData.products || 0,
+              totalSalesChange: this.kpiData().totalSalesChange,
+              transactionsChange: this.kpiData().transactionsChange,
+              avgTransactionChange: this.kpiData().avgTransactionChange,
+              productsChange: this.kpiData().productsChange,
             });
+
+            this.reportingService
+              .execute(kpiQueryPrev)
+              .pipe(
+                takeUntil(this.destroy$),
+                finalize(() => this.loading.set(false))
+              )
+              .subscribe({
+                next: (prevResponse: any) => {
+                  const prevData = prevResponse.result.aggregates;
+                  this.kpiData.set({
+                    totalSales: currentData.totalSales || 0,
+                    transactions: currentData.transactions || 0,
+                    avgTransaction: currentData.avgTransaction || 0,
+                    products: currentData.products || 0,
+                    totalSalesChange: this.calculateChange(
+                      currentData.totalSales,
+                      prevData.totalSales
+                    ),
+                    transactionsChange: this.calculateChange(
+                      currentData.transactions,
+                      prevData.transactions
+                    ),
+                    avgTransactionChange: this.calculateChange(
+                      currentData.avgTransaction,
+                      prevData.avgTransaction
+                    ),
+                    productsChange: this.calculateChange(
+                      currentData.products,
+                      prevData.products
+                    ),
+                  });
+                },
+                error: (err: HttpErrorResponse) => {
+                  this.snackbarService.error(err.message);
+                },
+              });
           },
-          error: (error: HttpErrorResponse) => {
-            this.snackbarService.error(error.message);
+          error: (err: HttpErrorResponse) => {
+            this.snackbarService.error(err.message);
           },
         });
     } catch (error) {
@@ -615,25 +614,306 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
     await this.loadInitialData();
   }
 
-  // Export methods
-  async exportPDF() {
+  async exportPDF(filename: string = 'Dashboard-view.pdf'): Promise<void> {
     try {
-      const exportQuery = { ...this.currentQuery, format: 'PDF' };
-      console.log('Exporting PDF...', exportQuery);
-      alert('PDF export functionality would be implemented here');
+      // Get the element to capture
+      const element = document.documentElement; // Use documentElement instead of body
+
+      // Store original styles
+      const originalBodyStyles = {
+        overflow: document.body.style.overflow,
+        height: document.body.style.height,
+        width: document.body.style.width,
+        position: document.body.style.position,
+      };
+
+      const originalHtmlStyles = {
+        overflow: document.documentElement.style.overflow,
+        height: document.documentElement.style.height,
+        width: document.documentElement.style.width,
+      };
+
+      // Force everything to be visible and rendered
+      document.body.style.overflow = 'visible';
+      document.body.style.height = 'auto';
+      document.body.style.width = 'auto';
+      document.body.style.position = 'static';
+
+      document.documentElement.style.overflow = 'visible';
+      document.documentElement.style.height = 'auto';
+      document.documentElement.style.width = 'auto';
+
+      // Get actual content dimensions
+      const actualWidth = Math.max(
+        document.body.scrollWidth,
+        document.body.offsetWidth,
+        document.documentElement.clientWidth,
+        document.documentElement.scrollWidth,
+        document.documentElement.offsetWidth
+      );
+
+      const actualHeight = Math.max(
+        document.body.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.clientHeight,
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight
+      );
+
+      console.log(`Full content dimensions: ${actualWidth}x${actualHeight}px`);
+
+      // Temporarily resize the window viewport simulation
+      const originalViewport = {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      };
+
+      // Create canvas with full content rendered
+      const canvas = await html2canvas(element, {
+        width: actualWidth,
+        height: actualHeight,
+        scale: 1,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        removeContainer: false,
+        logging: false,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: actualWidth,
+        windowHeight: actualHeight,
+        // This is crucial - it forces rendering of the full content
+        // Capture everything including hidden overflow
+        ignoreElements: (element) => {
+          // Skip elements that might cause issues
+          return (
+            element.tagName === 'SCRIPT' ||
+            element.tagName === 'NOSCRIPT' ||
+            element.classList?.contains('no-pdf')
+          );
+        },
+      });
+
+      // Restore original styles immediately after capture
+      Object.assign(document.body.style, originalBodyStyles);
+      Object.assign(document.documentElement.style, originalHtmlStyles);
+
+      console.log(`Canvas created: ${canvas.width}x${canvas.height}px`);
+
+      // Create PDF from canvas
+      await this.createPDFFromCanvas(canvas, filename);
     } catch (error) {
       console.error('Error exporting PDF:', error);
+
+      // Ensure styles are restored even on error
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+      document.body.style.width = '';
+      document.body.style.position = '';
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.height = '';
+      document.documentElement.style.width = '';
+
+      throw error;
+    }
+  }
+
+  // Alternative method: Scroll-based capture for very long pages
+  async exportByScrollCapture(
+    filename: string = 'scrolled-page.pdf'
+  ): Promise<void> {
+    try {
+      const element = document.body;
+      const viewportHeight = window.innerHeight;
+      const fullHeight = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight
+      );
+
+      const captures: HTMLCanvasElement[] = [];
+      const originalScrollY = window.scrollY;
+
+      console.log(
+        `Total height: ${fullHeight}px, Viewport: ${viewportHeight}px`
+      );
+
+      // Capture page in sections by scrolling
+      for (let y = 0; y < fullHeight; y += viewportHeight) {
+        window.scrollTo(0, y);
+
+        // Wait for scroll and any lazy-loaded content
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        const canvas = await html2canvas(element, {
+          scale: 1,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          height: Math.min(viewportHeight, fullHeight - y),
+          y: y,
+          logging: false,
+        });
+
+        captures.push(canvas);
+      }
+
+      // Restore original scroll position
+      window.scrollTo(0, originalScrollY);
+
+      // Combine all captures into one canvas
+      const combinedCanvas = await this.combineCanvases(captures);
+
+      // Create PDF
+      await this.createPDFFromCanvas(combinedCanvas, filename);
+    } catch (error) {
+      console.error('Error in scroll capture:', error);
+      throw error;
+    }
+  }
+
+  private async combineCanvases(
+    canvases: HTMLCanvasElement[]
+  ): Promise<HTMLCanvasElement> {
+    if (canvases.length === 0) throw new Error('No canvases to combine');
+
+    const totalHeight = canvases.reduce(
+      (sum, canvas) => sum + canvas.height,
+      0
+    );
+    const maxWidth = Math.max(...canvases.map((canvas) => canvas.width));
+
+    const combinedCanvas = document.createElement('canvas');
+    combinedCanvas.width = maxWidth;
+    combinedCanvas.height = totalHeight;
+
+    const ctx = combinedCanvas.getContext('2d');
+    if (!ctx) throw new Error('Could not get canvas context');
+
+    let currentY = 0;
+    for (const canvas of canvases) {
+      ctx.drawImage(canvas, 0, currentY);
+      currentY += canvas.height;
+    }
+
+    return combinedCanvas;
+  }
+
+  private async createPDFFromCanvas(
+    canvas: HTMLCanvasElement,
+    filename: string
+  ): Promise<void> {
+    const imgData = canvas.toDataURL('image/png', 0.95);
+
+    // A4 dimensions in mm
+    const pdfWidth = 210;
+    const pdfHeight = 297;
+
+    // Calculate scaling to fit width
+    const imgWidth = pdfWidth;
+    const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    // Determine orientation
+    const orientation = imgHeight > imgWidth ? 'portrait' : 'landscape';
+
+    const pdf = new jsPDF({
+      orientation: orientation,
+      unit: 'mm',
+      format: 'a4',
+    });
+
+    let remainingHeight = imgHeight;
+    let yPosition = 0;
+
+    // Add first page
+    pdf.addImage(imgData, 'PNG', 0, yPosition, imgWidth, imgHeight);
+    remainingHeight -= pdfHeight;
+
+    // Add additional pages if needed
+    while (remainingHeight > 0) {
+      yPosition -= pdfHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, yPosition, imgWidth, imgHeight);
+      remainingHeight -= pdfHeight;
+    }
+
+    // Download
+    const pdfBlob = pdf.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.download = filename;
+    link.style.display = 'none';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
+  }
+
+  // Method that simulates zoom-out effect
+  async exportWithZoomSimulation(
+    filename: string = 'zoomed-page.pdf'
+  ): Promise<void> {
+    try {
+      const body = document.body;
+      const html = document.documentElement;
+
+      // Get full content dimensions
+      const fullWidth = Math.max(body.scrollWidth, html.scrollWidth);
+      const fullHeight = Math.max(body.scrollHeight, html.scrollHeight);
+
+      // Calculate zoom factor to fit everything in viewport
+      const zoomFactorX = window.innerWidth / fullWidth;
+      const zoomFactorY = window.innerHeight / fullHeight;
+      const zoomFactor = Math.min(zoomFactorX, zoomFactorY, 1); // Don't zoom in, only out
+
+      console.log(`Applying zoom factor: ${zoomFactor}`);
+
+      // Store original styles
+      const originalTransform = body.style.transform;
+      const originalTransformOrigin = body.style.transformOrigin;
+      const originalOverflow = html.style.overflow;
+
+      // Apply zoom transformation
+      body.style.transform = `scale(${zoomFactor})`;
+      body.style.transformOrigin = 'top left';
+      html.style.overflow = 'hidden';
+
+      // Wait for transform to apply
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // Capture with html2canvas
+      const canvas = await html2canvas(body, {
+        scale: 2, // High quality
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        width: fullWidth,
+        height: fullHeight,
+        windowWidth: window.innerWidth,
+        windowHeight: window.innerHeight,
+      });
+
+      // Restore original styles
+      body.style.transform = originalTransform;
+      body.style.transformOrigin = originalTransformOrigin;
+      html.style.overflow = originalOverflow;
+
+      await this.createPDFFromCanvas(canvas, filename);
+    } catch (error) {
+      console.error('Error with zoom simulation:', error);
+      // Restore styles on error
+      document.body.style.transform = '';
+      document.body.style.transformOrigin = '';
+      document.documentElement.style.overflow = '';
+      throw error;
     }
   }
 
   async exportExcel() {
-    try {
-      const exportQuery = { ...this.currentQuery, format: 'Excel' };
-      console.log('Exporting Excel...', exportQuery);
-      alert('Excel export functionality would be implemented here');
-    } catch (error) {
-      console.error('Error exporting Excel:', error);
-    }
+   
   }
 
   async exportImage() {
@@ -667,8 +947,8 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
     return value >= 0 ? 'positive' : 'negative';
   }
 
-  private getAllReports(): void {
-    this.reportingService.getAll().subscribe({
+  private getReports(filters: Filter[]): void {
+    this.reportingService.getAll([], undefined, filters).subscribe({
       next: (result: Page<Report>) => {
         this.reports.set(result.data);
       },
@@ -678,7 +958,7 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
     });
   }
 
-  displayReport(queryData: string) {
+  displayReport(queryData: string, reportId: number) {
     const query = JSON.parse(queryData);
 
     this.reportingService
@@ -687,11 +967,12 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (result: any) => {
           if (result?.result) {
-            this.snackbarService.success(
-              'Success'
+            this.snackbarService.success('Success');
+            this.queryResultService.setQueryResult(
+              query,
+              result.result!,
+              reportId
             );
-            console.log(result.result)
-            this.queryResultService.setQueryResult(result.result!);
             this.routerService.navigate(['report-view']);
           }
         },
@@ -705,6 +986,57 @@ export class DynamicReportsComponent implements OnInit, OnDestroy {
       });
   }
   navigateToCreateReport() {
-    this.routerService.navigate(['dynamic-report'])
+    this.routerService.navigate(['dynamic-report']);
+  }
+  locationReports(): void {
+    const locationId = Number(localStorage.getItem('location'));
+
+    const filter: Filter = {
+      propName: 'LocationID',
+      operator: '=',
+      value: locationId.toString(),
+    };
+
+    this.getReports([filter]);
+    this.reportsTitle.set('Reports - Location');
+  }
+  organizationReports(): void {
+    const filter: Filter = {
+      propName: 'LocationID',
+      operator: '=',
+      value: null,
+    };
+
+    this.getReports([filter]);
+    this.reportsTitle.set('Reports - Organization');
+  }
+  allReports(): void {
+    this.getReports([]);
+    this.reportsTitle.set('Reports - All');
+  }
+  getStartOfToday(): Date {
+    const now = new Date();
+    return new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      0,
+      0,
+      0,
+      0
+    );
+  }
+
+  getEndOfToday(): Date {
+    const now = new Date();
+    return new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      23,
+      59,
+      59,
+      999
+    );
   }
 }

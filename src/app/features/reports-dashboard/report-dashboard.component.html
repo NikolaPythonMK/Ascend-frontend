@@ -11,11 +11,11 @@
       </div>
     </div>
     <div class="header-right">
-      <button class="btn btn-outline">
+      <button class="btn btn-outline" (click)="loadKPIData()">
         <span class="icon">⚡</span>
-        Live Data
+        Month Data
       </button>
-      <button class="btn btn-outline">
+      <button class="btn btn-outline"(click)="loadKPIData(getStartOfToday(), getEndOfToday())">
         <span class="icon">📅</span>
         Today
       </button>
@@ -32,7 +32,7 @@
         </div>
         <div class="kpi-value">{{ formatCurrency(kpiData().totalSales) }}</div>
         <div class="kpi-change" [ngClass]="getChangeClass(kpiData().totalSalesChange)">
-          {{ formatPercentage(kpiData().totalSalesChange) }} from last month
+          {{ formatPercentage(kpiData().totalSalesChange) }} from last {{ this.spanOfData() }}
         </div>
       </div>
     </div>
@@ -45,7 +45,7 @@
         </div>
         <div class="kpi-value">{{ kpiData().transactions }}</div>
         <div class="kpi-change" [ngClass]="getChangeClass(kpiData().transactionsChange)">
-          {{ formatPercentage(kpiData().transactionsChange) }} from last month
+          {{ formatPercentage(kpiData().transactionsChange) }} from last {{ this.spanOfData() }}
         </div>
       </div>
     </div>
@@ -60,7 +60,7 @@
           {{ formatCurrency(kpiData().avgTransaction) }}
         </div>
         <div class="kpi-change" [ngClass]="getChangeClass(kpiData().avgTransactionChange)">
-          {{ formatPercentage(kpiData().avgTransactionChange) }} from last month
+          {{ formatPercentage(kpiData().avgTransactionChange) }} from last {{ this.spanOfData() }}
         </div>
       </div>
     </div>
@@ -68,12 +68,12 @@
     <div class="kpi-card">
       <div class="kpi-content">
         <div class="kpi-header">
-          <span class="kpi-title">Customers</span>
-          <div class="kpi-icon customers">👥</div>
+          <span class="kpi-title">Total Products</span>
+          <div class="kpi-icon products">👥</div>
         </div>
-        <div class="kpi-value">{{ kpiData().customers }}</div>
-        <div class="kpi-change" [ngClass]="getChangeClass(kpiData().customersChange)">
-          {{ formatPercentage(kpiData().customersChange) }} from last month
+        <div class="kpi-value">{{ kpiData().products }}</div>
+        <div class="kpi-change" [ngClass]="getChangeClass(kpiData().productsChange)">
+          {{ formatPercentage(kpiData().productsChange) }} from last {{ this.spanOfData() }}
         </div>
       </div>
     </div>
@@ -84,7 +84,7 @@
     <!-- Query Builder -->
     <div class="panel reports">
       <div class="panel-header">
-        <h3>🔍 Reports</h3>
+        <h3>🔍 {{ this.reportsTitle() }}</h3>
         <button class="btn btn-success" (click)="navigateToCreateReport()">
           <span class="icon">Add Report</span>
         </button>
@@ -94,15 +94,15 @@
           <div class="filters-header">
             <span class="section-title">Filters</span>
             <div class="filters-actions">
-              <button class="btn btn-outline btn-sm">
+              <button class="btn btn-outline btn-sm" (click)="allReports()">
                 <span class="icon">+</span>
                 All
               </button>
-              <button class="btn btn-primary btn-sm">
+              <button class="btn btn-primary btn-sm" (click)="organizationReports()">
                 <span class="icon">+</span>
                 Organization
               </button>
-              <button class="btn btn-primary btn-sm">
+              <button class="btn btn-primary btn-sm" (click)="locationReports()">
                 <span class="icon">+</span>
                 Location
               </button>
@@ -111,7 +111,7 @@
 
           <div class="report-list">
             @for (report of reports(); track $index) {
-            <div class="report-item" (click)="displayReport(report.requestData)">
+            <div class="report-item" (click)="displayReport(report.requestData, report.id)">
               <div class="report-icon">📄</div>
               <div class="report-details">
                 <div class="report-title">{{ report.name }}</div>
@@ -119,7 +119,7 @@
                   {{ report.description }}
                 </div>
               </div>
-              <button class="btn btn-outline btn-sm" (click)="displayReport(report.requestData)">View</button>
+              <button class="btn btn-outline btn-sm" (click)="displayReport(report.requestData, report.id)">View</button>
             </div>
             }
           </div>
