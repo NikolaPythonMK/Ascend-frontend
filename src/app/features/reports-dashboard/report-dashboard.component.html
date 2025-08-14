@@ -1,0 +1,244 @@
+<div class="dynamic-reports">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">
+        <div class="logo-icon">📊</div>
+        <div class="logo-text">
+          <h1>Dynamic Reports</h1>
+          <p>Professional POS Analytics & Reporting</p>
+        </div>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-outline" (click)="loadKPIData()">
+        <span class="icon">⚡</span>
+        Month Data
+      </button>
+      <button class="btn btn-outline"(click)="loadKPIData(getStartOfToday(), getEndOfToday())">
+        <span class="icon">📅</span>
+        Today
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-content">
+        <div class="kpi-header">
+          <span class="kpi-title">Total Sales</span>
+          <div class="kpi-icon sales">💰</div>
+        </div>
+        <div class="kpi-value">{{ formatCurrency(kpiData().totalSales) }}</div>
+        <div class="kpi-change" [ngClass]="getChangeClass(kpiData().totalSalesChange)">
+          {{ formatPercentage(kpiData().totalSalesChange) }} from last {{ this.spanOfData() }}
+        </div>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-content">
+        <div class="kpi-header">
+          <span class="kpi-title">Transactions</span>
+          <div class="kpi-icon transactions">🛒</div>
+        </div>
+        <div class="kpi-value">{{ kpiData().transactions }}</div>
+        <div class="kpi-change" [ngClass]="getChangeClass(kpiData().transactionsChange)">
+          {{ formatPercentage(kpiData().transactionsChange) }} from last {{ this.spanOfData() }}
+        </div>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-content">
+        <div class="kpi-header">
+          <span class="kpi-title">Avg. Transaction</span>
+          <div class="kpi-icon avg-transaction">📈</div>
+        </div>
+        <div class="kpi-value">
+          {{ formatCurrency(kpiData().avgTransaction) }}
+        </div>
+        <div class="kpi-change" [ngClass]="getChangeClass(kpiData().avgTransactionChange)">
+          {{ formatPercentage(kpiData().avgTransactionChange) }} from last {{ this.spanOfData() }}
+        </div>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-content">
+        <div class="kpi-header">
+          <span class="kpi-title">Total Products</span>
+          <div class="kpi-icon products">👥</div>
+        </div>
+        <div class="kpi-value">{{ kpiData().products }}</div>
+        <div class="kpi-change" [ngClass]="getChangeClass(kpiData().productsChange)">
+          {{ formatPercentage(kpiData().productsChange) }} from last {{ this.spanOfData() }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Query Builder -->
+    <div class="panel reports">
+      <div class="panel-header">
+        <h3>🔍 {{ this.reportsTitle() }}</h3>
+        <button class="btn btn-success" (click)="navigateToCreateReport()">
+          <span class="icon">Add Report</span>
+        </button>
+      </div>
+      <div class="panel-content">
+        <div class="filters-section">
+          <div class="filters-header">
+            <span class="section-title">Filters</span>
+            <div class="filters-actions">
+              <button class="btn btn-outline btn-sm" (click)="allReports()">
+                <span class="icon">+</span>
+                All
+              </button>
+              <button class="btn btn-primary btn-sm" (click)="organizationReports()">
+                <span class="icon">+</span>
+                Organization
+              </button>
+              <button class="btn btn-primary btn-sm" (click)="locationReports()">
+                <span class="icon">+</span>
+                Location
+              </button>
+            </div>
+          </div>
+
+          <div class="report-list">
+            @for (report of reports(); track $index) {
+            <div class="report-item" (click)="displayReport(report.requestData, report.id)">
+              <div class="report-icon">📄</div>
+              <div class="report-details">
+                <div class="report-title">{{ report.name }}</div>
+                <div class="report-description">
+                  {{ report.description }}
+                </div>
+              </div>
+              <button class="btn btn-outline btn-sm" (click)="displayReport(report.requestData, report.id)">View</button>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart Configuration -->
+    <div class="panel chart-config">
+      <div class="panel-header">
+        <h3>Chart Configuration</h3>
+      </div>
+      <div class="panel-content">
+        <div class="chart-type-section">
+          <label class="section-label">Chart Type</label>
+          <div class="chart-type-grid">
+            <button *ngFor="let type of chartTypes" class="chart-type-btn"
+              [class.active]="selectedChartType === type.type" (click)="onChartTypeChange(type.type)">
+              <span class="chart-icon">{{ type.icon }}</span>
+              <span class="chart-label">{{ type.label }}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="axis-config">
+          <div class="config-row">
+            <div class="config-group">
+              <label>X-Axis</label>
+              <select [(ngModel)]="xAxisField" (change)="onConfigurationChange()" class="form-control">
+                <option *ngFor="let field of availableFields" [value]="field">
+                  {{ field }}
+                </option>
+              </select>
+            </div>
+            <div class="config-group">
+              <label>Y-Axis</label>
+              <select [(ngModel)]="yAxisField" (change)="onConfigurationChange()" class="form-control">
+                <option *ngFor="let field of availableFields" [value]="field">
+                  {{ field }}
+                </option>
+              </select>
+            </div>
+            <div class="config-group">
+              <label>Aggregation</label>
+              <select [(ngModel)]="aggregationType" (change)="onConfigurationChange()" class="form-control">
+                <option *ngFor="let type of aggregationTypes" [value]="type">
+                  {{ type }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="config-group">
+            <label>Group By</label>
+            <select [(ngModel)]="groupByField" (change)="onConfigurationChange()" class="form-control">
+              <option *ngFor="let option of groupByOptions" [value]="option">
+                {{ option }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart Visualization -->
+    <div class="panel chart-panel">
+      <div class="panel-header">
+        <h3>Report Visualization</h3>
+      </div>
+      <div class="panel-content">
+        <div class="chart-container">
+          <canvas #chartCanvas id="chartCanvas" data-chart="canvas" width="400" height="400"
+            style="display: block; width: 100%; height: 100%">
+          </canvas>
+
+          <!-- Loading Overlay instead of hiding canvas -->
+          <div class="chart-loading" *ngIf="isLoading">
+            <div class="spinner-large"></div>
+            <p>Loading chart data...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Section -->
+  <div class="panel export-panel">
+    <div class="panel-header">
+      <h3>📤 Export & Share</h3>
+    </div>
+    <div class="panel-content">
+      <div class="export-options">
+        <div class="export-item" (click)="exportPDF()">
+          <div class="export-icon">📄</div>
+          <div class="export-details">
+            <div class="export-title">PDF Report</div>
+            <div class="export-description">Complete formatted report</div>
+          </div>
+          <button class="btn btn-outline btn-sm">Export</button>
+        </div>
+
+        <div class="export-item" (click)="exportExcel()">
+          <div class="export-icon">📊</div>
+          <div class="export-details">
+            <div class="export-title">Excel File</div>
+            <div class="export-description">Raw data for analysis</div>
+          </div>
+          <button class="btn btn-outline btn-sm">Export</button>
+        </div>
+
+        <div class="export-item" (click)="exportImage()">
+          <div class="export-icon">🖼️</div>
+          <div class="export-details">
+            <div class="export-title">Image</div>
+            <div class="export-description">Chart visualization</div>
+          </div>
+          <button class="btn btn-outline btn-sm">Export</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

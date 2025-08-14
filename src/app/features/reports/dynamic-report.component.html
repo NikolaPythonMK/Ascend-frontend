@@ -1,0 +1,615 @@
+<div class="query-builder-container">
+  <!-- Header with quick actions -->
+  <div class="header-section">
+    <div class="title-section">
+      <h1>
+        <mat-icon>search</mat-icon>
+        Query Builder
+      </h1>
+      <span class="subtitle">Build powerful queries with ease</span>
+    </div>
+
+    <div class="quick-actions">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="executeQuery()"
+        [disabled]="!queryForm.get('rootEntity')?.value || loading"
+        matTooltip="Execute the current query"
+      >
+        <mat-icon>play_arrow</mat-icon>
+        {{ loading ? "Running..." : "Run Query" }}
+      </button>
+
+      <div class="input-with-button">
+        <input type="text" [(ngModel)]="reportName" placeholder="Name" />
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="createReport()"
+          [disabled]="!queryForm.get('rootEntity')?.value || loading"
+        >
+          💾 Save
+        </button>
+      </div>
+
+      <button
+        mat-stroked-button
+        color="warn"
+        (click)="clearQuery()"
+        matTooltip="Clear all settings"
+      >
+        <mat-icon>clear_all</mat-icon>
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <!-- Progress bar -->
+  <mat-progress-bar *ngIf="loading" mode="indeterminate" class="progress-bar">
+  </mat-progress-bar>
+
+  <!-- Main form -->
+  <form [formGroup]="queryForm" class="query-form">
+    <!-- Entity Selection Card -->
+    <mat-card class="config-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>dataset</mat-icon>
+          Data Source
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Select Entity</mat-label>
+          <mat-select
+            formControlName="rootEntity"
+            (selectionChange)="onEntityChange($event.value)"
+            placeholder="Choose your data source"
+          >
+            <mat-option
+              *ngFor="let entity of entities; trackBy: trackByEntityName"
+              [value]="entity.name"
+            >
+              {{ entity.displayName }}
+            </mat-option>
+          </mat-select>
+          <mat-hint>Select the main entity to query</mat-hint>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Configuration Panels -->
+    <div class="config-panels" *ngIf="queryForm.get('rootEntity')?.value">
+      <!-- Includes Panel -->
+      <mat-expansion-panel
+        *ngIf="navigationProperties.length > 0"
+        class="config-panel"
+        [expanded]="false"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>link</mat-icon>
+            Related Data
+            <mat-chip-set class="chip-indicator">
+              <mat-chip>{{ getSelectedIncludes().length }}</mat-chip>
+            </mat-chip-set>
+          </mat-panel-title>
+          <mat-panel-description>
+            Include related entities in your query
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="includes-grid">
+          <mat-checkbox
+            *ngFor="
+              let nav of navigationProperties;
+              trackBy: trackByPropertyPath
+            "
+            [checked]="isIncludeSelected(nav.name)"
+            (change)="toggleInclude(nav.name)"
+            matTooltip="{{ nav.displayName }}"
+          >
+            {{ nav.displayName }}
+          </mat-checkbox>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Filters Panel -->
+      <mat-expansion-panel class="config-panel" [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>filter_list</mat-icon>
+            Filters
+            <mat-chip-set class="chip-indicator">
+              <mat-chip>{{ getTotalFiltersCount() }}</mat-chip>
+            </mat-chip-set>
+          </mat-panel-title>
+          <mat-panel-description>
+            Filter your data with conditions
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div formArrayName="filters">
+          <div
+            *ngFor="
+              let filterGroup of filtersArray.controls;
+              let i = index;
+            "
+            [formGroupName]="i"
+            class="filter-group"
+          >
+            <div class="filter-group-header">
+              <mat-form-field appearance="outline" class="operator-field">
+                <mat-label>Logic</mat-label>
+                <mat-select formControlName="operator">
+                  <mat-option value="AND">
+                    <mat-icon>add</mat-icon>
+                    AND (all conditions)
+                  </mat-option>
+                  <mat-option value="OR">
+                    <mat-icon>settings_ethernet</mat-icon>
+                    OR (any condition)
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="removeFilterGroup(i)"
+                *ngIf="filtersArray.length > 1"
+                matTooltip="Remove filter group"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+
+            <!-- Individual Filters -->
+            <div formArrayName="individualFilters" class="individual-filters">
+              <div
+                *ngFor="
+                  let filter of getIndividualFilters(i).controls;
+                  let j = index;
+                "
+                [formGroupName]="j"
+                class="filter-row"
+              >
+                <mat-form-field appearance="outline" class="field-select">
+                  <mat-label>Field</mat-label>
+                  <mat-select
+                    formControlName="field"
+                    (selectionChange)="onFieldChange(i, j, $event.value)"
+                  >
+                    <mat-optgroup
+                      *ngFor="
+                        let group of groupedProperties;
+                      "
+                      [label]="group.label"
+                    >
+                      <mat-option
+                        *ngFor="
+                          let prop of group.properties;
+                        "
+                        [value]="prop.path"
+                      >
+                        {{ prop.displayName }}
+                      </mat-option>
+                    </mat-optgroup>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="operator-select">
+                  <mat-label>Condition</mat-label>
+                  <mat-select formControlName="operator">
+                    <mat-option
+                      *ngFor="
+                        let op of getAvailableOperators(i, j)
+                      "
+                      [value]="op.value"
+                    >
+                      <mat-icon *ngIf="op.icon">{{ op.icon }}</mat-icon>
+                      {{ op.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="value-input">
+                  <mat-label>Value</mat-label>
+                  <input
+                    matInput
+                    formControlName="value"
+                    [type]="getInputType(i, j)"
+                    [placeholder]="getPlaceholder(i, j)"
+                  />
+                </mat-form-field>
+
+                <button
+                  mat-icon-button
+                  color="warn"
+                  (click)="removeFilter(i, j)"
+                  matTooltip="Remove filter"
+                >
+                  <mat-icon>remove_circle</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <button
+              mat-stroked-button
+              color="primary"
+              (click)="addFilter(i)"
+              class="add-filter-btn"
+            >
+              <mat-icon>add</mat-icon>
+              Add Filter
+            </button>
+          </div>
+        </div>
+
+        <button
+          mat-stroked-button
+          color="accent"
+          (click)="addFilterGroup()"
+          class="add-group-btn"
+        >
+          <mat-icon>add_box</mat-icon>
+          Add Filter Group
+        </button>
+      </mat-expansion-panel>
+
+      <!-- Select Fields Panel -->
+      <mat-expansion-panel class="config-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>view_column</mat-icon>
+            Select Fields
+            <mat-chip-set class="chip-indicator">
+              <mat-chip>{{ getSelectedFields().length }}</mat-chip>
+            </mat-chip-set>
+          </mat-panel-title>
+          <mat-panel-description>
+            Choose which fields to include in results
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="fields-section">
+          <div class="field-actions">
+            <button mat-stroked-button (click)="selectAllFields()">
+              <mat-icon>select_all</mat-icon>
+              All
+            </button>
+            <button mat-stroked-button (click)="clearSelectedFields()">
+              <mat-icon>clear</mat-icon>
+              None
+            </button>
+          </div>
+
+          <div
+            *ngFor="let group of groupedProperties; trackBy: trackByGroupLabel"
+            class="field-group"
+          >
+            <h4 class="group-title">{{ group.label }}</h4>
+            <div class="fields-grid">
+              <mat-checkbox
+                *ngFor="
+                  let prop of group.properties;
+                  trackBy: trackByPropertyPath
+                "
+                [checked]="isFieldSelected(prop.path)"
+                (change)="toggleField(prop.path)"
+                matTooltip="{{ prop.type }}"
+              >
+                {{ prop.displayName }}
+              </mat-checkbox>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Aggregates Panel -->
+      <mat-expansion-panel class="config-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>functions</mat-icon>
+            Calculations
+            <mat-chip-set class="chip-indicator">
+              <mat-chip>{{
+                aggregatesArray.length + totalAggregatesArray.length
+              }}</mat-chip>
+            </mat-chip-set>
+          </mat-panel-title>
+          <mat-panel-description>
+            Add calculations and summaries
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <!-- Filtered Aggregates -->
+        <div class="aggregates-section">
+          <h4>Filtered Data Calculations</h4>
+          <div formArrayName="aggregates">
+            <div
+              *ngFor="
+                let agg of aggregatesArray.controls;
+                let i = index;
+                trackBy: trackByIndex
+              "
+              [formGroupName]="i"
+              class="aggregate-row"
+            >
+              <mat-form-field appearance="outline">
+                <mat-label>Operation</mat-label>
+                <mat-select
+                  formControlName="operation"
+                  (selectionChange)="
+                    onAggregateOperationChange(i, $event.value)
+                  "
+                >
+                  <mat-option
+                    *ngFor="
+                      let op of aggregateOperations;
+                      trackBy: trackByAggregateValue
+                    "
+                    [value]="op.value"
+                  >
+                    <mat-icon *ngIf="op.icon">{{ op.icon }}</mat-icon>
+                    {{ op.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" *ngIf="requiresField(i)">
+                <mat-label>Field</mat-label>
+                <mat-select formControlName="field">
+                  <mat-optgroup
+                    *ngFor="
+                      let group of getNumericProperties();
+                      trackBy: trackByGroupLabel
+                    "
+                    [label]="group.label"
+                  >
+                    <mat-option
+                      *ngFor="
+                        let prop of group.properties;
+                        trackBy: trackByPropertyPath
+                      "
+                      [value]="prop.path"
+                    >
+                      {{ prop.displayName }}
+                    </mat-option>
+                  </mat-optgroup>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Name</mat-label>
+                <input
+                  matInput
+                  formControlName="alias"
+                  placeholder="Result name"
+                />
+              </mat-form-field>
+
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="removeAggregate(i)"
+                matTooltip="Remove calculation"
+              >
+                <mat-icon>remove_circle</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <button mat-stroked-button color="primary" (click)="addAggregate()">
+            <mat-icon>add</mat-icon>
+            Add Calculation
+          </button>
+        </div>
+
+        <!-- Total Aggregates -->
+        <div class="aggregates-section">
+          <h4>Total Data Calculations</h4>
+          <div formArrayName="totalAggregates">
+            <div
+              *ngFor="
+                let agg of totalAggregatesArray.controls;
+                let i = index;
+                trackBy: trackByIndex
+              "
+              [formGroupName]="i"
+              class="aggregate-row"
+            >
+              <mat-form-field appearance="outline">
+                <mat-label>Operation</mat-label>
+                <mat-select formControlName="operation">
+                  <mat-option
+                    *ngFor="
+                      let op of aggregateOperations;
+                      trackBy: trackByAggregateValue
+                    "
+                    [value]="op.value"
+                  >
+                    <mat-icon *ngIf="op.icon">{{ op.icon }}</mat-icon>
+                    {{ op.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Field</mat-label>
+                <mat-select formControlName="field">
+                  <mat-optgroup
+                    *ngFor="
+                      let group of getNumericProperties();
+                      trackBy: trackByGroupLabel
+                    "
+                    [label]="group.label"
+                  >
+                    <mat-option
+                      *ngFor="
+                        let prop of group.properties;
+                        trackBy: trackByPropertyPath
+                      "
+                      [value]="prop.path"
+                    >
+                      {{ prop.displayName }}
+                    </mat-option>
+                  </mat-optgroup>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Name</mat-label>
+                <input
+                  matInput
+                  formControlName="alias"
+                  placeholder="Result name"
+                />
+              </mat-form-field>
+
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="removeTotalAggregate(i)"
+                matTooltip="Remove calculation"
+              >
+                <mat-icon>remove_circle</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <button
+            mat-stroked-button
+            color="primary"
+            (click)="addTotalAggregate()"
+          >
+            <mat-icon>add</mat-icon>
+            Add Total Calculation
+          </button>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Sorting Panel -->
+      <mat-expansion-panel class="config-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>sort</mat-icon>
+            Sorting
+            <mat-chip-set class="chip-indicator">
+              <mat-chip>{{ orderByArray.length }}</mat-chip>
+            </mat-chip-set>
+          </mat-panel-title>
+          <mat-panel-description>
+            Define how to sort your results
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div formArrayName="orderBy">
+          <div
+            *ngFor="
+              let order of orderByArray.controls;
+              let i = index;
+              trackBy: trackByIndex
+            "
+            [formGroupName]="i"
+            class="order-row"
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>Field</mat-label>
+              <mat-select formControlName="field">
+                <mat-optgroup
+                  *ngFor="
+                    let group of groupedProperties;
+                    trackBy: trackByGroupLabel
+                  "
+                  [label]="group.label"
+                >
+                  <mat-option
+                    *ngFor="
+                      let prop of group.properties;
+                      trackBy: trackByPropertyPath
+                    "
+                    [value]="prop.path"
+                  >
+                    {{ prop.displayName }}
+                  </mat-option>
+                </mat-optgroup>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Direction</mat-label>
+              <mat-select formControlName="direction">
+                <mat-option value="ASC">
+                  <mat-icon>arrow_upward</mat-icon>
+                  Ascending
+                </mat-option>
+                <mat-option value="DESC">
+                  <mat-icon>arrow_downward</mat-icon>
+                  Descending
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="removeOrderBy(i)"
+              matTooltip="Remove sort"
+            >
+              <mat-icon>remove_circle</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <button mat-stroked-button color="primary" (click)="addOrderBy()">
+          <mat-icon>add</mat-icon>
+          Add Sort
+        </button>
+      </mat-expansion-panel>
+
+      <!-- Pagination Panel -->
+      <mat-expansion-panel class="config-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>pages</mat-icon>
+            Pagination
+          </mat-panel-title>
+          <mat-panel-description>
+            Limit the number of results
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="pagination-controls">
+          <mat-form-field appearance="outline">
+            <mat-label>Skip Records</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="skip"
+              min="0"
+              placeholder="0"
+            />
+            <mat-hint>Number of records to skip</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Take Records</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="take"
+              min="1"
+              placeholder="100"
+            />
+            <mat-hint>Maximum records to return</mat-hint>
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+    </div>
+  </form>
+
+  <!-- Report Table-->
+  <report-table [queryResult]="this.queryResult"></report-table>
+</div>

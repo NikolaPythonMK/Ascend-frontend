@@ -15,7 +15,8 @@
         type="number"
         formControlName="quantity"
         (keydown.enter)="onSubmit()"
-        min="1"
+        (focus)="selectAll($event)"
+        min="-5"
       />
     </mat-form-field>
 
@@ -61,7 +62,13 @@
     } @else {
     <div class="dialog-actions" mat-dialog-actions>
       <div>
-        <button mat-stroked-button type="button" mat-dialog-close color="warn" (click)="dialogRef.close()">
+        <button
+          mat-stroked-button
+          type="button"
+          mat-dialog-close
+          color="warn"
+          (click)="dialogRef.close()"
+        >
           {{ cancelLabel() | translate }}
         </button>
         <button
