@@ -21,6 +21,8 @@ import { BreakpointService } from '../../core/services/utility/breakpoint.servic
 import { TableStateService } from '../../core/services/utility/table-state.service';
 import { DisplayTablesHeaderComponent } from "./components/display-tables-header/display-tables-header.component";
 import TranslationService from '../../core/services/utility/translation.service';
+import { SettingsManagerService } from '../../core/services/utility/settings-manager.service';
+import { TableView } from '../../core/models/enums/table-view.enum';
 
 @Component({
   selector: 'ascend-tables',
@@ -53,12 +55,13 @@ export class TablesComponent implements OnInit{
   readonly breakpointService = inject(BreakpointService);
   readonly tableStateService = inject(TableStateService);
   readonly translationService = inject(TranslationService);
+  readonly settingsManager = inject(SettingsManagerService);
 
   ngOnInit(): void {
     this.viewportScroller.scrollToPosition([0, 0])
     window.scrollY = 0;
 
-    const view = this.route.snapshot.queryParamMap.get('view') || 'table';
+    const view = this.route.snapshot.queryParamMap.get('view') || this.getTableViewFromEnum(this.settingsManager.getDefaultTableView());
     this.selectedView.set(view);
 
     this.getTables();
@@ -119,5 +122,18 @@ export class TablesComponent implements OnInit{
         this.snackbarService.error(error.message);
       }
     })
+  }
+
+  getTableViewFromEnum(view: TableView): string {
+    switch (view) {
+      case 1:
+        return "table"
+      case 2:
+        return "grid"
+      case 3:
+        return 'drag';
+      default:
+        return 'table';
+    }
   }
 }

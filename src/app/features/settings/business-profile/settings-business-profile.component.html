@@ -1,0 +1,90 @@
+<ascend-loader [loading]="loading()"></ascend-loader>
+
+<div class="content page-padding business-profile">
+  <div class="body">
+    <form [formGroup]="profileForm" (ngSubmit)="onUpdate()" class="dialog-form">
+
+      <div class="header">
+        <h2 class="title">{{ 'settings.businessProfile.title' | translate }}</h2>
+      </div>
+
+      <!-- Legal / Trade Name -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'settings.businessProfile.legalName' | translate }}</mat-label>
+        <input matInput formControlName="legalName" />
+      </mat-form-field>
+
+      <!-- Tax / VAT Number -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'settings.businessProfile.taxId' | translate }}</mat-label>
+        <input matInput formControlName="taxId" maxlength="20" />
+      </mat-form-field>
+
+      <!-- Address -->
+      <fieldset class="address-group">
+        <legend>{{ 'settings.businessProfile.address' | translate }}</legend>
+        <div class="row two-col">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>{{ 'settings.businessProfile.city' | translate }}</mat-label>
+            <input matInput formControlName="city" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>{{ 'settings.businessProfile.postalCode' | translate }}</mat-label>
+            <input matInput formControlName="postalCode" />
+          </mat-form-field>
+        </div>
+
+        <div class="row two-col">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>{{ 'settings.businessProfile.country' | translate }}</mat-label>
+            <input matInput formControlName="country" />
+          </mat-form-field>
+        </div>
+      </fieldset>
+
+      <!-- Contact Data -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'settings.businessProfile.phone' | translate }}</mat-label>
+        <input matInput formControlName="phoneNumber" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'settings.businessProfile.email' | translate }}</mat-label>
+        <input matInput type="email" formControlName="email" />
+      </mat-form-field>
+
+      <!-- Primary Currency & Receipt Language -->
+      <div class="row two-col">
+<!-- Currency -->
+<mat-form-field appearance="outline" class="half-width">
+  <mat-label>{{ 'settings.businessProfile.currency' | translate }}</mat-label>
+  <mat-select formControlName="currency">
+    @for (c of currencies; track c.value) {
+      <mat-option [value]="c.value">{{ c.label }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+
+<!-- Receipt Language -->
+<mat-form-field appearance="outline" class="half-width">
+  <mat-label>{{ 'settings.businessProfile.receiptLanguage' | translate }}</mat-label>
+  <mat-select formControlName="receiptLanguage">
+    @for (lang of languages; track lang.value) {
+      <mat-option [value]="lang.value">{{ lang.label }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <ascend-button
+          type="primary"
+          [label]="'shared.save' | translate"
+          [disabled]="profileForm.invalid || loading()" />
+      </div>
+    </form>
+  </div>
+</div>

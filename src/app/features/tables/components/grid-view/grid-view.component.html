@@ -13,10 +13,12 @@
             <div class="grid-item item-occupied" (click)="handleRowClick(table.id)">
                 <div class="grid-row header-occupied row-header">
                     <span>{{ table.code }}</span>
-                    <span class="flex">
-                        <mat-icon>person</mat-icon>
-                        <span>{{ table.staffUser.name?.concat(' ', table.staffUser.lastName!)}}</span>
-                    </span>
+                    @if (settingsManager.displayStaffNameOnTables()) {
+                        <span class="flex">
+                            <mat-icon>person</mat-icon>
+                            <span>{{ table.staffUser.name?.concat(' ', table.staffUser.lastName!)}}</span>
+                        </span>
+                    }
                 </div>
                 <div class="grid-row row-status">
                     <span class="status-occupied">{{ 'tables.status.status-occupied' | translate }}</span>

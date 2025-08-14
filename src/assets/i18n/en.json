@@ -162,6 +162,11 @@
             "recurrence.weekly": "Weekly",
             "recurrence.monthly": "Monthly",
             "recurrence.custom": "Custom"
+        },
+        "businessProfile": {
+            "title": "Business Profile Settings",
+            "legalName": "Legal Name",
+            "taxId": "Tax-ID ( Tax or VAT number)"
         }
     },
     "ui": {

@@ -8,6 +8,8 @@ import { LoaderComponent } from "../../core/ui/loader/loader.component";
 import { HttpErrorResponse } from "@angular/common/http";
 import { TranslateModule } from "@ngx-translate/core";
 import { MatIcon } from "@angular/material/icon";
+import { SettingsManagerService } from "../../core/services/utility/settings-manager.service";
+import { StaffUser } from "../../core/models/api/responses/staff-user.model";
 
 @Component({
     selector: 'ascend-employee-login',
@@ -20,6 +22,7 @@ export class EmployeeLoginComponent implements AfterViewInit{
     employeeStore = inject(EmployeeStore);
     staffAuthService = inject(StaffAuthService);
     loading = signal(false);
+    private readonly settingsManager = inject(SettingsManagerService);
 
     elRef = inject(ElementRef);
     errorKey?: string;
@@ -50,7 +53,11 @@ export class EmployeeLoginComponent implements AfterViewInit{
             finalize(() => this.loading.set(false))
         )
         .subscribe({
-            next: () => {
+            next: (response: StaffUser) => {
+                console.log('staf: ', response
+                    
+                )
+                this.settingsManager.setUpStaffSettings(response.staffPreferences!);
                 this.router.navigate(['/tables']);
             },
             error: (error: HttpErrorResponse) => {

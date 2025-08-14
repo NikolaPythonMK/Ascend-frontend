@@ -47,6 +47,9 @@ import { TransactionService } from '../../../../core/services/api/transaction.se
 import { Transaction } from '../../../../core/models/api/responses/transaction.model';
 import { TransactionRequest } from '../../../../core/models/api/requests/transaction.request';
 import { TemporaryTableRequest } from '../../../../core/models/api/requests/temp-table.request';
+import { OrganizationPreferencesService } from '../../../../core/services/api/organization-preferences.service';
+import { SettingsManagerService } from '../../../../core/services/utility/settings-manager.service';
+import { StaffAuthService } from '../../../employee-login/services/staff-auth.service';
 
 @Component({
   selector: 'table-items',
@@ -64,7 +67,7 @@ import { TemporaryTableRequest } from '../../../../core/models/api/requests/temp
 })
 export class TableComponent implements OnInit {
   selectedOrderId = signal<number | null>(null);
-
+  readonly settingsManager = inject(SettingsManagerService);
   readonly categoryService = inject(CategoriesService);
   readonly productService = inject(ProductsService);
   readonly tableService = inject(TablesService);
@@ -79,6 +82,7 @@ export class TableComponent implements OnInit {
   readonly isDiscountApplied = signal<boolean>(false);
   private readonly translationService = inject(TranslationService);
   private readonly transactionService = inject(TransactionService);
+  private readonly staffAuthService = inject(StaffAuthService);
   private readonly router = inject(Router);
 
   isTemporaryTable = signal<boolean>(false);
@@ -171,6 +175,8 @@ export class TableComponent implements OnInit {
   }
 
   onSelectCard(product: any): void {
+    if (!this.canEditTableValidation()) return;
+
     this.keyEventSubject.stop();
     const dialogRef = this.quantityDialog.open(ProductQuantityComponent, {
       width: '400px',
@@ -247,6 +253,8 @@ export class TableComponent implements OnInit {
   }
 
   onOpenItemDetails(item: TableItem): void {
+    if (!this.canEditTableValidation()) return;
+
     this.keyEventSubject.stop();
     const dialogRef = this.quantityDialog.open(ProductQuantityComponent, {
       width: '400px',
@@ -329,6 +337,7 @@ export class TableComponent implements OnInit {
   }
 
   applyDiscount(code: string): void {
+    if (!this.canEditTableValidation()) return;
     this.tableItemsLoading.set(true);
 
     const request: ApplyDiscountRequest = {
@@ -352,6 +361,7 @@ export class TableComponent implements OnInit {
   }
 
   removeDiscount(code: string): void {
+    if (!this.canEditTableValidation()) return;
     this.tableItemsLoading.set(true);
 
     const request: ApplyDiscountRequest = {
@@ -407,6 +417,8 @@ export class TableComponent implements OnInit {
   }
 
   createTransaction(): void {
+      if (!this.canEditTableValidation()) return;
+
       const request: TransactionRequest = {
           id: this.tableId(),
           paymentMethod: 1,
@@ -417,8 +429,13 @@ export class TableComponent implements OnInit {
           .pipe(finalize(() => this.tableItemsLoading.set(false)))
           .subscribe({
             next: (transaction: Transaction) => {
-              this.router.navigate(['/tables']);
               this.snackbarService.success('Успешно')
+              if (this.settingsManager.logoutAfterTransaction()){
+                this.staffAuthService.logout();
+              }
+              else {
+                this.router.navigate(['/tables']);
+              }
             },
             error: (error: HttpErrorResponse) => {
               this.snackbarService.error(error.message);
@@ -439,13 +456,21 @@ export class TableComponent implements OnInit {
           .pipe(finalize(() => this.tableItemsLoading.set(false)))
           .subscribe({
             next: () => {
-              this.router.navigate(['/tables']);
               this.snackbarService.success('Успешно')
             },
             error: (error: HttpErrorResponse) => {
               this.snackbarService.error(error.message);
             },
     });
+  }
+
+
+  canEditTableValidation(): boolean {
+    if (!this.settingsManager.canEditOtherTables() && this.staffStore.id() != this.tableStaff()?.id) {
+      this.snackbarService.error('Table belongs to another waiter')
+      return false;
+    }
+    return true;
   }
 }
 

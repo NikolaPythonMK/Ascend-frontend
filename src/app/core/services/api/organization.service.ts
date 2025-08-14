@@ -7,6 +7,7 @@ import type { Organization } from '../../models/api/responses/organization.model
 import type { LoginRequest } from '../../models/api/requests/login.request';
 import { LoginResponse } from '../../models/api/responses/login-response';
 import { map, tap } from 'lodash';
+import { SettingsManagerService } from '../utility/settings-manager.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,7 @@ import { map, tap } from 'lodash';
 export class OrganizationService {
   private cookieService = inject(CookieService);
   private http = inject(HttpClient);
+  private settingsManager = inject(SettingsManagerService);
   private domain = environment.domain;
 
   login(request: LoginRequest): Observable<LoginResponse> {
@@ -23,6 +25,7 @@ export class OrganizationService {
   }
 
   logout() {
+    this.settingsManager.removeOrganizationSettings();
     this.cookieService.delete('.AspNetCore.Identity.Application');
     localStorage.removeItem('organization');
   }

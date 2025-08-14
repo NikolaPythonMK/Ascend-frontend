@@ -12,7 +12,8 @@ const initialState: StaffUser = {
     lastName: null,
     tables: null,
     transactions: null,
-    staffUserRoles: null
+    staffUserRoles: null,
+    staffPreferences: null
 }
 
 // Define the store
@@ -36,7 +37,8 @@ export const EmployeeStore = signalStore(
                     lastName: store.lastName(),
                     tables: store.tables(),
                     transactions: store.transactions(),
-                    staffUserRoles: store.staffUserRoles()
+                    staffUserRoles: store.staffUserRoles(),
+                    staffPreferences: null
                 };
             },
             clearStore() {

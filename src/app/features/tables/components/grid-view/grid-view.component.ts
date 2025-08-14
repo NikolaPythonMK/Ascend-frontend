@@ -4,6 +4,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { TranslateModule } from "@ngx-translate/core";
 import { Table } from "../../../../core/models/api/responses/table.model";
 import { EmployeeStore } from "../../../../core/store/employee.store";
+import { SettingsManagerService } from "../../../../core/services/utility/settings-manager.service";
 
 @Component({
     selector: 'grid-view',
@@ -12,6 +13,7 @@ import { EmployeeStore } from "../../../../core/store/employee.store";
     styleUrls: ['grid-view.component.scss']
 })
 export class GridViewComponent {
+    settingsManager = inject(SettingsManagerService)
     dataSource = input.required<Table[]>();
     clickedTableId = output<number>();
     loggedInStaff = inject(EmployeeStore);

@@ -1,0 +1,74 @@
+<div class="settings-container">
+  <!-- Dropdown Section -->
+  <div class="settings-section dropdown-section">
+    <div class="title-container">
+      <span class="title">Tax Compliance</span>
+    </div>
+
+    @for (option of dropdownOptions(); track option.id) {
+      <div class="setting-row">
+        <span class="setting-label">{{ option.label }}</span>
+
+        <div class="custom-dropdown" [class.open]="isDropdownOpen(option.id)">
+          <div class="dropdown-trigger" (click)="toggleDropdown(option.id)">
+            <span class="selected-value">{{ getSelectedLabel(option) }}</span>
+            <span class="dropdown-arrow">▼</span>
+          </div>
+
+          @if (isDropdownOpen(option.id)) {
+            <div class="dropdown-menu">
+              @for (opt of option.options; track opt.value) {
+                <div
+                  class="dropdown-option"
+                  [class.selected]="opt.value === option.selectedValue"
+                  (click)="selectOption(option.id, opt.value)">
+                  {{ opt.label }}
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Toggle Section -->
+  <div class="settings-section toggle-section">
+    @for (option of settingsOptions(); track option.id) {
+      <div class="setting-row">
+        <span class="setting-label">{{ option.label }}</span>
+        <mat-slide-toggle
+          [checked]="option.enabled"
+          (change)="toggleSetting(option.id)"
+          color="primary">
+        </mat-slide-toggle>
+      </div>
+    }
+  </div>
+
+  <!-- Number Section -->
+  <div class="settings-section number-section">
+    @for (field of numberOptions(); track field.id) {
+      <div class="setting-row" [class.disabled]="isDisabled(field.id)">
+        <span class="setting-label">{{ field.label }}</span>
+
+        <!-- Keep the right side looking like the custom dropdown trigger -->
+        <div class="custom-input" [class.disabled]="isDisabled(field.id)">
+          <input
+            type="number"
+            class="number-input"
+            [step]="field.step ?? '0.01'"
+            [min]="field.min ?? 0"
+            [max]="field.max ?? null"
+            [disabled]="isDisabled(field.id)"
+            [value]="field.value"
+            (input)="updateNumber(field.id, $any($event.target).value)">
+        </div>
+      </div>
+    }
+  </div>
+
+    <div class="buttons-section">
+    <ascend-button type="primary" label="Update" (clickEvent)="onSubmit()"/>
+  </div>
+</div>

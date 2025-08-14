@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav'
 import { CustomNavbarComponent } from "../../core/ui/custom-navbar/custom-navbar.component";
 import { RouterOutlet } from "@angular/router";
-import { CountrySelectComponent } from "../../core/ui/country-select/country-select.component";
 import { TranslateModule } from "@ngx-translate/core";
 import { BreakpointService } from "../../core/services/utility/breakpoint.service";
 import { TableStateService } from "../../core/services/utility/table-state.service";

@@ -19,13 +19,12 @@ import { OrganizationService } from '../../core/services/api/organization.servic
 import { InputFieldComponent } from '../../core/ui/input-field/input-field.component';
 import { LocationService } from '../../core/services/api/locations.service';
 import { MatSelectModule } from '@angular/material/select';
-import { CountrySelectComponent } from "../../core/ui/country-select/country-select.component";
-import { Organization } from '../../core/models/api/responses/organization.model';
 import { Location } from '../../core/models/api/responses/location.model';
 import { LoginResponse } from '../../core/models/api/responses/login-response';
 import { finalize } from 'rxjs';
 import { LoaderComponent } from '../../core/ui/loader/loader.component';
 import TranslationService from '../../core/services/utility/translation.service';
+import { SettingsManagerService } from '../../core/services/utility/settings-manager.service';
 
 @Component({
   imports: [
@@ -38,7 +37,6 @@ import TranslationService from '../../core/services/utility/translation.service'
     MatIconModule,
     InputFieldComponent,
     MatSelectModule,
-    CountrySelectComponent,
     LoaderComponent
 ],
   templateUrl: 'organization-login.component.html',
@@ -50,6 +48,7 @@ export class OrganizationLoginPage {
   private snackbarService = inject(SnackbarService);
   private locationService = inject(LocationService);
   private translationService = inject(TranslationService);
+  private settingsManagerService = inject(SettingsManagerService);
 
   private fb = inject(FormBuilder);
 
@@ -107,8 +106,9 @@ export class OrganizationLoginPage {
         finalize(() => this.loading.set(false))
       )
       .subscribe({
-        next: (response: LoginResponse) => {
+        next: (response: LoginResponse) => { //TODO: handling if one of the settings is null
           localStorage.setItem('location', response.locationID.toString())
+          this.settingsManagerService.setUpOrganizationSettings(response.businessProfile, response.taxCompliance, response.organizationPreferences);
           this.snackbarService.success(this.translationService.getTranslationForKey("auth.login-succesfull"));
           this.router.navigate([`/staff`]);
         },

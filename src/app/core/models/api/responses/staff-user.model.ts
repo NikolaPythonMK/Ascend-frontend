@@ -1,3 +1,4 @@
+import { StaffPreferences } from "./staff-preferences.model";
 import { Table } from "./table.model";
 
 export interface StaffUser {
@@ -9,4 +10,5 @@ export interface StaffUser {
     tables: Table[] | null,
     staffUserRoles: any[] | null,
     transactions: any[] | null,
+    staffPreferences: StaffPreferences | null
 }

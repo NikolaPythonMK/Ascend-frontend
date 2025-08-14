@@ -3,23 +3,26 @@ import { Component } from '@angular/core';
 import { SettingsTaxesComponent } from "./taxes/settings-taxes.component";
 import { TranslateModule } from '@ngx-translate/core';
 import { SettingsDiscountsComponent } from './discounts/settings-discounts.component';
+import { SettingsBusinessProfileComponent } from "./business-profile/settings-business-profile.component";
+import { SettingsOrganizationDisplayComponent } from "./organization-display/settings-organization-display.component";
+import { SettingsStaffDisplayComponent } from "./settings-staff-preferences/settings-staff-preferences.component";
+import { SettingsTaxComplianceComponent } from "./settings-tax-compliance/settings-tax-compliance.component";
 
 @Component({
   selector: 'app-site-settings',
-  imports: [CommonModule, SettingsTaxesComponent, TranslateModule, SettingsDiscountsComponent],
+  imports: [CommonModule, SettingsTaxesComponent, TranslateModule, SettingsDiscountsComponent, SettingsBusinessProfileComponent, SettingsOrganizationDisplayComponent, SettingsStaffDisplayComponent, SettingsTaxComplianceComponent],
   templateUrl: 'settings.component.html',
   styleUrls: ['settings.component.scss', '../../core/styles/menu-item-page.scss']
 })
 export class SettingsPage {
   menuItems = [
-    'General',
-    'Display',
+    'Business Profile',
     'Taxes',
     'Discounts',
-    'Security',
-    'Account',
-    'User Connections',
-    'Subscription'
+    'Organization Display',
+    'User Display',
+    'Tax Compliance',
+    'Hardware & Device Profiles'
   ];
   activeItem = this.menuItems[0];
 

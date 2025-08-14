@@ -1,0 +1,58 @@
+@use "variables" as vars;
+
+.title {
+  color: vars.$primary-font-color;
+  font-size: vars.$title-font-size;
+}
+
+.business-profile {
+  .dialog-form {
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  mat-form-field {
+    &.full-width {
+      width: 100%;
+      max-width: 700px;
+    }
+    width: 100%;
+  }
+
+  .row.two-col {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    .half-width {
+      flex: 1 1 calc(50% - 8px);
+      min-width: 240px;
+    }
+  }
+
+  .address-group {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    legend {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .row.two-col {
+      display: flex;
+      gap: 16px;
+      .half-width {
+        flex: 1;
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+  }
+}

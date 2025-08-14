@@ -1,0 +1,50 @@
+<div class="settings-container">
+  <!-- Dropdown Section -->
+  <div class="settings-section dropdown-section">
+    <div class="title-container">
+      <span class="title">Organization Preferences</span>
+    </div>
+    @for (option of dropdownOptions(); track option.id) {
+      <div class="setting-row">
+        <span class="setting-label">{{ option.label }}</span>
+        <div class="custom-dropdown" [class.open]="isDropdownOpen(option.id)">
+          <div class="dropdown-trigger" (click)="toggleDropdown(option.id)">
+            <span class="selected-value">{{ getSelectedLabel(option) }}</span>
+            <span class="dropdown-arrow">▼</span>
+          </div>
+
+          @if (isDropdownOpen(option.id)) {
+            <div class="dropdown-menu">
+              @for (dropdownOption of option.options; track dropdownOption.value) {
+                <div
+                  class="dropdown-option"
+                  [class.selected]="dropdownOption.value === option.selectedValue"
+                  (click)="selectOption(option.id, dropdownOption.value)">
+                  {{ dropdownOption.label }}
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Toggle Section -->
+  <div class="settings-section toggle-section">
+    @for (option of settingsOptions(); track option.id) {
+      <div class="setting-row">
+        <span class="setting-label">{{ option.label }}</span>
+        <mat-slide-toggle
+          [checked]="option.enabled"
+          (change)="toggleSetting(option.id)"
+          color="primary">
+        </mat-slide-toggle>
+      </div>
+    }
+  </div>
+
+    <div class="buttons-section">
+    <ascend-button type="primary" label="Update" (clickEvent)="onSubmit()"/>
+  </div>
+</div>

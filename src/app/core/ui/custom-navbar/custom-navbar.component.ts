@@ -4,7 +4,6 @@ import { MatListModule } from '@angular/material/list'
 import { MatIconModule } from '@angular/material/icon'
 import { Router, RouterModule } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
-import { CountrySelectComponent } from "../country-select/country-select.component";
 import { CommonModule } from "@angular/common";
 import { EmployeeStore } from "../../store/employee.store";
 import { SnackbarService } from "../../services/utility/snackbar.service";
@@ -12,7 +11,7 @@ import TranslationService from "../../services/utility/translation.service";
 
 @Component({
     selector: 'ascend-custom-navbar',
-    imports: [MatListModule, MatIconModule, RouterModule, TranslateModule, CountrySelectComponent, CommonModule, TranslateModule],
+    imports: [MatListModule, MatIconModule, RouterModule, TranslateModule, CommonModule, TranslateModule],
     templateUrl: 'custom-navbar.component.html',
     styleUrls: ['custom-navbar.component.scss']
 })
@@ -78,12 +77,6 @@ export class CustomNavbarComponent {
         if (this.sideNavCollapsed()) {
             this.countryListOpened.set(false);
         }
-    }
-
-    onLangSelect(): void {
-        this.countryListOpened.set(!this.countryListOpened());
-        this.sideNavCollapsed.set(false);
-        this.collapseEvent.emit(this.sideNavCollapsed());
     }
 
     logout(): void {

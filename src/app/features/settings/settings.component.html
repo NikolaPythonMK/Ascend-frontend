@@ -16,11 +16,23 @@
     </nav>
 
     <section class="content">
+        @if (activeItem == 'Business Profile'){
+          <settings-business-profile />
+        }
         @if (activeItem == 'Taxes') {
             <settings-taxes />
         }
         @if (activeItem == 'Discounts') {
             <settings-discounts />
+        }
+        @if (activeItem == 'Organization Display'){
+            <settings-organization-display />
+        }
+        @if (activeItem == 'User Display') {
+            <settings-staff-preferences />
+        }
+        @if (activeItem == 'Tax Compliance') {
+            <settings-tax-compliance />
         }
     </section>
   </div>
