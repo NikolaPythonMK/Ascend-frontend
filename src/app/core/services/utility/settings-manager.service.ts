@@ -37,6 +37,7 @@ export class SettingsManagerService {
     }
 
     setUpStaffSettings(staffPreferences: StaffPreferences): void {
+        console.log('SETUP: ', staffPreferences);
         this.staffPreferences.set(staffPreferences);
     }
 

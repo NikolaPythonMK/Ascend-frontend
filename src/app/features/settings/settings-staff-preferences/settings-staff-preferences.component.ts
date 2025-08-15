@@ -9,6 +9,8 @@ import { StaffPreferencesRequest } from "../../../core/models/api/requests/staff
 import { EmployeeStore } from "../../../core/store/employee.store";
 import { StaffPreferencesService } from "../../../core/services/api/staff-preferences.service";
 import { finalize } from "rxjs";
+import { SnackbarService } from "../../../core/services/utility/snackbar.service";
+import { HttpErrorResponse } from "@angular/common/http";
 
 export interface StaffPreferences {
   staffId: number;
@@ -36,6 +38,7 @@ export class SettingsStaffDisplayComponent implements OnInit {
   private readonly settingsManager = inject(SettingsManagerService);
   private readonly staff = inject(EmployeeStore);
   private readonly staffPreferencesService = inject(StaffPreferencesService);
+  private readonly snackbarSettings = inject(SnackbarService);
 
   // UI state
   private openDropdownId = signal<string | null>(null);
@@ -46,6 +49,7 @@ export class SettingsStaffDisplayComponent implements OnInit {
   // Keep identity so we can post a full payload
   private staffId = 0;
   private organizationId = 0;
+  loading = signal(false);
 
   // Option sources
   private readonly languageOptions: Array<{ value: Language; label: string }> = [
@@ -146,14 +150,25 @@ export class SettingsStaffDisplayComponent implements OnInit {
     const payload = this.buildPayload();
     console.log(payload);
 
+    this.loading.set(true);
     this.staffPreferencesService.update(payload).pipe(
-      finalize(() => console.log('hi'))
+      finalize(() => this.loading.set(false))
     ).subscribe({
-      next: () => {
+      next: (response: StaffPreferences) => {
+        this.staffPreferencesService.getById(this.staffId).subscribe({
+          next: (staffPreferences: StaffPreferences) => {
+            console.log('response: ', staffPreferences)
+            this.settingsManager.setUpStaffSettings(staffPreferences);
+            this.snackbarSettings.success('Sucessfull');
 
+          },
+          error: (error: HttpErrorResponse) => {
+            this.snackbarSettings.error(error.error.message)
+          }
+        })
       },
-      error: () => {
-
+      error: (error: HttpErrorResponse) => {
+        this.snackbarSettings.error(error.error.message)
       }
     })
 
