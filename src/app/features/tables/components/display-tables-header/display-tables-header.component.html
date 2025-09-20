@@ -32,7 +32,9 @@
     </div>
   </div>
 
-  <ascend-button type="primary" label="Temporary"  (click)="onAddTemporaryTable()"/>
+  @if (canCreateTemporaryTable()){
+    <ascend-button type="primary" label="Temporary"  (click)="onAddTemporaryTable()"/>
+  }
 
   @if (selectedView() !== 'drag') {
   <div class="search-container">

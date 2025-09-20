@@ -1,12 +1,12 @@
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection, isDevMode } from '@angular/core';
-import { provideRouter, withRouterConfig } from '@angular/router';
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { HttpClient, HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { TranslateLoader, TranslateModule, TranslateStore } from '@ngx-translate/core';
-import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { StaffIdInterceptor } from './core/interceptors/append-staff-interceptor';
 
-// Handles the loading of the translations
 export function HttpLoaderFactory(http: HttpClient): TranslateLoader {
   return new TranslateHttpLoader(http, './i18n/', '.json');
 }
@@ -15,7 +15,11 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(),
+
+    // Let DI supply interceptors defined via HTTP_INTERCEPTORS
+    provideHttpClient(withInterceptorsFromDi()),
+    { provide: HTTP_INTERCEPTORS, useClass: StaffIdInterceptor, multi: true },
+
     provideAnimationsAsync(),
     importProvidersFrom(
       TranslateModule.forChild({
@@ -26,8 +30,6 @@ export const appConfig: ApplicationConfig = {
         },
       })
     ),
-    {
-      provide: TranslateStore
-    }, provideAnimationsAsync()
+    { provide: TranslateStore }
   ]
 };

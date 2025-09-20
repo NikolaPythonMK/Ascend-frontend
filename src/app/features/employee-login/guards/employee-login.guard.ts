@@ -20,17 +20,13 @@ export class EmployeeLoginGuard implements CanActivate {
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): MaybeAsync<GuardResult> {
     return this.organizationService.isAuthenticated().pipe(
       map((result) => {
-        console.log('result: ', result);
-        console.log('staff: ', this.employeeStore.hasEmployee())
         if (!result)
             return this.router.parseUrl('/login');
         if (this.employeeStore.hasEmployee())
             return this.router.parseUrl('/tables');
-        console.log('WAAAT')  
         return true;
       }),
       catchError((err) => {
-        console.log('ERROR: ', err);
         return of(true);
       })
     );

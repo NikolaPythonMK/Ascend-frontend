@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { EmployeeGuard } from './core/guards/employee.guard';
 import { EmployeeLoginGuard } from './features/employee-login/guards/employee-login.guard';
+import { permissionsGuard } from './core/guards/permissions.guard';
 
 export const routes: Routes = [
     // {
@@ -20,22 +21,42 @@ export const routes: Routes = [
         children: [
             {
                 path: 'tables',
+                // canMatch: [permissionsGuard],
+                // data: {
+                //     requiredPermissions: [{ name: '/api/table/all', method: 'POST' }]
+                // },
                 loadComponent: () => import('./features/tables/tables.component').then((m) => m.TablesComponent),
             },
             {
                 path: 'tables/:table',
+                // canMatch: [permissionsGuard],
+                // data: {
+                //     requiredPermissions: [{ name: '/api/table/id', method: 'POST' }]
+                // },
                 loadComponent: () => import('./features/tables/components/table/table.component').then((m) => m.TableComponent)
             },
             {
                 path: 'personal',
+                // canMatch: [permissionsGuard],
+                // data: {
+                //     requiredPermissions: [{ name: '/api/staff/all', method: 'POST' }]
+                // },
                 loadComponent: () => import('./features/staff/staff.component').then((m) => m.StaffPage)
             },
             {
                 path: 'locations',
+                // canMatch: [permissionsGuard],
+                // data: {
+                //     requiredPermissions: [{ name: '/api/location/all', method: 'POST' }]
+                // },
                 loadComponent: () => import('./features/locations/locations.component').then((m) => m.LocationsPage)
             },
             {
                 path: 'menu',
+                // canMatch: [permissionsGuard],
+                // data: {
+                //     requiredPermissions: [{ name: '/api/product/all', method: 'POST' }]
+                // },
                 loadComponent: () => import('./features/menu/menu.component').then((m) => m.MenuPage)
             },
             {

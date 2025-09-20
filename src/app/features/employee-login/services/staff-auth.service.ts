@@ -24,6 +24,7 @@ export class StaffAuthService {
                 tap((staff: StaffUser) => {
                     if(staff){
                         this.staffStore.setEmployee(staff);
+                        console.log('LOGGED IN AS: ', staff);
                     }
                 })
             )
