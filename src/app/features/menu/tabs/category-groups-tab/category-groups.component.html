@@ -6,17 +6,18 @@
         <ascend-header-counter [value]="categoryGroupCards().length" />
       </div>
       <div class="right-part">
-        <button
-          mat-fab
-          extended
-          color="ascend"
-          class="add-btn"
-          (click)="onAddCategoryGroup($event)"
-        >
-          <mat-icon>add</mat-icon>
-          {{ 'menu.category-groups.group' | translate }}
-        </button>
-
+        @if (canCreate()){
+          <button
+            mat-fab
+            extended
+            color="ascend"
+            class="add-btn"
+            (click)="onAddCategoryGroup($event)"
+          >
+            <mat-icon>add</mat-icon>
+            {{ 'menu.category-groups.group' | translate }}
+          </button>         
+        }
         <ascend-search-bar (onSearchTerm)="onSearchCategoryGroup($event)"  />
       </div>
     </div>

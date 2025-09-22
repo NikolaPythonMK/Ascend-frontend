@@ -8,5 +8,6 @@
     (searchEvent)="onSearch($event)"
     (sortEvent)="onSort($event)"
     (clickedRowEvent)="onUpdateStaff($event)"
+    [hasAddBtn]="canCreate()"
   />
 </div>

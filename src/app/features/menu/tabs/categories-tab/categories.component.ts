@@ -25,6 +25,7 @@ import { CommonModule } from "@angular/common";
 import { BreakpointService } from "../../../../core/services/utility/breakpoint.service";
 import { Filter } from "../../../../core/models/api/value-objects/filter.model";
 import { TranslateModule } from "@ngx-translate/core";
+import { PermissionService } from "../../../../core/services/auth/permission.service";
 
 @Component({
     selector: 'categories-component',
@@ -40,12 +41,25 @@ export class CategoriesComponent implements OnInit{
     readonly snackbar = inject(SnackbarService);
     readonly imageService = inject(ImageService);
     readonly breakpointService = inject(BreakpointService)
+    private authz = inject(PermissionService);
     selectedCategoryGroup = signal<number | null>(null)
     searchTerm = signal<string>('');
     categories = signal<Category[]>([]);
     categoryGroups = signal<CategoryGroup[]>([]);
     categoryLoading = signal<boolean>(false);
     categoryGroupsLoading = signal<boolean>(false);
+
+    canCreate = computed(() =>
+        this.authz.has({ name: '/api/category/create', method: 'POST' })
+    );
+
+    canUpdate = computed(() =>
+        this.authz.has({ name: '/api/category/update', method: 'PUT' })
+    );
+
+    canDelete = computed(() =>
+        this.authz.has({ name: '/api/category/delete', method: 'POST' })
+    );
 
     categoryCards = computed<Card[]>(() => this.categories().map(c => {
         return {

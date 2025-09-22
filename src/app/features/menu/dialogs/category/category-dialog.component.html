@@ -13,18 +13,18 @@
       }
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>{{ 'menu.categories.name' | translate }}</mat-label>
-        <input matInput formControlName="name" required />
+        <input matInput formControlName="name" required [readonly]="canUpdate() === false && isUpdateDialog()" />
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>{{ 'menu.categories.description' | translate }}</mat-label>
-        <textarea matInput formControlName="description"></textarea>
+        <textarea matInput formControlName="description" [readonly]="canUpdate() === false && isUpdateDialog()"></textarea>
       </mat-form-field>
 
       @if (this.categoryGroups()) {
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>{{ 'menu.categories.category-group' | translate }}</mat-label>
-        <mat-select formControlName="selectedCategoryGroup">
+        <mat-select formControlName="selectedCategoryGroup" [disabled]="canUpdate() === false && isUpdateDialog()">
           @for (group of this.categoryGroups(); track group.id) {
           <mat-option [value]="group.id" selected>{{ group.name }}</mat-option>
           }
@@ -48,7 +48,7 @@
   </div>
   
   <div class="actions">
-    @if (isUpdateDialog()) {
+    @if (isUpdateDialog() && canDelete()) {
     <button
       type="button"
       mat-icon-button
@@ -61,10 +61,12 @@
     </button>
     }
     <button mat-button type="button" (click)="dialogRef.close()">{{ 'shared.discard' | translate }}</button>
-    <ascend-button
-      type="primary"
-      [label]="submitBtnLabel()"
-      [disabled]="categoryForm.invalid"
-    />
+    @if (!isUpdateDialog() || canUpdate()) {
+      <ascend-button
+        type="primary"
+        [label]="submitBtnLabel()"
+        [disabled]="categoryForm.invalid"
+      />      
+    }
   </div>
 </form>

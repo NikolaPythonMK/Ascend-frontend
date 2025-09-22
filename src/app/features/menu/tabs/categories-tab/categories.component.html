@@ -30,17 +30,18 @@
         }
       </div>
       <div class="right-part">
-        <button
-          mat-fab
-          extended
-          color="ascend"
-          class="add-btn"
-          (click)="onAddCategory()"
-        >
-          <mat-icon>add</mat-icon>
-          {{ 'menu.categories.category' | translate }}
-        </button>
-
+        @if (canCreate()){
+          <button
+            mat-fab
+            extended
+            color="ascend"
+            class="add-btn"
+            (click)="onAddCategory()"
+          >
+            <mat-icon>add</mat-icon>
+            {{ 'menu.categories.category' | translate }}
+          </button>
+        }
         <ascend-search-bar (onSearchTerm)="onSearchCategory($event)"  />
       </div>
     </div>

@@ -63,6 +63,14 @@ export class ProuctsComponent implements OnInit{
         this.authz.has({ name: '/api/product/create', method: 'POST' })
     );
 
+    canUpdate = computed(() =>
+        this.authz.has({ name: '/api/product/update', method: 'PUT' })
+    );
+
+    canDelete = computed(() =>
+        this.authz.has({ name: '/api/product/delete', method: 'POST' })
+    );
+
     selectedValue = 0;
 
     productCards = computed<Card[]>(() => this.products().map(p => {

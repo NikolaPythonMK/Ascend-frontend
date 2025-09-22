@@ -16,16 +16,15 @@ export class StaffIdInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (req.body) {
-      const modifiedReq = req.clone({
-        body: {
-          ...req.body,
-          staffUserID: this.staffStore.id(),
-        },
-      });
-      return next.handle(modifiedReq);
-    }
-    // If no body, return the original request
+    // if (req.body) {
+    //   const modifiedReq = req.clone({
+    //     body: {
+    //       ...req.body,
+    //       staffUserID: this.staffStore.id(),
+    //     },
+    //   });
+    //   return next.handle(modifiedReq);
+    // }
     return next.handle(req);
   }
 }

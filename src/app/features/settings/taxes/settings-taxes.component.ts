@@ -14,6 +14,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { LoaderComponent } from "../../../core/ui/loader/loader.component";
 import { DataRow } from "../../../core/ui/table/models/data-row";
 import { TranslateModule } from "@ngx-translate/core";
+import { PermissionService } from "../../../core/services/auth/permission.service";
 
 @Component({
     selector: 'settings-taxes',
@@ -27,6 +28,9 @@ export class SettingsTaxesComponent implements OnInit {
     private readonly snackbar = inject(SnackbarService);
     private readonly dialog = inject(MatDialog);
     private readonly router = inject(Router);
+    private readonly authz = inject(PermissionService);
+
+    canCreate = computed(() => this.authz.has({ name: '/api/tax/create', method: 'POST' }));
     taxes = signal<Tax[]>([]);
     taxRows = computed<DataRow[]>(() => this.mapToRows(this.taxes()))
     searchTerm = this.tableState.searchTerm;

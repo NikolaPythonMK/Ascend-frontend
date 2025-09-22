@@ -10,6 +10,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { MatIcon } from "@angular/material/icon";
 import { SettingsManagerService } from "../../core/services/utility/settings-manager.service";
 import { StaffUser } from "../../core/models/api/responses/staff-user.model";
+import { OrganizationService } from "../../core/services/api/organization.service";
 
 @Component({
     selector: 'ascend-employee-login',
@@ -21,6 +22,7 @@ export class EmployeeLoginComponent implements AfterViewInit{
     router = inject(Router);
     employeeStore = inject(EmployeeStore);
     staffAuthService = inject(StaffAuthService);
+    organizationSerivice = inject(OrganizationService);
     loading = signal(false);
     private readonly settingsManager = inject(SettingsManagerService);
 
@@ -57,6 +59,16 @@ export class EmployeeLoginComponent implements AfterViewInit{
                 console.log('staf: ', response
                     
                 )
+                if (!this.settingsManager.businessProfile() || !this.settingsManager.organizationPreferences() || !this.settingsManager.taxCompliance()) {
+                    this.organizationSerivice.getSettings().subscribe({
+                        next: (settings) => {
+                            this.settingsManager.setUpOrganizationSettings(settings.businessProfile, settings.taxCompliance, settings.organizationPreferences);
+                        },
+                        error: (error) => {
+                            console.error('Failed to fetch organization settings:', error);
+                        }
+                    })
+                }
                 this.settingsManager.setUpStaffSettings(response.staffPreferences!);
                 this.router.navigate(['/tables']);
             },

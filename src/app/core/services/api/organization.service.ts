@@ -8,6 +8,7 @@ import type { LoginRequest } from '../../models/api/requests/login.request';
 import { LoginResponse } from '../../models/api/responses/login-response';
 import { map, tap } from 'lodash';
 import { SettingsManagerService } from '../utility/settings-manager.service';
+import { OrganizationSettings } from '../../models/api/responses/organization-settings.model';
 
 @Injectable({
   providedIn: 'root',
@@ -40,5 +41,11 @@ export class OrganizationService {
 
   getId(): string | null {
     return localStorage.getItem('organization');
+  }
+
+  getSettings(): Observable<OrganizationSettings> {
+    return this.http.get<OrganizationSettings>(`${this.domain}/organization/settings`, {
+      withCredentials: true,
+    });
   }
 }

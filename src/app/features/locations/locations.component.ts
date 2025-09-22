@@ -12,6 +12,7 @@ import { Sort } from "../../core/ui/table/models/sort.model";
 import { Location } from "../../core/models/api/responses/location.model";
 import { DataRow } from "../../core/ui/table/models/data-row";
 import { TranslateModule } from "@ngx-translate/core";
+import { PermissionService } from "../../core/services/auth/permission.service";
 
 @Component({
     imports: [TableComponent, TranslateModule],
@@ -25,6 +26,11 @@ export class LocationsPage implements OnInit{
     private readonly dialog = inject(MatDialog);
     private readonly tableState = inject(TableStateService);
     locations = signal<Location[]>([]);
+    private authz = inject(PermissionService);
+    
+    canCreate = computed(() =>
+            this.authz.has({ name: '/api/location/create', method: 'POST' })
+    );
 
     locationRows = computed(() => this.mapToRows(this.locations()))
     searchTerm = this.tableState.searchTerm;

@@ -17,12 +17,13 @@
             <span>{{ 'staff.roles.roles' | translate }}</span>
             <span class="counter">{{ roles().length }}</span>
         </div>
-        <ascend-button
-        type="primary"
-        [label]="'staff.add-role-btn' | translate"
-        (clickEvent)="onAddRole()"
-      />
-        
+        @if (canCreateRole()) {
+          <ascend-button
+          type="primary"
+          [label]="'staff.add-role-btn' | translate"
+          (clickEvent)="onAddRole()"
+        />          
+        }        
     </div>
     <ul>
       @if (toggleAddRole()) {
@@ -40,8 +41,12 @@
       <span>{{ role.name }}</span>
       @if (selectedRole()?.id === role.id) {
         <div>
-          <mat-icon class="edit-btn" (click)="onDelete(role.id)">edit</mat-icon>
-          <mat-icon class="trash-btn" (click)="onDelete(role.id)">delete</mat-icon>
+          @if (canUpdateRole()) {
+            <mat-icon class="edit-btn" (click)="onDelete(role.id)">edit</mat-icon>
+          }
+          @if (canDeleteRole()) {
+            <mat-icon class="trash-btn" (click)="onDelete(role.id)">delete</mat-icon>     
+          }
         </div>
       }
     </li>
@@ -78,11 +83,11 @@
                     <td>{{ permissionGroup.groupName }}</td>
                     @for (permission of permissionGroup.permissions; track permission.id) {
                       <td class="cell-align-center">
-                        <mat-checkbox #checkbox  [checked]="hasPermission(permission)" [value]="permission.id.toString()" (change)="onChangeCheckbox($event, permission)"></mat-checkbox>
+                        <mat-checkbox #checkbox  [checked]="hasPermission(permission)" [value]="permission.id.toString()" (change)="onChangeCheckbox($event, permission)" [disabled]="canCreateRole() === false && canUpdateRole() === false"></mat-checkbox>
                       </td>
                     }
                     <td class="cell-align-center">
-                      <mat-checkbox (change)="onSelectAll($event, permissionGroup)"/>
+                      <mat-checkbox (change)="onSelectAll($event, permissionGroup)" [disabled]="canCreateRole() === false && canUpdateRole() === false"/>
                     </td>
                   </tr>
                 }

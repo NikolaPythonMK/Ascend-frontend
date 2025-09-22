@@ -12,6 +12,7 @@ import { TableStateService } from "../../../../core/services/utility/table-state
 import type { StaffUser } from "../../../../core/models/api/responses/staff-user.model";
 import { DataRow } from "../../../../core/ui/table/models/data-row";
 import { TranslateModule } from "@ngx-translate/core";
+import { PermissionService } from "../../../../core/services/auth/permission.service";
 
 
 @Component({
@@ -28,6 +29,20 @@ export class PersonalComponent implements OnInit{
     readonly dialog = inject(MatDialog);
     staffUsers = signal<StaffUser[]>([]);
     staffUsersRows = signal<DataRow[]>([]);
+    private authz = inject(PermissionService);
+    
+    canUpdate = computed(() =>
+            this.authz.has({ name: '/api/staffuser/update', method: 'PUT' })
+    );
+
+    canCreate = computed(() =>
+            this.authz.has({ name: '/api/staffuser/create', method: 'POST' })
+    );
+
+    canDelete = computed(() =>
+            this.authz.has({ name: '/api/staffuser/delete', method: 'POST' })
+    );
+
     map = new Map<string, string>([
         ['Name', 'name'],
         ['Last Name', 'lastName'],

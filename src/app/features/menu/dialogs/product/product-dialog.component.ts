@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from "@angular/core";
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { CategoriesService } from "../../../../core/services/api/categories.service";
@@ -29,6 +29,7 @@ import { TaxService } from "../../../../core/services/api/tax.service";
 import { Tax } from "../../../../core/models/api/responses/tax.model";
 import { TranslateModule } from "@ngx-translate/core";
 import TranslationService from "../../../../core/services/utility/translation.service";
+import { PermissionService } from "../../../../core/services/auth/permission.service";
 
 
 @Component({
@@ -64,7 +65,16 @@ export class ProductDialog implements OnInit {
     readonly snackbar = inject(SnackbarService);
     readonly imageService = inject(ImageService);
     readonly translationService = inject(TranslationService);
+    private authz = inject(PermissionService);
 
+    canUpdate = computed(() =>
+        this.authz.has({ name: '/api/product/update', method: 'PUT' })
+    );
+
+    canDelete = computed(() =>
+        this.authz.has({ name: '/api/product/delete', method: 'POST' })
+    );
+    
     productForm = this.fb.group({
         name: ['', Validators.required],
         code: ['', Validators.required],

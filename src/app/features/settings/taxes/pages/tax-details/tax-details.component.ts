@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Signal, signal } from '@angular/core';
+import { Component, computed, inject, Signal, signal } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -27,6 +27,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationDialog } from '../../../../../core/ui/confirmation-dialog/confirmation-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
 import TranslationService from '../../../../../core/services/utility/translation.service';
+import { PermissionService } from '../../../../../core/services/auth/permission.service';
 
 @Component({
   imports: [
@@ -55,6 +56,10 @@ export class TaxDetailsPage {
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly translationService = inject(TranslationService);
+  private readonly authz = inject(PermissionService);
+
+  canUpdate = computed(() => this.authz.has({ name: '/api/tax/update', method: 'PUT' }));
+  canDelete = computed(() => this.authz.has({ name: '/api/tax/delete', method: 'DELETE' }));
 
   id = signal<number>(0);
   taxForm = this.fb.group({

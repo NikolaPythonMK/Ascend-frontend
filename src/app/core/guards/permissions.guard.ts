@@ -1,14 +1,23 @@
-// permissions.guard.ts
 import { inject } from '@angular/core';
-import { CanMatchFn, Route, UrlSegment } from '@angular/router';
+import { CanMatchFn, Route, Router, UrlSegment } from '@angular/router';
 import { PermissionService, PermissionReq } from '../services/auth/permission.service';
 
-export const permissionsGuard: CanMatchFn = (route: Route, _segments: UrlSegment[]) => {
+export const permissionsGuard: CanMatchFn = (route: Route, segments: UrlSegment[]) => {
   const authz = inject(PermissionService);
-  const required = (route.data?.['requiredPermissions'] ?? []) as PermissionReq[];
+  const router = inject(Router);
+
   if (!authz.isLoaded()) {
-    // treat “unknown” as “deny”; or redirect to login/loading
-    return false;
+    return router.parseUrl('/staff');
   }
-  return required.length ? authz.hasAll(required) : true;
+
+  const required = (route.data?.['requiredPermissions'] ?? []) as PermissionReq[];
+  const forbiddenPath = (route.data?.['forbiddenPath'] as string) ?? '/forbidden';  // you can display a custom forbidden page
+  const url = '/' + segments.map(s => s.path).join('/');
+
+  const check = () => {
+    const allowed = required.length ? authz.hasAny(required) : true;
+    return allowed ? true : router.createUrlTree([forbiddenPath], { queryParams: { from: url } });
+  }; 
+  
+  return check();
 };

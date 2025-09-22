@@ -3,14 +3,16 @@
 <form [formGroup]="locationForm" (ngSubmit)="onSubmit()" class="dialog-form">
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>{{ 'locations.name' | translate }}</mat-label>
-    <input matInput formControlName="name" />
+    <input matInput formControlName="name" [readonly]="canUpdate() === false" />
   </mat-form-field>
 
   <div class="actions">
-    @if (data) {
+    @if (data && canDelete()) {
         <mat-icon class="trash-btn" (click)="onDelete()">delete</mat-icon>
     }
     <button mat-button type="button" (click)="dialogRef.close()">{{ 'shared.cancel' | translate }}</button>
-    <ascend-button type="primary" [label]="'shared.update' | translate" [disabled]="locationForm.invalid"/>
+    @if (canUpdate()){
+      <ascend-button type="primary" [label]="'shared.update' | translate" [disabled]="locationForm.invalid"/>
+    }
   </div>
 </form>

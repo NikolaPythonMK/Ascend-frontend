@@ -21,42 +21,44 @@ export const routes: Routes = [
         children: [
             {
                 path: 'tables',
-                // canMatch: [permissionsGuard],
-                // data: {
-                //     requiredPermissions: [{ name: '/api/table/all', method: 'POST' }]
-                // },
+                canMatch: [permissionsGuard],
+                data: {
+                    requiredPermissions: [{ name: '/api/table/all', method: 'POST' }]
+                },
                 loadComponent: () => import('./features/tables/tables.component').then((m) => m.TablesComponent),
             },
             {
                 path: 'tables/:table',
-                // canMatch: [permissionsGuard],
-                // data: {
-                //     requiredPermissions: [{ name: '/api/table/id', method: 'POST' }]
-                // },
+                canMatch: [permissionsGuard],
+                data: {
+                    requiredPermissions: [{ name: '/api/table/id', method: 'POST' }]
+                },
                 loadComponent: () => import('./features/tables/components/table/table.component').then((m) => m.TableComponent)
             },
             {
                 path: 'personal',
-                // canMatch: [permissionsGuard],
-                // data: {
-                //     requiredPermissions: [{ name: '/api/staff/all', method: 'POST' }]
-                // },
+                canMatch: [permissionsGuard],
+                data: {
+                    requiredPermissions: [{ name: '/api/staffuser/all', method: 'POST' }, { name: '/api/role/all', method: 'POST' }]
+                },
                 loadComponent: () => import('./features/staff/staff.component').then((m) => m.StaffPage)
             },
             {
                 path: 'locations',
-                // canMatch: [permissionsGuard],
-                // data: {
-                //     requiredPermissions: [{ name: '/api/location/all', method: 'POST' }]
-                // },
+                canMatch: [permissionsGuard],
+                data: {
+                    requiredPermissions: [{ name: '/api/location/all', method: 'POST' }]
+                },
                 loadComponent: () => import('./features/locations/locations.component').then((m) => m.LocationsPage)
             },
             {
                 path: 'menu',
-                // canMatch: [permissionsGuard],
-                // data: {
-                //     requiredPermissions: [{ name: '/api/product/all', method: 'POST' }]
-                // },
+                canMatch: [permissionsGuard],
+                data: {
+                    requiredPermissions: [{ name: '/api/product/all', method: 'POST' },
+                                          { name: '/api/category/all', method: 'POST' },
+                                          { name: '/api/categorygroup/all', method: 'POST' }]
+                },
                 loadComponent: () => import('./features/menu/menu.component').then((m) => m.MenuPage)
             },
             {
@@ -65,6 +67,10 @@ export const routes: Routes = [
             },
             {
                 path: 'tax-details/:id',
+                canMatch: [permissionsGuard],
+                data: {
+                    requiredPermissions: [{ name: '/api/tax/id', method: 'POST' }]
+                },                
                 loadComponent: () => import('./features/settings/taxes/pages/tax-details/tax-details.component').then((m) => m.TaxDetailsPage)
             },
             {
@@ -73,6 +79,10 @@ export const routes: Routes = [
             },
             {
                 path: 'reports-dashboard',
+                canMatch: [permissionsGuard],
+                data: {
+                    requiredPermissions: [{ name: '/api/reporting/all', method: 'POST' }]
+                },
                 loadComponent: () => import('./features/reports-dashboard/report-dashboard.component').then((m) => m.DynamicReportsComponent)
             },
             {
@@ -86,6 +96,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/employee-login/employee-login.component').then((m) => m.EmployeeLoginComponent),
         canActivate: [EmployeeLoginGuard]
     },
+    {
+        path: 'forbidden',
+        loadComponent: () => import('./core/pages/forbidden/forbidden.page').then((m) => m.ForbiddenPageComponent)
+    }
     // {
     //     path: 'page-not-found',
     //     loadComponent: () => import('./core/pages/404/not-found.component').then((m) => m.NotFoundPageComponent)

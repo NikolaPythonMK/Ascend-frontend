@@ -10,17 +10,19 @@
           
   
       @for (item of menuItems(); track item.icon) {
-        <a mat-list-item
-           [routerLink]="item.route"
-           routerLinkActive="selected-menu-item"
-           #rla="routerLinkActive"
-           [activated]="rla.isActive"
-           class="menu-item">
-          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-          @if (!sideNavCollapsed()) {
-            <span matListItemTitle>{{ item.label | translate }}</span>
-          }
-        </a>
+        @if (canView(item.api)) {
+          <a mat-list-item
+            [routerLink]="item.route"
+            routerLinkActive="selected-menu-item"
+            #rla="routerLinkActive"
+            [activated]="rla.isActive"
+            class="menu-item">
+            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+            @if (!sideNavCollapsed()) {
+              <span matListItemTitle>{{ item.label | translate }}</span>
+            }
+          </a>          
+        }
       }
     </div>
   

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 import { FormBuilder, Validators, AbstractControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatDialogRef } from "@angular/material/dialog";
 import { SnackbarService } from "../../../../core/services/utility/snackbar.service";
@@ -17,6 +17,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { Tax } from "../../../../core/models/api/responses/tax.model";
 import TranslationService from "../../../../core/services/utility/translation.service";
 import { TranslateModule } from "@ngx-translate/core";
+import { PermissionService } from "../../../../core/services/auth/permission.service";
 
 @Component({
     imports: [MatFormFieldModule, 
