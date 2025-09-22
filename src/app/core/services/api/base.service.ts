@@ -39,6 +39,9 @@ export abstract class BaseService<TRes, TReq> {
     }
 
     add(request: TReq | FormData): Observable<TRes> {
+        if (request instanceof FormData) {
+            console.log("formdata:", request.get("name"));
+        }
         return this.http.post<TRes>(`${this.domain}/${this.endpoint}/create`, request, { withCredentials: true })
     }
 

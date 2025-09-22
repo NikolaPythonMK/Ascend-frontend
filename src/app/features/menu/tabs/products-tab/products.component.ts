@@ -28,6 +28,7 @@ import { FilterDataService } from "../../../../core/services/utility/filter-data
 import { BreakpointService } from "../../../../core/services/utility/breakpoint.service";
 import { Filter } from "../../../../core/models/api/value-objects/filter.model";
 import { TranslateModule } from "@ngx-translate/core";
+import { PermissionService } from "../../../../core/services/auth/permission.service";
 
 
 @Component({
@@ -50,12 +51,25 @@ export class ProuctsComponent implements OnInit{
     private readonly dialog = inject(MatDialog);
     private readonly filterData = inject(FilterDataService);
     public readonly breakpointService = inject(BreakpointService);
+    private authz = inject(PermissionService);
     categories = signal<Category[]>([]);
     categoryGroups = signal<CategoryGroup[]>([]);
     products = signal<Product[]>([]);
     selectedCategory = signal<number>(0);
     productsLoading = signal<boolean>(false);
     categoriesLoading = signal<boolean>(false);
+
+    canCreate = computed(() =>
+        this.authz.has({ name: '/api/product/create', method: 'POST' })
+    );
+
+    canUpdate = computed(() =>
+        this.authz.has({ name: '/api/product/update', method: 'PUT' })
+    );
+
+    canDelete = computed(() =>
+        this.authz.has({ name: '/api/product/delete', method: 'POST' })
+    );
 
     selectedValue = 0;
 

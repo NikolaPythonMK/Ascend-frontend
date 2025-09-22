@@ -16,6 +16,9 @@ import { ButtonComponent } from "../../../core/ui/button/button.component";
 import { OrganizationPreferencesRequest } from "../../../core/models/api/requests/organization-preferences.request";
 import { EmployeeStore } from "../../../core/store/employee.store";
 import { OrganizationPreferencesService } from "../../../core/services/api/organization-preferences.service";
+import { HttpErrorResponse } from "@angular/common/http";
+import { SnackbarService } from "../../../core/services/utility/snackbar.service";
+import { finalize } from "rxjs";
 
 interface SettingOption {
   id: string;
@@ -41,7 +44,7 @@ export class SettingsOrganizationDisplayComponent implements OnInit {
   private readonly settingsManager = inject(SettingsManagerService);
   private readonly employee = inject(EmployeeStore);
   private readonly organizationPreferencesService = inject(OrganizationPreferencesService);
-  
+  private readonly snackbarService = inject(SnackbarService);
 
   private openDropdownId = signal<string | null>(null);
 
@@ -49,6 +52,7 @@ export class SettingsOrganizationDisplayComponent implements OnInit {
   dropdownOptions = signal<DropdownOption<number>[]>([]);
 
   private organizationId = 0; // keep identity for payload
+  loading = signal(false);
 
   private readonly languageOptions = [
     { value: Language.En, label: 'English' },
@@ -170,5 +174,17 @@ export class SettingsOrganizationDisplayComponent implements OnInit {
   onSubmit(): void {
     const payload = this.buildPayload();
     console.log(payload);
+
+    this.loading.set(true);
+    this.organizationPreferencesService.update(payload)
+    .pipe(finalize(() => this.loading.set(false)))
+    .subscribe({
+      next: (response: OrganizationPreferences) => {
+        this.snackbarService.success('Successfully');
+      },
+      error: (error: HttpErrorResponse) => {
+        this.snackbarService.error(error.error.message);
+      }
+    })
   }
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from "@angular/core";
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
@@ -27,6 +27,7 @@ import { Page } from "../../../../core/models/api/page.model";
 import { CategoryGroup } from "../../../../core/models/api/responses/category-group.model";
 import { TranslateModule } from "@ngx-translate/core";
 import TranslationService from "../../../../core/services/utility/translation.service";
+import { PermissionService } from "../../../../core/services/auth/permission.service";
 
 
 @Component({
@@ -60,6 +61,15 @@ export class CategoryDialog implements OnInit{
     readonly snackbar = inject(SnackbarService);
     readonly imageService = inject(ImageService);
     readonly translationService = inject(TranslationService);
+    private authz = inject(PermissionService);
+
+    canUpdate = computed(() =>
+        this.authz.has({ name: '/api/category/update', method: 'PUT' })
+    );
+
+    canDelete = computed(() =>
+        this.authz.has({ name: '/api/category/delete', method: 'POST' })
+    );
 
     categoryForm = this.fb.group({
         name: ['', Validators.required],
@@ -146,7 +156,7 @@ export class CategoryDialog implements OnInit{
 
     onSubmit() {
         if (!this.categoryForm.valid) {
-          return;
+            return;
         }
 
         const form = new FormData();

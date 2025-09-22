@@ -8,6 +8,7 @@ import { CommonModule } from "@angular/common";
 import { EmployeeStore } from "../../store/employee.store";
 import { SnackbarService } from "../../services/utility/snackbar.service";
 import TranslationService from "../../services/utility/translation.service";
+import { PermissionService } from "../../services/auth/permission.service";
 
 @Component({
     selector: 'ascend-custom-navbar',
@@ -27,49 +28,64 @@ export class CustomNavbarComponent {
 
     collapseEvent = output<boolean>();
     readonly translationService = inject(TranslationService);
+    readonly authz = inject(PermissionService);
 
     menuItems = signal<MenuItem[]>([
         {
             icon: 'table_bar',
             label: 'navbar-items.tables',
             route: '/tables',
+            api: ['/api/table/all']
         },
         {
             icon: 'fastfood',
             label: 'navbar-items.products-categories',
             route: '/menu',
+            api: ['/api/product/all', '/api/category/all', '/api/categorygroup/all']
         },
         {
             icon: 'pin_drop',
             label: 'navbar-items.locations',
-            route: '/locations'
+            route: '/locations',
+            api: ['/api/location/all']
         },
         {
             icon: 'groups',
             label: 'navbar-items.staff',
             route: '/personal',
+            api: ['/api/staffuser/all', '/api/role/all']
         },
         {
             icon: 'payments',
             label: 'navbar-items.revenue',
             route: '/revenue',
+            api: ['/api/reporting/all']
         },
         {
             icon: 'query_stats_dash',
             label: 'navbar-items.reports-analysis',
             route: '/reports-dashboard',
+            api: ['/api/reporting/all']
         },
-        {
-            icon: 'inventory_2',
-            label: 'navbar-items.stock',
-            route: '/stock',
-        },
+        // {
+        //     icon: 'inventory_2',
+        //     label: 'navbar-items.stock',
+        //     route: '/stock',
+        //     api: []
+        // },
         {
             icon: 'settings',
             label: 'navbar-items.settings',
             route: '/settings',
+            api: []
         },
     ])
+
+    canView(api: string[]): boolean {
+        if (api.length === 0) 
+            return true;
+        return this.authz.hasAny(api.map(i => ({ name: i, method: 'POST' })));
+    }
 
     onCollapse(): void {
         this.sideNavCollapsed.set(!this.sideNavCollapsed());

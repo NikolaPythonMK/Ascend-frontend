@@ -8,12 +8,12 @@
       <span class="title">{{ 'settings.taxes.current-tax' | translate }}</span>
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>{{ 'settings.taxes.name' | translate }}</mat-label>
-        <input matInput formControlName="name"/>
+        <input matInput formControlName="name" [readonly]="canUpdate() === false"/>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>{{ 'settings.taxes.percentage' | translate }}</mat-label>
-        <input matInput type="number" formControlName="percentage" min="0" />
+        <input matInput type="number" formControlName="percentage" min="0" [readonly]="canUpdate() === false" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
@@ -24,10 +24,12 @@
           type="text"
           formControlName="reason"
           (keydown.enter)="onUpdate(this.id())"
+          [readonly]="canUpdate() === false"
         ></textarea>
       </mat-form-field>
 
       <div class="actions">
+        @if (canDelete()) {
         <button
           type="button"
           mat-icon-button
@@ -37,13 +39,16 @@
           (click)="onDelete()"
         >
           <mat-icon>delete</mat-icon>
-        </button>
+        </button>          
+        }
 
-        <ascend-button
+        @if (canUpdate()) {
+         <ascend-button
           type="primary"
           [label]="'shared.update' | translate"
           [disabled]="taxForm.invalid"
-        />
+        />         
+        }
       </div>
     </form>
 

@@ -2,6 +2,7 @@ import Konva from 'konva';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
   linkedSignal,
@@ -27,6 +28,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { BreakpointService } from '../../../../core/services/utility/breakpoint.service';
 import { DisplayTablesHeaderComponent } from "../display-tables-header/display-tables-header.component";
 import { TranslateModule } from '@ngx-translate/core';
+import { PermissionService } from '../../../../core/services/auth/permission.service';
 
 @Component({
   selector: 'drag-view',
@@ -46,6 +48,7 @@ export class DragViewComponent implements OnInit {
   private readonly locationService = inject(LocationService);
   private readonly snackbarService = inject(SnackbarService);
   readonly breakpointService = inject(BreakpointService);
+  private authz = inject(PermissionService);
   clickedTableId = output<number>();
   isEdit = signal<boolean>(false);
   stage!: Konva.Stage;
@@ -58,6 +61,8 @@ export class DragViewComponent implements OnInit {
   selectedId: string | null = null;
   color: string = '#fff';
   loader = signal<boolean>(false);
+
+  canUpdateTableMapping = computed(() => this.authz.has({ name: '/api/location/update-table-mapping', method: 'POST' }));
 
   constructor(private cdr: ChangeDetectorRef) {}
 

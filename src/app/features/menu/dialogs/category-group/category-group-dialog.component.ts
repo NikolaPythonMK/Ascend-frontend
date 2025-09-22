@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -24,6 +24,7 @@ import { ErrorDetails } from '../../../../core/models/error-details';
 import { Page } from '../../../../core/models/api/page.model';
 import { TranslateModule } from '@ngx-translate/core';
 import TranslationService from '../../../../core/services/utility/translation.service';
+import { PermissionService } from '../../../../core/services/auth/permission.service';
 
 
 @Component({
@@ -55,7 +56,17 @@ export class CategoryGroupDialog implements OnInit{
     readonly snackbarService = inject(SnackbarService);
     readonly dialog = inject(MatDialog);
     readonly translationService = inject(TranslationService);
+    private authz = inject(PermissionService);
 
+    canUpdate = computed(() =>
+        this.authz.has({ name: '/api/categorygroup/update', method: 'PUT' })
+    );
+
+    canDelete = computed(() =>
+        this.authz.has({ name: '/api/categorygroup/delete', method: 'POST' })
+    );
+
+    
     categoryGroupForm = this.fb.group({
         name: ['', Validators.required],
         description: [''],

@@ -1,4 +1,5 @@
 import { StaffPreferences } from "./staff-preferences.model";
+import { StaffUserRole } from "./staff-user-role.model";
 import { Table } from "./table.model";
 
 export interface StaffUser {
@@ -8,7 +9,7 @@ export interface StaffUser {
     lastName: string | null,
     phoneNumber?: string | null,
     tables: Table[] | null,
-    staffUserRoles: any[] | null,
+    staffUserRoles: StaffUserRole[] | null,
     transactions: any[] | null,
     staffPreferences: StaffPreferences | null
 }

@@ -6,12 +6,11 @@
   <div class="settings-body">
     <nav class="sidebar">
       <ul>
-        <li
-          *ngFor="let item of menuItems"
-          (click)="setActive(item)"
-          [class.active]="item === activeItem">
-          {{ item }}
-        </li>
+        @for (item of visibleMenuItems(); track item) {
+          <li (click)="setActive(item)" [class.active]="item === activeItem">
+            {{ item }}
+          </li>
+        }
       </ul>
     </nav>
 

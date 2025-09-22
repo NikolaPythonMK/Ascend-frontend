@@ -466,6 +466,9 @@ export class TableComponent implements OnInit {
 
 
   canEditTableValidation(): boolean {
+    if (!this.tableStaff())
+      return true;
+    
     if (!this.settingsManager.canEditOtherTables() && this.staffStore.id() != this.tableStaff()?.id) {
       this.snackbarService.error('Table belongs to another waiter')
       return false;

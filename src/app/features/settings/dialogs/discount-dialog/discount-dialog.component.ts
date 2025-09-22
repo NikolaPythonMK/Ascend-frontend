@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   Validators,
@@ -40,6 +40,7 @@ import { ChangeDetectionStrategy } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { PermissionService } from '../../../../core/services/auth/permission.service';
 
 
 @Component({
@@ -81,6 +82,10 @@ export class DiscountDialog implements OnInit {
   private readonly snackbarService = inject(SnackbarService);
   private readonly translationService = inject(TranslationService);
   private readonly dialog = inject(MatDialog);
+  private readonly authz = inject(PermissionService);
+
+  canUpdate = computed(() => this.authz.has({ name: '/api/discount/update', method: 'PUT' }));
+  canDelete = computed(() => this.authz.has({ name: '/api/discount/delete', method: 'DELETE' }));  
 
   isUpdate = signal<boolean>(false);
 

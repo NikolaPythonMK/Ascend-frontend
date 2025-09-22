@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, inject, OnInit, signal } from "@angular/core";
+import { Component, computed, inject, OnInit, signal } from "@angular/core";
 import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
@@ -20,6 +20,7 @@ import type { StaffUser } from "../../../../core/models/api/responses/staff-user
 import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
 import { TranslateModule } from "@ngx-translate/core";
 import TranslationService from "../../../../core/services/utility/translation.service";
+import { PermissionService } from "../../../../core/services/auth/permission.service";
 
 @Component({
     imports: [MatFormFieldModule, 
@@ -46,6 +47,15 @@ export class StaffUserDialog implements OnInit{
     readonly snackbarService = inject(SnackbarService);
     readonly data = inject<number>(MAT_DIALOG_DATA);
     readonly translationService = inject(TranslationService);
+    private authz = inject(PermissionService);
+    
+    canUpdate = computed(() =>
+            this.authz.has({ name: '/api/staffuser/update', method: 'PUT' })
+    );
+
+    canDelete = computed(() =>
+            this.authz.has({ name: '/api/staffuser/delete', method: 'POST' })
+    );
 
     roles = signal<Role[]>([])
     title = signal<string>(this.translationService.getTranslationForKey("staff.personal.add-staff"));

@@ -1,19 +1,24 @@
 <div class="tabs-wrapper page-padding">
   <mat-tab-group>
-  <mat-tab [label]="'menu.tab-title-products' | translate">
-    <div class="content-wrapper">
-      <ng-template matTabContent>
-        <products-component />
-      </ng-template>
-    </div>
-  </mat-tab>
-  <mat-tab [label]="'menu.tab-title-categories' | translate">
-    <div class="content-wrapper">
-      <ng-template matTabContent>
-        <categories-component />
-      </ng-template>
-    </div>
-  </mat-tab>
+  @if (canViewProducts) {
+    <mat-tab [label]="'menu.tab-title-products' | translate">
+      <div class="content-wrapper">
+        <ng-template matTabContent>
+          <products-component />
+        </ng-template>
+      </div>
+    </mat-tab>    
+  }
+  @if (canViewCategories) {
+    <mat-tab [label]="'menu.tab-title-categories' | translate">
+      <div class="content-wrapper">
+        <ng-template matTabContent>
+          <categories-component />
+        </ng-template>
+      </div>
+    </mat-tab>
+  }
+  @if (canViewCategoryGroups) {
     <mat-tab [label]="'menu.tab-title-categorygroups' | translate">
     <div class="content-wrapper">
       <ng-template matTabContent>
@@ -21,5 +26,6 @@
       </ng-template>
     </div>
   </mat-tab>
+  }
 </mat-tab-group>
 </div>

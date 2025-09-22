@@ -14,6 +14,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { DiscountService } from "../../../core/services/api/discount.service";
 import { Discount } from "../../../core/models/api/responses/discount.model";
 import { DiscountDialog } from "../dialogs/discount-dialog/discount-dialog.component";
+import { PermissionService } from "../../../core/services/auth/permission.service";
 
 
 @Component({
@@ -28,6 +29,9 @@ export class SettingsDiscountsComponent {
     private readonly snackbar = inject(SnackbarService);
     private readonly dialog = inject(MatDialog);
     private readonly router = inject(Router);
+    private readonly authz = inject(PermissionService);
+
+    canCreate = computed(() => this.authz.has({ name: '/api/discount/create', method: 'POST' }));
     discounts = signal<Discount[]>([]);
     discountRows = computed<DataRow[]>(() => this.mapToRows(this.discounts()))
     searchTerm = this.tableState.searchTerm;

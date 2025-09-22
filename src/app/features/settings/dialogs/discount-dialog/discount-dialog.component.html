@@ -36,6 +36,7 @@
           formControlName="value"
           min="0"
           (keydown.enter)="onSubmit()"
+          [readonly]="isUpdate() && !canUpdate()"
         />
       </mat-form-field>
     </div>
@@ -60,6 +61,7 @@
               formControlName="startDate"
               (click)="startDatePicker.open()"
               (keydown.enter)="onSubmit()"
+              [readonly]="isUpdate() && !canUpdate()"
             />
             <mat-datepicker-toggle
               matSuffix
@@ -79,6 +81,7 @@
               [matDatepicker]="endDatePicker"
               (click)="endDatePicker.open()"
               (keydown.enter)="onSubmit()"
+              [readonly]="isUpdate() && !canUpdate()"
             />
             <mat-datepicker-toggle
               matSuffix
@@ -95,6 +98,7 @@
               matInput
               [matTimepicker]="startTimepicker"
               formControlName="startTime"
+              [readonly]="isUpdate() && !canUpdate()"
             />
             <mat-timepicker #startTimepicker />
             <mat-timepicker-toggle [for]="startTimepicker" matSuffix />
@@ -105,6 +109,7 @@
               matInput
               formControlName="endTime"
               [matTimepicker]="endTimepicker"
+              [readonly]="isUpdate() && !canUpdate()"
             />
             <mat-timepicker #endTimepicker />
             <mat-timepicker-toggle [for]="endTimepicker" matSuffix />
@@ -113,7 +118,8 @@
 
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>{{ "settings.discounts.name" | translate }}</mat-label>
-          <input matInput formControlName="name" />
+          <input matInput formControlName="name" [readonly]="isUpdate() && !canUpdate()"/>
+          
         </mat-form-field>
 
 
@@ -121,7 +127,7 @@
   <div class="input-group">
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>{{ 'settings.discounts.recurrenceType' | translate }}</mat-label>
-      <mat-select formControlName="recurrenceType">
+      <mat-select formControlName="recurrenceType" [disabled]="isUpdate() && !canUpdate()">
         <mat-option value="none">
           {{ 'settings.discounts.recurrence.none' | translate }}
         </mat-option>
@@ -148,6 +154,7 @@
         formControlName="minPurchase"
         min="0"
         (keydown.enter)="onSubmit()"
+        [readonly]="isUpdate() && !canUpdate()"
       />
     </mat-form-field>
     <mat-form-field appearance="outline" class="half-width">
@@ -158,6 +165,7 @@
         formControlName="maxPurchase"
         min="0"
         (keydown.enter)="onSubmit()"
+        [readonly]="isUpdate() && !canUpdate()"
       />
     </mat-form-field>
   </div>
@@ -172,6 +180,7 @@
         formControlName="usageLimit"
         min="0"
         (keydown.enter)="onSubmit()"
+        [readonly]="isUpdate() && !canUpdate()"
       />
     </mat-form-field>
     <mat-form-field appearance="outline" class="half-width">
@@ -182,13 +191,14 @@
         formControlName="usageLimitPerCustomer"
         min="0"
         (keydown.enter)="onSubmit()"
+        [readonly]="isUpdate() && !canUpdate()"
       />
     </mat-form-field>
   </div>
 
             <!-- Active toggle -->
   <div class="input-group is-active-group">
-    <mat-slide-toggle formControlName="isActive">
+    <mat-slide-toggle formControlName="isActive" [disabled]="isUpdate() && !canUpdate()">
       {{ 'settings.discounts.isActive' | translate }}
     </mat-slide-toggle>
   </div>
@@ -198,7 +208,7 @@
 
     <!-- Actions -->
     <div class="actions" [ngClass]="{ 'actions-flex': isUpdate() }">
-      @if (isUpdate()) {
+      @if (isUpdate() && canDelete()) {
       <button
         type="button"
         mat-icon-button
@@ -213,11 +223,13 @@
       <button mat-button type="button" (click)="dialogRef.close()">
         {{ "shared.cancel" | translate }}
       </button>
+      @if (!isUpdate() || canUpdate()) {
       <ascend-button
         type="primary"
         [label]="submitBtn() | translate"
         [disabled]="discountForm.invalid"
       />
+      }
     </div>
   </form>
 </div>

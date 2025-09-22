@@ -20,6 +20,7 @@
           formControlName="name"
           required
           (input)="onInputChange('name.exists')"
+          [readonly]="canUpdate() === false && isUpdateDialog()"
         />
       </mat-form-field>
 
@@ -35,17 +36,18 @@
           matInput
           formControlName="code"
           (input)="onInputChange('code.exists')"
+          [readonly]="canUpdate() === false && isUpdateDialog()"
         />
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>{{ 'menu.products.price' | translate }}</mat-label>
-        <input type="number" matInput formControlName="price" required />
+        <input type="number" matInput formControlName="price" required [readonly]="canUpdate() === false && isUpdateDialog()" />
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>{{ 'menu.products.tax' | translate }}</mat-label>
-        <mat-select formControlName="tax">
+        <mat-select formControlName="tax" [disabled]="canUpdate() === false && isUpdateDialog()">
           @for (tax of this.taxes(); track tax.id) {
           <mat-option [value]="tax.id" selected>{{ tax.name }}</mat-option>
           }
@@ -55,7 +57,7 @@
       <!-- @if (categories().length) { -->
             <mat-form-field appearance="fill" class="full-width">
         <mat-label>{{ 'menu.products.category-group' | translate }}</mat-label>
-        <mat-select formControlName="category">
+        <mat-select formControlName="category" [disabled]="canUpdate() === false && isUpdateDialog()">
           @for (category of this.categories(); track category.id) {
           <mat-option [value]="category.id" selected>{{ category.name }}</mat-option>
           }
@@ -65,7 +67,7 @@
 
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>{{ 'menu.products.description' | translate }}</mat-label>
-        <textarea matInput formControlName="description"></textarea>
+        <textarea matInput formControlName="description" [readonly]="canUpdate() === false && isUpdateDialog()"></textarea>
       </mat-form-field>
 
       @if (isUpdateDialog()){
@@ -75,6 +77,7 @@
           matInput
           type="number"
           formControlName="discountPercent"
+          [readonly]="canUpdate() === false && isUpdateDialog()"
         />
       </mat-form-field>
       <mat-form-field appearance="fill" class="full-width">
@@ -83,6 +86,7 @@
           matInput
           type="number"
           formControlName="discountAmount"
+          [readonly]="canUpdate() === false && isUpdateDialog()"
         />
       </mat-form-field>
         <mat-form-field appearance="fill" class="full-width">
@@ -90,6 +94,7 @@
         <input
           matInput
           formControlName="reason"
+          [readonly]="canUpdate() === false && isUpdateDialog()"
         />
       </mat-form-field>
       } 
@@ -112,7 +117,7 @@
   </div>
 
   <div class="actions">
-    @if (isUpdateDialog()) {
+    @if (isUpdateDialog() && canDelete()) {
     <button
       type="button"
       mat-icon-button
@@ -125,11 +130,13 @@
     </button>
     }
     <button mat-button type="button" (click)="dialogRef.close()">{{ 'shared.discard' | translate }}</button>
-    <ascend-button
-      type="primary"
-      [label]="submitBtnLabel()"
-      [disabled]="productForm.invalid"
-    />
+    @if (!isUpdateDialog() || canUpdate()) {
+      <ascend-button
+        type="primary"
+        [label]="submitBtnLabel()"
+        [disabled]="productForm.invalid"
+      />
+    }
   </div>
 </form>
 </div>

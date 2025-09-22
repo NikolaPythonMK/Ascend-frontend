@@ -7,6 +7,7 @@
       [title]="'settings.discounts.discounts' | translate"
       (addEvent)="onAdd()"
       (clickedRowEvent)="onUpdate($event)"
+      [hasAddBtn]="canCreate()"
     />
     @if (discounts().length == 0) {
       <div class="no-data-container">

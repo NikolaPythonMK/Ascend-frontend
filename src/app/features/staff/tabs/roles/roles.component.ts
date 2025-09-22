@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, OnInit, QueryList, signal, ViewChildren } from "@angular/core";
+import { ChangeDetectorRef, Component, computed, inject, OnInit, QueryList, signal, ViewChildren } from "@angular/core";
 import { TranslateModule } from "@ngx-translate/core";
 import { ButtonComponent } from "../../../../core/ui/button/button.component";
 import { MatDialog } from "@angular/material/dialog";
@@ -18,6 +18,7 @@ import { Role } from "../../../../core/models/api/responses/role.model";
 import { RoleRequest } from "../../../../core/models/api/requests/role.request";
 import { PermissionsService } from "../../../../core/services/api/permissions.service";
 import TranslationService from "../../../../core/services/utility/translation.service";
+import { PermissionService } from "../../../../core/services/auth/permission.service";
 
 interface GroupPermission {
     groupName: string,
@@ -54,6 +55,19 @@ export class RolesComponent implements OnInit{
     readonly fb = inject(FormBuilder);
     readonly cdr = inject(ChangeDetectorRef);
     readonly translationService = inject(TranslationService);
+    private authz = inject(PermissionService);
+    
+    canUpdateRole = computed(() =>
+            this.authz.has({ name: '/api/role/update', method: 'PUT' })
+    );
+
+    canCreateRole = computed(() =>
+            this.authz.has({ name: '/api/role/create', method: 'POST' })
+    );
+
+    canDeleteRole = computed(() =>
+            this.authz.has({ name: '/api/role/delete', method: 'POST' })
+    );    
 
     toggleAddRole = signal<boolean>(false);
     roles = signal<Role[]>([]);

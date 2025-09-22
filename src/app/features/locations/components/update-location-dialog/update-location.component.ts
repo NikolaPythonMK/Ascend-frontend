@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from "@angular/core";
+import { Component, computed, inject, OnInit, signal } from "@angular/core";
 import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { LocationService } from "../../../../core/services/api/locations.service";
@@ -19,6 +19,7 @@ import { finalize, Observable } from "rxjs";
 import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
 import { TranslateModule } from "@ngx-translate/core";
 import TranslationService from "../../../../core/services/utility/translation.service";
+import { PermissionService } from "../../../../core/services/auth/permission.service";
 
 @Component({
     imports: [MatFormFieldModule, 
@@ -44,6 +45,15 @@ export class UpdateLocationDialog implements OnInit{
     private readonly locationsService = inject(LocationService)
     private readonly snackbarService = inject(SnackbarService);
     private readonly translationService = inject(TranslationService);
+    private authz = inject(PermissionService);
+    
+    canUpdate = computed(() =>
+            this.authz.has({ name: '/api/location/update', method: 'PUT' })
+    );
+    
+    canDelete = computed(() =>
+            this.authz.has({ name: '/api/location/delete', method: 'POST' })
+    );    
 
     locationForm = this.fb.group({
         name: ['', Validators.required],

@@ -1,11 +1,12 @@
 import { CommonModule } from "@angular/common";
-import { Component, inject, input, output } from "@angular/core";
+import { Component, computed, inject, input, output } from "@angular/core";
 import { SearchBarComponent } from "../../../../core/ui/search-bar/search-bar.component";
 import { MatIconModule } from "@angular/material/icon";
 import { TranslateModule } from "@ngx-translate/core";
 import { TableStateService } from "../../../../core/services/utility/table-state.service";
 import { ButtonComponent } from "../../../../core/ui/button/button.component";
 import { Router } from "@angular/router";
+import { PermissionService } from "../../../../core/services/auth/permission.service";
 
 
 @Component({
@@ -22,6 +23,12 @@ export class DisplayTablesHeaderComponent {
     searchTerm = output<string>();
     readonly tableStateService = inject(TableStateService);
     readonly router = inject(Router);
+    private authz = inject(PermissionService);
+
+    canCreateTemporaryTable = computed(() =>
+        this.authz.has({ name: '/api/table/create-temporary', method: 'POST' })
+    );
+
 
     handleViewChange(view: string): void {
         if (this.subscribe()) {

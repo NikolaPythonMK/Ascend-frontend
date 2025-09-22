@@ -1,4 +1,4 @@
-z<div
+<div
   [ngClass]="{
     'container-pc': breakpointService.isDesktop(),
     'container-tablet':
@@ -32,7 +32,8 @@ z<div
         }
       </div>
       <div class="right-part">
-        <button
+        @if (canCreate()){
+          <button
           mat-fab
           extended
           color="ascend"
@@ -42,6 +43,7 @@ z<div
           <mat-icon>add</mat-icon>
           {{ 'menu.products.product' | translate }}
         </button>
+        }
         <ascend-search-bar (onSearchTerm)="onSearchProducts($event)" class="search-bar"/>
       </div>
     </div>

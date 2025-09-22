@@ -85,7 +85,7 @@
     <div class="canvas-buttons">
       <button (click)="zoomIn()"><i class="material-icons">add</i></button>
       <button (click)="zoomOut()"><i class="material-icons">remove</i></button>
-      @if (!isEdit()) {
+      @if (!isEdit() && canUpdateTableMapping()) {
       <button class="canvas-edit-btn" (click)="onCanvasEditButtonClick()">
         <i class="material-icons">edit</i>
       </button>

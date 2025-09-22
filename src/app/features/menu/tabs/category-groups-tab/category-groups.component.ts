@@ -17,6 +17,7 @@ import { SearchTerm } from "../../../../core/models/api/search-term.model";
 import { finalize } from "rxjs";
 import { BreakpointService } from "../../../../core/services/utility/breakpoint.service";
 import { TranslateModule } from "@ngx-translate/core";
+import { PermissionService } from "../../../../core/services/auth/permission.service";
 
 @Component({
     selector: 'category-groups-component',
@@ -29,10 +30,23 @@ export class CategoryGroupsComponent implements OnInit{
     readonly categoryGroupService = inject(CategoryGroupService);
     readonly filterData = inject(FilterDataService);
     readonly snackbar = inject(SnackbarService);
-    readonly breakpointService = inject(BreakpointService)
+    readonly breakpointService = inject(BreakpointService);
+    private authz = inject(PermissionService);
     searchTerm = signal<string>('');
     categoryGroups = signal<CategoryGroup[]>([]);
     categoryGroupLoading = signal<boolean>(false);
+
+    canCreate = computed(() =>
+        this.authz.has({ name: '/api/categorygroup/create', method: 'POST' })
+    );
+
+    canUpdate = computed(() =>
+        this.authz.has({ name: '/api/categorygroup/update', method: 'PUT' })
+    );
+
+    canDelete = computed(() =>
+        this.authz.has({ name: '/api/categorygroup/delete', method: 'POST' })
+    );
     
     categoryGroupCards = computed<Card[]>(() => this.categoryGroups().map(c => {
         return {
