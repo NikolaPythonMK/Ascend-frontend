@@ -5,6 +5,7 @@ import { Observable, of } from "rxjs";
 import type { Product } from "../../models/api/responses/product.model";
 import { BaseService } from "./base.service";
 import type { ProductRequest } from "../../models/api/requests/product.request";
+import { LookupModel } from "../../models/api/responses/lookup-model";
 
 @Injectable({
     providedIn: 'root',
@@ -15,5 +16,9 @@ export class ProductsService extends BaseService<Product, ProductRequest> {
 
     constructor() {
         super('product');
+    }
+
+    lookUp(): Observable<LookupModel[]> {
+        return this.http.post<LookupModel[]>(`${this.domain}/product/lookup`, { }, { withCredentials: true });
     }
 }

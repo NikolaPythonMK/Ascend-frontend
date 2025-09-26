@@ -29,6 +29,7 @@ import { BreakpointService } from "../../../../core/services/utility/breakpoint.
 import { Filter } from "../../../../core/models/api/value-objects/filter.model";
 import { TranslateModule } from "@ngx-translate/core";
 import { PermissionService } from "../../../../core/services/auth/permission.service";
+import { LookupModel } from "../../../../core/models/api/responses/lookup-model";
 
 
 @Component({
@@ -92,6 +93,14 @@ export class ProuctsComponent implements OnInit{
     searchTerm = signal<string>('');
 
     ngOnInit(): void {
+        this.productService.lookUp().subscribe({
+            next: (res: LookupModel[]) => {
+                console.log('LOOKUP', res);
+            },
+            error: (error: HttpErrorResponse) => {
+                console.log(error);
+            }
+        })
         this.getProducts();
         if(this.breakpointService.isDesktop()){
             this.getCategories();

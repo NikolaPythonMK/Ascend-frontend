@@ -29,6 +29,7 @@ import { BreakpointService } from '../../../../core/services/utility/breakpoint.
 import { DisplayTablesHeaderComponent } from "../display-tables-header/display-tables-header.component";
 import { TranslateModule } from '@ngx-translate/core';
 import { PermissionService } from '../../../../core/services/auth/permission.service';
+import { LocationTableMappings } from '../../../../core/models/api/responses/table-mapping.model';
 
 @Component({
   selector: 'drag-view',
@@ -544,9 +545,9 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
 
     if (!locationId) return of(false);
 
-    return this.locationService.getById(locationId).pipe(
-      map((location: Location) => {
-        const raw = location.tableLocationMapping;
+    return this.locationService.getTableMapping(locationId).pipe(
+      map((location: string) => {
+        const raw = location;
 
         if (!raw) return false;
 

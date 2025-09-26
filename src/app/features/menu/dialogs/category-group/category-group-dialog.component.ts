@@ -25,6 +25,7 @@ import { Page } from '../../../../core/models/api/page.model';
 import { TranslateModule } from '@ngx-translate/core';
 import TranslationService from '../../../../core/services/utility/translation.service';
 import { PermissionService } from '../../../../core/services/auth/permission.service';
+import { LookupModel } from '../../../../core/models/api/responses/lookup-model';
 
 
 @Component({
@@ -75,7 +76,7 @@ export class CategoryGroupDialog implements OnInit{
     })
     
     imageUrl = signal<string>('');
-    categories = signal<Category[]>([]);
+    categories = signal<LookupModel[]>([]);
     isUpdateDialog = signal<boolean>(false);
     title = signal<string>(this.translationService.getTranslationForKey("menu.category-groups.add-group"));
     submitBtnLabel = signal<string>(this.translationService.getTranslationForKey("shared.add"));
@@ -188,9 +189,9 @@ export class CategoryGroupDialog implements OnInit{
   }
     
   private getAllCategories(): void {
-    this.categoryService.getAll().subscribe({
-        next: (result: Page<Category>) => {
-          this.categories.set(result.data);
+    this.categoryService.lookUp().subscribe({
+        next: (result: LookupModel[]) => {
+          this.categories.set(result);
         },
         error: (error: HttpErrorResponse) => {
           this.snackbarService.error(error.message);

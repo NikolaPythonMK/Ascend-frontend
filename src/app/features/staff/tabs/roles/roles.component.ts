@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, computed, inject, OnInit, QueryList, signal, ViewChildren } from "@angular/core";
+import { ChangeDetectorRef, Component, computed, inject, OnInit, signal } from "@angular/core";
 import { TranslateModule } from "@ngx-translate/core";
 import { ButtonComponent } from "../../../../core/ui/button/button.component";
 import { MatDialog } from "@angular/material/dialog";
@@ -7,7 +7,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { SnackbarService } from "../../../../core/services/utility/snackbar.service";
 import { Page } from "../../../../core/models/api/page.model";
 import { MatTableModule } from "@angular/material/table";
-import {MatCheckbox, MatCheckboxChange, MatCheckboxModule} from '@angular/material/checkbox';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from "@angular/common";
 import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatIconModule } from "@angular/material/icon";
@@ -19,262 +19,439 @@ import { RoleRequest } from "../../../../core/models/api/requests/role.request";
 import { PermissionsService } from "../../../../core/services/api/permissions.service";
 import TranslationService from "../../../../core/services/utility/translation.service";
 import { PermissionService } from "../../../../core/services/auth/permission.service";
+import { MatTooltipModule } from '@angular/material/tooltip';
 
-interface GroupPermission {
-    groupName: string,
-    permissions: Permission[]
+type ActionKey = 'view' | 'create' | 'update' | 'delete' | 'positioning';
+
+interface RowModel {
+  key: string;                  // e.g., "product"
+  groupName: string;            // e.g., "Products"
+  actionIds: Record<ActionKey, number[]>; // view may have 0-2 ids, others 0-1
 }
 
 interface UpdatedPermission {
-    permissionId: number,
-    isChecked: boolean
+  permissionId: number;
+  isChecked: boolean;
+}
+
+@Component({
+  selector: 'roles-component',
+  standalone: true,
+  imports: [
+    TranslateModule,
+    ButtonComponent,
+    MatTableModule,
+    CommonModule,
+    MatCheckboxModule,
+    FormsModule,
+    MatIconModule,
+    InputFieldComponent,
+    ReactiveFormsModule,
+    TranslateModule,
+    MatTooltipModule
+  ],
+  templateUrl: 'roles.component.html',
+  styleUrls: ['roles.component.scss']
+})
+export class RolesComponent implements OnInit {
+  readonly dialog = inject(MatDialog);
+  readonly rolesService = inject(RolesService);
+  readonly permissionsService = inject(PermissionsService);
+  readonly snackbarService = inject(SnackbarService);
+  readonly fb = inject(FormBuilder);
+  readonly cdr = inject(ChangeDetectorRef);
+  readonly translationService = inject(TranslationService);
+  private authz = inject(PermissionService);
+
+  canUpdateRole = computed(() => this.authz.has({ name: '/api/role/update', method: 'PUT' }));
+  canCreateRole = computed(() => this.authz.has({ name: '/api/role/create', method: 'POST' }));
+  canDeleteRole = computed(() => this.authz.has({ name: '/api/role/delete', method: 'POST' }));
+
+  toggleAddRole = signal<boolean>(false);
+  roles = signal<Role[]>([]);
+  selectedRole = signal<Role | null>(null);
+
+  // Raw permissions and grouped UI rows
+  permissions = signal<Permission[]>([]);
+  rows = signal<RowModel[]>([]);
+
+  // Track pending toggles as diffs vs current role
+  updatedPermissions: UpdatedPermission[] = [];
+
+  roleForm = this.fb.group({
+    name: ['', Validators.required],
+  });
+
+  // add this computed
+showPositioningColumn = computed(
+  () => this.rows().some(r => (r.actionIds.positioning?.length ?? 0) > 0)
+);
+
+
+  ngOnInit(): void {
+    this.getAllPermissions();
+    this.getRoles();
+  }
+
+  getNameControl(): AbstractControl { return this.roleForm.get('name')!; }
+
+  onAddRole(): void { this.toggleAddRole.set(!this.toggleAddRole()); }
+
+  onSubmitRole(): void {
+    if (this.getNameControl().invalid) return;
+    const addRoleRequest: RoleRequest = { name: this.getNameControl().value, rolePermissions: [] };
+    this.rolesService.add(addRoleRequest).subscribe({
+      next: () => {
+        this.snackbarService.success(`${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.added")}`);
+        this.getRoles();
+        this.toggleAddRole.set(false);
+      },
+      error: (error: HttpErrorResponse) => this.snackbarService.error(error.message)
+    });
+  }
+
+  onDelete(id: number): void {
+    const dialogRef = this.dialog.open(ConfirmationDialog);
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (!result) return;
+      this.rolesService.delete(id).subscribe({
+        next: () => {
+          this.snackbarService.success(`${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.deleted")}`);
+          this.getRoles();
+        },
+        error: (error: HttpErrorResponse) => this.snackbarService.error(error.message)
+      });
+    });
+  }
+
+  onSelectRole(role: Role): void {
+    this.rolesService.getById(role.id).subscribe({
+      next: (roleSelected: Role) => {
+        this.selectedRole.set(roleSelected);
+        this.updatedPermissions = [];          // reset diffs when switching roles
+        this.cdr.markForCheck();
+      },
+      error: (error: HttpErrorResponse) => this.snackbarService.error(error.message)
+    });
+  }
+
+  isViewEnabled(rowKey: string): boolean {
+   return this.isActionChecked(rowKey, 'view');
+  }
+
+    onBlockedClick(rowKey: string, actionLabel: string): void {
+    if (!this.isViewEnabled(rowKey)) {
+        const group = this.rows().find(r => r.key === rowKey)?.groupName ?? 'this section';
+        this.snackbarService.error(`Enable "View" to ${actionLabel.toLowerCase()} in ${group}.`);
+    }
+    }
+
+
+hasModify(rowKey: string): boolean {
+  return this.getActionIds(rowKey, 'create').length > 0 || this.getActionIds(rowKey, 'update').length > 0;
+}
+
+isModifyChecked(rowKey: string): boolean {
+  if (!this.hasModify(rowKey)) return false;
+  const set = this.effectivePermissionSet();
+  const c = this.getActionIds(rowKey, 'create');
+  const u = this.getActionIds(rowKey, 'update');
+  const cOK = c.length ? c.every(id => set.has(id)) : true; // treat missing as satisfied
+  const uOK = u.length ? u.every(id => set.has(id)) : true;
+  return cOK && uOK;
+}
+
+isModifyIndeterminate(rowKey: string): boolean {
+  if (!this.hasModify(rowKey)) return false;
+  const set = this.effectivePermissionSet();
+  const c = this.getActionIds(rowKey, 'create');
+  const u = this.getActionIds(rowKey, 'update');
+  const cAny = c.some(id => set.has(id));
+  const uAny = u.some(id => set.has(id));
+  const cAll = c.length ? c.every(id => set.has(id)) : true;
+  const uAll = u.length ? u.every(id => set.has(id)) : true;
+  // indeterminate when some but not all of (create, update) are fully on
+  return (cAny || uAny) && !(cAll && uAll);
+}
+
+onModifyToggle(checked: boolean, rowKey: string): void {
+  // toggle both create and update (whichever exist)
+  const c = this.getActionIds(rowKey, 'create');
+  const u = this.getActionIds(rowKey, 'update');
+
+  // clear any existing diffs for these ids
+  const ids = [...c, ...u];
+  this.updatedPermissions = this.updatedPermissions.filter(d => !ids.includes(d.permissionId));
+  for (const id of ids) this.updatedPermissions.push({ permissionId: id, isChecked: checked });
+
+  // View dependency: if turning on modify, ensure view is on
+  if (checked) {
+    const viewIds = this.getActionIds(rowKey, 'view');
+    this.updatedPermissions = this.updatedPermissions.filter(d => !viewIds.includes(d.permissionId));
+    for (const id of viewIds) this.updatedPermissions.push({ permissionId: id, isChecked: true });
+  }
 }
 
 
-@Component({
-    selector: 'roles-component',
-    imports: [TranslateModule,
-              ButtonComponent,
-              MatTableModule,
-              CommonModule,
-              MatCheckboxModule,
-              FormsModule,
-              MatIconModule,
-              InputFieldComponent,
-              ReactiveFormsModule,
-              TranslateModule],
-    templateUrl: 'roles.component.html',
-    styleUrls: ['roles.component.scss']
-})
-export class RolesComponent implements OnInit{
-    @ViewChildren('checkbox') checkboxes!: QueryList<MatCheckbox>;
-    readonly dialog = inject(MatDialog);
-    readonly rolesService = inject(RolesService);
-    readonly permissionsService = inject(PermissionsService);
-    readonly snackbarService = inject(SnackbarService);
-    readonly fb = inject(FormBuilder);
-    readonly cdr = inject(ChangeDetectorRef);
-    readonly translationService = inject(TranslationService);
-    private authz = inject(PermissionService);
-    
-    canUpdateRole = computed(() =>
-            this.authz.has({ name: '/api/role/update', method: 'PUT' })
-    );
+  private applyDiffs(ids: number[], checked: boolean) {
+  // strip any existing diffs for these ids
+  this.updatedPermissions = this.updatedPermissions.filter(d => !ids.includes(d.permissionId));
+  // then push new desired state
+  for (const id of ids) this.updatedPermissions.push({ permissionId: id, isChecked: checked });
+}
 
-    canCreateRole = computed(() =>
-            this.authz.has({ name: '/api/role/create', method: 'POST' })
-    );
-
-    canDeleteRole = computed(() =>
-            this.authz.has({ name: '/api/role/delete', method: 'POST' })
-    );    
-
-    toggleAddRole = signal<boolean>(false);
-    roles = signal<Role[]>([]);
-    selectedRole = signal<Role | null>(null);
-
-    permissions = signal<Permission[]>([]);
-    groupedPermissions = signal<GroupPermission[]>([]);
-    updatedPermissions: UpdatedPermission[] = [];
-    
-
-    objectKeys: string[] = [];
-    Object: any;
-
-    roleForm = this.fb.group({
-        name: ['', Validators.required],
-    })
-    
-    ngOnInit(): void {
-        this.getAllPermissions();
-        this.getRoles();
-    }
-
-    getNameControl(): AbstractControl {
-        return this.roleForm.get('name')!;
-    }
-
-    onAddRole(): void {
-        this.toggleAddRole.set(!this.toggleAddRole());
-    }
-
-    onSubmitRole(): void {
-        if(this.getNameControl().invalid){
-            return;
+  private getRoles(): void {
+    this.rolesService.getAll().subscribe({
+      next: (roles: Page<Role>) => {
+        this.roles.set(roles.data);
+        if (this.roles().length) {
+          this.selectedRole.set(this.roles()[0]);
+          this.onSelectRole(this.roles()[0]);
         }
-        const addRoleRequest: RoleRequest = {
-            name: this.getNameControl().value,
-            rolePermissions: []
+      },
+      error: (error: HttpErrorResponse) => this.snackbarService.error(error.message)
+    });
+  }
+
+  private getAllPermissions(): void {
+    this.permissionsService.getAll().subscribe({
+      next: (permissions: Page<Permission>) => {
+        this.permissions.set(permissions.data);
+        this.rows.set(this.buildRows(this.permissions()));
+      },
+      error: (error: HttpErrorResponse) => this.snackbarService.error(error.message)
+    });
+  }
+
+  // ---- UI model builder ------------------------------------------------------
+
+  /** Map: /api/{entity}/{action} → group by entity, collect ids for actions */
+// ---- UI model builder ------------------------------------------------------
+/** Map: /api/{entity}/{action} → group by entity, collect ids for actions
+ *  Special cases:
+ *   - Tables:
+ *       view   = table.(all|id) + tableitem.(all|id)
+ *       create = tableitem.create + transaction.create
+ *       update = tableitem.update
+ *       delete = tableitem.delete
+ *   - Transactions row is intentionally omitted.
+ *   - New rows added: Staff, Roles, Taxes, Discounts, Category Group, Reporting
+ */
+
+
+
+private buildRows(perms: Permission[]): RowModel[] {
+    // Any non-standard actions that should count as "View" for a given group key
+    const EXTRA_VIEW_ACTIONS: Record<string, string[]> = {
+    reporting: [
+        'chart-data',
+        'execute',
+        'export-excel',
+        'export-pdf',
+        'export-csv',
+        'export-json',
+    ],
+    };
+
+  const groups = [
+    { key: "table",         groupName: "Tables" },
+    { key: "product",       groupName: "Products" },
+    { key: "category",      groupName: "Categories" },
+    { key: "categorygroup", groupName: "Category Group" },
+    { key: "location",      groupName: "Locations" },
+    { key: "staffuser",     groupName: "Staff" },       // <-- Staff = staffuser endpoints
+    { key: "role",          groupName: "Roles" },
+    { key: "reporting",     groupName: "Reporting" },
+    { key: "tax",           groupName: "Taxes" },
+    { key: "discount",      groupName: "Discounts" },
+  ];
+
+  // index /api/<entity>/<action>
+  const index = new Map<string, Record<string, Permission[]>>();
+  for (const p of perms) {
+    const m = p.name.match(/^\/api\/([^/]+)\/([^/]+)$/);
+    if (!m) continue;
+    const entity = m[1];
+    const action = m[2];
+    if (!index.has(entity)) index.set(entity, {});
+    const bucket = index.get(entity)!;
+    (bucket[action] ??= []).push(p);
+  }
+
+  const toIds = (arr?: Permission[]) => (arr ?? []).map(p => p.id);
+  const uniq = (arr: number[]) => Array.from(new Set(arr));
+
+  const rows: RowModel[] = [];
+
+  for (const { key, groupName } of groups) {
+    if (key === 'table') {
+      const table       = index.get('table')       || {};
+      const tableitem   = index.get('tableitem')   || {};
+      const transaction = index.get('transaction') || {};
+      const location    = index.get('location')    || {};
+
+      // View = table.(all|id) + tableitem.(all|id)
+      const viewIds = uniq([
+        ...toIds(table['all']), ...toIds(table['id']),
+        ...toIds(tableitem['all']), ...toIds(tableitem['id']),
+      ]);
+
+      // Create = tableitem.create + transaction.create + table.create-temporary + table.apply-discount + table.remove-discount
+      const createIds = uniq([
+        ...toIds(tableitem['create']),
+        ...toIds(transaction['create']),
+        ...toIds(table['create-temporary']),
+        ...toIds(table['apply-discount']),
+        ...toIds(table['remove-discount']),
+      ]);
+
+      // Edit/Delete from tableitem
+      const updateIds = toIds(tableitem['update']);
+      const deleteIds = toIds(tableitem['delete']);
+
+      // New: Positioning = location.update-table-mapping
+      const positioningIds = toIds(location['update-table-mapping']);
+
+      const hasAny = viewIds.length || createIds.length || updateIds.length || deleteIds.length || positioningIds.length;
+      if (!hasAny) continue;
+
+      rows.push({
+        key,
+        groupName,
+        actionIds: {
+          view:         viewIds,
+          create:       createIds,
+          update:       updateIds,
+          delete:       deleteIds,
+          positioning:  positioningIds,
         }
-        this.rolesService.add(addRoleRequest).subscribe({
-            next: () => {
-                this.snackbarService.success(`${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.added")}`)
-                this.getRoles();
-                this.toggleAddRole.set(false);
-
-            },
-            error: (error: HttpErrorResponse) => {
-                this.snackbarService.error(error.message);
-            }
-        })
+      });
+      continue;
     }
 
-    onDelete(id: number): void {
-        const dialogRef = this.dialog.open(ConfirmationDialog);
-        dialogRef.afterClosed().subscribe((result: boolean) => {
-            if(!result){
-                return;
-            }
-            this.rolesService.delete(id).subscribe({
-                next: () => {
-                    this.snackbarService.success(`${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.deleted")}`);
-                    this.getRoles();
-                },
-                error: (error: HttpErrorResponse) => {
-                    this.snackbarService.error(error.message);
-                }
-            })
-        })
-    }
+    // Default mapping for others
+    const bucket = index.get(key) || {};
+    const extraViewIds = (EXTRA_VIEW_ACTIONS[key] ?? []).flatMap(action => toIds(bucket[action]));
+    const viewIds   = uniq([ ...toIds(bucket['all']), ...toIds(bucket['id']), ...extraViewIds ]);
+    const createIds = toIds(bucket['create']);
+    const updateIds = toIds(bucket['update']);
+    const deleteIds = toIds(bucket['delete']);
+    const positioningIds: number[] = []; // only used by Tables
 
-    onSelectRole(role: Role): void {
-        this.rolesService.getById(role.id).subscribe({
-            next: (roleSelected: Role) => {
-                this.selectedRole.set(roleSelected);
+    const hasAny = viewIds.length || createIds.length || updateIds.length || deleteIds.length || positioningIds.length;
+    if (!hasAny) continue;
 
-            },
-            error: (error: HttpErrorResponse) => {
-                this.snackbarService.error(error.message);
-            }
-        })
-    }
-      
-    
-    private getRoles(): void {
-        this.rolesService.getAll().subscribe({
-            next: (roles: Page<Role>) => {
-                this.roles.set(roles.data);
-                this.selectedRole.set(this.roles()[0]);
-                this.onSelectRole(this.roles()[0])
-                console.log(this.roles())
-            },
-            error: (error: HttpErrorResponse) => {
-                this.snackbarService.error(error.message);
-            }
-        })
-    }
+    rows.push({
+      key,
+      groupName,
+      actionIds: {
+        view:         viewIds,
+        create:       createIds,
+        update:       updateIds,
+        delete:       deleteIds,
+        positioning:  positioningIds,
+      }
+    });
+  }
 
-    onChangeCheckbox(checkbox: MatCheckboxChange, permission: Permission): void {
-        const containsPermission = this.updatedPermissions.some(i => i.permissionId === permission.id);
-        if (containsPermission) {
-            this.updatedPermissions = this.updatedPermissions.filter(i => i.permissionId !== permission.id)
-            return;
-        }
-        this.updatedPermissions.push({
-            permissionId: permission.id,
-            isChecked: checkbox.checked
-        })
-    }
+  return rows;
+}
 
-    onSelectAll(checkbox: MatCheckboxChange, groupPermission: GroupPermission): void {
-        const permissions = groupPermission.permissions.map(i => i.id);
-        if (checkbox.checked) {
-            this.updatedPermissions = this.updatedPermissions.filter(i => !permissions.includes(i.permissionId));
-            groupPermission.permissions.forEach(i => {
-                this.updatedPermissions.push({permissionId: i.id, isChecked: true});
-                this.checkboxes.find(c => c.value === i.id.toString())!.checked = true;
-            })
-        } else {
+
+
+  // ---- Effective selection & helpers ----------------------------------------
+
+  /** Base set from selected role + pending diffs → final effective permission IDs */
+  private effectivePermissionSet(): Set<number> {
+    const base = new Set<number>(this.selectedRole()?.permissions?.map(p => p.id) ?? []);
+    for (const diff of this.updatedPermissions) {
+      if (diff.isChecked) base.add(diff.permissionId);
+      else base.delete(diff.permissionId);
+    }
+    return base;
+  }
+
+  private getActionIds(rowKey: string, action: ActionKey): number[] {
+    const row = this.rows().find(r => r.key === rowKey);
+    return row ? row.actionIds[action] : [];
+  }
+
+  hasAction(rowKey: string, action: ActionKey): boolean {
+    return this.getActionIds(rowKey, action).length > 0;
+  }
+
+  isActionChecked(rowKey: string, action: ActionKey): boolean {
+    const ids = this.getActionIds(rowKey, action);
+    if (!ids.length) return false;
+    const set = this.effectivePermissionSet();
+    return ids.every(id => set.has(id)); // View is true only if BOTH /all and /id are present
+  }
+
+isRowAllChecked(rowKey: string): boolean {
+  const needs: boolean[] = [];
+  if (this.hasAction(rowKey, 'view')) needs.push(this.isActionChecked(rowKey, 'view'));
+  if (this.hasModify(rowKey))        needs.push(this.isModifyChecked(rowKey));
+  if (this.hasAction(rowKey, 'delete')) needs.push(this.isActionChecked(rowKey, 'delete'));
+  if (this.hasAction(rowKey, 'positioning')) needs.push(this.isActionChecked(rowKey, 'positioning'));
+  return needs.length > 0 && needs.every(Boolean);
+}
+
+  // ---- UI events -------------------------------------------------------------
+
+onActionToggle(checked: boolean, rowKey: string, action: ActionKey): void {
+  const ids = this.getActionIds(rowKey, action);
+  if (!ids.length) return;
+
+  this.applyDiffs(ids, checked);
+
+  // Turning ON any non-view action should ensure View ON
+  if (checked && (action === 'create' || action === 'update' || action === 'delete' || action === 'positioning')) {
+    const viewIds = this.getActionIds(rowKey, 'view');
+    this.applyDiffs(viewIds, true);
+  }
+
+  // Turning OFF View should clear all dependents
+  if (!checked && action === 'view') {
+    (['create','update','delete','positioning'] as ActionKey[]).forEach(a => {
+      const aIds = this.getActionIds(rowKey, a);
+      if (aIds.length) this.applyDiffs(aIds, false);
+    });
+  }
+}
+
+
+onToggleRowAll(checked: boolean, row: RowModel): void {
+  if (this.hasAction(row.key, 'view')) this.onActionToggle(checked, row.key, 'view');
+  if (this.hasModify(row.key)) this.onModifyToggle(checked, row.key);
+  if (this.hasAction(row.key, 'delete')) this.onActionToggle(checked, row.key, 'delete');
+  if (this.hasAction(row.key, 'positioning')) this.onActionToggle(checked, row.key, 'positioning');
+}
+
+  onReset(): void {
+    this.updatedPermissions = [];
+  }
+
+  onUpdatePermissions(): void {
+    // Build final list straight from effective set
+    const effective = Array.from(this.effectivePermissionSet());
+    const request: RoleRequest = {
+      id: this.selectedRole()!.id,
+      name: this.selectedRole()!.name,
+      rolePermissions: effective
+    };
+    this.rolesService.update(request).subscribe({
+      next: () => {
+        this.snackbarService.success(this.translationService.getTranslationForKey("shared.succesfully"));
+        // refresh selected role to reflect server truth; also clear diffs
+        this.rolesService.getById(this.selectedRole()!.id).subscribe({
+          next: (roleSelected: Role) => {
+            this.selectedRole.set(roleSelected);
             this.updatedPermissions = [];
-            const staffPermissions = this.selectedRole()!.permissions?.map(i => i.id);
-            this.checkboxes.filter(i => permissions.includes(Number(i.value))).forEach(i => {
-                if(!staffPermissions!.includes(Number(i.value))){
-                    i.checked = false;
-                }
-            })
-
-            // check only the selectedRole checked checkboxes and empty the updatedPermissions
-        }
-    }
-
-    hasPermission(permission: Permission): boolean {
-        return this.selectedRole()?.permissions?.some(i => i.id === permission.id) ?? false;
-    }
-
-    onReset(): void {
-        this.updatedPermissions.forEach(i => {
-            this.checkboxes.find(c => c.value === i.permissionId.toString())!.checked = !i.isChecked
-        })
-        this.updatedPermissions = [];
-    }
-
-    onUpdatePermissions(): void {
-        let rolePermissions: number[] = this.selectedRole()!.permissions!.map(i => i.id);
-        this.updatedPermissions.forEach(i => {
-            if (i.isChecked){
-                rolePermissions.push(i.permissionId);
-            } else {
-                rolePermissions = rolePermissions.filter(p => p !== i.permissionId);
-            }
-        })
-        const request: RoleRequest = {
-            id: this.selectedRole()!.id,
-            name: this.selectedRole()!.name,
-            rolePermissions: rolePermissions
-        }
-        this.rolesService.update(request).subscribe({
-            next: () => {
-                this.snackbarService.success(this.translationService.getTranslationForKey("shared.succesfully"))
-                this.rolesService.getById(this.selectedRole()!.id).subscribe({
-                    next: (roleSelected: Role) => {
-                        this.selectedRole.set(roleSelected);
-        
-                    },
-                    error: (error: HttpErrorResponse) => {
-                        this.snackbarService.error(error.message);
-                    }
-                })
-                
-            },
-            error: (error: HttpErrorResponse) => {
-                this.snackbarService.error(error.message);
-            }
-        })
-    }
-
-    private getAllPermissions(): void {
-        this.permissionsService.getAll().subscribe({
-            next: (permissions: Page<Permission>) => {
-                this.permissions.set(permissions.data);
-                this.groupedPermissions.set(this.groupPermissions(this.permissions()))
-            },
-            error: (error: HttpErrorResponse) => {
-                this.snackbarService.error(error.message);
-            }
-        })
-    }
-
-    private groupPermissions(permissions: Permission[]): GroupPermission[] {
-        const groups = [
-            { key: "table", groupName: "Tables" },
-            { key: "product", groupName: "Products" },
-            { key: "category", groupName: "Categories" },
-            { key: "transaction", groupName: "Transactions" },
-            { key: "role", groupName: "Roles" },
-            { key: "location", groupName: "Locations" },
-            { key: "revenue", groupName: "Revenue" },
-            { key: "stock", groupName: "Stock" },
-            { key: "report", groupName: "Reports" },
-            { key: "anaylsis", groupName: "Analyses" },
-        ];
-    
-        const groupedPermissions = groups.map(({ key, groupName }) => ({
-            groupName,
-            permissions: permissions.filter(p => 
-                p.name.includes(`/api/${key}/`) && !p.name.includes('/id')
-            )
-        })).filter(group => group.permissions.length > 0); 
-    
-        return groupedPermissions;
-    }
+          },
+          error: (error: HttpErrorResponse) => this.snackbarService.error(error.message)
+        });
+      },
+      error: (error: HttpErrorResponse) => this.snackbarService.error(error.message)
+    });
+  }
 }

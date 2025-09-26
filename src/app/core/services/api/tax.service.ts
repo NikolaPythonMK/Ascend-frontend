@@ -4,6 +4,8 @@ import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
 import { Tax } from "../../models/api/responses/tax.model";
 import { TaxRequest } from "../../models/api/requests/tax.request";
+import { Observable } from "rxjs";
+import { LookupModel } from "../../models/api/responses/lookup-model";
 
 
 @Injectable({
@@ -16,4 +18,8 @@ export class TaxService extends BaseService<Tax, TaxRequest> {
     constructor() {
         super('tax');
     }
+
+    lookUp(): Observable<LookupModel[]> {
+        return this.http.post<LookupModel[]>(`${this.domain}/tax/lookup`, { }, { withCredentials: true });
+    }      
 }

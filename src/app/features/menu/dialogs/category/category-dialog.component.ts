@@ -28,7 +28,7 @@ import { CategoryGroup } from "../../../../core/models/api/responses/category-gr
 import { TranslateModule } from "@ngx-translate/core";
 import TranslationService from "../../../../core/services/utility/translation.service";
 import { PermissionService } from "../../../../core/services/auth/permission.service";
-
+import { LookupModel } from "../../../../core/models/api/responses/lookup-model";
 
 @Component({
     imports: [
@@ -84,7 +84,7 @@ export class CategoryDialog implements OnInit{
     imageUrl = signal<string>('');
     loading = signal<boolean>(false);
     errorMessages = signal<string[]>([]);
-    categoryGroups = signal<CategoryGroup[]>([]);
+    categoryGroups = signal<LookupModel[]>([]);
 
     ngOnInit(): void {
         if (this.data.selectedGroupId) {
@@ -92,13 +92,13 @@ export class CategoryDialog implements OnInit{
         }
 
         this.loading.set(true);
-        this.categoryGroupService.getAll()
+        this.categoryGroupService.lookUp()
             .pipe(
                 finalize(() => this.loading.set(false))   
             )    
             .subscribe({
-               next: (result: Page<CategoryGroup>) => {
-               this.categoryGroups.set(result.data);
+               next: (result: LookupModel[]) => {
+               this.categoryGroups.set(result);
             },
             error: (error: HttpErrorResponse) => {
                 this.snackbar.error(error.message);

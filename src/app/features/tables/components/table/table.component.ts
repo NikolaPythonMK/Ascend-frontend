@@ -50,6 +50,7 @@ import { TemporaryTableRequest } from '../../../../core/models/api/requests/temp
 import { OrganizationPreferencesService } from '../../../../core/services/api/organization-preferences.service';
 import { SettingsManagerService } from '../../../../core/services/utility/settings-manager.service';
 import { StaffAuthService } from '../../../employee-login/services/staff-auth.service';
+import { PermissionService } from '../../../../core/services/auth/permission.service';
 
 @Component({
   selector: 'table-items',
@@ -84,6 +85,9 @@ export class TableComponent implements OnInit {
   private readonly transactionService = inject(TransactionService);
   private readonly staffAuthService = inject(StaffAuthService);
   private readonly router = inject(Router);
+  private readonly authz = inject(PermissionService);
+
+  canUpdateRole = computed(() => this.authz.has({ name: '/api/table/update', method: 'PUT' }));
 
   isTemporaryTable = signal<boolean>(false);
   productsLoading = signal<boolean>(false);
@@ -269,6 +273,7 @@ export class TableComponent implements OnInit {
         }
 
         if (result.data) {
+          console.log('item', item);
           const request: TableItemRequest = {
             id: item.id,
             tableID: this.tableId(),
@@ -393,6 +398,7 @@ export class TableComponent implements OnInit {
       .subscribe({
         next: (table: Table) => {
           this.tableItems.set(table.tableItems);
+          console.log(this.tableItems());
           this.totalItems.set(table.tableItems.length);
           this.totalQuantity.set(
             table.tableItems.reduce((acc, cur) => acc + cur.quantity, 0)
@@ -438,7 +444,12 @@ export class TableComponent implements OnInit {
               }
             },
             error: (error: HttpErrorResponse) => {
-              this.snackbarService.error(error.message);
+                console.log(error);
+                this.snackbarService.error(
+                  this.translationService.getTranslationForKey(
+                    error.error.detail
+                  )
+                );
             },
           });
     }

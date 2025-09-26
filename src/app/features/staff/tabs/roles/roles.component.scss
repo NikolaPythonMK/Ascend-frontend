@@ -1,110 +1,200 @@
 @use 'variables' as vars;
 
-.btn-group {
-    padding: 1em;
-    display: flex;
-    justify-content: end;
+/* ====== WRAPPER ====== */
+/* Height is based on viewport minus how far this wrapper sits below the top,
+   which we measure in TS and expose as --top-offset. */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  /* Set by TS */
+  --top-offset: 0px;
+  /* Controlled from Angular to reserve room for the floating Save/Reset bar */
+  --bottom-actions-h: 0px;
+
+  min-block-size: 0; /* important so children can scroll */
+  overflow: hidden;
 }
 
-
+/* ====== TWO-PANE LAYOUT ====== */
 .role-permissions {
-    display: flex;
-    width: 100%;
-    gap: 1.5em;
-    min-height: 500px;
+  /* Fill the remaining viewport: 100dvh minus the measured top offset */
+  block-size: calc(100dvh - var(--top-offset));
+  min-block-size: 0;
 
-    .roles, .permissions {
-        box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
-        border-radius: 5px;
-        padding: 0.5em;
-    }
-    .roles {
-        padding: 0;
-        flex: 1;
-        .roles-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1em;
-            color: vars.$primary-font-color;
-        }
-        ul {
-            padding: 0;
-            margin: 0;
-            list-style: none;
-        }
-        li {
-            padding: 1em;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-        }
-        li:hover {
-            background-color: #eee;
-        }
-    }
-    .permissions {
-        flex: 2;
-    }
+  display: grid;
+  grid-template-columns: clamp(260px, 32%, 440px) 1fr;
+  gap: 1.5rem;
+  overflow: hidden; /* children will scroll */
 }
 
+.role-permissions .roles,
+.role-permissions .permissions {
+  /* Card look */
+  box-shadow:
+    rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  border-radius: 5px;
+  padding: 0.5em;
+
+  /* Make each pane fill and own its scroll */
+  block-size: 100%;
+  min-block-size: 0;
+  overflow: auto;
+}
+
+/* ----- LEFT: ROLES LIST ----- */
+.role-permissions .roles {
+  padding: 0;
+
+  .roles-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em;
+    color: vars.$primary-font-color;
+  }
+
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  li {
+    padding: 1em;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+
+    &:hover { background-color: #eee; }
+  }
+}
+
+/* ----- RIGHT: PERMISSIONS TABLE ----- */
+.role-permissions .permissions {
+  /* Keep last rows visible above the floating action bar */
+  padding-block-end: calc(var(--bottom-actions-h, 0px) + 12px);
+}
+
+/* Stronger than global table rules */
+.role-permissions .permissions > table {
+  width: 100%;
+  border-collapse: separate !important; /* sticky-friendly */
+  border-spacing: 0;
+  color: vars.$primary-font-color;
+}
+
+.role-permissions .permissions thead th {
+  position: sticky;
+  inset-block-start: 0; /* top: 0 */
+  z-index: 2;
+  background: #fff;     /* opaque header */
+  box-shadow: 0 1px 0 #ddd; /* subtle divider while scrolling */
+}
+
+/* ====== SMALL UI DETAILS ====== */
 .counter {
-    background-color: #e3f2fd;
-    border-radius: 50%;
-    padding: 8px 12px 8px 12px;
-    margin-left: .5em;
-    font-weight: bold;
-    color: #6c63ff;
+  background-color: #e3f2fd;
+  border-radius: 50%;
+  padding: 8px 12px;
+  margin-left: .5em;
+  font-weight: bold;
+  color: #6c63ff;
 }
 
 .active-role {
-    color: #6c63ff;
-    background-color: #e3f2fd;
+  color: #6c63ff;
+  background-color: #e3f2fd;
 }
 
-table {
-    border-collapse: collapse;
-    color: vars.$primary-font-color;
-    width: 100%;
-}
+table { width: 100%; color: vars.$primary-font-color; }
 
 td, th {
-    color: #555;
-    padding: 1em;
-    font-size: 1.2rem;
+  color: #555;
+  padding: 1em;
+  font-size: 1.2rem;
 }
 
-tr {
-    border-bottom: 1px solid #ddd;
-}
+tr { border-bottom: 1px solid #ddd; }
 
-.permissions-header {
-    text-align: start;
-}
-
-.cell-align-center {
-    text-align: center;
-}
-
-.trash-btn {
-    color: red;
-}
+.permissions-header { text-align: start; }
+.cell-align-center { text-align: center; }
+.trash-btn { color: red; }
 
 .add-element {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    .submit-add-btn {
-        margin-left: 1em;
-    }
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  .submit-add-btn { margin-left: 1em; }
 }
 
+.muted { opacity: 0.45; }
+
+.tooltip-wrapper {
+  display: inline-flex; /* wrapper hugs the checkbox */
+  align-items: center;
+}
+
+/* ====== FLOATING RESET/SAVE BAR ====== */
 .update-buttons {
-    display: flex;
-    justify-content: end;
-    .update-btn, .reset-btn {
-        padding: .5em;
-        // display: flex;
-        // align-items: center;
-    }
+  display: flex;
+  justify-content: end;
+  gap: .5rem;
+  visibility: hidden;
+
+  &.visible { visibility: visible; }
+}
+
+.update-buttons.floating {
+  position: fixed;
+  right: clamp(12px, 3vw, 28px);
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  z-index: 1000;
+
+  display: flex;
+  gap: .5rem;
+  padding: .5rem .75rem;
+  background: rgba(255, 255, 255, .85);
+  backdrop-filter: saturate(180%) blur(8px);
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .12);
+
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .18s ease, transform .18s ease, visibility .18s;
+
+  &.visible {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Dark mode friendly tweaks */
+@media (prefers-color-scheme: dark) {
+  .update-buttons.floating {
+    background: rgba(26, 28, 33, .7);
+    border-color: rgba(255, 255, 255, .08);
+  }
+
+  .role-permissions .permissions thead th {
+    background: #1e1f24;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .08);
+  }
+
+  tr { border-bottom-color: rgba(255, 255, 255, .08); }
+}
+
+/* Mobile: stack panes and widen the floating bar */
+@media (max-width: 720px) {
+  .role-permissions { grid-template-columns: 1fr; }
+
+  .update-buttons.floating {
+    left: 12px;
+    right: 12px;
+    justify-content: space-between;
+  }
 }

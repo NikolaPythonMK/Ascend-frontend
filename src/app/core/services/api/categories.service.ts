@@ -4,6 +4,8 @@ import { environment } from "../../../../environments/environment";
 import { BaseService } from "./base.service";
 import type { CategoryRequest } from "../../models/api/requests/category.request";
 import { Category } from "../../models/api/responses/category.model";
+import { Observable } from "rxjs";
+import { LookupModel } from "../../models/api/responses/lookup-model";
 
 @Injectable({
     providedIn: 'root'
@@ -15,4 +17,8 @@ export class CategoriesService extends BaseService<Category, CategoryRequest> {
     constructor() {
         super('category');
     }
+
+    lookUp(): Observable<LookupModel[]> {
+        return this.http.post<LookupModel[]>(`${this.domain}/category/lookup`, { }, { withCredentials: true });
+    }    
 }

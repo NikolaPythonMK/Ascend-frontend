@@ -21,6 +21,7 @@ import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
 import { TranslateModule } from "@ngx-translate/core";
 import TranslationService from "../../../../core/services/utility/translation.service";
 import { PermissionService } from "../../../../core/services/auth/permission.service";
+import { LookupModel } from "../../../../core/models/api/responses/lookup-model";
 
 @Component({
     imports: [MatFormFieldModule, 
@@ -57,7 +58,7 @@ export class StaffUserDialog implements OnInit{
             this.authz.has({ name: '/api/staffuser/delete', method: 'POST' })
     );
 
-    roles = signal<Role[]>([])
+    roles = signal<LookupModel[]>([])
     title = signal<string>(this.translationService.getTranslationForKey("staff.personal.add-staff"));
     submitBtnlabel = signal<string>(this.translationService.getTranslationForKey("shared.add"));
     loading = signal<boolean>(false);
@@ -91,8 +92,8 @@ export class StaffUserDialog implements OnInit{
     }
 
     ngOnInit(): void {
-        this.rolesService.getAll().subscribe((result: Page<Role>) => {
-            this.roles.set(result.data);
+        this.rolesService.lookUp().subscribe((result: LookupModel[]) => {
+            this.roles.set(result);
         })
 
         if (this.data) {

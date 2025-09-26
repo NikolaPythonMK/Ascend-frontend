@@ -30,6 +30,7 @@ import { Tax } from "../../../../core/models/api/responses/tax.model";
 import { TranslateModule } from "@ngx-translate/core";
 import TranslationService from "../../../../core/services/utility/translation.service";
 import { PermissionService } from "../../../../core/services/auth/permission.service";
+import { LookupModel } from "../../../../core/models/api/responses/lookup-model";
 
 
 @Component({
@@ -87,8 +88,8 @@ export class ProductDialog implements OnInit {
         discountPercent: ['0'],
         reason: [null]
     })
-    categories = signal<Category[]>([]);
-    taxes = signal<Tax[]>([]);
+    categories = signal<LookupModel[]>([]);
+    taxes = signal<LookupModel[]>([]);
     selectedCategory = signal<number>(0);
     selectedTax = signal<number>(0);
     isUpdateDialog = signal<boolean>(false);
@@ -252,9 +253,9 @@ export class ProductDialog implements OnInit {
         }
 
     private getAllCategories(): void {
-        this.categoryService.getAll().subscribe({
-            next: (result: Page<Category>) => {
-              this.categories.set(result.data);
+        this.categoryService.lookUp().subscribe({
+            next: (result: LookupModel[]) => {
+              this.categories.set(result);
             },
             error: (error: HttpErrorResponse) => {
               this.snackbar.error(error.message);
@@ -263,9 +264,9 @@ export class ProductDialog implements OnInit {
     }
 
     private getAllTaxes(): void {
-        this.taxService.getAll().subscribe({
-            next: (result: Page<Tax>) => {
-              this.taxes.set(result.data);
+        this.taxService.lookUp().subscribe({
+            next: (result: LookupModel[]) => {
+              this.taxes.set(result);
             },
             error: (error: HttpErrorResponse) => {
               this.snackbar.error(error.message);
