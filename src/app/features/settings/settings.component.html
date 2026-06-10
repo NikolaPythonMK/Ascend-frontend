@@ -14,25 +14,33 @@
       </ul>
     </nav>
 
+
     <section class="content">
-        @if (selectedItem() == 'Business Profile'){
+      @switch (selectedItem()) {
+                @case ('Business Profile') {
           <settings-business-profile></settings-business-profile>
         }
-        @if (selectedItem() == 'Taxes') {
-            <settings-taxes></settings-taxes>
+                @case ('Taxes') {
+                  <h1>test</h1>
+          <settings-taxes></settings-taxes>
         }
-        @if (selectedItem() == 'Discounts') {
-            <settings-discounts></settings-discounts>
+                @case ('Discounts') {
+          <settings-discounts></settings-discounts>
         }
-        @if (selectedItem() == 'Organization Display'){
-            <settings-organization-display></settings-organization-display>
+               @case ('Organization Display') {
+          <settings-organization-display></settings-organization-display>
         }
-        @if (selectedItem() == 'User Display') {
-            <settings-staff-preferences></settings-staff-preferences>
+               @case ('User Display') {
+          <settings-staff-preferences></settings-staff-preferences>
         }
-        @if (selectedItem() == 'Tax Compliance') {
-            <settings-tax-compliance></settings-tax-compliance>
+        @case ('Tax Compliance') {
+          <settings-tax-compliance></settings-tax-compliance>
         }
+        @default {
+
+        <h1>default?</h1>
+        }
+      }
     </section>
   </div>
 </div>

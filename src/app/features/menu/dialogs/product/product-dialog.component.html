@@ -56,7 +56,7 @@
 
       <!-- @if (categories().length) { -->
             <mat-form-field appearance="fill" class="full-width">
-        <mat-label>{{ 'menu.products.category-group' | translate }}</mat-label>
+        <mat-label>{{ 'menu.products.category' | translate }}</mat-label>
         <mat-select formControlName="category" [disabled]="canUpdate() === false && isUpdateDialog()">
           @for (category of this.categories(); track category.id) {
           <mat-option [value]="category.id" selected>{{ category.name }}</mat-option>
