@@ -1,34 +1,45 @@
-<div class="container">
+<div class="container cards-only"
+  [ngClass]="{
+    'container-pc': breakpointService.isDesktop(),
+    'container-tablet':
+      breakpointService.isTablet() ||
+      breakpointService.isMobile() ||
+      breakpointService.isHandsetLandscape()
+  }"
+>
   <div class="cards-container">
     <div class="cards-header">
       <div class="left-part">
         <span class="title">{{ 'menu.category-groups.category-groups' | translate }}</span>
-        <ascend-header-counter [value]="categoryGroupCards().length" />
+        @if (!breakpointService.isHandsetLandscape() && !breakpointService.isMobile()) {
+          <ascend-header-counter [value]="categoryGroupCards().length" />
+        }
       </div>
       <div class="right-part">
         @if (canCreate()){
           <button
             mat-fab
-            extended
             color="ascend"
             class="add-btn"
             (click)="onAddCategoryGroup($event)"
+            [attr.aria-label]="'menu.category-groups.group' | translate"
           >
             <mat-icon>add</mat-icon>
-            {{ 'menu.category-groups.group' | translate }}
-          </button>         
+          </button>        
         }
         <ascend-search-bar (onSearchTerm)="onSearchCategoryGroup($event)"  />
       </div>
     </div>
-    @if (categoryGroupCards().length) {
-      <ascend-display-cards
-        [loading]="categoryGroupLoading()"
-        (selectedCard)="onUpdateCategoryGroup($event)"
-        [elements]="categoryGroupCards()"
-    />
-    } @else {
-      <p class="no-data-message">{{ 'menu.category-groups.no-category-groups-found' | translate }}</p>
-    }
+    <div class="cards-layout">
+      @if (categoryGroupCards().length) {
+        <ascend-display-cards
+          [loading]="categoryGroupLoading()"
+          (selectedCard)="onUpdateCategoryGroup($event)"
+          [elements]="categoryGroupCards()"
+        />
+      } @else {
+        <p class="no-data-message">{{ 'menu.category-groups.no-category-groups-found' | translate }}</p>
+      }
+    </div>
   </div>
 </div>

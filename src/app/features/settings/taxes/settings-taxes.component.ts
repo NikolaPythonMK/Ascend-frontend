@@ -44,6 +44,7 @@ export class SettingsTaxesComponent implements OnInit {
     loading = signal<boolean>(false);
 
     ngOnInit(): void {
+        console.log('INIT TAXES COMPONENT');
         this.getTaxes();
     }
 
@@ -79,8 +80,8 @@ export class SettingsTaxesComponent implements OnInit {
         this.taxService.getAll().pipe(
             finalize(() => this.loading.set(false))
         ).subscribe({
-            next: (taxes: Page<Tax>) => {
-                this.taxes.set(taxes.data);
+            next: (taxes: Page<Tax> | Tax[]) => {
+                this.taxes.set(Array.isArray(taxes) ? taxes : taxes.data ?? []);
             },
             error: (error: HttpErrorResponse) => {
                 this.snackbar.error(error.message);

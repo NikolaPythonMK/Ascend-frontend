@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { SettingsTaxesComponent } from "./taxes/settings-taxes.component";
 import { TranslateModule } from '@ngx-translate/core';
 import { SettingsDiscountsComponent } from './discounts/settings-discounts.component';
@@ -20,6 +20,10 @@ export class SettingsPage {
   canViewTaxes = computed(() => this.authz.has({ name: '/api/tax/all', method: 'POST' }));
   canViewDiscounts = computed(() => this.authz.has({ name: '/api/discount/all', method: 'POST' }))
 
+  ngOnInit(): void {
+    console.log('INIT SETTINGS COMPONENT');
+  }
+
   menuItems = [
     'Business Profile',
     'Taxes',
@@ -29,7 +33,7 @@ export class SettingsPage {
     'Tax Compliance',
     'Hardware & Device Profiles'
   ];
-  activeItem = this.menuItems[0];
+  activeItem = signal(this.menuItems[0]);
 
   visibleMenuItems = computed(() => {
     const canTaxes = this.canViewTaxes();
@@ -39,9 +43,18 @@ export class SettingsPage {
       (item !== 'Discounts' || canDiscounts)
     );
   });
+
+  selectedItem = computed(() => {
+    const activeItem = this.activeItem();
+    const visibleMenuItems = this.visibleMenuItems();
+
+    return visibleMenuItems.includes(activeItem)
+      ? activeItem
+      : visibleMenuItems[0] ?? null;
+  });
   
 
   setActive(item: string) {
-    this.activeItem = item;
+    this.activeItem.set(item);
   }
 }

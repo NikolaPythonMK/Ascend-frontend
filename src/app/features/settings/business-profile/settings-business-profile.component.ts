@@ -74,7 +74,11 @@ export class SettingsBusinessProfileComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    const profile: BusinessProfile = this.settingsManager.businessProfile()!;
+    const profile = this.settingsManager.businessProfile();
+    if (!profile) {
+      return;
+    }
+
     this.hydrateForm(profile);
     console.log(this.profileForm.get('receiptLanguage'));
         console.log(this.profileForm.get('currency'));

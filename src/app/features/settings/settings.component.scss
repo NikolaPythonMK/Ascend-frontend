@@ -55,6 +55,11 @@
       padding: 1.5rem;
       overflow-y: auto;
 
+      > * {
+        display: block;
+        width: 100%;
+      }
+
       form {
         .form-group {
           display: flex;

@@ -1,5 +1,10 @@
 @use "variables" as vars;
 
+:host {
+  display: block;
+  width: 100%;
+}
+
 .title {
   color: vars.$primary-font-color;
   font-size: vars.$title-font-size;

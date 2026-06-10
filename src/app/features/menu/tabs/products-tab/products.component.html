@@ -35,13 +35,12 @@
         @if (canCreate()){
           <button
           mat-fab
-          extended
           color="ascend"
           class="add-btn"
           (click)="onAddProduct()"
+          [attr.aria-label]="'menu.products.product' | translate"
         >
           <mat-icon>add</mat-icon>
-          {{ 'menu.products.product' | translate }}
         </button>
         }
         <ascend-search-bar (onSearchTerm)="onSearchProducts($event)" class="search-bar"/>
@@ -60,3 +59,5 @@
     </div>
   </div>
 </div>
+
+

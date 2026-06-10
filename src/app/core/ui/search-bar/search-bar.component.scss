@@ -1,3 +1,9 @@
+:host {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .search-container {
   display: flex;
   align-items: center;
@@ -5,14 +11,15 @@
   border-radius: 20px;
   padding: 0 8px;
   width: 100%;
-  max-width: 400px;
+  max-width: none;
+  min-width: 0;
   height: 40px;
-  margin: 0 auto; // center if parent is wide
+  margin: 0;
   box-sizing: border-box;
 }
 
 .search-input {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
   border: none;
   outline: none;
@@ -40,15 +47,13 @@
   border-color: #3f51b5;
 }
 
-/* Mobile-first approach: shrink container at smaller breakpoints */
-// @media (max-width: 973px) {
-//     .search-container {
-//       width: 250px;
-//     }
-// }
+@media (max-width: 480px) {
+  .search-container {
+    height: 36px;
+    border-radius: 18px;
+  }
 
-// @media (min-width: 481px) and (max-width: 768px) {
-//     .search-container {
-//       max-width: 200px;
-//     }  
-//   }
+  .search-input {
+    font-size: 15px;
+  }
+}

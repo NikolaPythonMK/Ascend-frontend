@@ -33,13 +33,12 @@
         @if (canCreate()){
           <button
             mat-fab
-            extended
             color="ascend"
             class="add-btn"
             (click)="onAddCategory()"
+            [attr.aria-label]="'menu.categories.category' | translate"
           >
             <mat-icon>add</mat-icon>
-            {{ 'menu.categories.category' | translate }}
           </button>
         }
         <ascend-search-bar (onSearchTerm)="onSearchCategory($event)"  />

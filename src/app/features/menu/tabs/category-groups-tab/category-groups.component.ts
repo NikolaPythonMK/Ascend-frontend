@@ -1,5 +1,6 @@
 import { Component, computed, inject, OnDestroy, OnInit, signal } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
+import { CommonModule } from "@angular/common";
 import { MatIconModule } from "@angular/material/icon";
 import { DisplayCardsComponent } from "../../../../core/ui/display-cards/display-cards.component";
 import { HeaderCounterComponent } from "../../../../core/ui/header-counter/header-counter.component";
@@ -21,7 +22,7 @@ import { PermissionService } from "../../../../core/services/auth/permission.ser
 
 @Component({
     selector: 'category-groups-component',
-    imports: [DisplayCardsComponent, SearchBarComponent, MatIconModule, MatButtonModule, HeaderCounterComponent, TranslateModule],
+    imports: [CommonModule, DisplayCardsComponent, SearchBarComponent, MatIconModule, MatButtonModule, HeaderCounterComponent, TranslateModule],
     templateUrl: 'category-groups.component.html',
     styleUrls: ['category-groups.component.scss']
 })
