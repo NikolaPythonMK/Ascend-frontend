@@ -63,8 +63,8 @@
 
   /* Selected state */
   &.selected {
-    background-color: rgba(108, 99, 255, 0.1);
-    border-left: 4px solid #6c63ff;
+    background-color: rgba(vars.$color-primary, 0.1);
+    border-left: 4px solid vars.$color-primary;
     font-weight: 600;
   }
 }

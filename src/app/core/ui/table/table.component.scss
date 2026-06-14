@@ -40,7 +40,7 @@ table {
 }
 
 thead {
-  background: linear-gradient(135deg, #6c63ff, #a29bfe);
+  background: linear-gradient(135deg, vars.$color-primary, #a29bfe);
   color: vars.$white-color;
 }
 

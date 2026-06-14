@@ -99,11 +99,11 @@
   padding: 8px 12px;
   margin-left: .5em;
   font-weight: bold;
-  color: #6c63ff;
+  color: vars.$color-primary;
 }
 
 .active-role {
-  color: #6c63ff;
+  color: vars.$color-primary;
   background-color: #e3f2fd;
 }
 

@@ -88,7 +88,7 @@
 }
 
 .orders ul li.selected-order {
-  border-color: #6c63ff;
+  border-color: vars.$color-primary;
 }
 
 .products {
@@ -139,7 +139,7 @@ button:active {
 }
 
 .primary-btn {
-  background-color: #6c63ff;
+  background-color: vars.$color-primary;
 }
 
 .add-btn {
@@ -184,7 +184,7 @@ button:active {
 }
 
 .add-item-btn {
-  background-color: #6c63ff;
+  background-color: vars.$color-primary;
 }
 
 .delete-order-btn {
