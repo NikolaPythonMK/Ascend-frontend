@@ -16,7 +16,7 @@ export abstract class BaseService<TRes, TReq> {
 
     constructor(private endpoint: string) {}
 
-    getAll(searchTerm?: SearchTerm[], sort?: Sort, filter?: Filter[]): Observable<Page<TRes>> {
+    getAll(searchTerm?: SearchTerm[], sort?: Sort, filter?: Filter[], page?: number, size?: number): Observable<Page<TRes>> {
         const filters: any = {};
 
         if (searchTerm) {
@@ -29,6 +29,14 @@ export abstract class BaseService<TRes, TReq> {
 
         if (filter) {
             filters.filter = filter
+        }
+
+        if (page !== undefined) {
+            filters.page = page;
+        }
+
+        if (size !== undefined) {
+            filters.size = size;
         }
 
         return this.http.post<Page<TRes>>(`${this.domain}/${this.endpoint}/all`, filters, { withCredentials: true });

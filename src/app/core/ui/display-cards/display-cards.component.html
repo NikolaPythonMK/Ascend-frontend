@@ -5,19 +5,15 @@
     <div class="cards-grid">
         @for(element of elements(); track element.id){
             <div class="card-container">
-                <div class="test-card" appearance="outlined" (click)="onSelect(element.id)">
-                    <img mat-card-image 
-                    [src]="element.image && element.image.trim() !== '' ? 'http://localhost:5073' + element.image : 'assets/images/no-image-icon.png'" 
-                    [alt]="element.description">               
-                </div>
+                <button class="test-card" type="button" (click)="onSelect(element.id)">
+                    <img
+                        [src]="element.image && element.image.trim() !== '' ? 'http://localhost:5073' + element.image : 'assets/images/no-image-icon.png'"
+                        [alt]="element.description || element.title"
+                    >
+                </button>
                 <div class="card-label">
                     <span class="label">{{ element.title }}</span>
                 </div>
-                @if (element.price) {
-                    <div class="card-price">
-                        <span class="label">{{ element.price }}</span>
-                    </div>
-                }
             </div>
         }
     </div>

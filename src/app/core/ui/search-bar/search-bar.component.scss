@@ -1,3 +1,5 @@
+@use "variables" as vars;
+
 :host {
   display: block;
   flex: 1 1 auto;
@@ -7,15 +9,17 @@
 .search-container {
   display: flex;
   align-items: center;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  padding: 0 8px;
+  border: 1px solid vars.$color-border;
+  border-radius: 8px;
+  padding: 0 0.5rem 0 0.75rem;
   width: 100%;
   max-width: none;
   min-width: 0;
-  height: 40px;
+  height: 42px;
   margin: 0;
   box-sizing: border-box;
+  background: vars.$color-surface;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
 }
 
 .search-input {
@@ -23,12 +27,14 @@
   min-width: 0;
   border: none;
   outline: none;
-  font-size: 16px;
-  padding: 4px 8px;
+  font-size: 0.98rem;
+  padding: 0.4rem 0.5rem;
+  color: vars.$color-heading;
+  background: transparent;
 }
 
 .search-input::placeholder {
-  color: #aaa;
+  color: vars.$color-muted-text;
 }
 
 .search-button {
@@ -40,17 +46,17 @@
 }
 
 .search-container:hover {
-  border-color: #999;
+  border-color: vars.$color-primary-light;
 }
 
 .search-container:focus-within {
-  border-color: #3f51b5;
+  border-color: vars.$color-primary;
+  box-shadow: 0 0 0 3px vars.$color-primary-light;
 }
 
 @media (max-width: 480px) {
   .search-container {
-    height: 36px;
-    border-radius: 18px;
+    height: 40px;
   }
 
   .search-input {

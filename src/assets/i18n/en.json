@@ -37,7 +37,9 @@
         "status-occupied": "Occupied",
         "status": {
             "Available": "Available",
-            "Occupied": "Occupied"
+            "Occupied": "Occupied",
+            "status-available": "Available",
+            "status-occupied": "Occupied"
         },
         "no-tables-first-part": "You currently have no tables entered in the system.",
         "no-tables-second-part": "Click",
@@ -71,6 +73,7 @@
         "tab-title-categorygroups": "Category Groups",
         "products" : {
             "products": "Products",
+            "category": "Category",
             "product": "Product",
             "no-products-found": "No products found",
             "add-product": "Add Product",
@@ -97,6 +100,7 @@
             "update-category": "Update Category",
             "name": "Name",
             "name-exists": "Category with the same name already exists",
+            "has-active-products": "This category cannot be deleted because it has active products",
             "description": "Description",
             "category-group": "Category Group",
             "image": "Attach Image"
@@ -216,7 +220,7 @@
     },
     "shared": { 
         "homepage-back": "Go back to Homepage",
-        "discard": "Discard",
+        "discard": "Close",
         "add": "Add",
         "edit": "Edit",
         "delete": "Delete",

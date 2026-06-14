@@ -1,10 +1,10 @@
 <div class="tabs-wrapper page-padding">
-  <mat-tab-group>
+  <mat-tab-group class="menu-tabs" animationDuration="180ms">
   @if (canViewProducts) {
     <mat-tab [label]="'menu.tab-title-products' | translate">
       <div class="content-wrapper">
         <ng-template matTabContent>
-          <products-component />
+          <products-component></products-component>
         </ng-template>
       </div>
     </mat-tab>    
@@ -13,7 +13,7 @@
     <mat-tab [label]="'menu.tab-title-categories' | translate">
       <div class="content-wrapper">
         <ng-template matTabContent>
-          <categories-component />
+          <categories-component></categories-component>
         </ng-template>
       </div>
     </mat-tab>
@@ -22,7 +22,7 @@
     <mat-tab [label]="'menu.tab-title-categorygroups' | translate">
     <div class="content-wrapper">
       <ng-template matTabContent>
-        <category-groups-component />
+        <category-groups-component></category-groups-component>
       </ng-template>
     </div>
   </mat-tab>

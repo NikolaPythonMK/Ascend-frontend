@@ -45,9 +45,10 @@
       </div>
     </div>
     <div class="cards-layout">
-    @if (categoryCards().length) {
+    @if (categoryLoading()) {
+      <ascend-loader [loading]="categoryLoading()" />
+    } @else if (categoryCards().length) {
       <ascend-display-cards
-      [loading]="categoryLoading()"
       (selectedCard)="onUpdateCategory($event)"
       [elements]="categoryCards()"
     />

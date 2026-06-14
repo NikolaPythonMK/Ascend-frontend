@@ -19,12 +19,13 @@ import { finalize } from "rxjs";
 import { BreakpointService } from "../../../../core/services/utility/breakpoint.service";
 import { TranslateModule } from "@ngx-translate/core";
 import { PermissionService } from "../../../../core/services/auth/permission.service";
+import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
 
 @Component({
     selector: 'category-groups-component',
-    imports: [CommonModule, DisplayCardsComponent, SearchBarComponent, MatIconModule, MatButtonModule, HeaderCounterComponent, TranslateModule],
+    imports: [CommonModule, DisplayCardsComponent, SearchBarComponent, MatIconModule, MatButtonModule, HeaderCounterComponent, TranslateModule, LoaderComponent],
     templateUrl: 'category-groups.component.html',
-    styleUrls: ['category-groups.component.scss']
+    styleUrls: ['category-groups.component.scss', '../../styles/tab-style.scss']
 })
 export class CategoryGroupsComponent implements OnInit{
     private readonly dialog = inject(MatDialog);

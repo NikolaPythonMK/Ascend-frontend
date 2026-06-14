@@ -70,34 +70,34 @@
         <textarea matInput formControlName="description" [readonly]="canUpdate() === false && isUpdateDialog()"></textarea>
       </mat-form-field>
 
-      @if (isUpdateDialog()){
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>{{ 'menu.products.discountpercent' | translate }}</mat-label>
-        <input
-          matInput
-          type="number"
-          formControlName="discountPercent"
-          [readonly]="canUpdate() === false && isUpdateDialog()"
-        />
-      </mat-form-field>
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>{{ 'menu.products.discountpercent' | translate }}</mat-label>
-        <input
-          matInput
-          type="number"
-          formControlName="discountAmount"
-          [readonly]="canUpdate() === false && isUpdateDialog()"
-        />
-      </mat-form-field>
+      <!-- @if (isUpdateDialog()){
         <mat-form-field appearance="fill" class="full-width">
-        <mat-label>{{ 'menu.products.reason' | translate }}</mat-label>
-        <input
-          matInput
-          formControlName="reason"
-          [readonly]="canUpdate() === false && isUpdateDialog()"
-        />
-      </mat-form-field>
-      } 
+          <mat-label>{{ 'menu.products.discountpercent' | translate }}</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="discountPercent"
+            [readonly]="canUpdate() === false && isUpdateDialog()"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>{{ 'menu.products.discountamount' | translate }}</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="discountAmount"
+            [readonly]="canUpdate() === false && isUpdateDialog()"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>{{ 'menu.products.reason' | translate }}</mat-label>
+          <input
+            matInput
+            formControlName="reason"
+            [readonly]="canUpdate() === false && isUpdateDialog()"
+          />
+        </mat-form-field>
+      } -->
     </div>
 
     <div>

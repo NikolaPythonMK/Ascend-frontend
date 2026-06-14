@@ -26,8 +26,8 @@
                 </div>
                 <div class="grid-row">
                     <ul>
-                        @for (item of table.tableItems.slice(0, 3); track item.product.name) {
-                            <li><span class="light-font">{{ item.quantity }}x</span> {{ item.product.name }}</li>
+                        @for (item of table.tableItems.slice(0, 3); track item.productName) {
+                            <li><span class="light-font">{{ item.quantity }}x</span> {{ item.productName }}</li>
                         }
                         @if (table.tableItems.length > 3) {
                             <li class="plus-items">. . . <span class="light-font">+{{ table.tableItems.length - 3 }}</span></li>

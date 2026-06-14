@@ -23,6 +23,7 @@ import { DisplayTablesHeaderComponent } from "./components/display-tables-header
 import TranslationService from '../../core/services/utility/translation.service';
 import { SettingsManagerService } from '../../core/services/utility/settings-manager.service';
 import { TableView } from '../../core/models/enums/table-view.enum';
+import { SearchTerm } from '../../core/models/api/search-term.model';
 
 @Component({
   selector: 'ascend-tables',
@@ -49,6 +50,7 @@ export class TablesComponent implements OnInit{
   tables = signal<Table[]>([]);
   tablesLoading = signal<boolean>(false);
   selectedView = signal<string>('table');
+  searchTerm = signal<string>('');
   readonly router = inject(Router);
   readonly route = inject(ActivatedRoute);
   readonly viewportScroller = inject(ViewportScroller);
@@ -82,7 +84,8 @@ export class TablesComponent implements OnInit{
   }
 
   onSearchTerm(searchTerm: string) {
-
+    this.searchTerm.set(searchTerm);
+    this.getTables();
   }
 
   onClickTable(id: number): void {
@@ -111,7 +114,11 @@ export class TablesComponent implements OnInit{
 
   private getTables(): void {
     this.tablesLoading.set(true);
-    this.tablesService.getAll().pipe(
+    const searchFilter: SearchTerm[] = [
+      { propName: 'Code', searchValue: this.searchTerm() }
+    ];
+
+    this.tablesService.getAll(searchFilter).pipe(
       finalize(() => this.tablesLoading.set(false))
     ) 
     .subscribe({

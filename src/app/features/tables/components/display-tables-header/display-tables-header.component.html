@@ -32,13 +32,15 @@
     </div>
   </div>
 
-  @if (canCreateTemporaryTable()){
-    <ascend-button type="primary" label="Temporary"  (click)="onAddTemporaryTable()"/>
-  }
+  <div class="right-actions">
+    @if (canCreateTemporaryTable() && selectedView() !== 'drag') {
+      <ascend-button type="primary" label="Temporary" (click)="onAddTemporaryTable()"/>
+    }
 
-  @if (selectedView() !== 'drag') {
-  <div class="search-container">
-    <ascend-search-bar (onSearchTerm)="onSearchTerm($event)" />
+    @if (selectedView() !== 'drag') {
+    <div class="search-container">
+      <ascend-search-bar (onSearchTerm)="onSearchTerm($event)" />
+    </div>
+    }
   </div>
-  }
 </div>

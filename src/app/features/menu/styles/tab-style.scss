@@ -1,17 +1,21 @@
-@use "sass:color";
 @use "variables" as vars;
 
-$accent: #605dff;
-$surface-border: color.scale($accent, $saturation: -70%, $lightness: 45%);
-$surface-background: vars.$white-color;
+$surface-shadow: 0 14px 32px rgba(32, 38, 71, 0.08);
 
 %menu-surface {
-  background-color: $surface-background;
-  border-radius: 14px;
-  border: var(--menu-surface-border, 1px solid $surface-border);
-  padding: clamp(0.85rem, 1.1vw, 1.25rem);
+  min-height: 0;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  background: vars.$color-surface;
+  border: 1px solid vars.$color-border;
+  border-radius: 8px;
+  box-shadow: $surface-shadow;
+}
+
+:host {
+  display: block;
+  height: 100%;
   min-height: 0;
 }
 
@@ -22,80 +26,84 @@ $surface-background: vars.$white-color;
   height: 100%;
   min-height: 0;
   box-sizing: border-box;
-  padding: clamp(0.85rem, 1.2vw, 1.5rem);
-  background: transparent;
   display: flex;
-  gap: clamp(0.75rem, 1.2vw, 1.25rem);
+  gap: 0;
   color: vars.$primary-font-color;
   overflow: hidden;
+  background: vars.$color-surface;
+  padding-top: 0.75rem;
 
-  .cards-container {
-    @extend %menu-surface;
-    gap: clamp(0.75rem, 1vw, 1.15rem);
-    overflow: hidden;
-  }
-
-  .cards-layout {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
-    padding-right: clamp(0.2rem, 0.5vw, 0.5rem);
-    padding-bottom: clamp(0.4rem, 0.8vw, 0.75rem);
-  }
 }
 
 .container,
 .container-tablet {
   flex-direction: column;
-  align-items: stretch;
 }
-
-.container-pc.cards-only {
-  grid-template-columns: minmax(0, 1fr);
-}
-
 
 .container-pc {
   display: grid;
-  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
-  align-content: stretch;
-  align-items: stretch;
+  grid-template-columns: minmax(230px, 280px) minmax(0, 1fr);
+}
 
-  .list-container {
-    @extend %menu-surface;
-    overflow-y: auto;
-    padding: clamp(0.75rem, 1vw, 1rem) clamp(0.35rem, 0.8vw, 0.65rem);
-    gap: 0.75rem;
-    max-height: 100%;
+.container.cards-only,
+.container-tablet.cards-only,
+.container-pc.cards-only {
+  display: flex;
+  flex-direction: column;
 
-    ::ng-deep .category-list {
-      width: 100%;
-      padding-inline: 0;
-      padding-block: 0.35em;
-    }
+  .cards-container {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
   }
 }
 
-.container-tablet .list-container,
-.container .list-container {
+.list-container,
+.cards-container {
   @extend %menu-surface;
-  overflow-y: auto;
-  gap: 0.75rem;
-  max-height: 100%;
-  padding: clamp(0.75rem, 1vw, 1rem) clamp(0.35rem, 0.8vw, 0.65rem);
-
-  ::ng-deep .category-list {
-    width: 100%;
-    padding-inline: 0;
-    padding-block: 0.35em;
-  }
+  box-shadow: none;
 }
 
 .list-container {
+  padding: clamp(0.7rem, 1vw, 1rem);
+  overflow: hidden;
+  border-radius: 0;
+  border-right: 0;
+
   ascend-display-list {
     flex: 1 1 auto;
     min-height: 0;
   }
+
+  ::ng-deep .category-list {
+    width: 100%;
+    max-height: none;
+    height: 100%;
+    padding: 0;
+    overflow-y: auto;
+  }
+}
+
+.sidebar-header,
+.cards-header {
+  flex: 0 0 auto;
+  background: vars.$color-surface;
+  border-bottom: 1px solid vars.$color-border;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.45rem 0 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.cards-container {
+  width: 100%;
+  padding: clamp(0.8rem, 1.2vw, 1.2rem);
+  overflow: hidden;
+  border-radius: 0;
 }
 
 .cards-header {
@@ -105,124 +113,124 @@ $surface-background: vars.$white-color;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: nowrap;
-  gap: clamp(0.5rem, 1vw, 1rem);
-  padding-bottom: clamp(0.5rem, 0.9vw, 0.9rem);
-  margin-bottom: clamp(0.5rem, 0.9vw, 1rem);
-  background: inherit;
-  border-bottom: 1px solid color.scale($surface-border, $lightness: -15%);
+  gap: clamp(0.75rem, 1.2vw, 1.2rem);
+  padding-bottom: clamp(0.75rem, 1vw, 1rem);
+  margin-bottom: clamp(0.75rem, 1.1vw, 1.15rem);
 }
 
 .left-part,
 .right-part {
   display: flex;
   align-items: center;
-  gap: clamp(0.45rem, 0.9vw, 0.9rem);
+  min-width: 0;
 }
 
 .left-part {
-  flex-wrap: wrap;
-
-  ascend-header-counter {
-    margin-left: 0.35rem;
-  }
+  gap: 0.6rem;
 }
 
 .right-part {
-  margin-left: auto;
-  flex-wrap: nowrap;
   justify-content: flex-end;
-
-  button.add-btn[mat-fab] {
-    align-self: center;
-  }
+  gap: 0.75rem;
+  flex: 1 1 auto;
 
   ascend-search-bar {
-    display: block;
-    flex: 1 1 clamp(220px, 35vw, 360px);
-    min-width: 200px;
-    max-width: 360px;
-    width: auto;
+    flex: 1 1 280px;
+    max-width: 380px;
   }
-}
-
-.sidebar-header {
-  position: sticky;
-  top: 0;
-  z-index: 3;
-  padding-bottom: 0.6rem;
-  margin-bottom: 0.6rem;
-  background: inherit;
-  border-bottom: 1px solid color.scale($surface-border, $lightness: -15%);
 }
 
 .title {
-  font-size: clamp(1.25rem, 1.6vw, 1.75rem);
-  font-weight: 600;
-  color: vars.$primary-font-color;
-  letter-spacing: -0.012em;
+  color: vars.$title-color;
+  font-size: clamp(1.2rem, 1.4vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
 }
 
 .title-sidebar-list {
-  text-align: center;
-  padding: 0.4em 0;
+  display: block;
+  padding: 0.15rem 0;
+  font-size: 1rem;
+  color: vars.$color-muted-text;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cards-layout {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0.15rem 0.25rem 0.5rem 0;
 }
 
 button.add-btn[mat-fab] {
-  --mdc-fab-container-shape: 18px;
-  width: 48px;
-  height: 48px;
-  padding: 0;
-  background-color: $accent;
-  color: vars.$white-color;
-  border: 1px solid color.scale($accent, $lightness: 15%);
-  box-shadow: 0 12px 22px rgba(96, 93, 255, 0.18);
-  font-size: 0;
-  line-height: 48px;
-  transition: transform 150ms ease, box-shadow 150ms ease;
+  --mdc-fab-container-shape: 8px;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  color: vars.$color-on-primary;
+  background: vars.$color-primary;
+  border: 1px solid vars.$color-primary-hover;
+  box-shadow: 0 10px 18px rgba(108, 99, 255, 0.2);
+  transition: background-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
 
   &:hover {
+    background: vars.$color-primary-hover;
+    box-shadow: 0 12px 22px rgba(108, 99, 255, 0.25);
     transform: translateY(-1px);
-    box-shadow: 0 16px 26px rgba(96, 93, 255, 0.22);
   }
 
   &:active {
+    background: vars.$color-primary-active;
+    box-shadow: 0 6px 14px rgba(108, 99, 255, 0.2);
     transform: translateY(0);
-    box-shadow: 0 8px 18px rgba(96, 93, 255, 0.2);
   }
 
   mat-icon {
     margin: 0;
-    font-size: 1.35rem;
   }
 }
 
 .no-data-message {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  margin: 0;
+  color: vars.$color-muted-text;
+  font-size: 1rem;
+  font-weight: 600;
   text-align: center;
-  margin: 2rem 0;
-  color: vars.$primary-font-color;
-  font-size: clamp(1.05rem, 1.3vw, 1.35rem);
+  border: 1px dashed vars.$color-border;
+  border-radius: 8px;
+  background: vars.$color-muted-background;
 }
 
 .cards-container {
+  ::ng-deep .wrapper {
+    height: auto;
+    min-height: 0;
+  }
+
   ::ng-deep .cards-grid {
     width: 100%;
-    margin: clamp(0.5rem, 0.8vw, 1rem) 0;
+    margin: 0;
     padding: 0;
-    gap: clamp(0.5rem, 0.8vw, 0.85rem);
-    grid-template-columns: repeat(auto-fit, minmax(140px, 185px));
+    gap: clamp(0.9rem, 1.2vw, 1.25rem);
+    grid-template-columns: repeat(auto-fill, minmax(170px, 220px));
     justify-content: flex-start;
   }
 
   ::ng-deep .card-container {
-    display: flex;
-    justify-content: center;
+    min-width: 0;
+    max-width: 220px;
   }
 
   ::ng-deep .test-card {
     width: 100%;
-    max-width: 185px;
-    aspect-ratio: 4 / 5;
+    max-width: none;
+    aspect-ratio: 1 / 1;
   }
 }
 
@@ -230,329 +238,51 @@ button.add-btn[mat-fab] {
   .container,
   .container-tablet,
   .container-pc {
-    padding: 0.85rem;
+    gap: 0;
   }
 
   .cards-header {
-    flex-direction: column;
+    flex-wrap: wrap;
     align-items: stretch;
   }
 
   .left-part {
-    width: 100%;
-    justify-content: space-between;
+    flex: 1 1 auto;
   }
 
   .right-part {
-    width: 100%;
+    flex: 1 1 100%;
     justify-content: stretch;
 
-    button.add-btn[mat-fab] {
-      flex: 1 1 auto;
-      justify-content: center;
-    }
-
     ascend-search-bar {
-      width: 100%;
-      flex: 1 1 auto;
+      max-width: none;
     }
   }
 }
 
 @media (max-width: 600px) {
-  .container,
-  .container-tablet {
-    padding: 0.65rem;
-  }
-
-  .cards-container,
-  .list-container {
-    padding: 0.65rem;
-    --menu-surface-border: none;
-    border: none;
-    box-shadow: none;
-    background-color: $surface-background;
-  }
-
+  .list-container,
   .cards-container {
-    margin: 0 auto;
-    width: min(90%, 420px);
-
-    ::ng-deep .cards-grid {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.75rem;
-      margin: 0;
-      width: 100%;
-    }
-
-    ::ng-deep .card-container {
-      width: 100%;
-      justify-content: center;
-    }
-
-    ::ng-deep .test-card {
-      width: 90%;
-      max-width: 360px;
-      aspect-ratio: 4 / 5;
-      border: 1px solid color.scale($surface-border, $lightness: -10%);
-      border-radius: 16px;
-    }
+    border: 0;
+    box-shadow: none;
+    padding: 0.75rem;
   }
 
   .cards-header {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
     gap: 0.65rem;
   }
 
-  .left-part {
-    flex: 1 1 auto;
-    width: auto;
-    justify-content: flex-start;
-  }
-
   .right-part {
-    margin-left: 0;
-    display: contents;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
   }
 
-  .cards-header button.add-btn[mat-fab] {
-    order: 1;
-    width: 42px;
-    height: 42px;
-    line-height: 42px;
-    padding: 0;
+  .cards-container ::ng-deep .cards-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 210px));
+    justify-content: center;
   }
 
-  .cards-header button.add-btn[mat-fab] mat-icon {
-    margin: 0;
-    font-size: 1.15rem;
-  }
-
-  .cards-header ascend-search-bar {
-    order: 2;
-    flex: 0 0 100%;
-    width: 100%;
-    margin-top: 0.5rem;
-  }
-
-  .list-container {
-    background-color: transparent;
-    padding-inline: 0;
-
-    ::ng-deep .category-list {
-      padding-inline: 0;
-    }
+  .cards-container ::ng-deep .card-container {
+    max-width: 210px;
   }
 }
-
-
-
-@media (max-width: 900px) and (min-width: 601px) {
-  .cards-header {
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: clamp(0.5rem, 2vw, 1rem);
-  }
-
-  .left-part {
-    flex: 0 1 auto;
-    min-width: 0;
-    justify-content: flex-start;
-  }
-
-  .right-part {
-    display: flex;
-    flex: 1 1 auto;
-    min-width: 0;
-    align-items: center;
-    justify-content: flex-end;
-    gap: clamp(0.45rem, 1.5vw, 0.85rem);
-    flex-wrap: nowrap;
-    margin-left: auto;
-  }
-
-  .cards-header button.add-btn[mat-fab] {
-    order: 0;
-    flex: 0 0 auto;
-    width: 46px;
-    height: 46px;
-    line-height: 46px;
-    padding: 0;
-  }
-
-  .cards-header ascend-search-bar {
-    order: 1;
-    flex: 1 1 clamp(200px, 45vw, 340px);
-    min-width: 180px;
-    max-width: 360px;
-    width: auto;
-    margin-top: 0;
-  }
-}
-@media (max-width: 900px) and (orientation: landscape) {
-  .container,
-  .container-tablet,
-  .container-pc {
-    padding: 0.85rem;
-  }
-
-  .cards-container,
-  .list-container {
-    --menu-surface-border: none;
-    border: none;
-    box-shadow: none;
-  }
-
-  .cards-container {
-    margin: 0 auto;
-    width: min(92%, 680px);
-
-    ::ng-deep .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 0.75rem;
-      width: 100%;
-    }
-
-    ::ng-deep .card-container {
-      width: 100%;
-      justify-content: center;
-    }
-
-    ::ng-deep .test-card {
-      width: 100%;
-      max-width: none;
-      border: none;
-      border-radius: 12px;
-    }
-  }
-
-  .cards-header {
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: clamp(0.5rem, 2vw, 1rem);
-  }
-
-  .left-part {
-    flex: 0 1 auto;
-    min-width: 0;
-    justify-content: flex-start;
-  }
-
-  .right-part {
-    display: flex;
-    flex: 1 1 auto;
-    min-width: 0;
-    align-items: center;
-    justify-content: flex-end;
-    gap: clamp(0.45rem, 1.5vw, 0.85rem);
-    margin-left: auto;
-    flex-wrap: nowrap;
-  }
-
-  .cards-header button.add-btn[mat-fab] {
-    order: 0;
-    flex: 0 0 auto;
-    width: 46px;
-    height: 46px;
-    line-height: 46px;
-    padding: 0;
-  }
-
-  .cards-header ascend-search-bar {
-    order: 1;
-    flex: 1 1 clamp(200px, 45vw, 340px);
-    min-width: 180px;
-    max-width: 360px;
-    width: auto;
-    margin-top: 0;
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.container.cards-only,
-.container-tablet.cards-only,
-.container-pc.cards-only {
-  gap: clamp(0.85rem, 1.2vw, 1.4rem);
-
-  .cards-container {
-    max-width: min(100%, 1120px);
-    margin: 0 auto;
-  }
-
-  .cards-header {
-    flex-wrap: wrap;
-    align-items: center;
-    gap: clamp(0.65rem, 1.05vw, 1.2rem);
-    padding-bottom: clamp(0.6rem, 1vw, 1rem);
-    margin-bottom: clamp(0.65rem, 1.05vw, 1.1rem);
-  }
-
-  .cards-layout {
-    margin-top: clamp(0.5rem, 1vw, 1.25rem);
-
-    ::ng-deep .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: clamp(0.75rem, 1.1vw, 1.25rem);
-      justify-content: flex-start;
-    }
-
-    ::ng-deep .card-container {
-      display: flex;
-      justify-content: flex-start;
-    }
-
-    ::ng-deep .test-card {
-      width: 100%;
-      max-width: 240px;
-    }
-  }
-}
-
-.container-pc.cards-only {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-}
-
-

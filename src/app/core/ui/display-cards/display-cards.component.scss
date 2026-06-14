@@ -1,110 +1,78 @@
-@use 'variables' as vars;
+@use "variables" as vars;
 
 .wrapper {
-  height: 100vh;
   width: 100%;
+  min-height: 0;
 }
 
-  .example-header-image {
-    background-size: cover;
-  }
-  
-  .example-additional-selection {
-    opacity: 0.75;
-    font-size: 0.75em;
-    line-height: 1;
-    width: 100%;
-  }
+.card-container {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
 
-  .mat-mdc-card-header{
-    padding: 1em;
-  }
-
-  mat-card-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-top: 1px solid rgba(0, 0, 0, 0.25);
-  }
-
-  mat-card img{
-    // width: 100%;
-    // height: 200px;
-  }
-
-  .card-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-  .card-label { 
-    position: absolute;
-    bottom: 0%;
-    height: 25%;
-    width: 100%;
-    background-color: rgba($color: #000000, $alpha: 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;  
-  }
-  .card-price{
-    position: absolute;
-    left: 0%;
-    top: 0%;
-    background-color: rgba($color: #89AC46, $alpha: 0.7);
-    padding: .6em;
-    border-bottom-right-radius: 20px;
-    .label {
-      font-size: 1.2rem;
-    }
-  }
-  .label{
-    color: white;
-    font-size: 1.2rem;
-  }
-  
 .test-card {
   position: relative;
   box-sizing: border-box;
-  border-radius: 5px;
+  width: 100%;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s ease;
-  // Maintain a 4:3 (or 1:1) aspect ratio—change as you like
-  aspect-ratio: 4 / 3;
+  border: 1px solid vars.$color-border;
+  border-radius: 8px;
+  padding: 0;
+  background: vars.$color-surface;
+  box-shadow: 0 8px 18px rgba(32, 38, 71, 0.08);
+  aspect-ratio: 1 / 1;
+  transition: box-shadow 150ms ease, transform 150ms ease;
 
-    &:hover {
-    transform: scale(1.02);
+  &:hover {
+    box-shadow: 0 12px 22px rgba(32, 38, 71, 0.12);
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: 3px solid vars.$color-primary-light;
+    outline-offset: 2px;
   }
 }
 
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit:fill;     // cropped to fill
-    display: block;        // remove inline-img gaps
-  }
-// .test-card:hover {
-//   transform: scale(1.01);
-// }
-
-// .test-card img {
-//     width: 100%; 
-//     height: 100%;
-//     //object-fit: cover;
-// }
-
-@media (max-width: 320px) {
-  .cards-grid {
-    gap: 0.75rem;
-    padding: 0 0.5rem;
-  }
+img {
+  width: calc(100% - 1.2rem);
+  height: calc(100% - 3.7rem);
+  margin: 0.6rem 0.6rem 3.1rem;
+  display: block;
+  object-fit: contain;
+  border-radius: 6px;
 }
 
-// 4. Optional: very large wide screens
-@media (min-width: 1440px) {
-  .cards-grid {
-    gap: 2rem;
-    padding: 0 2rem;
+.card-label {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.7rem;
+  box-sizing: border-box;
+  border-radius: 0;
+  background: vars.$color-surface;
+  border-top: 1px solid vars.$color-border;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.label {
+  color: vars.$color-heading;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+  .card-label {
+    min-height: 38px;
   }
 }

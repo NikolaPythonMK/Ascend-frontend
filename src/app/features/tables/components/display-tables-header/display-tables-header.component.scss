@@ -45,6 +45,12 @@
     display: flex;
     align-items: center;
   }
+  .right-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
   .status-filter {
     display: flex;
     align-items: center;
@@ -105,7 +111,7 @@
   .search-container {
     display: flex;
     justify-content: start;
-    width: 50%;
+    width: 100%;
   }
 
 }
@@ -125,7 +131,7 @@
 {
    .tables-header {
   display: grid;
-  grid-template-rows: repeat(3, 30px);
+  grid-template-rows: repeat(2, auto);
   gap: 16px; /* Adjust this value to change horizontal and vertical gaps */
     padding: 1rem;
 
@@ -155,6 +161,11 @@
       max-width: 100%;
       display: flex;
       justify-content: flex-end;
+    }
+
+    .right-actions {
+      justify-content: flex-start;
+      flex-wrap: wrap;
     }
   }
 

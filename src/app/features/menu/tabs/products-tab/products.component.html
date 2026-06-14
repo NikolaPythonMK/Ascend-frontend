@@ -28,7 +28,7 @@
       <div class="left-part">
         <span class="title">{{ 'menu.products.products' | translate }}</span>
         @if (!breakpointService.isHandsetLandscape() && !breakpointService.isMobile()) {
-          <ascend-header-counter [value]="products().length" />
+          <ascend-header-counter [value]="totalProducts()" />
         }
       </div>
       <div class="right-part">
@@ -46,16 +46,21 @@
         <ascend-search-bar (onSearchTerm)="onSearchProducts($event)" class="search-bar"/>
       </div>
     </div>
-    <div class="cards-layout">
-      @if (productCards().length) {
+    <div class="cards-layout" #productsScrollContainer>
+      @if (productsLoading()) {
+      <ascend-loader [loading]="productsLoading()" />
+      } @else if (productCards().length) {
       <ascend-display-cards
-        [loading]="productsLoading()"
         (selectedCard)="onProductEdit($event)"
         [elements]="productCards()"
       />
+      @if (productsLoadingMore()) {
+      <ascend-loader [loading]="productsLoadingMore()" />
+      }
       } @else {
       <p class="no-data-message">{{ 'menu.products.no-products-found' | translate }}</p>
       }
+      <div #productsScrollSentinel style="height: 1px" aria-hidden="true"></div>
     </div>
   </div>
 </div>

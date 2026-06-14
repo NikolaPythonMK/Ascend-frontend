@@ -26,10 +26,11 @@ import { BreakpointService } from "../../../../core/services/utility/breakpoint.
 import { Filter } from "../../../../core/models/api/value-objects/filter.model";
 import { TranslateModule } from "@ngx-translate/core";
 import { PermissionService } from "../../../../core/services/auth/permission.service";
+import { LoaderComponent } from "../../../../core/ui/loader/loader.component";
 
 @Component({
     selector: 'categories-component',
-    imports: [DisplayListComponent, DisplayCardsComponent, SearchBarComponent, MatIconModule, MatButtonModule, HeaderCounterComponent, CommonModule, TranslateModule],
+    imports: [DisplayListComponent, DisplayCardsComponent, SearchBarComponent, MatIconModule, MatButtonModule, HeaderCounterComponent, CommonModule, TranslateModule, LoaderComponent],
     templateUrl: 'categories.component.html',
     styleUrls: ['categories.component.scss', '../../styles/tab-style.scss']
 })

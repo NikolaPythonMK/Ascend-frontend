@@ -1,10 +1,68 @@
+@use "variables" as vars;
+
+:host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+}
+
 .tabs-wrapper {
-    overflow: hidden;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: vars.$color-surface;
+}
+
+.menu-tabs {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+
+  ::ng-deep .mat-mdc-tab-header {
+    flex: 0 0 auto;
+    border-bottom: 1px solid vars.$color-border;
+    background: vars.$color-surface;
+    border-radius: 8px 8px 0 0;
+  }
+
+  ::ng-deep .mat-mdc-tab-label-container {
+    padding-inline: clamp(0.5rem, 1vw, 1rem);
+  }
+
+  ::ng-deep .mdc-tab {
+    min-width: 124px;
+    height: 52px;
+    padding-inline: clamp(0.8rem, 1.4vw, 1.25rem);
+  }
+
+  ::ng-deep .mdc-tab__text-label {
+    color: vars.$color-muted-text;
+    font-weight: 600;
+  }
+
+  ::ng-deep .mdc-tab--active .mdc-tab__text-label {
+    color: vars.$color-primary;
+  }
+
+  ::ng-deep .mat-mdc-tab-body-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  ::ng-deep .mat-mdc-tab-body,
+  ::ng-deep .mat-mdc-tab-body-content {
     height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
 }
 
 .content-wrapper {
-    padding: 1em;
-    margin-top: 1.5em;
-    height: 100%;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  background: vars.$color-surface;
+  padding-top: 0;
 }

@@ -46,6 +46,13 @@
       </div>
     </div>
   </div>
+
+  @if(errorMessages().includes('category.has-active-products')) {
+  <div class="error-message">
+    <mat-icon>error</mat-icon>
+    <span>{{ 'menu.categories.has-active-products' | translate }}</span>
+  </div>
+  }
   
   <div class="actions">
     @if (isUpdateDialog() && canDelete()) {

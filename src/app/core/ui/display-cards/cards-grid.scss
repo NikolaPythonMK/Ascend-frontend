@@ -1,12 +1,11 @@
-$card-min-width: 190px;
+$card-min-width: 180px;
+
 .cards-grid {
   display: grid;
   width: 100%;
-  gap: 1.25rem;
-  padding: 0 2em;
-  margin: 2rem auto;
+  gap: 1rem;
+  padding: 0;
+  margin: 0;
   box-sizing: border-box;
-
-  // Fluid columns: grow to fill, but never below your min width
   grid-template-columns: repeat(auto-fit, minmax($card-min-width, 1fr));
 }
