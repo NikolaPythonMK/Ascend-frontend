@@ -6,6 +6,88 @@
     <input matInput formControlName="name" [readonly]="canUpdate() === false" />
   </mat-form-field>
 
+  <section class="tables-section">
+    <div class="section-header">
+      <h3>{{ 'tables.title' | translate }}</h3>
+      <span class="table-count">{{ tables().length }}</span>
+    </div>
+
+    @if (canCreateTable()) {
+      <div [formGroup]="newTableForm" class="new-table-row">
+        <mat-form-field appearance="outline" floatLabel="always" class="table-code-field">
+          <mat-label>{{ 'ordered-items.code' | translate }}</mat-label>
+          <input matInput formControlName="code" />
+        </mat-form-field>
+        <button
+          mat-stroked-button
+          color="primary"
+          type="button"
+          class="table-action-button"
+          [disabled]="newTableForm.invalid"
+          (click)="onCreateTable()"
+        >
+          <mat-icon>add</mat-icon>
+          <span>{{ 'shared.add' | translate }} {{ 'tables.column-table' | translate }}</span>
+        </button>
+      </div>
+    }
+
+    <div class="tables-list">
+      @for (table of tables(); track table.id) {
+        <div class="table-row">
+          <mat-form-field appearance="outline" floatLabel="always" class="table-code-field">
+            <mat-label>{{ 'ordered-items.code' | translate }}</mat-label>
+            <input
+              matInput
+              [value]="tableCode(table)"
+              [readonly]="canUpdateTable() === false"
+              (input)="onTableCodeChange(table.id, $any($event.target).value)"
+            />
+          </mat-form-field>
+
+          <div class="status-cell">
+            <span
+              class="status-pill"
+              [ngClass]="{
+                'status-available': table.status === 'Available',
+                'status-occupied': table.status === 'Occupied'
+              }"
+            >
+              {{ 'tables.status.' + table.status | translate }}
+            </span>
+          </div>
+
+          <div class="table-actions">
+            @if (canUpdateTable()) {
+              <button
+                mat-icon-button
+                type="button"
+                [attr.aria-label]="'shared.update' | translate"
+                [disabled]="!tableCode(table).trim() || !isTableCodeChanged(table)"
+                (click)="onUpdateTable(table)"
+              >
+                <mat-icon>save</mat-icon>
+              </button>
+            }
+            @if (canDeleteTable()) {
+              <button
+                mat-icon-button
+                type="button"
+                class="delete-table-btn"
+                [attr.aria-label]="'shared.delete' | translate"
+                (click)="onDeleteTable(table)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+      } @empty {
+        <p class="empty-state">{{ 'tables.no-tables-first-part' | translate }}</p>
+      }
+    </div>
+  </section>
+
   <div class="actions">
     @if (data && canDelete()) {
         <mat-icon class="trash-btn" (click)="onDelete()">delete</mat-icon>

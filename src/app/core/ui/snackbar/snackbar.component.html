@@ -9,5 +9,7 @@
     <div class="snackbar-content">
         <p>{{ data.message }}</p>
     </div>
-    <button class="close-btn"(click)="dismiss()">{{ 'shared.close' | translate }}</button>
+    <button class="close-btn" type="button" [attr.aria-label]="'shared.close' | translate" (click)="dismiss()">
+        <mat-icon>close</mat-icon>
+    </button>
 </div>

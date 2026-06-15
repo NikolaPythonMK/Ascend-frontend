@@ -23,6 +23,14 @@
     "discount": {
         "not-found": "Discount not found"
     },
+    "location": {
+        "has-occupied-table": "Location cannot be deleted while it has occupied tables"
+    },
+    "table": {
+        "cannot-delete-occupied": "Occupied tables cannot be deleted",
+        "code-exists": "Table with the same code already exists",
+        "name-exists": "Table with the same name already exists"
+    },
     "navbar-items": {
        "tables": "Tables" ,
        "products-categories": "Products & Categories",

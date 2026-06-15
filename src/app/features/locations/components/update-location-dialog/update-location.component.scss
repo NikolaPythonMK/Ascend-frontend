@@ -11,13 +11,16 @@
     flex-direction: column;
     gap: 1rem; /* space between form fields */
     padding: 1.5rem;
-    width: 400px; /* optional max-width for the dialog */
+    width: min(760px, calc(100vw - 48px));
+    max-height: 78vh;
+    overflow: hidden;
     box-sizing: border-box;
   }
 
   /* Make form fields take full width */
   .full-width {
     width: 100%;
+    flex-shrink: 0;
   }
 
   /* Style the dialog title */
@@ -33,12 +36,162 @@
     width: 100%;
   }
 
+  .tables-section {
+    border: 1px solid vars.$color-border;
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: vars.$color-surface;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+
+    h3 {
+      margin: 0;
+      color: vars.$primary-font-color;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+  }
+
+  .table-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 24px;
+    padding: 0 0.55rem;
+    border-radius: 999px;
+    color: vars.$color-primary;
+    background-color: vars.$color-primary-light;
+    border: 1px solid rgba(vars.$color-primary, 0.18);
+    font-weight: 800;
+  }
+
+  .new-table-row,
+  .table-row {
+    display: grid;
+    grid-template-columns: 150px minmax(110px, auto) auto;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .new-table-row {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid vars.$color-border;
+    flex-shrink: 0;
+  }
+
+  .new-table-row .table-action-button {
+    min-height: 40px;
+    justify-self: start;
+  }
+
+  .tables-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: min(280px, 34vh);
+    overflow-y: auto;
+    padding-right: 0.25rem;
+    scrollbar-gutter: stable;
+    overscroll-behavior: contain;
+  }
+
+  .table-code-field {
+    width: 150px;
+    min-width: 0;
+  }
+
+  .table-code-field ::ng-deep .mat-mdc-text-field-wrapper {
+    height: 42px;
+  }
+
+  .table-code-field ::ng-deep .mat-mdc-form-field-flex {
+    height: 42px;
+    align-items: center;
+  }
+
+  .table-code-field ::ng-deep .mat-mdc-form-field-infix {
+    min-height: 0;
+    padding-top: 10px;
+    padding-bottom: 6px;
+  }
+
+  .table-code-field ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  .table-row {
+    padding: 0.75rem;
+    border: 1px solid vars.$color-border;
+    border-radius: 8px;
+    background-color: vars.$white-color;
+  }
+
+  .status-cell {
+    display: flex;
+    align-items: center;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: vars.$color-muted-text;
+    background-color: vars.$color-muted-background;
+  }
+
+  .status-available {
+    color: #276749;
+    background-color: #dff5e5;
+  }
+
+  .status-occupied {
+    color: #9b2c2c;
+    background-color: #fde2e2;
+  }
+
+  .table-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.25rem;
+  }
+
+  .delete-table-btn {
+    color: #c62828;
+  }
+
+  .empty-state {
+    margin: 0;
+    padding: 1rem;
+    color: vars.$color-muted-text;
+    text-align: center;
+    border: 1px dashed vars.$color-border;
+    border-radius: 8px;
+  }
+
   /* Actions container: align buttons to the right */
   .actions {
     display: flex;
     justify-content: flex-end;
     margin-top: 1.5rem;
     gap: 1rem;
+    flex-shrink: 0;
 
     .trash-btn {
         color: red;
@@ -52,4 +205,20 @@
     color: rgba(0, 0, 0, 0.6);
     font-size: 0.9rem;
     margin-left: 0.3rem;
+  }
+
+  @media (max-width: 640px) {
+    .new-table-row,
+    .table-row {
+      grid-template-columns: 1fr;
+    }
+
+    .new-table-row .table-action-button {
+      grid-column: auto;
+      justify-self: stretch;
+    }
+
+    .table-actions {
+      justify-content: flex-start;
+    }
   }
