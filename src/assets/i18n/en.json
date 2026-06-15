@@ -17,6 +17,12 @@
         "login-succesfull": "Logged In Succesfully",
         "invalid-credentials": "Invalid Credentials"
     },
+    "code": {
+        "missing": "Discount code is required"
+    },
+    "discount": {
+        "not-found": "Discount not found"
+    },
     "navbar-items": {
        "tables": "Tables" ,
        "products-categories": "Products & Categories",

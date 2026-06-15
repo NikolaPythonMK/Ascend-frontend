@@ -16,6 +16,12 @@
     "common": {
         "homepage-back": "Вратете се на почетната страница"
     },
+    "code": {
+        "missing": "Discount code is required"
+    },
+    "discount": {
+        "not-found": "Попустот не е пронајден"
+    },
     "navbar-items": {
         "tables": "Маси" ,
         "products-categories": "Продукти и Категории",

@@ -1,10 +1,12 @@
 import {
+  AfterViewInit,
   Component,
   computed,
   DestroyRef,
   ElementRef,
   HostListener,
   inject,
+  OnDestroy,
   OnInit,
   signal,
   ViewChild,
@@ -66,7 +68,7 @@ import { PermissionService } from '../../../../core/services/auth/permission.ser
   templateUrl: 'table.component.html',
   styleUrls: ['table.component.scss'],
 })
-export class TableComponent implements OnInit {
+export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedOrderId = signal<number | null>(null);
   readonly settingsManager = inject(SettingsManagerService);
   readonly categoryService = inject(CategoriesService);
@@ -91,6 +93,7 @@ export class TableComponent implements OnInit {
 
   isTemporaryTable = signal<boolean>(false);
   productsLoading = signal<boolean>(false);
+  productsLoadingMore = signal<boolean>(false);
   categoriesLoading = signal<boolean>(false);
   tableItemsLoading = signal<boolean>(false);
   dialogLoading = signal<boolean>(false);
@@ -102,6 +105,10 @@ export class TableComponent implements OnInit {
   discountCode = signal('');
   tableStatus = signal<string>('');
   products = signal<Product[]>([]);
+  productsPage = signal<number>(0);
+  productsPageSize = signal<number>(20);
+  totalProducts = signal<number>(0);
+  hasMoreProducts = computed(() => this.products().length < this.totalProducts());
   categories = signal<Category[]>([]);
   tableItems = signal<TableItem[]>([]);
   totalItems = signal<number>(0);
@@ -124,7 +131,11 @@ export class TableComponent implements OnInit {
   tableName = signal<string>('');
   editing = false;  
 
+  @ViewChild('productsScrollContainer') private productsScrollContainer?: ElementRef<HTMLElement>;
+  @ViewChild('productsScrollSentinel') private productsScrollSentinel?: ElementRef<HTMLElement>;
   @ViewChild('editInput') editInput!: ElementRef<HTMLInputElement>;
+  private productsScrollObserver?: IntersectionObserver;
+  private productsRequestId = 0;
 
   startEdit() {
     if (!this.isTemporaryTable()) return;
@@ -159,12 +170,18 @@ export class TableComponent implements OnInit {
         distinctUntilChanged(),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((value) => {
-        this.getAllProducts([
-          { propName: 'Name;Code', searchValue: value ?? '' },
-        ]);
+      .subscribe(() => {
+        this.reloadProducts();
       });
 
+  }
+
+  ngAfterViewInit(): void {
+    this.setupProductsInfiniteScroll();
+  }
+
+  ngOnDestroy(): void {
+    this.productsScrollObserver?.disconnect();
   }
 
   @HostListener('window:keydown', ['$event'])
@@ -191,6 +208,10 @@ export class TableComponent implements OnInit {
       .subscribe((result: ProductQuantityDialogResponse) => {
         this.keyEventSubject.start();
         if (result != null) {
+          if (!this.validateQuantity(result.data.quantity)) {
+            return;
+          }
+
           const request: TableItemRequest = {
             tableID: this.tableId(),
             productHistoryID: product.productHistoryID,
@@ -273,15 +294,24 @@ export class TableComponent implements OnInit {
         }
 
         if (result.data) {
+          if (!this.validateQuantity(result.data.quantity)) {
+            return;
+          }
+
           console.log('item', item);
+          const productHistoryID = item.productHistoryID ?? item.product?.productHistoryID;
           const request: TableItemRequest = {
             id: item.id,
             tableID: this.tableId(),
-            productHistoryID: item.product.productHistoryID,
             staffUserID: this.staffStore.id()!,
             quantity: result.data.quantity,
             note: result.data.note,
           };
+
+          if (productHistoryID != null) {
+            request.productHistoryID = productHistoryID;
+          }
+
           this.dialogLoading.set(true);
           this.tableItemsService
             .update(request)
@@ -313,24 +343,146 @@ export class TableComponent implements OnInit {
       });
   }
 
+  private validateQuantity(quantity: number): boolean {
+    if (!Number.isFinite(quantity)) {
+      this.snackbarService.error('Enter a valid quantity');
+      return false;
+    }
+
+    if (quantity <= 0) {
+      this.snackbarService.error('Quantity must be greater than 0');
+      return false;
+    }
+
+    return true;
+  }
+
   onClearSearch(): void {
     this.searchTerm.setValue('');
   }
 
-  private getAllProducts(searchTerm?: SearchTerm[]): void {
-    this.productsLoading.set(true);
+  private setupProductsInfiniteScroll(): void {
+    const root = this.productsScrollContainer?.nativeElement;
+    const sentinel = this.productsScrollSentinel?.nativeElement;
+
+    if (!root || !sentinel) {
+      return;
+    }
+
+    this.productsScrollObserver?.disconnect();
+    this.productsScrollObserver = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        this.loadNextProductsPage();
+      }
+    }, {
+      root,
+      rootMargin: '160px 0px',
+      threshold: 0
+    });
+    this.productsScrollObserver.observe(sentinel);
+  }
+
+  private reloadProducts(): void {
+    this.productsPage.set(0);
+    this.totalProducts.set(0);
+    this.products.set([]);
+    this.productsLoadingMore.set(false);
+    this.getAllProducts();
+  }
+
+  private loadNextProductsPage(): void {
+    if (this.productsLoading() || this.productsLoadingMore() || !this.hasMoreProducts()) {
+      return;
+    }
+
+    this.productsPage.update((page) => page + 1);
+    this.getAllProducts(true);
+  }
+
+  private getAllProducts(append = false): void {
+    const requestId = ++this.productsRequestId;
+
+    if (append) {
+      this.productsLoadingMore.set(true);
+    } else {
+      this.productsLoading.set(true);
+    }
 
     this.productService
-      .getAll(searchTerm)
-      .pipe(finalize(() => this.productsLoading.set(false)))
+      .getAll(this.createProductsSearchTerm(), undefined, undefined, this.productsPage(), this.productsPageSize())
+      .pipe(finalize(() => {
+        if (requestId !== this.productsRequestId) {
+          return;
+        }
+
+        if (append) {
+          this.productsLoadingMore.set(false);
+        } else {
+          this.productsLoading.set(false);
+        }
+      }))
       .subscribe({
         next: (result: Page<Product>) => {
-          this.products.set(result.data);
+          if (requestId !== this.productsRequestId) {
+            return;
+          }
+
+          if (append) {
+            this.products.update((current) => this.appendUniqueProducts(current, result.data));
+          } else {
+            this.products.set(result.data);
+          }
+
+          this.totalProducts.set(result.count);
+          this.loadNextProductsPageIfNeeded();
         },
         error: (error: HttpErrorResponse) => {
+          if (requestId !== this.productsRequestId) {
+            return;
+          }
+
+          if (append) {
+            this.productsPage.update((page) => Math.max(page - 1, 0));
+          }
+
           this.snackbarService.error(error.message);
         },
       });
+  }
+
+  private appendUniqueProducts(current: Product[], next: Product[]): Product[] {
+    const existingProductIds = new Set(current.map((product) => product.id));
+    const uniqueNextProducts = next.filter((product) => !existingProductIds.has(product.id));
+
+    return [...current, ...uniqueNextProducts];
+  }
+
+  private loadNextProductsPageIfNeeded(): void {
+    setTimeout(() => {
+      const container = this.productsScrollContainer?.nativeElement;
+      const sentinel = this.productsScrollSentinel?.nativeElement;
+
+      if (!container || !sentinel || !this.hasMoreProducts()) {
+        return;
+      }
+
+      const containerRect = container.getBoundingClientRect();
+      const sentinelRect = sentinel.getBoundingClientRect();
+
+      if (sentinelRect.top <= containerRect.bottom + 160) {
+        this.loadNextProductsPage();
+      }
+    });
+  }
+
+  private createProductsSearchTerm(): SearchTerm[] | undefined {
+    const searchValue = this.searchTerm.value?.trim() ?? '';
+
+    if (!searchValue) {
+      return undefined;
+    }
+
+    return [{ propName: 'Name;Code', searchValue }];
   }
 
   codeInputFocus(): void{
@@ -359,7 +511,7 @@ export class TableComponent implements OnInit {
           this.isDiscountApplied.set(true);
         },
         error: (error: HttpErrorResponse) => {
-          this.snackbarService.error(error.message);
+          this.snackbarService.error(this.getApiErrorMessage(error));
         },
       });
     this.keyEventSubject.start();
@@ -384,10 +536,21 @@ export class TableComponent implements OnInit {
 
         },
         error: (error: HttpErrorResponse) => {
-          this.snackbarService.error(error.message);
+          this.snackbarService.error(this.getApiErrorMessage(error));
         },
       });
     this.keyEventSubject.start();
+  }
+
+  private getApiErrorMessage(error: HttpErrorResponse): string {
+    const errorBody = error.error as { detail?: string; message?: string } | null | undefined;
+    const messageKey = errorBody?.detail ?? errorBody?.message;
+
+    if (messageKey) {
+      return this.translationService.getTranslationForKey(messageKey);
+    }
+
+    return error.message;
   }
 
   private getTableItems(): void {
@@ -422,12 +585,12 @@ export class TableComponent implements OnInit {
     this.searchTerm.setValue('');
   }
 
-  createTransaction(): void {
+  createTransaction(paymentMethod: number): void {
       if (!this.canEditTableValidation()) return;
 
       const request: TransactionRequest = {
           id: this.tableId(),
-          paymentMethod: 1,
+          paymentMethod,
           timeStamp: new Date().toISOString()
         };
         this.transactionService

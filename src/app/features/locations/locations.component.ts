@@ -41,6 +41,7 @@ export class LocationsPage implements OnInit{
     ]);
     colDisplayNames = computed(() => [...this.map.keys()]);
     nonSortableColumns = signal<string[]>([])
+    nonSearchableColumns = signal<string[]>(['Tables'])
     
 
     ngOnInit(): void {
@@ -74,7 +75,7 @@ export class LocationsPage implements OnInit{
       
 
     onSearch(term: string) {
-        this.tableState.setSearch(term, this.colDisplayNames(), this.nonSortableColumns(), this.map);
+        this.tableState.setSearch(term, this.colDisplayNames(), this.nonSearchableColumns(), this.map);
         this.getLocations();
     }
 

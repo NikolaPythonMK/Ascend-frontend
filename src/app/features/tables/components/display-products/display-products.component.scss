@@ -26,6 +26,7 @@
   // height: 100px;
   display: flex;
   flex-direction: column;
+  gap: 0.7rem;
   // justify-content: space-between;
   //justify-content: space-between;
   padding: 1em;
@@ -44,7 +45,6 @@
   justify-content: space-between;
 }
 
-.price,
 .card-code,
 .title,
 .code {
@@ -55,6 +55,48 @@
 .title {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  color: vars.$color-heading;
+
+  span:first-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  span:last-child {
+    flex-shrink: 0;
+    color: vars.$color-muted-text;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+}
+
+.price {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.42rem 0.68rem;
+  border: 1px solid rgba(vars.$color-success, 0.18);
+  border-radius: 8px;
+  background-color: vars.$color-success-light;
+  color: vars.$color-success;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.price-amount {
+  color: vars.$color-heading;
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.price-currency {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .card-title {

@@ -20,8 +20,11 @@ export class DisplayProductsComponent implements OnInit{
     _products = signal<Product[]>([]);
     @Input()
     set products(products: Product[]) {
+        const selectedProduct = this.selectedProduct();
         this._products.set(products);
-        this.selectedProduct.set(products[0]);
+        if (!selectedProduct || !products.some((product) => product.id === selectedProduct.id)) {
+            this.selectedProduct.set(products[0] ?? null);
+        }
     }
     get products() {
       return this._products();

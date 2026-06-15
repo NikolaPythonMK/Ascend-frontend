@@ -100,10 +100,18 @@ export class ProductQuantityComponent implements OnInit {
   }
 
   onSubmit(): void {
-    const quantity = this.getQuantityFormControl().value;
+    const quantity = Number(this.getQuantityFormControl().value);
     const note = this.getNoteFormControl().value;
 
-    if (quantity < -5) return;
+    if (!Number.isFinite(quantity)) {
+      this.snackbar.error('Enter a valid quantity');
+      return;
+    }
+
+    if (quantity <= 0) {
+      this.snackbar.error('Quantity must be greater than 0');
+      return;
+    }
 
     const result = {
       quantity,

@@ -52,13 +52,17 @@
         </div>
       </div>
     </div>
-    <div class="products-content">
+    <div class="products-content" #productsScrollContainer>
       <display-products
         [products]="products()"
         (selected)="onSelectCard($event)"
         [loading]="productsLoading()"
         (activeProduct)="onSelectCard($event)"
       />
+      @if (productsLoadingMore()) {
+        <ascend-loader [loading]="productsLoadingMore()" />
+      }
+      <div #productsScrollSentinel class="products-scroll-sentinel" aria-hidden="true"></div>
     </div>
   </div>
 
@@ -171,8 +175,8 @@
         @if (isTemporaryTable()){
           <button class="submit-btn" (click)="createTemporaryTable()">Submit</button>
         }@else {
-          <button class="cash-btn" (click)="createTransaction()">Cash</button>
-          <button class="card-btn">Card</button>
+          <button class="cash-btn" (click)="createTransaction(1)">Cash</button>
+          <button class="card-btn" (click)="createTransaction(2)">Card</button>
           <button>Split Bill</button>
         }
       </div>
