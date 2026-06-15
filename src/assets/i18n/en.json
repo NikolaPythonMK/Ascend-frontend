@@ -29,7 +29,9 @@
     "table": {
         "cannot-delete-occupied": "Occupied tables cannot be deleted",
         "code-exists": "Table with the same code already exists",
-        "name-exists": "Table with the same name already exists"
+        "name-exists": "Table with the same name already exists",
+        "current-location-only": "Tables can only be managed from the location you are logged into",
+        "login-to-location-required": "Log in to this location to add, update, or delete its tables"
     },
     "navbar-items": {
        "tables": "Tables" ,

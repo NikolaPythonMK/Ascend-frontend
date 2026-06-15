@@ -12,18 +12,25 @@
       <span class="table-count">{{ tables().length }}</span>
     </div>
 
-    @if (canCreateTable()) {
+    @if (!canManageTablesForLocation()) {
+      <div class="location-warning">
+        <mat-icon>info</mat-icon>
+        <span>{{ 'table.login-to-location-required' | translate }}</span>
+      </div>
+    }
+
+    @if (hasCreateTablePermission()) {
       <div [formGroup]="newTableForm" class="new-table-row">
         <mat-form-field appearance="outline" floatLabel="always" class="table-code-field">
           <mat-label>{{ 'ordered-items.code' | translate }}</mat-label>
-          <input matInput formControlName="code" />
+          <input matInput formControlName="code" [readonly]="!canCreateTable()" />
         </mat-form-field>
         <button
           mat-stroked-button
           color="primary"
           type="button"
           class="table-action-button"
-          [disabled]="newTableForm.invalid"
+          [disabled]="newTableForm.invalid || !canCreateTable()"
           (click)="onCreateTable()"
         >
           <mat-icon>add</mat-icon>
@@ -40,7 +47,7 @@
             <input
               matInput
               [value]="tableCode(table)"
-              [readonly]="canUpdateTable() === false"
+              [readonly]="!canUpdateTable()"
               (input)="onTableCodeChange(table.id, $any($event.target).value)"
             />
           </mat-form-field>
@@ -58,23 +65,24 @@
           </div>
 
           <div class="table-actions">
-            @if (canUpdateTable()) {
+            @if (hasUpdateTablePermission()) {
               <button
                 mat-icon-button
                 type="button"
                 [attr.aria-label]="'shared.update' | translate"
-                [disabled]="!tableCode(table).trim() || !isTableCodeChanged(table)"
+                [disabled]="!canUpdateTable() || !tableCode(table).trim() || !isTableCodeChanged(table)"
                 (click)="onUpdateTable(table)"
               >
                 <mat-icon>save</mat-icon>
               </button>
             }
-            @if (canDeleteTable()) {
+            @if (hasDeleteTablePermission()) {
               <button
                 mat-icon-button
                 type="button"
                 class="delete-table-btn"
                 [attr.aria-label]="'shared.delete' | translate"
+                [disabled]="!canDeleteTable()"
                 (click)="onDeleteTable(table)"
               >
                 <mat-icon>delete</mat-icon>

@@ -59,17 +59,24 @@ export class UpdateLocationDialog implements OnInit{
             this.authz.has({ name: '/api/location/delete', method: 'POST' })
     );    
 
-    canCreateTable = computed(() =>
+    private readonly loggedInLocationId = signal<number | null>(this.getLoggedInLocationId());
+    canManageTablesForLocation = computed(() => this.loggedInLocationId() === this.data);
+
+    hasCreateTablePermission = computed(() =>
             this.authz.has({ name: '/api/table/create', method: 'POST' })
     );
 
-    canUpdateTable = computed(() =>
+    hasUpdateTablePermission = computed(() =>
             this.authz.has({ name: '/api/table/update', method: 'PUT' })
     );
 
-    canDeleteTable = computed(() =>
+    hasDeleteTablePermission = computed(() =>
             this.authz.has({ name: '/api/table/delete', method: 'POST' })
     );
+
+    canCreateTable = computed(() => this.hasCreateTablePermission() && this.canManageTablesForLocation());
+    canUpdateTable = computed(() => this.hasUpdateTablePermission() && this.canManageTablesForLocation());
+    canDeleteTable = computed(() => this.hasDeleteTablePermission() && this.canManageTablesForLocation());
 
     locationForm = this.fb.group({
         name: ['', Validators.required],
@@ -83,6 +90,7 @@ export class UpdateLocationDialog implements OnInit{
     loading = signal<boolean>(false);
 
     ngOnInit(): void {
+        this.loggedInLocationId.set(this.getLoggedInLocationId());
         this.loadLocation();
     }
 
@@ -110,6 +118,10 @@ export class UpdateLocationDialog implements OnInit{
     }
 
     onCreateTable(): void {
+        if (!this.canMutateTablesForCurrentLocation()) {
+            return;
+        }
+
         if (this.newTableForm.invalid) {
             return;
         }
@@ -128,6 +140,10 @@ export class UpdateLocationDialog implements OnInit{
     }
 
     onUpdateTable(table: Table): void {
+        if (!this.canMutateTablesForCurrentLocation()) {
+            return;
+        }
+
         const code = this.tableCode(table).trim();
         const name = code;
 
@@ -150,6 +166,10 @@ export class UpdateLocationDialog implements OnInit{
     }
 
     onDeleteTable(table: Table): void {
+        if (!this.canMutateTablesForCurrentLocation()) {
+            return;
+        }
+
         this.dialog.open(ConfirmationDialog).afterClosed().subscribe((isConfirmed: boolean) => {
             if (!isConfirmed) {
                 return;
@@ -160,6 +180,25 @@ export class UpdateLocationDialog implements OnInit{
                 this.translationService.getTranslationForKey("shared.succesfully")
             );
         });
+    }
+
+    private getLoggedInLocationId(): number | null {
+        const locationId = Number(localStorage.getItem('location'));
+
+        return Number.isFinite(locationId) && locationId > 0
+            ? locationId
+            : null;
+    }
+
+    private canMutateTablesForCurrentLocation(): boolean {
+        if (this.canManageTablesForLocation()) {
+            return true;
+        }
+
+        this.snackbarService.error(
+            this.translationService.getTranslationForKey("table.current-location-only")
+        );
+        return false;
     }
 
     private loadLocation(): void {
