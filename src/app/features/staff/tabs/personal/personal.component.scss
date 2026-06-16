@@ -1,0 +1,11 @@
+:host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+}
+
+.personal-scroll {
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+}

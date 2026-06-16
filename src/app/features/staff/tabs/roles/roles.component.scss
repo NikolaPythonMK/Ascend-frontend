@@ -1,24 +1,26 @@
 @use 'variables' as vars;
 
-/* ====== WRAPPER ====== */
-/* Height is based on viewport minus how far this wrapper sits below the top,
-   which we measure in TS and expose as --top-offset. */
+:host {
+  display: block;
+  block-size: 100%;
+  min-block-size: 0;
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;
-  /* Set by TS */
-  --top-offset: 0px;
   /* Controlled from Angular to reserve room for the floating Save/Reset bar */
   --bottom-actions-h: 0px;
 
+  block-size: 100%;
   min-block-size: 0; /* important so children can scroll */
   overflow: hidden;
 }
 
 /* ====== TWO-PANE LAYOUT ====== */
 .role-permissions {
-  /* Fill the remaining viewport: 100dvh minus the measured top offset */
-  block-size: calc(100dvh - var(--top-offset));
+  flex: 1 1 auto;
+  block-size: 100%;
   min-block-size: 0;
 
   display: grid;
@@ -30,10 +32,12 @@
 .role-permissions .roles,
 .role-permissions .permissions {
   /* Card look */
+  box-sizing: border-box;
+  border: 1px solid #e5e7eb;
   box-shadow:
-    rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
-    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+    rgba(0, 0, 0, 0.05) 0px 6px 24px 0px;
   border-radius: 5px;
+  background: #fff;
   padding: 0.5em;
 
   /* Make each pane fill and own its scroll */
@@ -175,6 +179,12 @@ tr { border-bottom: 1px solid #ddd; }
 
 /* Dark mode friendly tweaks */
 @media (prefers-color-scheme: dark) {
+  .role-permissions .roles,
+  .role-permissions .permissions {
+    border-color: rgba(255, 255, 255, .12);
+    background: #1e1f24;
+  }
+
   .update-buttons.floating {
     background: rgba(26, 28, 33, .7);
     border-color: rgba(255, 255, 255, .08);

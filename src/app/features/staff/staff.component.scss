@@ -1,9 +1,49 @@
-// mat-tab-group {
-//     width: 500px;
-// }
+@use 'variables' as vars;
+
+:host {
+    display: block;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.tabs-wrapper {
+    box-sizing: border-box;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    background: vars.$color-surface;
+}
+
+.staff-tabs {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+
+    ::ng-deep .mat-mdc-tab-header {
+        flex: 0 0 auto;
+        border-bottom: 1px solid vars.$color-border;
+        background: vars.$color-surface;
+    }
+
+    ::ng-deep .mat-mdc-tab-body-wrapper {
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+
+    ::ng-deep .mat-mdc-tab-body,
+    ::ng-deep .mat-mdc-tab-body-content {
+        height: 100%;
+        min-height: 0;
+        overflow: hidden;
+    }
+}
 
 .content-wrapper {
-    padding: 1em;
-    margin-top: 1.5em;
+    box-sizing: border-box;
     height: 100%;
+    min-height: 0;
+    padding-top: 1.5rem;
+    overflow: hidden;
 }
