@@ -121,6 +121,27 @@ td, th {
 
 tr { border-bottom: 1px solid #ddd; }
 
+.permission-name-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-inline-size: 220px;
+}
+
+.table-specific-permission {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  color: vars.$color-muted-text;
+  font-size: .95rem;
+  white-space: nowrap;
+}
+
+.table-specific-label {
+  line-height: 1;
+}
+
 .permissions-header { text-align: start; }
 .cell-align-center { text-align: center; }
 .trash-btn { color: red; }

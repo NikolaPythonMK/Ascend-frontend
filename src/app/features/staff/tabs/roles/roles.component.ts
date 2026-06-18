@@ -7,7 +7,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { SnackbarService } from "../../../../core/services/utility/snackbar.service";
 import { Page } from "../../../../core/models/api/page.model";
 import { MatTableModule } from "@angular/material/table";
-import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from "@angular/common";
 import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatIconModule } from "@angular/material/icon";
@@ -20,6 +20,7 @@ import { PermissionsService } from "../../../../core/services/api/permissions.se
 import TranslationService from "../../../../core/services/utility/translation.service";
 import { PermissionService } from "../../../../core/services/auth/permission.service";
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { RolesDialog } from "../../dialogs/roles-dialog/roles-dialog.component";
 
 type ActionKey = 'view' | 'create' | 'update' | 'delete' | 'positioning';
 
@@ -70,23 +71,18 @@ export class RolesComponent implements OnInit {
   toggleAddRole = signal<boolean>(false);
   roles = signal<Role[]>([]);
   selectedRole = signal<Role | null>(null);
+  selectedRoleProtected = computed(() => this.isProtectedRole(this.selectedRole()));
 
   // Raw permissions and grouped UI rows
   permissions = signal<Permission[]>([]);
   rows = signal<RowModel[]>([]);
 
-  // Track pending toggles as diffs vs current role
-  updatedPermissions: UpdatedPermission[] = [];
+  // Track pending toggles as diffs vs current role.
+  updatedPermissions = signal<UpdatedPermission[]>([]);
 
   roleForm = this.fb.group({
     name: ['', Validators.required],
   });
-
-  // add this computed
-showPositioningColumn = computed(
-  () => this.rows().some(r => (r.actionIds.positioning?.length ?? 0) > 0)
-);
-
 
   ngOnInit(): void {
     this.getAllPermissions();
@@ -94,6 +90,10 @@ showPositioningColumn = computed(
   }
 
   getNameControl(): AbstractControl { return this.roleForm.get('name')!; }
+
+  isProtectedRole(role: Role | null | undefined): boolean {
+    return (role?.name ?? '').trim().toLowerCase() === 'admin';
+  }
 
   onAddRole(): void { this.toggleAddRole.set(!this.toggleAddRole()); }
 
@@ -110,7 +110,45 @@ showPositioningColumn = computed(
     });
   }
 
+  onEditRole(role: Role): void {
+    if (this.isProtectedRole(role)) return;
+
+    const currentRole = this.selectedRole()?.id === role.id ? this.selectedRole()! : role;
+    const dialogRef = this.dialog.open(RolesDialog, {
+      data: { name: role.name }
+    });
+
+    dialogRef.afterClosed().subscribe((name?: string) => {
+      const trimmedName = name?.trim();
+      if (!trimmedName || trimmedName === role.name) return;
+
+      const request: RoleRequest = {
+        id: role.id,
+        name: trimmedName,
+        rolePermissions: this.getSavedPermissionIds(currentRole)
+      };
+
+      this.rolesService.update(request).subscribe({
+        next: (updatedRole: Role) => {
+          const updatedName = updatedRole?.name ?? trimmedName;
+          this.roles.update(roles => roles.map(r => r.id === role.id ? { ...r, name: updatedName } : r));
+
+          const selectedRole = this.selectedRole();
+          if (selectedRole?.id === role.id) {
+            this.selectedRole.set({ ...selectedRole, name: updatedName });
+          }
+
+          this.snackbarService.success(this.translationService.getTranslationForKey("shared.succesfully"));
+        },
+        error: (error: HttpErrorResponse) => this.snackbarService.error(error.message)
+      });
+    });
+  }
+
   onDelete(id: number): void {
+    const role = this.roles().find(r => r.id === id);
+    if (this.isProtectedRole(role)) return;
+
     const dialogRef = this.dialog.open(ConfirmationDialog);
     dialogRef.afterClosed().subscribe((result: boolean) => {
       if (!result) return;
@@ -124,11 +162,15 @@ showPositioningColumn = computed(
     });
   }
 
+  private getSavedPermissionIds(role: Role): number[] {
+    return (role.permissions ?? role.rolePermissions ?? []).map(permission => permission.id);
+  }
+
   onSelectRole(role: Role): void {
     this.rolesService.getById(role.id).subscribe({
       next: (roleSelected: Role) => {
         this.selectedRole.set(roleSelected);
-        this.updatedPermissions = [];          // reset diffs when switching roles
+        this.updatedPermissions.set([]);
         this.cdr.markForCheck();
       },
       error: (error: HttpErrorResponse) => this.snackbarService.error(error.message)
@@ -175,29 +217,34 @@ isModifyIndeterminate(rowKey: string): boolean {
 }
 
 onModifyToggle(checked: boolean, rowKey: string): void {
-  // toggle both create and update (whichever exist)
+  if (this.selectedRoleProtected()) return;
+
   const c = this.getActionIds(rowKey, 'create');
   const u = this.getActionIds(rowKey, 'update');
-
-  // clear any existing diffs for these ids
   const ids = [...c, ...u];
-  this.updatedPermissions = this.updatedPermissions.filter(d => !ids.includes(d.permissionId));
-  for (const id of ids) this.updatedPermissions.push({ permissionId: id, isChecked: checked });
 
-  // View dependency: if turning on modify, ensure view is on
+  this.applyDiffs(ids, checked);
+
   if (checked) {
     const viewIds = this.getActionIds(rowKey, 'view');
-    this.updatedPermissions = this.updatedPermissions.filter(d => !viewIds.includes(d.permissionId));
-    for (const id of viewIds) this.updatedPermissions.push({ permissionId: id, isChecked: true });
+    this.applyDiffs(viewIds, true);
   }
 }
 
 
   private applyDiffs(ids: number[], checked: boolean) {
-  // strip any existing diffs for these ids
-  this.updatedPermissions = this.updatedPermissions.filter(d => !ids.includes(d.permissionId));
-  // then push new desired state
-  for (const id of ids) this.updatedPermissions.push({ permissionId: id, isChecked: checked });
+  const base = this.savedPermissionSet();
+  this.updatedPermissions.update(current => {
+    const next = current.filter(d => !ids.includes(d.permissionId));
+
+    for (const id of ids) {
+      if (base.has(id) !== checked) {
+        next.push({ permissionId: id, isChecked: checked });
+      }
+    }
+
+    return next;
+  });
 }
 
   private getRoles(): void {
@@ -363,12 +410,16 @@ private buildRows(perms: Permission[]): RowModel[] {
 
   /** Base set from selected role + pending diffs → final effective permission IDs */
   private effectivePermissionSet(): Set<number> {
-    const base = new Set<number>(this.selectedRole()?.permissions?.map(p => p.id) ?? []);
-    for (const diff of this.updatedPermissions) {
+    const base = this.savedPermissionSet();
+    for (const diff of this.updatedPermissions()) {
       if (diff.isChecked) base.add(diff.permissionId);
       else base.delete(diff.permissionId);
     }
     return base;
+  }
+
+  private savedPermissionSet(): Set<number> {
+    return new Set<number>(this.selectedRole()?.permissions?.map(p => p.id) ?? []);
   }
 
   private getActionIds(rowKey: string, action: ActionKey): number[] {
@@ -399,6 +450,8 @@ isRowAllChecked(rowKey: string): boolean {
   // ---- UI events -------------------------------------------------------------
 
 onActionToggle(checked: boolean, rowKey: string, action: ActionKey): void {
+  if (this.selectedRoleProtected()) return;
+
   const ids = this.getActionIds(rowKey, action);
   if (!ids.length) return;
 
@@ -421,6 +474,8 @@ onActionToggle(checked: boolean, rowKey: string, action: ActionKey): void {
 
 
 onToggleRowAll(checked: boolean, row: RowModel): void {
+  if (this.selectedRoleProtected()) return;
+
   if (this.hasAction(row.key, 'view')) this.onActionToggle(checked, row.key, 'view');
   if (this.hasModify(row.key)) this.onModifyToggle(checked, row.key);
   if (this.hasAction(row.key, 'delete')) this.onActionToggle(checked, row.key, 'delete');
@@ -428,10 +483,15 @@ onToggleRowAll(checked: boolean, row: RowModel): void {
 }
 
   onReset(): void {
-    this.updatedPermissions = [];
+    this.updatedPermissions.set([]);
   }
 
   onUpdatePermissions(): void {
+    if (this.selectedRoleProtected()) {
+      this.updatedPermissions.set([]);
+      return;
+    }
+
     // Build final list straight from effective set
     const effective = Array.from(this.effectivePermissionSet());
     const request: RoleRequest = {
@@ -446,7 +506,7 @@ onToggleRowAll(checked: boolean, row: RowModel): void {
         this.rolesService.getById(this.selectedRole()!.id).subscribe({
           next: (roleSelected: Role) => {
             this.selectedRole.set(roleSelected);
-            this.updatedPermissions = [];
+            this.updatedPermissions.set([]);
           },
           error: (error: HttpErrorResponse) => this.snackbarService.error(error.message)
         });

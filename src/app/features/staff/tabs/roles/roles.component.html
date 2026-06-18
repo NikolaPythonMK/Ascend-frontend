@@ -1,5 +1,5 @@
 <div class="wrapper">
-<div class="update-buttons floating" [class.visible]="updatedPermissions.length > 0">
+<div class="update-buttons floating" [class.visible]="updatedPermissions().length > 0 && !selectedRoleProtected()">
   <ascend-button type="secondary" label="Reset" icon="undo" class="reset-btn" (clickEvent)="onReset()" />
   <ascend-button
     (clickEvent)="onUpdatePermissions()"
@@ -51,15 +51,14 @@
 
           @if (selectedRole()?.id === role.id) {
             <div>
-              @if (canUpdateRole()) {
-                <!-- (Optional) hook up real edit later -->
+              @if (canUpdateRole() && !isProtectedRole(role)) {
                 <mat-icon
                   class="edit-btn"
-                  (click)="$event.stopPropagation();"
+                  (click)="$event.stopPropagation(); onEditRole(role)"
                   >edit</mat-icon
                 >
               }
-              @if (canDeleteRole()) {
+              @if (canDeleteRole() && !isProtectedRole(role)) {
                 <mat-icon
                   class="trash-btn"
                   (click)="$event.stopPropagation(); onDelete(role.id)"
@@ -84,16 +83,34 @@
         <th class="cell-align-center">{{ 'staff.roles.view' | translate }}</th>
         <th class="cell-align-center">Add &amp; Edit</th>
         <th class="cell-align-center">{{ 'shared.delete' | translate }}</th>
-@if (showPositioningColumn()) {
-  <th class="cell-align-center">Positioning</th>
-}
         <th class="cell-align-center">{{ 'shared.all' | translate }}</th>
       </tr>
     </thead>
       <tbody>
         @for (row of rows(); track row.key) {
           <tr>
-            <td>{{ row.groupName }}</td>
+            <td>
+              <div class="permission-name-cell">
+                <span>{{ row.groupName }}</span>
+
+                @if (row.key === 'table' && hasAction(row.key, 'positioning')) {
+                  <span class="table-specific-permission">
+                    <span class="table-specific-label">Positioning</span>
+                    <span
+                      class="tooltip-wrapper"
+                      [matTooltip]="'Enable View to allow Positioning'"
+                      [matTooltipDisabled]="isViewEnabled(row.key)"
+                      (click)="!isViewEnabled(row.key) && onBlockedClick(row.key, 'Positioning')">
+                      <mat-checkbox
+                        [checked]="isActionChecked(row.key, 'positioning')"
+                        (change)="onActionToggle($event.checked, row.key, 'positioning')"
+                        [disabled]="selectedRoleProtected() || (canCreateRole() === false && canUpdateRole() === false) || !isViewEnabled(row.key)">
+                      </mat-checkbox>
+                    </span>
+                  </span>
+                }
+              </div>
+            </td>
 
             <!-- VIEW (bundles /all + /id) -->
             <td class="cell-align-center">
@@ -101,7 +118,7 @@
                 <mat-checkbox
                   [checked]="isActionChecked(row.key, 'view')"
                   (change)="onActionToggle($event.checked, row.key, 'view')"
-                  [disabled]="canCreateRole() === false && canUpdateRole() === false">
+                  [disabled]="selectedRoleProtected() || (canCreateRole() === false && canUpdateRole() === false)">
                 </mat-checkbox>
               } @else { <span class="muted">—</span> }
             </td>
@@ -118,7 +135,7 @@
                   [checked]="isModifyChecked(row.key)"
                   [indeterminate]="isModifyIndeterminate(row.key)"
                   (change)="onModifyToggle($event.checked, row.key)"
-                  [disabled]="(canCreateRole() === false && canUpdateRole() === false) || !isViewEnabled(row.key)">
+                  [disabled]="selectedRoleProtected() || (canCreateRole() === false && canUpdateRole() === false) || !isViewEnabled(row.key)">
                 </mat-checkbox>
               </span>
             } @else { <span class="muted">—</span> }
@@ -137,37 +154,18 @@
                 <mat-checkbox
                   [checked]="isActionChecked(row.key, 'delete')"
                   (change)="onActionToggle($event.checked, row.key, 'delete')"
-                  [disabled]="(canCreateRole() === false && canUpdateRole() === false) || !isViewEnabled(row.key)">
+                  [disabled]="selectedRoleProtected() || (canCreateRole() === false && canUpdateRole() === false) || !isViewEnabled(row.key)">
                 </mat-checkbox>
               </span>
             } @else { <span class="muted">—</span> }
           </td>
-
-@if (showPositioningColumn()) {
-  <td class="cell-align-center">
-    @if (hasAction(row.key, 'positioning')) {
-      <span
-        class="tooltip-wrapper"
-        [matTooltip]="'Enable View to allow Positioning'"
-        [matTooltipDisabled]="isViewEnabled(row.key)"
-        (click)="!isViewEnabled(row.key) && onBlockedClick(row.key, 'Positioning')">
-        <mat-checkbox
-          [checked]="isActionChecked(row.key, 'positioning')"
-          (change)="onActionToggle($event.checked, row.key, 'positioning')"
-          [disabled]="(canCreateRole() === false && canUpdateRole() === false) || !isViewEnabled(row.key)">
-        </mat-checkbox>
-      </span>
-    } @else { <span class="muted">—</span> }
-  </td>
-}
-
 
             <!-- SELECT ALL IN ROW -->
             <td class="cell-align-center">
               <mat-checkbox
                 [checked]="isRowAllChecked(row.key)"
                 (change)="onToggleRowAll($event.checked, row)"
-                [disabled]="canCreateRole() === false && canUpdateRole() === false">
+                [disabled]="selectedRoleProtected() || (canCreateRole() === false && canUpdateRole() === false)">
               </mat-checkbox>
             </td>
           </tr>
