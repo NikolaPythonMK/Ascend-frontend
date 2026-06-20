@@ -41,10 +41,6 @@ export interface RevenueSummary {
   discounts: number;
   transactionCount: number;
   averageTransactionValue: number;
-  voidedTransactionCount: number;
-  voidedGrossAmount: number;
-  cancellationCount: number;
-  cancellationGrossAmount: number;
   previousPeriodGrossRevenue: number;
   grossRevenueGrowthPercentage: number | null;
 }
@@ -92,8 +88,6 @@ export interface RecentTransaction {
   staffMember?: string;
   staffName?: string;
   paymentMethod: AnalyticsPaymentMethod | string;
-  status: 'completed' | 'voided' | string | number;
-  isVoided?: boolean;
   grossRevenue: number;
   netRevenue: number;
   tax?: number;
@@ -110,18 +104,9 @@ export interface RecentTransactions {
   data: RecentTransaction[];
 }
 
-export interface AnalyticsCapabilities {
-  customerAnalyticsAvailable: boolean;
-  refundAnalyticsAvailable: boolean;
-  cancellationAnalyticsAvailable: boolean;
-  breakdownDimensions: AnalyticsBreakdownDimension[];
-  notes: string[];
-}
-
 export interface AnalyticsDashboard {
   summary: RevenueSummary;
   trend: RevenueTrend;
   breakdown: RevenueBreakdown;
   recentTransactions: RecentTransactions;
-  capabilities: AnalyticsCapabilities;
 }

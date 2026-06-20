@@ -33,7 +33,6 @@ import {
 } from 'rxjs';
 import {
   AnalyticsBreakdownDimension,
-  AnalyticsCapabilities,
   AnalyticsDashboard,
   AnalyticsFilters,
   AnalyticsInterval,
@@ -199,7 +198,6 @@ export class AnalyticsRevenueComponent
   readonly trend = signal<RevenueTrend | null>(null);
   readonly breakdown = signal<RevenueBreakdown | null>(null);
   readonly recentTransactions = signal<RecentTransactions | null>(null);
-  readonly capabilities = signal<AnalyticsCapabilities | null>(null);
 
   readonly dashboardLoading = signal(false);
   readonly trendLoading = signal(false);
@@ -213,6 +211,17 @@ export class AnalyticsRevenueComponent
   readonly transactionsError = signal<string | null>(null);
 
   readonly currentLocationId = this.readCurrentLocationId();
+  get currentLocationName(): string | null {
+    if (!this.currentLocationId) {
+      return null;
+    }
+
+    return (
+      this.locations().find(
+        (location) => location.id === this.currentLocationId
+      )?.name ?? null
+    );
+  }
   readonly locationSelection = computed(() => {
     const filters = this.filters();
     if (filters.allLocations) {
@@ -234,18 +243,13 @@ export class AnalyticsRevenueComponent
   readonly pageNumber = computed(
     () => (this.recentTransactions()?.page ?? this.filters().page) + 1
   );
-  readonly availableBreakdownDimensions = computed(() => {
-    const supported = this.capabilities()?.breakdownDimensions;
-    return supported?.length
-      ? supported
-      : ([
-          'product',
-          'category',
-          'payment-method',
-          'location',
-          'staff',
-        ] as AnalyticsBreakdownDimension[]);
-  });
+  readonly availableBreakdownDimensions: AnalyticsBreakdownDimension[] = [
+    'product',
+    'category',
+    'payment-method',
+    'location',
+    'staff',
+  ];
   readonly dateRangeInvalid = computed(() => {
     const { from, to } = this.filters();
     return Boolean(from && to && from > to);
@@ -418,21 +422,6 @@ export class AnalyticsRevenueComponent
       default:
         return String(method || '—');
     }
-  }
-
-  isVoided(transaction: RecentTransaction): boolean {
-    return (
-      transaction.isVoided === true ||
-      String(transaction.status).toLowerCase() === 'voided'
-    );
-  }
-
-  displayStatus(transaction: RecentTransaction): string {
-    return this.translationService.getTranslationForKey(
-      this.isVoided(transaction)
-        ? 'analytics.status.voided'
-        : 'analytics.status.completed'
-    );
   }
 
   breakdownWidth(itemPercentage: number): string {
@@ -636,14 +625,13 @@ export class AnalyticsRevenueComponent
     this.trend.set(data.trend);
     this.breakdown.set(data.breakdown);
     this.recentTransactions.set(data.recentTransactions);
-    this.capabilities.set(data.capabilities);
     this.renderTrendChart();
   }
 
   private loadLocations(): void {
     this.locationsLoading.set(true);
     this.locationService
-      .getAll(undefined, undefined, undefined, 0, 250)
+      .getAll()
       .pipe(
         catchError(() => of({ data: [], count: 0, pages: 0 })),
         finalize(() => this.locationsLoading.set(false)),

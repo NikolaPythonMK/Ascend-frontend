@@ -128,10 +128,6 @@
             "card": "Card",
             "other": "Other"
         },
-        "status": {
-            "completed": "Completed",
-            "voided": "Voided"
-        },
         "interval": {
             "auto": "Automatic",
             "day": "Day",
@@ -156,15 +152,11 @@
             "discounts": "Discounts",
             "completedTransactions": "Completed transactions",
             "averageTransaction": "Average transaction value",
-            "voidedCount": "Cancellations / voided",
-            "voidedGross": "Voided gross amount",
             "previousGross": "Previous period gross",
             "vsPrevious": "vs previous period",
             "afterTaxDiscounts": "After tax and discounts",
             "selectedPeriod": "Selected period",
             "completedAverage": "Average completed transaction",
-            "voidedMeansCancellation": "Voided transactions represent cancellations",
-            "excludedRevenue": "Excluded from completed revenue",
             "equivalentPeriod": "Previous equivalent period"
         },
         "trend": {
@@ -193,17 +185,12 @@
             "location": "Location",
             "staff": "Staff member",
             "paymentMethod": "Payment method",
-            "status": "Status",
             "gross": "Gross revenue",
             "net": "Net revenue",
             "tax": "Tax",
             "discount": "Discount",
             "transactions": "Transactions",
             "quantity": "Quantity"
-        },
-        "capabilities": {
-            "title": "Current analytics coverage",
-            "description": "Customer and refund analytics are not available yet. Cancellation analytics use voided transactions."
         },
         "loading": {
             "trend": "Loading trend"

@@ -3,7 +3,6 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
-  AnalyticsCapabilities,
   AnalyticsDashboard,
   AnalyticsFilters,
   RecentTransactions,
@@ -35,10 +34,6 @@ export class AnalyticsRevenueService {
 
   getRecentTransactions(filters: AnalyticsFilters): Observable<RecentTransactions> {
     return this.get<RecentTransactions>('recent-transactions', filters);
-  }
-
-  getCapabilities(filters: AnalyticsFilters): Observable<AnalyticsCapabilities> {
-    return this.get<AnalyticsCapabilities>('capabilities', filters);
   }
 
   private get<T>(endpoint: string, filters: AnalyticsFilters): Observable<T> {
@@ -73,4 +68,3 @@ export class AnalyticsRevenueService {
     return params;
   }
 }
-

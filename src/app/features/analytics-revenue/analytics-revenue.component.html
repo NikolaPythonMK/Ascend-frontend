@@ -1,9 +1,7 @@
 <main class="analytics-page">
   <header class="analytics-header">
     <div>
-      <p class="eyebrow">{{ 'analytics.eyebrow' | translate }}</p>
       <h1>{{ 'analytics.title' | translate }}</h1>
-      <p class="page-description">{{ 'analytics.description' | translate }}</p>
     </div>
     <button class="secondary-action" type="button" (click)="resetFilters()">
       <mat-icon>restart_alt</mat-icon>
@@ -47,7 +45,9 @@
         >
           <option value="current">
             {{ 'analytics.filters.currentLocation' | translate }}
-            @if (currentLocationId) { (#{{ currentLocationId }}) }
+            @if (currentLocationName; as locationName) {
+              ({{ locationName }})
+            }
           </option>
           <option value="all">{{ 'analytics.filters.allLocations' | translate }}</option>
           @for (location of locations(); track location.id) {
@@ -88,7 +88,7 @@
           [ngModel]="filters().dimension"
           (ngModelChange)="updateDimension($event)"
         >
-          @for (dimension of availableBreakdownDimensions(); track dimension) {
+          @for (dimension of availableBreakdownDimensions; track dimension) {
             <option [value]="dimension">
               {{ 'analytics.dimension.' + dimension | translate }}
             </option>
@@ -125,7 +125,7 @@
 
     <div class="summary-grid" [attr.aria-busy]="dashboardLoading()">
       @if (dashboardLoading() && !summary()) {
-        @for (placeholder of [1,2,3,4,5,6,7,8,9,10]; track placeholder) {
+        @for (placeholder of [1,2,3,4,5,6,7,8]; track placeholder) {
           <div class="summary-card skeleton-card" aria-hidden="true">
             <span></span><strong></strong><small></small>
           </div>
@@ -173,16 +173,6 @@
             <span>{{ 'analytics.summary.averageTransaction' | translate }}</span>
             <strong>{{ formatMoney(data.averageTransactionValue) }}</strong>
             <small>{{ 'analytics.summary.completedAverage' | translate }}</small>
-          </article>
-          <article class="summary-card warning">
-            <span>{{ 'analytics.summary.voidedCount' | translate }}</span>
-            <strong>{{ data.voidedTransactionCount | number }}</strong>
-            <small>{{ 'analytics.summary.voidedMeansCancellation' | translate }}</small>
-          </article>
-          <article class="summary-card warning">
-            <span>{{ 'analytics.summary.voidedGross' | translate }}</span>
-            <strong>{{ formatMoney(data.voidedGrossAmount) }}</strong>
-            <small>{{ 'analytics.summary.excludedRevenue' | translate }}</small>
           </article>
           <article class="summary-card">
             <span>{{ 'analytics.summary.previousGross' | translate }}</span>
@@ -371,7 +361,6 @@
               <th>{{ 'analytics.table.location' | translate }}</th>
               <th>{{ 'analytics.table.staff' | translate }}</th>
               <th>{{ 'analytics.table.paymentMethod' | translate }}</th>
-              <th>{{ 'analytics.table.status' | translate }}</th>
               <th>{{ 'analytics.table.gross' | translate }}</th>
               <th>{{ 'analytics.table.net' | translate }}</th>
               <th>{{ 'analytics.table.tax' | translate }}</th>
@@ -380,17 +369,12 @@
           </thead>
           <tbody>
             @for (transaction of recentTransactions()!.data; track $index) {
-              <tr [class.voided-row]="isVoided(transaction)">
+              <tr>
                 <td>{{ formatDateTime(transaction) }}</td>
                 <td><strong>{{ transactionNumber(transaction) }}</strong></td>
                 <td>{{ transactionLocation(transaction) }}</td>
                 <td>{{ transactionStaff(transaction) }}</td>
                 <td>{{ paymentMethodLabel(transaction.paymentMethod) }}</td>
-                <td>
-                  <span class="status-badge" [class.voided]="isVoided(transaction)">
-                    {{ displayStatus(transaction) }}
-                  </span>
-                </td>
                 <td>{{ formatMoney(transaction.grossRevenue) }}</td>
                 <td>{{ formatMoney(transaction.netRevenue) }}</td>
                 <td>{{ formatMoney(transactionTax(transaction)) }}</td>
@@ -427,22 +411,4 @@
     }
   </section>
 
-  @if (capabilities(); as capabilities) {
-    <aside class="capabilities-note">
-      <mat-icon>info</mat-icon>
-      <div>
-        <strong>{{ 'analytics.capabilities.title' | translate }}</strong>
-        <p>
-          {{ 'analytics.capabilities.description' | translate }}
-        </p>
-        @if (capabilities.notes.length) {
-          <ul>
-            @for (note of capabilities.notes; track note) {
-              <li>{{ note }}</li>
-            }
-          </ul>
-        }
-      </div>
-    </aside>
-  }
 </main>

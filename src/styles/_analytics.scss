@@ -105,7 +105,7 @@
 
 .field-error { margin-top: 12px; color: vars.$color-danger; font-size: .85rem; }
 
-.analytics-error, .capabilities-note {
+.analytics-error {
   display: flex;
   align-items: flex-start;
   gap: 14px;
@@ -142,7 +142,6 @@
   strong { display: block; margin: 7px 0; font-size: 1.45rem; }
   small { color: vars.$color-muted-text; }
   &.featured { border-color: rgba(vars.$color-primary, .35); background: vars.$color-primary-light; }
-  &.warning { border-color: rgba(#d97706, .28); background: #fffbeb; }
 }
 
 .growth.positive { color: vars.$color-success; }
@@ -217,10 +216,6 @@
 .analytics-page th, .analytics-page td { padding: 12px 14px; border-bottom: 1px solid vars.$color-border; text-align: left; }
 .analytics-page th { color: vars.$color-muted-text; font-size: .74rem; text-transform: uppercase; letter-spacing: .04em; }
 .analytics-page td { font-size: .86rem; }
-.voided-row { background: #fff6f6; color: #7f2d35; }
-.status-badge { display: inline-block; padding: 4px 8px; border-radius: 20px; background: vars.$color-success-light; color: vars.$color-success; font-size: .72rem; font-weight: 700; }
-.status-badge.voided { background: #ffe5e8; color: vars.$color-danger; }
-
 .pagination {
   display: flex;
   align-items: center;
@@ -243,16 +238,6 @@
 .empty-state mat-icon { width: 42px; height: 42px; font-size: 42px; color: #bcc0cf; }
 .full-span { grid-column: 1 / -1; }
 .section-error { color: vars.$color-danger; }
-
-.capabilities-note {
-  border: 1px solid #cfe0f8;
-  background: #f2f7ff;
-  color: #365276;
-  line-height: 1.5;
-
-  p { margin-top: 3px; }
-  ul { margin: 8px 0 0 18px; }
-}
 
 .skeleton-card span, .skeleton-card strong, .skeleton-card small,
 .skeleton-row span, .skeleton-row strong, .table-skeleton span {
@@ -295,4 +280,3 @@
   .spinner, .skeleton-card span, .skeleton-card strong, .skeleton-card small,
   .skeleton-row span, .skeleton-row strong, .table-skeleton span { animation: none; }
 }
-
