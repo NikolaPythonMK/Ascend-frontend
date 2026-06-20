@@ -1,15 +1,11 @@
 import { Component, OnInit, inject, signal } from "@angular/core";
-import { MatTabsModule } from "@angular/material/tabs";
-import { TranslateModule } from "@ngx-translate/core";
 import { LoaderComponent } from "../../../core/ui/loader/loader.component";
-import { TableComponent } from "../../tables/components/table/table.component";
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSelect } from "@angular/material/select";
-import { MatSelectModule } from '@angular/material/select';
 
 import { TableView } from "../../../core/models/enums/table-view.enum";
 import { Language } from "../../../core/models/enums/language.enum";
 import { Theme } from "../../../core/models/enums/theme.enum";
+import { TaxCalculationMode } from "../../../core/models/enums/tax-calculation-mode.enum";
 import { SettingsManagerService } from "../../../core/services/utility/settings-manager.service";
 import type { OrganizationPreferences } from "../../../core/models/api/responses/organization-preferences.model";
 import { ButtonComponent } from "../../../core/ui/button/button.component";
@@ -35,7 +31,7 @@ interface DropdownOption<T> {
 
 @Component({
   selector: 'settings-organization-display',
-  imports: [MatTabsModule, TableComponent, LoaderComponent, TranslateModule, MatSlideToggleModule, MatSelect, MatSelectModule, ButtonComponent],
+  imports: [LoaderComponent, MatSlideToggleModule, ButtonComponent],
   templateUrl: 'settings-organization-display.component.html',
   styleUrls: ['settings-organization-display.component.scss', '../style.scss'],
   standalone: true
@@ -70,6 +66,11 @@ export class SettingsOrganizationDisplayComponent implements OnInit {
     { value: TableView.Draggable, label: 'Draggable' },
   ];
 
+  private readonly taxCalculationModeOptions = [
+    { value: TaxCalculationMode.Inclusive, label: 'Inclusive (tax-in)' },
+    { value: TaxCalculationMode.Additive, label: 'Additive (tax-out)' },
+  ];
+
   ngOnInit(): void {
     // If this is async/signal in your app, subscribe/effect and call initFrom(prefs).
     const prefs = this.settingsManager.organizationPreferences()!;
@@ -98,6 +99,12 @@ export class SettingsOrganizationDisplayComponent implements OnInit {
         label: 'Default table view',
         selectedValue: (this.settingsManager as any).getDefaultTableView?.() ?? prefs.defaultTableView,
         options: this.tableViewOptions
+      },
+      {
+        id: 'taxCalculationMode',
+        label: 'Tax calculation mode',
+        selectedValue: prefs.taxCalculationMode,
+        options: this.taxCalculationModeOptions
       }
     ]);
 
@@ -127,6 +134,7 @@ export class SettingsOrganizationDisplayComponent implements OnInit {
       language: this.selectedValue<Language>('language'),
       theme: this.selectedValue<Theme>('theme'),
       defaultTableView: this.selectedValue<TableView>('defaultTableView'),
+      taxCalculationMode: this.selectedValue<TaxCalculationMode>('taxCalculationMode'),
 
       canEditOtherTables:      this.toggleValue('canEditOtherTables'),
       canRemoveTableItems:     this.toggleValue('canRemoveTableItems'),

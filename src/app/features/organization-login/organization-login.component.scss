@@ -40,6 +40,25 @@ html, body {
       padding: 8px;
       cursor: pointer;
     }
+
+    .registration-link {
+      display: flex;
+      justify-content: center;
+      gap: 0.35rem;
+      margin-top: 1rem;
+      color: #737387;
+      font-size: 0.95rem;
+
+      a {
+        color: #6c63ff;
+        font-weight: 600;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
   }
   .logo-container {
     height: 50px;

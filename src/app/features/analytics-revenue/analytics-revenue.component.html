@@ -1,0 +1,448 @@
+<main class="analytics-page">
+  <header class="analytics-header">
+    <div>
+      <p class="eyebrow">{{ 'analytics.eyebrow' | translate }}</p>
+      <h1>{{ 'analytics.title' | translate }}</h1>
+      <p class="page-description">{{ 'analytics.description' | translate }}</p>
+    </div>
+    <button class="secondary-action" type="button" (click)="resetFilters()">
+      <mat-icon>restart_alt</mat-icon>
+      {{ 'analytics.filters.reset' | translate }}
+    </button>
+  </header>
+
+  <section class="analytics-panel filter-panel" aria-labelledby="analytics-filters-title">
+    <div class="section-heading">
+      <div>
+        <h2 id="analytics-filters-title">{{ 'analytics.filters.title' | translate }}</h2>
+        <p>{{ 'analytics.filters.hint' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="filter-grid">
+      <label>
+        <span>{{ 'analytics.filters.from' | translate }}</span>
+        <input
+          type="date"
+          [ngModel]="filters().from ?? ''"
+          (ngModelChange)="updateBaseFilter('from', $event)"
+        />
+      </label>
+
+      <label>
+        <span>{{ 'analytics.filters.to' | translate }}</span>
+        <input
+          type="date"
+          [ngModel]="filters().to ?? ''"
+          (ngModelChange)="updateBaseFilter('to', $event)"
+        />
+      </label>
+
+      <label>
+        <span>{{ 'analytics.filters.location' | translate }}</span>
+        <select
+          [ngModel]="locationSelection()"
+          (ngModelChange)="updateLocation($event)"
+          [attr.aria-busy]="locationsLoading()"
+        >
+          <option value="current">
+            {{ 'analytics.filters.currentLocation' | translate }}
+            @if (currentLocationId) { (#{{ currentLocationId }}) }
+          </option>
+          <option value="all">{{ 'analytics.filters.allLocations' | translate }}</option>
+          @for (location of locations(); track location.id) {
+            <option [value]="'location:' + location.id">{{ location.name }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        <span>{{ 'analytics.filters.paymentMethod' | translate }}</span>
+        <select
+          [ngModel]="filters().paymentMethod ?? ''"
+          (ngModelChange)="updateBaseFilter('paymentMethod', $event)"
+        >
+          <option value="">{{ 'analytics.filters.allPaymentMethods' | translate }}</option>
+          <option value="1">{{ 'analytics.payment.cash' | translate }}</option>
+          <option value="2">{{ 'analytics.payment.card' | translate }}</option>
+          <option value="3">{{ 'analytics.payment.other' | translate }}</option>
+        </select>
+      </label>
+
+      <label>
+        <span>{{ 'analytics.filters.interval' | translate }}</span>
+        <select
+          [ngModel]="filters().interval"
+          (ngModelChange)="updateInterval($event)"
+        >
+          <option value="auto">{{ 'analytics.interval.auto' | translate }}</option>
+          <option value="day">{{ 'analytics.interval.day' | translate }}</option>
+          <option value="week">{{ 'analytics.interval.week' | translate }}</option>
+          <option value="month">{{ 'analytics.interval.month' | translate }}</option>
+        </select>
+      </label>
+
+      <label>
+        <span>{{ 'analytics.filters.dimension' | translate }}</span>
+        <select
+          [ngModel]="filters().dimension"
+          (ngModelChange)="updateDimension($event)"
+        >
+          @for (dimension of availableBreakdownDimensions(); track dimension) {
+            <option [value]="dimension">
+              {{ 'analytics.dimension.' + dimension | translate }}
+            </option>
+          }
+        </select>
+      </label>
+    </div>
+
+    @if (dateRangeInvalid()) {
+      <p class="field-error" role="alert">{{ 'analytics.errors.invalidDateRange' | translate }}</p>
+    }
+  </section>
+
+  @if (dashboardError()) {
+    <section class="analytics-error" role="alert">
+      <mat-icon>error_outline</mat-icon>
+      <div>
+        <strong>{{ 'analytics.errors.dashboardTitle' | translate }}</strong>
+        <p>{{ dashboardError() }}</p>
+      </div>
+      <button type="button" (click)="retryDashboard()">
+        {{ 'analytics.actions.retry' | translate }}
+      </button>
+    </section>
+  }
+
+  <section aria-labelledby="summary-title">
+    <div class="section-heading standalone-heading">
+      <div>
+        <h2 id="summary-title">{{ 'analytics.summary.title' | translate }}</h2>
+        <p>{{ 'analytics.summary.hint' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="summary-grid" [attr.aria-busy]="dashboardLoading()">
+      @if (dashboardLoading() && !summary()) {
+        @for (placeholder of [1,2,3,4,5,6,7,8,9,10]; track placeholder) {
+          <div class="summary-card skeleton-card" aria-hidden="true">
+            <span></span><strong></strong><small></small>
+          </div>
+        }
+      } @else {
+        @if (summary(); as data) {
+          <article class="summary-card featured">
+            <span>{{ 'analytics.summary.lifetimeGross' | translate }}</span>
+            <strong>{{ formatMoney(data.lifetimeGrossRevenue) }}</strong>
+            <small>{{ 'analytics.summary.lifetimeGrossHint' | translate }}</small>
+          </article>
+          <article class="summary-card">
+            <span>{{ 'analytics.summary.periodGross' | translate }}</span>
+            <strong>{{ formatMoney(data.grossRevenue) }}</strong>
+            <small
+              class="growth"
+              [class.positive]="(data.grossRevenueGrowthPercentage ?? 0) > 0"
+              [class.negative]="(data.grossRevenueGrowthPercentage ?? 0) < 0"
+            >
+              {{ formatGrowth(data.grossRevenueGrowthPercentage) }}
+              {{ 'analytics.summary.vsPrevious' | translate }}
+            </small>
+          </article>
+          <article class="summary-card">
+            <span>{{ 'analytics.summary.netRevenue' | translate }}</span>
+            <strong>{{ formatMoney(data.netRevenue) }}</strong>
+            <small>{{ 'analytics.summary.afterTaxDiscounts' | translate }}</small>
+          </article>
+          <article class="summary-card">
+            <span>{{ 'analytics.summary.taxCollected' | translate }}</span>
+            <strong>{{ formatMoney(data.taxCollected) }}</strong>
+            <small>{{ 'analytics.summary.selectedPeriod' | translate }}</small>
+          </article>
+          <article class="summary-card">
+            <span>{{ 'analytics.summary.discounts' | translate }}</span>
+            <strong>{{ formatMoney(data.discounts) }}</strong>
+            <small>{{ 'analytics.summary.selectedPeriod' | translate }}</small>
+          </article>
+          <article class="summary-card">
+            <span>{{ 'analytics.summary.completedTransactions' | translate }}</span>
+            <strong>{{ data.transactionCount | number }}</strong>
+            <small>{{ 'analytics.summary.selectedPeriod' | translate }}</small>
+          </article>
+          <article class="summary-card">
+            <span>{{ 'analytics.summary.averageTransaction' | translate }}</span>
+            <strong>{{ formatMoney(data.averageTransactionValue) }}</strong>
+            <small>{{ 'analytics.summary.completedAverage' | translate }}</small>
+          </article>
+          <article class="summary-card warning">
+            <span>{{ 'analytics.summary.voidedCount' | translate }}</span>
+            <strong>{{ data.voidedTransactionCount | number }}</strong>
+            <small>{{ 'analytics.summary.voidedMeansCancellation' | translate }}</small>
+          </article>
+          <article class="summary-card warning">
+            <span>{{ 'analytics.summary.voidedGross' | translate }}</span>
+            <strong>{{ formatMoney(data.voidedGrossAmount) }}</strong>
+            <small>{{ 'analytics.summary.excludedRevenue' | translate }}</small>
+          </article>
+          <article class="summary-card">
+            <span>{{ 'analytics.summary.previousGross' | translate }}</span>
+            <strong>{{ formatMoney(data.previousPeriodGrossRevenue) }}</strong>
+            <small>{{ 'analytics.summary.equivalentPeriod' | translate }}</small>
+          </article>
+        } @else {
+          <div class="empty-state full-span">
+            <mat-icon>monitoring</mat-icon>
+            <p>{{ 'analytics.empty.summary' | translate }}</p>
+          </div>
+        }
+      }
+    </div>
+  </section>
+
+  <div class="analytics-two-column">
+    <section class="analytics-panel trend-panel" aria-labelledby="trend-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="trend-title">{{ 'analytics.trend.title' | translate }}</h2>
+          <p>
+            {{ 'analytics.trend.interval' | translate }}:
+            {{ trend()?.interval ?? filters().interval | titlecase }}
+          </p>
+        </div>
+      </div>
+
+      @if (trendError()) {
+        <div class="section-error" role="alert">
+          <p>{{ trendError() }}</p>
+          <button type="button" (click)="retryTrend()">{{ 'analytics.actions.retry' | translate }}</button>
+        </div>
+      } @else if (!trendLoading() && trend()?.data?.length === 0) {
+        <div class="empty-state">
+          <mat-icon>show_chart</mat-icon>
+          <p>{{ 'analytics.empty.trend' | translate }}</p>
+        </div>
+      } @else {
+        <div class="chart-shell" [class.loading-section]="trendLoading()">
+          <canvas
+            #trendCanvas
+            role="img"
+            [attr.aria-label]="'analytics.trend.ariaLabel' | translate"
+          ></canvas>
+          @if (trendLoading()) {
+            <div class="section-loader" aria-live="polite">
+              <span class="spinner"></span>
+              {{ 'analytics.loading.trend' | translate }}
+            </div>
+          }
+        </div>
+      }
+
+      @if (trend()?.data?.length) {
+        <details class="data-details">
+          <summary>{{ 'analytics.trend.viewData' | translate }}</summary>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>{{ 'analytics.trend.period' | translate }}</th>
+                  <th>{{ 'analytics.table.gross' | translate }}</th>
+                  <th>{{ 'analytics.table.net' | translate }}</th>
+                  <th>{{ 'analytics.table.transactions' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (point of trend()!.data; track point.periodStart) {
+                  <tr>
+                    <td>{{ point.label }}</td>
+                    <td>{{ formatMoney(point.grossRevenue) }}</td>
+                    <td>{{ formatMoney(point.netRevenue) }}</td>
+                    <td>{{ point.transactionCount | number }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </details>
+      }
+    </section>
+
+    <section class="analytics-panel breakdown-panel" aria-labelledby="breakdown-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="breakdown-title">{{ 'analytics.breakdown.title' | translate }}</h2>
+          <p>
+            {{ 'analytics.dimension.' + filters().dimension | translate }}
+            · {{ 'analytics.breakdown.top' | translate }} {{ filters().limit }}
+          </p>
+        </div>
+        @if (breakdown()) {
+          <span class="total-chip">
+            {{ 'analytics.breakdown.totalGross' | translate }}
+            {{ formatMoney(breakdown()!.totalGrossRevenue) }}
+          </span>
+        }
+      </div>
+
+      @if (breakdownError()) {
+        <div class="section-error" role="alert">
+          <p>{{ breakdownError() }}</p>
+          <button type="button" (click)="retryBreakdown()">{{ 'analytics.actions.retry' | translate }}</button>
+        </div>
+      } @else if (breakdownLoading() && !breakdown()) {
+        <div class="ranked-list" aria-hidden="true">
+          @for (placeholder of [1,2,3,4,5]; track placeholder) {
+            <div class="ranked-row skeleton-row"><span></span><strong></strong></div>
+          }
+        </div>
+      } @else if (breakdown()?.data?.length) {
+        <ol class="ranked-list" [class.loading-section]="breakdownLoading()">
+          @for (item of breakdown()!.data; track trackBreakdown($index, item)) {
+            <li class="ranked-row">
+              <div class="ranked-header">
+                <div>
+                  <span class="rank">{{ $index + 1 }}</span>
+                  <strong>{{ item.label }}</strong>
+                </div>
+                <strong>{{ formatMoney(item.grossRevenue) }}</strong>
+              </div>
+              <div class="bar-track" aria-hidden="true">
+                <span [style.width]="breakdownWidth(item.revenuePercentage)"></span>
+              </div>
+              <div class="ranked-metrics">
+                <span>{{ item.revenuePercentage | number:'1.0-1' }}%</span>
+                <span>{{ 'analytics.table.net' | translate }}: {{ formatMoney(item.netRevenue) }}</span>
+                <span>{{ 'analytics.table.transactions' | translate }}: {{ item.transactionCount | number }}</span>
+                @if (item.quantity !== null && item.quantity !== undefined) {
+                  <span>{{ 'analytics.table.quantity' | translate }}: {{ item.quantity | number }}</span>
+                }
+              </div>
+            </li>
+          }
+        </ol>
+      } @else {
+        <div class="empty-state">
+          <mat-icon>leaderboard</mat-icon>
+          <p>{{ 'analytics.empty.breakdown' | translate }}</p>
+        </div>
+      }
+    </section>
+  </div>
+
+  <section class="analytics-panel transactions-panel" aria-labelledby="transactions-title">
+    <div class="section-heading">
+      <div>
+        <h2 id="transactions-title">{{ 'analytics.transactions.title' | translate }}</h2>
+        <p>
+          {{ recentTransactions()?.count ?? 0 | number }}
+          {{ 'analytics.transactions.results' | translate }}
+        </p>
+      </div>
+      <label class="page-size">
+        <span>{{ 'analytics.transactions.rows' | translate }}</span>
+        <select
+          [ngModel]="filters().pageSize"
+          (ngModelChange)="updatePageSize($event)"
+        >
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+      </label>
+    </div>
+
+    @if (transactionsError()) {
+      <div class="section-error" role="alert">
+        <p>{{ transactionsError() }}</p>
+        <button type="button" (click)="retryTransactions()">{{ 'analytics.actions.retry' | translate }}</button>
+      </div>
+    } @else if (transactionsLoading() && !recentTransactions()) {
+      <div class="table-skeleton" aria-hidden="true">
+        @for (placeholder of [1,2,3,4,5]; track placeholder) {
+          <span></span>
+        }
+      </div>
+    } @else if (recentTransactions()?.data?.length) {
+      <div class="table-scroll" [class.loading-section]="transactionsLoading()">
+        <table class="transactions-table">
+          <thead>
+            <tr>
+              <th>{{ 'analytics.table.dateTime' | translate }}</th>
+              <th>{{ 'analytics.table.transactionNumber' | translate }}</th>
+              <th>{{ 'analytics.table.location' | translate }}</th>
+              <th>{{ 'analytics.table.staff' | translate }}</th>
+              <th>{{ 'analytics.table.paymentMethod' | translate }}</th>
+              <th>{{ 'analytics.table.status' | translate }}</th>
+              <th>{{ 'analytics.table.gross' | translate }}</th>
+              <th>{{ 'analytics.table.net' | translate }}</th>
+              <th>{{ 'analytics.table.tax' | translate }}</th>
+              <th>{{ 'analytics.table.discount' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (transaction of recentTransactions()!.data; track $index) {
+              <tr [class.voided-row]="isVoided(transaction)">
+                <td>{{ formatDateTime(transaction) }}</td>
+                <td><strong>{{ transactionNumber(transaction) }}</strong></td>
+                <td>{{ transactionLocation(transaction) }}</td>
+                <td>{{ transactionStaff(transaction) }}</td>
+                <td>{{ paymentMethodLabel(transaction.paymentMethod) }}</td>
+                <td>
+                  <span class="status-badge" [class.voided]="isVoided(transaction)">
+                    {{ displayStatus(transaction) }}
+                  </span>
+                </td>
+                <td>{{ formatMoney(transaction.grossRevenue) }}</td>
+                <td>{{ formatMoney(transaction.netRevenue) }}</td>
+                <td>{{ formatMoney(transactionTax(transaction)) }}</td>
+                <td>{{ formatMoney(transactionDiscount(transaction)) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <nav class="pagination" [attr.aria-label]="'analytics.transactions.pagination' | translate">
+        <button type="button" (click)="previousPage()" [disabled]="(recentTransactions()?.page ?? 0) === 0">
+          <mat-icon>chevron_left</mat-icon>
+          {{ 'analytics.actions.previous' | translate }}
+        </button>
+        <span>
+          {{ 'analytics.transactions.page' | translate }} {{ pageNumber() }}
+          {{ 'analytics.transactions.of' | translate }} {{ recentTransactions()?.pages ?? 1 }}
+        </span>
+        <button
+          type="button"
+          (click)="nextPage()"
+          [disabled]="(recentTransactions()?.page ?? 0) + 1 >= (recentTransactions()?.pages ?? 0)"
+        >
+          {{ 'analytics.actions.next' | translate }}
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </nav>
+    } @else {
+      <div class="empty-state">
+        <mat-icon>receipt_long</mat-icon>
+        <p>{{ 'analytics.empty.transactions' | translate }}</p>
+      </div>
+    }
+  </section>
+
+  @if (capabilities(); as capabilities) {
+    <aside class="capabilities-note">
+      <mat-icon>info</mat-icon>
+      <div>
+        <strong>{{ 'analytics.capabilities.title' | translate }}</strong>
+        <p>
+          {{ 'analytics.capabilities.description' | translate }}
+        </p>
+        @if (capabilities.notes.length) {
+          <ul>
+            @for (note of capabilities.notes; track note) {
+              <li>{{ note }}</li>
+            }
+          </ul>
+        }
+      </div>
+    </aside>
+  }
+</main>

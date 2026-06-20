@@ -1,0 +1,144 @@
+<ascend-loader [loading]="submitting()" />
+
+<main class="onboarding-page">
+  <section class="onboarding-card onboarding-card--wide">
+    <a class="brand" routerLink="/login" aria-label="Ascend login">
+      <img src="assets/images/logo.png" alt="Ascend" />
+    </a>
+
+    @if (submitted()) {
+      <div class="state-panel state-panel--success">
+        <mat-icon>mark_email_read</mat-icon>
+        <h1>{{ 'organizationOnboarding.registration.successTitle' | translate }}</h1>
+        <p>{{ 'organizationOnboarding.registration.successDescription' | translate }}</p>
+        <a mat-flat-button color="primary" routerLink="/login">
+          {{ 'organizationOnboarding.actions.goToLogin' | translate }}
+        </a>
+      </div>
+    } @else {
+      <header class="page-heading">
+        <p class="eyebrow">{{ 'organizationOnboarding.registration.eyebrow' | translate }}</p>
+        <h1>{{ 'organizationOnboarding.registration.title' | translate }}</h1>
+        <p>{{ 'organizationOnboarding.registration.description' | translate }}</p>
+      </header>
+
+      @if (errorMessage()) {
+        <div class="alert alert--error" role="alert">
+          <mat-icon>error</mat-icon>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <fieldset>
+          <legend>{{ 'organizationOnboarding.registration.organizationSection' | translate }}</legend>
+          <div class="form-grid">
+            <mat-form-field appearance="outline" class="full-span">
+              <mat-label>{{ 'organizationOnboarding.fields.organizationName' | translate }}</mat-label>
+              <input matInput formControlName="organizationName" autocomplete="organization" />
+              @if (form.controls.organizationName.touched && form.controls.organizationName.hasError('required')) {
+                <mat-error>{{ 'organizationOnboarding.validation.required' | translate }}</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'organizationOnboarding.fields.legalName' | translate }}</mat-label>
+              <input matInput formControlName="legalName" autocomplete="organization" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'organizationOnboarding.fields.taxId' | translate }}</mat-label>
+              <input matInput formControlName="taxId" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'organizationOnboarding.fields.businessPhoneNumber' | translate }}</mat-label>
+              <input matInput formControlName="businessPhoneNumber" autocomplete="tel" />
+              @if (form.controls.businessPhoneNumber.touched && form.controls.businessPhoneNumber.hasError('required')) {
+                <mat-error>{{ 'organizationOnboarding.validation.required' | translate }}</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'organizationOnboarding.fields.businessEmail' | translate }}</mat-label>
+              <input matInput type="email" formControlName="businessEmail" autocomplete="email" />
+              @if (form.controls.businessEmail.touched && form.controls.businessEmail.hasError('email')) {
+                <mat-error>{{ 'organizationOnboarding.validation.email' | translate }}</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'organizationOnboarding.fields.currency' | translate }}</mat-label>
+              <mat-select formControlName="currency">
+                @for (currency of currencies; track currency.value) {
+                  <mat-option [value]="currency.value">{{ currency.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>{{ 'organizationOnboarding.registration.ownerSection' | translate }}</legend>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'organizationOnboarding.fields.ownerFirstName' | translate }}</mat-label>
+              <input matInput formControlName="ownerFirstName" autocomplete="given-name" />
+              @if (form.controls.ownerFirstName.touched && form.controls.ownerFirstName.hasError('required')) {
+                <mat-error>{{ 'organizationOnboarding.validation.required' | translate }}</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'organizationOnboarding.fields.ownerLastName' | translate }}</mat-label>
+              <input matInput formControlName="ownerLastName" autocomplete="family-name" />
+              @if (form.controls.ownerLastName.touched && form.controls.ownerLastName.hasError('required')) {
+                <mat-error>{{ 'organizationOnboarding.validation.required' | translate }}</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-span">
+              <mat-label>{{ 'organizationOnboarding.fields.ownerEmail' | translate }}</mat-label>
+              <input matInput type="email" formControlName="ownerEmail" autocomplete="email" />
+              @if (form.controls.ownerEmail.touched && form.controls.ownerEmail.hasError('required')) {
+                <mat-error>{{ 'organizationOnboarding.validation.required' | translate }}</mat-error>
+              } @else if (form.controls.ownerEmail.touched && form.controls.ownerEmail.hasError('email')) {
+                <mat-error>{{ 'organizationOnboarding.validation.email' | translate }}</mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>{{ 'organizationOnboarding.registration.locationSection' | translate }}</legend>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'organizationOnboarding.fields.locationName' | translate }}</mat-label>
+              <input matInput formControlName="locationName" />
+              @if (form.controls.locationName.touched && form.controls.locationName.hasError('required')) {
+                <mat-error>{{ 'organizationOnboarding.validation.required' | translate }}</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'organizationOnboarding.fields.numberOfTables' | translate }}</mat-label>
+              <input matInput type="number" min="0" max="500" formControlName="numberOfTables" />
+              @if (form.controls.numberOfTables.touched && form.controls.numberOfTables.invalid) {
+                <mat-error>{{ 'organizationOnboarding.validation.tableRange' | translate }}</mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </fieldset>
+
+        <div class="form-actions">
+          <a mat-button routerLink="/login">
+            {{ 'organizationOnboarding.actions.backToLogin' | translate }}
+          </a>
+          <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">
+            {{ 'organizationOnboarding.registration.submit' | translate }}
+          </button>
+        </div>
+      </form>
+    }
+  </section>
+</main>

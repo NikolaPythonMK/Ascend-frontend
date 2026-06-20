@@ -4,11 +4,10 @@ import { EmployeeLoginGuard } from './features/employee-login/guards/employee-lo
 import { permissionsGuard } from './core/guards/permissions.guard';
 
 export const routes: Routes = [
-    // {
-    //     path: '',
-    //     redirectTo: 'login',
-    //     pathMatch: 'full'
-    // },
+    {
+        path: 'organization',
+        loadChildren: () => import('./features/organization-onboarding/organization-onboarding.routes').then((m) => m.routes)
+    },
     {
         path: 'login',
         loadChildren: () => import('./features/organization-login/organization-login.routes').then((m) => m.routes)
@@ -74,20 +73,12 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/settings/taxes/pages/tax-details/tax-details.component').then((m) => m.TaxDetailsPage)
             },
             {
-                path: 'dynamic-report',
-                loadComponent: () => import('./features/reports/dynamic-report.component').then((m) => m.DynamicQueryBuilderComponent)
-            },
-            {
-                path: 'reports-dashboard',
+                path: 'analytics-revenue',
                 canMatch: [permissionsGuard],
                 data: {
-                    requiredPermissions: [{ name: '/api/reporting/all', method: 'POST' }]
+                    requiredPermissions: [{ name: '/api/analytics/revenue/dashboard', method: 'GET' }]
                 },
-                loadComponent: () => import('./features/reports-dashboard/report-dashboard.component').then((m) => m.DynamicReportsComponent)
-            },
-            {
-                path: 'report-view',
-                loadComponent: () => import('./features/report-view/report-view.component').then((m) => m.ReportViewComponent)
+                loadComponent: () => import('./features/analytics-revenue/analytics-revenue.component').then((m) => m.AnalyticsRevenueComponent)
             }
         ]
     },

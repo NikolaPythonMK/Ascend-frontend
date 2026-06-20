@@ -1,0 +1,108 @@
+<ascend-loader [loading]="loading() || submitting()" />
+
+<main class="onboarding-page">
+  <section class="onboarding-card">
+    <a class="brand" routerLink="/login" aria-label="Ascend login">
+      <img src="assets/images/logo.png" alt="Ascend" />
+    </a>
+
+    @if (linkError()) {
+      <div class="state-panel state-panel--error">
+        <mat-icon>link_off</mat-icon>
+        <h1>{{ 'organizationOnboarding.setup.invalidTitle' | translate }}</h1>
+        <p>{{ linkError() }}</p>
+        <div class="state-actions">
+          <a mat-button routerLink="/login">
+            {{ 'organizationOnboarding.actions.goToLogin' | translate }}
+          </a>
+          <a mat-flat-button color="primary" routerLink="/organization/register">
+            {{ 'organizationOnboarding.actions.newRequest' | translate }}
+          </a>
+        </div>
+      </div>
+    } @else {
+      @if (activation(); as request) {
+      <header class="page-heading">
+        <p class="eyebrow">{{ 'organizationOnboarding.setup.eyebrow' | translate }}</p>
+        <h1>{{ 'organizationOnboarding.setup.title' | translate }}</h1>
+        <p>{{ 'organizationOnboarding.setup.description' | translate }}</p>
+      </header>
+
+      <dl class="organization-summary">
+        <div>
+          <dt>{{ 'organizationOnboarding.fields.organizationName' | translate }}</dt>
+          <dd>{{ request.organizationName }}</dd>
+        </div>
+        <div>
+          <dt>{{ 'organizationOnboarding.fields.owner' | translate }}</dt>
+          <dd>{{ request.ownerFirstName }} {{ request.ownerLastName }}</dd>
+        </div>
+        <div>
+          <dt>{{ 'organizationOnboarding.fields.ownerEmail' | translate }}</dt>
+          <dd>{{ request.ownerEmail }}</dd>
+        </div>
+        <div>
+          <dt>{{ 'organizationOnboarding.fields.locationName' | translate }}</dt>
+          <dd>{{ request.locationName }}</dd>
+        </div>
+      </dl>
+
+      @if (formErrors().length > 0) {
+        <div class="alert alert--error" role="alert">
+          <mat-icon>error</mat-icon>
+          <div>
+            @for (message of formErrors(); track message) {
+              <p>{{ message }}</p>
+            }
+          </div>
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'organizationOnboarding.fields.password' | translate }}</mat-label>
+          <input matInput type="password" formControlName="password" autocomplete="new-password" />
+          @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+            <mat-error>{{ 'organizationOnboarding.validation.required' | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'organizationOnboarding.fields.confirmPassword' | translate }}</mat-label>
+          <input matInput type="password" formControlName="confirmPassword" autocomplete="new-password" />
+          @if (form.controls.confirmPassword.touched && form.controls.confirmPassword.hasError('required')) {
+            <mat-error>{{ 'organizationOnboarding.validation.required' | translate }}</mat-error>
+          } @else if (form.controls.confirmPassword.touched && form.hasError('passwordsMismatch')) {
+            <mat-error>{{ 'organizationOnboarding.validation.passwordMismatch' | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'organizationOnboarding.fields.staffCode' | translate }}</mat-label>
+          <input
+            matInput
+            type="password"
+            inputmode="numeric"
+            maxlength="8"
+            formControlName="staffCode"
+            autocomplete="new-password"
+          />
+          <mat-hint>{{ 'organizationOnboarding.setup.staffCodeHint' | translate }}</mat-hint>
+          @if (form.controls.staffCode.touched && form.controls.staffCode.invalid) {
+            <mat-error>{{ 'organizationOnboarding.validation.staffCode' | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="form-actions">
+          <a mat-button routerLink="/login">
+            {{ 'organizationOnboarding.actions.cancel' | translate }}
+          </a>
+          <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">
+            {{ 'organizationOnboarding.setup.submit' | translate }}
+          </button>
+        </div>
+      </form>
+      }
+    }
+  </section>
+</main>

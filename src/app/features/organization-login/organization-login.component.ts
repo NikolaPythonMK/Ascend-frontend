@@ -11,7 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SnackbarService } from '../../core/services/utility/snackbar.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoginRequest } from '../../core/models/login.request';
@@ -37,7 +37,8 @@ import { SettingsManagerService } from '../../core/services/utility/settings-man
     MatIconModule,
     InputFieldComponent,
     MatSelectModule,
-    LoaderComponent
+    LoaderComponent,
+    RouterLink
 ],
   templateUrl: 'organization-login.component.html',
   styleUrls: ['organization-login.component.scss'],
@@ -108,7 +109,7 @@ export class OrganizationLoginPage {
       .subscribe({
         next: (response: LoginResponse) => { //TODO: handling if one of the settings is null
           localStorage.setItem('location', response.locationID.toString())
-          this.settingsManagerService.setUpOrganizationSettings(response.businessProfile, response.taxCompliance, response.organizationPreferences);
+          this.settingsManagerService.setUpOrganizationSettings(response.businessProfile, response.organizationPreferences);
           this.snackbarService.success(this.translationService.getTranslationForKey("auth.login-succesfull"));
           this.router.navigate([`/staff`]);
         },

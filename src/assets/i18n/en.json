@@ -1,4 +1,62 @@
 {
+    "organizationOnboarding": {
+        "registration": {
+            "eyebrow": "Organization onboarding",
+            "title": "Register your organization",
+            "description": "Send your business details for review. You will receive a setup email after the request is approved.",
+            "organizationSection": "Organization details",
+            "ownerSection": "Owner details",
+            "locationSection": "First location",
+            "submit": "Submit request",
+            "successTitle": "Request submitted",
+            "successDescription": "Your organization request is under review. The owner will receive an email with setup instructions after approval."
+        },
+        "setup": {
+            "eyebrow": "Organization activation",
+            "title": "Secure your organization",
+            "description": "Create the owner password and the first staff code to finish setup.",
+            "staffCodeHint": "Use 3 to 8 digits.",
+            "submit": "Activate organization",
+            "invalidTitle": "This setup link cannot be used",
+            "success": "Organization activated successfully. You can now log in."
+        },
+        "fields": {
+            "organizationName": "Organization name",
+            "ownerFirstName": "Owner first name",
+            "ownerLastName": "Owner last name",
+            "owner": "Owner",
+            "ownerEmail": "Owner email",
+            "businessPhoneNumber": "Business phone number",
+            "businessEmail": "Business email",
+            "legalName": "Legal name",
+            "taxId": "Tax ID",
+            "currency": "Currency",
+            "locationName": "Location name",
+            "numberOfTables": "Number of tables",
+            "password": "Password",
+            "confirmPassword": "Confirm password",
+            "staffCode": "Staff PIN/code"
+        },
+        "validation": {
+            "required": "This field is required.",
+            "email": "Enter a valid email address.",
+            "tableRange": "Enter a number from 0 to 500.",
+            "passwordMismatch": "Passwords do not match.",
+            "staffCode": "Use 3 to 8 digits only."
+        },
+        "actions": {
+            "backToLogin": "Back to login",
+            "goToLogin": "Go to login",
+            "newRequest": "Submit a new request",
+            "cancel": "Cancel"
+        },
+        "errors": {
+            "requestFailed": "The request could not be submitted. Please try again.",
+            "activationFailed": "The organization could not be activated. Please review the details and try again.",
+            "invalidLink": "The setup link is missing required information or is invalid.",
+            "tooManyAttempts": "Too many attempts. Please wait before trying again."
+        }
+    },
     "errors": {
         "http-not-supported-error": "This browser version is not supported. For assistance, contact us.",
         "internal-server-error": "Something went wrong on our end. For assistance, contact us.",
@@ -6,6 +64,8 @@
         "404-description": "The page you are looking for doesn't exist or has been moved."
     },
     "auth": {
+        "no-organization": "Don't have an organization?",
+        "register-organization": "Register one",
         "login": "Log In",
         "username": "Username",
         "password": "Password",
@@ -38,11 +98,125 @@
        "products-categories": "Products & Categories",
        "locations": "Locations",
        "staff": "Staff",
-       "revenue": "Revenue",
-       "reports-analysis": "Reports & Analysis",
+       "analytics-revenue": "Analytics & Revenue",
        "stock": "Stock",
        "settings": "Settings",
        "logout": "Logout"
+    },
+    "analytics": {
+        "eyebrow": "Performance overview",
+        "title": "Analytics & Revenue",
+        "description": "Track revenue, transaction performance, and operational trends.",
+        "filters": {
+            "title": "Filters",
+            "hint": "Changes are saved in the page URL.",
+            "from": "From",
+            "to": "To",
+            "location": "Location",
+            "currentLocation": "Current location",
+            "allLocations": "All locations",
+            "paymentMethod": "Payment method",
+            "allPaymentMethods": "All payment methods",
+            "interval": "Trend interval",
+            "dimension": "Breakdown by",
+            "reset": "Reset filters"
+        },
+        "payment": {
+            "cash": "Cash",
+            "card": "Card",
+            "other": "Other"
+        },
+        "interval": {
+            "auto": "Automatic",
+            "day": "Day",
+            "week": "Week",
+            "month": "Month"
+        },
+        "dimension": {
+            "product": "Product",
+            "category": "Category",
+            "payment-method": "Payment method",
+            "location": "Location",
+            "staff": "Staff"
+        },
+        "summary": {
+            "title": "Revenue summary",
+            "hint": "Gross and net values for the selected period.",
+            "lifetimeGross": "Lifetime gross revenue",
+            "lifetimeGrossHint": "All recorded completed transactions",
+            "periodGross": "Gross revenue",
+            "netRevenue": "Net revenue",
+            "taxCollected": "Tax collected",
+            "discounts": "Discounts",
+            "completedTransactions": "Completed transactions",
+            "averageTransaction": "Average transaction value",
+            "voidedCount": "Cancellations / voided",
+            "voidedGross": "Voided gross amount",
+            "previousGross": "Previous period gross",
+            "vsPrevious": "vs previous period",
+            "afterTaxDiscounts": "After tax and discounts",
+            "selectedPeriod": "Selected period",
+            "completedAverage": "Average completed transaction",
+            "voidedMeansCancellation": "Voided transactions represent cancellations",
+            "excludedRevenue": "Excluded from completed revenue",
+            "equivalentPeriod": "Previous equivalent period"
+        },
+        "trend": {
+            "title": "Revenue trend",
+            "interval": "Interval",
+            "ariaLabel": "Gross revenue, net revenue, and transaction count trend chart",
+            "viewData": "View chart data",
+            "period": "Period"
+        },
+        "breakdown": {
+            "title": "Revenue breakdown",
+            "top": "Top",
+            "totalGross": "Total gross:"
+        },
+        "transactions": {
+            "title": "Recent transactions",
+            "results": "transactions",
+            "rows": "Rows",
+            "page": "Page",
+            "of": "of",
+            "pagination": "Recent transactions pagination"
+        },
+        "table": {
+            "dateTime": "Date / time",
+            "transactionNumber": "Transaction no.",
+            "location": "Location",
+            "staff": "Staff member",
+            "paymentMethod": "Payment method",
+            "status": "Status",
+            "gross": "Gross revenue",
+            "net": "Net revenue",
+            "tax": "Tax",
+            "discount": "Discount",
+            "transactions": "Transactions",
+            "quantity": "Quantity"
+        },
+        "capabilities": {
+            "title": "Current analytics coverage",
+            "description": "Customer and refund analytics are not available yet. Cancellation analytics use voided transactions."
+        },
+        "loading": {
+            "trend": "Loading trend"
+        },
+        "empty": {
+            "summary": "No summary data is available for these filters.",
+            "trend": "No trend data is available for these filters.",
+            "breakdown": "No breakdown data is available for these filters.",
+            "transactions": "No transactions were found for these filters."
+        },
+        "errors": {
+            "invalidDateRange": "The start date must be on or before the end date.",
+            "dashboardTitle": "Analytics could not be loaded"
+        },
+        "actions": {
+            "retry": "Retry",
+            "previous": "Previous",
+            "next": "Next"
+        }
     },
     "tables": {
         "title": "Tables",

@@ -57,7 +57,7 @@ export class SettingsBusinessProfileComponent implements OnInit {
   profileForm = this.fb.group({
     organizationId: [{ value: 0, disabled: true }], // read-only
     legalName: ['', [Validators.required, Validators.maxLength(200)]],
-    taxId: ['', [Validators.required]],
+    taxId: [''],
     phoneNumber: ['', [
       Validators.required,
       // basic E.164-ish: + followed by 6-15 digits (adjust to your needs)
@@ -67,10 +67,6 @@ export class SettingsBusinessProfileComponent implements OnInit {
 
     currency: [Currency.USD, Validators.required],
     receiptLanguage: [Language.En, Validators.required],
-
-    country: ['', Validators.required],
-    postalCode: ['', [Validators.required, Validators.maxLength(20)]],
-    city: ['', Validators.required],
   });
 
   ngOnInit(): void {
@@ -80,9 +76,6 @@ export class SettingsBusinessProfileComponent implements OnInit {
     }
 
     this.hydrateForm(profile);
-    console.log(this.profileForm.get('receiptLanguage'));
-        console.log(this.profileForm.get('currency'));
-
   }
 
   private hydrateForm(profile: BusinessProfile): void {
@@ -96,9 +89,6 @@ export class SettingsBusinessProfileComponent implements OnInit {
       email: profile.email,
       currency: profile.currency,
       receiptLanguage: profile.receiptLanguage,
-      country: profile.country,
-      postalCode: profile.postalCode,
-      city: profile.city,
     });
   }
 
@@ -111,14 +101,11 @@ export class SettingsBusinessProfileComponent implements OnInit {
     const payload: BusinessProfileRequest = {
       organizationId: this.loadedProfile?.organizationId ?? 0,
       legalName: this.profileForm.get('legalName')!.value!,
-      taxId: this.profileForm.get('taxId')!.value!,
+      taxId: this.profileForm.get('taxId')!.value?.trim() || null,
       phoneNumber: this.profileForm.get('phoneNumber')!.value!,
       email: this.profileForm.get('email')!.value!,
       currency: this.profileForm.get('currency')!.value as Currency,
       receiptLanguage: this.profileForm.get('receiptLanguage')!.value as Language,
-      country: this.profileForm.get('country')!.value!,
-      postalCode: this.profileForm.get('postalCode')!.value!,
-      city: this.profileForm.get('city')!.value!,
       code: this.employee.code()!
     };
 

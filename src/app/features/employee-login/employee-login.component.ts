@@ -59,10 +59,10 @@ export class EmployeeLoginComponent implements AfterViewInit{
                 console.log('staf: ', response
                     
                 )
-                if (!this.settingsManager.businessProfile() || !this.settingsManager.organizationPreferences() || !this.settingsManager.taxCompliance()) {
+                if (!this.settingsManager.businessProfile() || !this.settingsManager.organizationPreferences()) {
                     this.organizationSerivice.getSettings().subscribe({
                         next: (settings) => {
-                            this.settingsManager.setUpOrganizationSettings(settings.businessProfile, settings.taxCompliance, settings.organizationPreferences);
+                            this.settingsManager.setUpOrganizationSettings(settings.businessProfile, settings.organizationPreferences);
                         },
                         error: (error) => {
                             console.error('Failed to fetch organization settings:', error);

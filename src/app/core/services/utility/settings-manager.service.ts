@@ -1,6 +1,5 @@
 import { Injectable, signal } from "@angular/core";
 import { BusinessProfile } from "../../models/api/responses/business-profile.model";
-import { TaxCompliance } from "../../models/api/responses/tax-compliance.model";
 import { OrganizationPreferences } from "../../models/api/responses/organization-preferences.model";
 import { StaffPreferences } from "../../models/api/responses/staff-preferences.model";
 import { Theme } from "../../models/enums/theme.enum";
@@ -12,27 +11,17 @@ import { TableView } from "../../models/enums/table-view.enum";
 })
 export class SettingsManagerService {
     public businessProfile = signal<BusinessProfile | null>(null);
-    public taxCompliance = signal<TaxCompliance | null>(null);
     public organizationPreferences = signal<OrganizationPreferences | null>(null);
     public staffPreferences = signal<StaffPreferences | null>(null);
 
     setUpOrganizationSettings(businessProfile: BusinessProfile,
-                              taxCompliance: TaxCompliance,
                               organizationPreferences: OrganizationPreferences): void {
           this.businessProfile.set(businessProfile);
-          this.taxCompliance.set(taxCompliance);
           this.organizationPreferences.set(organizationPreferences);
-
-          console.log(this.businessProfile());
-                    console.log(this.taxCompliance());
-
-                              console.log(this.organizationPreferences());
-
     }
 
     removeOrganizationSettings(): void {
         this.businessProfile.set(null);
-        this.taxCompliance.set(null);
         this.organizationPreferences.set(null);
     }
 

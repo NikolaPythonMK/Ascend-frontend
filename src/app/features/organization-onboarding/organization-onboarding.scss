@@ -1,0 +1,220 @@
+@use "variables" as vars;
+
+:host {
+  display: block;
+  min-height: 100%;
+}
+
+.onboarding-page {
+  min-height: 100%;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+  background:
+    radial-gradient(circle at top left, vars.$color-primary-light, transparent 36%),
+    vars.$color-app-background;
+}
+
+.onboarding-card {
+  width: min(100%, 620px);
+  box-sizing: border-box;
+  padding: clamp(24px, 5vw, 48px);
+  border: 1px solid vars.$color-border;
+  border-radius: 18px;
+  background: vars.$color-surface;
+  box-shadow: 0 20px 50px vars.$color-shadow;
+
+  &--wide {
+    width: min(100%, 840px);
+  }
+}
+
+.brand {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+
+  img {
+    display: block;
+    width: min(240px, 65%);
+    max-height: 120px;
+    object-fit: contain;
+  }
+}
+
+.page-heading {
+  margin-bottom: 28px;
+  text-align: center;
+
+  h1 {
+    margin: 4px 0 10px;
+    color: vars.$color-heading;
+    font-size: clamp(1.75rem, 4vw, 2.35rem);
+  }
+
+  p:not(.eyebrow) {
+    color: vars.$color-muted-text;
+    line-height: 1.6;
+  }
+}
+
+.eyebrow {
+  color: vars.$color-primary;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+fieldset {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid vars.$color-border;
+  border-radius: 12px;
+
+  legend {
+    padding: 0 8px;
+    color: vars.$color-heading;
+    font-weight: 600;
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 16px;
+}
+
+.full-span {
+  grid-column: 1 / -1;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.form-actions,
+.state-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  line-height: 1.45;
+
+  p + p {
+    margin-top: 4px;
+  }
+
+  &--error {
+    color: vars.$color-danger;
+    background: color-mix(in srgb, vars.$color-danger 9%, white);
+    border: 1px solid color-mix(in srgb, vars.$color-danger 25%, white);
+  }
+}
+
+.state-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 0 8px;
+  text-align: center;
+
+  > mat-icon {
+    width: 64px;
+    height: 64px;
+    font-size: 64px;
+  }
+
+  h1 {
+    color: vars.$color-heading;
+  }
+
+  p {
+    max-width: 520px;
+    color: vars.$color-muted-text;
+    line-height: 1.6;
+  }
+
+  &--success > mat-icon {
+    color: vars.$color-success;
+  }
+
+  &--error > mat-icon {
+    color: vars.$color-danger;
+  }
+}
+
+.organization-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 18px;
+  border-radius: 12px;
+  background: vars.$color-muted-background;
+
+  dt {
+    margin-bottom: 4px;
+    color: vars.$color-muted-text;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+  }
+
+  dd {
+    color: vars.$color-heading;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 640px) {
+  .onboarding-page {
+    padding: 0;
+    place-items: stretch;
+  }
+
+  .onboarding-card {
+    min-height: 100vh;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .form-grid,
+  .organization-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .full-span {
+    grid-column: auto;
+  }
+
+  .form-actions,
+  .state-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+
+    a,
+    button {
+      width: 100%;
+    }
+  }
+}

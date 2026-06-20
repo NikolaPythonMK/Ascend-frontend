@@ -1,6 +1,7 @@
 import { Language } from "../../enums/language.enum";
 import { Theme } from "../../enums/theme.enum";
 import { TableView } from "../../enums/table-view.enum";
+import { TaxCalculationMode } from "../../enums/tax-calculation-mode.enum";
 
 
 export interface OrganizationPreferences {
@@ -13,4 +14,5 @@ export interface OrganizationPreferences {
   logoutAfterTransaction: boolean;
   defaultTableView: TableView;
   displayStaffNameOnTables: boolean;
+  taxCalculationMode: TaxCalculationMode;
 }

@@ -56,16 +56,11 @@ export class CustomNavbarComponent {
             api: ['/api/staffuser/all', '/api/role/all']
         },
         {
-            icon: 'payments',
-            label: 'navbar-items.revenue',
-            route: '/revenue',
-            api: ['/api/reporting/all']
-        },
-        {
-            icon: 'query_stats_dash',
-            label: 'navbar-items.reports-analysis',
-            route: '/reports-dashboard',
-            api: ['/api/reporting/all']
+            icon: 'insights',
+            label: 'navbar-items.analytics-revenue',
+            route: '/analytics-revenue',
+            api: ['/api/analytics/revenue/dashboard'],
+            method: 'GET'
         },
         // {
         //     icon: 'inventory_2',
@@ -81,10 +76,12 @@ export class CustomNavbarComponent {
         },
     ])
 
-    canView(api: string[]): boolean {
-        if (api.length === 0) 
+    canView(item: MenuItem): boolean {
+        if (item.api.length === 0)
             return true;
-        return this.authz.hasAny(api.map(i => ({ name: i, method: 'POST' })));
+        return this.authz.hasAny(
+            item.api.map((name) => ({ name, method: item.method ?? 'POST' }))
+        );
     }
 
     onCollapse(): void {

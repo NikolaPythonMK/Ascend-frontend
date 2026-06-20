@@ -6,12 +6,11 @@ import { SettingsDiscountsComponent } from './discounts/settings-discounts.compo
 import { SettingsBusinessProfileComponent } from "./business-profile/settings-business-profile.component";
 import { SettingsOrganizationDisplayComponent } from "./organization-display/settings-organization-display.component";
 import { SettingsStaffDisplayComponent } from "./settings-staff-preferences/settings-staff-preferences.component";
-import { SettingsTaxComplianceComponent } from "./settings-tax-compliance/settings-tax-compliance.component";
 import { PermissionService } from '../../core/services/auth/permission.service';
 
 @Component({
   selector: 'app-site-settings',
-  imports: [CommonModule, SettingsTaxesComponent, TranslateModule, SettingsDiscountsComponent, SettingsBusinessProfileComponent, SettingsOrganizationDisplayComponent, SettingsStaffDisplayComponent, SettingsTaxComplianceComponent],
+  imports: [CommonModule, SettingsTaxesComponent, TranslateModule, SettingsDiscountsComponent, SettingsBusinessProfileComponent, SettingsOrganizationDisplayComponent, SettingsStaffDisplayComponent],
   templateUrl: 'settings.component.html',
   styleUrls: ['settings.component.scss', '../../core/styles/menu-item-page.scss']
 })
@@ -30,8 +29,7 @@ export class SettingsPage {
     'Discounts',
     'Organization Display',
     'User Display',
-    'Tax Compliance',
-    'Hardware & Device Profiles'
+    //'Hardware & Device Profiles'
   ];
   activeItem = signal(this.menuItems[0]);
 
