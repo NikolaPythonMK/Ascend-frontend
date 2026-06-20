@@ -8,11 +8,11 @@
       <h2> {{ product.code }}</h2>
     </div>
     <div class="quantity-input">
-      <button class="value-control" onclick="numberInput.stepDown()" [title]="'quantity-dialog.decrease-value | translate'" [ariaLabel]="'quantity-dialog.decrease-value | translate'" type="submit">-</button>
+      <button class="value-control" onclick="numberInput.stepDown()" [title]="'quantity-dialog.decrease-value' | translate" [attr.aria-label]="'quantity-dialog.decrease-value' | translate" type="submit">-</button>
   
       <input class="value-input" type="number" value="1" min="-5" name="numberInput" id="numberInput">
       
-      <button class="value-control" onclick="numberInput.stepUp()" [title]="'quantity-dialog.increase-value | translate'" [ariaLabel]="'quantity-dialog.increase-value | translate'">+</button>
+      <button class="value-control" onclick="numberInput.stepUp()" [title]="'quantity-dialog.increase-value' | translate" [attr.aria-label]="'quantity-dialog.increase-value' | translate">+</button>
     </div>
 
     <mat-dialog-actions>

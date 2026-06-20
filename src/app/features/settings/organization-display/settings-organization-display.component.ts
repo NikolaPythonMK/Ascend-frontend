@@ -15,6 +15,8 @@ import { OrganizationPreferencesService } from "../../../core/services/api/organ
 import { HttpErrorResponse } from "@angular/common/http";
 import { SnackbarService } from "../../../core/services/utility/snackbar.service";
 import { finalize } from "rxjs";
+import { TranslateModule } from "@ngx-translate/core";
+import TranslationService from "../../../core/services/utility/translation.service";
 
 interface SettingOption {
   id: string;
@@ -31,7 +33,7 @@ interface DropdownOption<T> {
 
 @Component({
   selector: 'settings-organization-display',
-  imports: [LoaderComponent, MatSlideToggleModule, ButtonComponent],
+  imports: [LoaderComponent, MatSlideToggleModule, ButtonComponent, TranslateModule],
   templateUrl: 'settings-organization-display.component.html',
   styleUrls: ['settings-organization-display.component.scss', '../style.scss'],
   standalone: true
@@ -41,6 +43,7 @@ export class SettingsOrganizationDisplayComponent implements OnInit {
   private readonly employee = inject(EmployeeStore);
   private readonly organizationPreferencesService = inject(OrganizationPreferencesService);
   private readonly snackbarService = inject(SnackbarService);
+  private readonly translationService = inject(TranslationService);
 
   private openDropdownId = signal<string | null>(null);
 
@@ -51,24 +54,24 @@ export class SettingsOrganizationDisplayComponent implements OnInit {
   loading = signal(false);
 
   private readonly languageOptions = [
-    { value: Language.En, label: 'English' },
-    { value: Language.Mk, label: 'Macedonian' },
+    { value: Language.En, label: 'settings.preferences.options.english' },
+    { value: Language.Mk, label: 'settings.preferences.options.macedonian' },
   ];
 
   private readonly themeOptions = [
-    { value: Theme.Light, label: 'Light' },
-    { value: Theme.Dark,  label: 'Dark'  },
+    { value: Theme.Light, label: 'settings.preferences.options.light' },
+    { value: Theme.Dark,  label: 'settings.preferences.options.dark'  },
   ];
 
   private readonly tableViewOptions = [
-    { value: TableView.Table,     label: 'Table' },
-    { value: TableView.Grid,      label: 'Grid' },
-    { value: TableView.Draggable, label: 'Draggable' },
+    { value: TableView.Table,     label: 'settings.preferences.options.table' },
+    { value: TableView.Grid,      label: 'settings.preferences.options.grid' },
+    { value: TableView.Draggable, label: 'settings.preferences.options.draggable' },
   ];
 
   private readonly taxCalculationModeOptions = [
-    { value: TaxCalculationMode.Inclusive, label: 'Inclusive (tax-in)' },
-    { value: TaxCalculationMode.Additive, label: 'Additive (tax-out)' },
+    { value: TaxCalculationMode.Inclusive, label: 'settings.preferences.options.taxInclusive' },
+    { value: TaxCalculationMode.Additive, label: 'settings.preferences.options.taxAdditive' },
   ];
 
   ngOnInit(): void {
@@ -84,25 +87,25 @@ export class SettingsOrganizationDisplayComponent implements OnInit {
     this.dropdownOptions.set([
       {
         id: 'language',
-        label: 'Language',
+        label: 'settings.preferences.language',
         selectedValue: (this.settingsManager as any).getLanguage?.() ?? prefs.language,
         options: this.languageOptions
       },
       {
         id: 'theme',
-        label: 'Theme',
+        label: 'settings.preferences.theme',
         selectedValue: (this.settingsManager as any).getTheme?.() ?? prefs.theme,
         options: this.themeOptions
       },
       {
         id: 'defaultTableView',
-        label: 'Default table view',
+        label: 'settings.preferences.defaultTableView',
         selectedValue: (this.settingsManager as any).getDefaultTableView?.() ?? prefs.defaultTableView,
         options: this.tableViewOptions
       },
       {
         id: 'taxCalculationMode',
-        label: 'Tax calculation mode',
+        label: 'settings.preferences.taxCalculationMode',
         selectedValue: prefs.taxCalculationMode,
         options: this.taxCalculationModeOptions
       }
@@ -110,11 +113,11 @@ export class SettingsOrganizationDisplayComponent implements OnInit {
 
     // Toggles
     this.settingsOptions.set([
-      { id: 'canEditOtherTables',       label: 'Allow editing other tables',   enabled: prefs.canEditOtherTables },
-      { id: 'canRemoveTableItems',      label: 'Allow removing table items',   enabled: prefs.canRemoveTableItems },
-      { id: 'displayTaxAmount',         label: 'Display tax amount',           enabled: prefs.displayTaxAmount },
-      { id: 'logoutAfterTransaction',   label: 'Logout after transaction',     enabled: prefs.logoutAfterTransaction },
-      { id: 'displayStaffNameOnTables', label: 'Display staff name on tables', enabled: prefs.displayStaffNameOnTables },
+      { id: 'canEditOtherTables',       label: 'settings.preferences.allowEditingOtherTables',   enabled: prefs.canEditOtherTables },
+      { id: 'canRemoveTableItems',      label: 'settings.preferences.allowRemovingTableItems',   enabled: prefs.canRemoveTableItems },
+      { id: 'displayTaxAmount',         label: 'settings.preferences.displayTaxAmount',           enabled: prefs.displayTaxAmount },
+      { id: 'logoutAfterTransaction',   label: 'settings.preferences.logoutAfterTransaction',     enabled: prefs.logoutAfterTransaction },
+      { id: 'displayStaffNameOnTables', label: 'settings.preferences.displayStaffNameOnTables', enabled: prefs.displayStaffNameOnTables },
     ]);
   }
 
@@ -188,7 +191,14 @@ export class SettingsOrganizationDisplayComponent implements OnInit {
     .pipe(finalize(() => this.loading.set(false)))
     .subscribe({
       next: (response: OrganizationPreferences) => {
-        this.snackbarService.success('Successfully');
+        const businessProfile = this.settingsManager.businessProfile();
+        if (businessProfile) {
+          this.settingsManager.setUpOrganizationSettings(businessProfile, response);
+          this.translationService.applyConfiguredLanguage();
+        }
+        this.snackbarService.success(
+          this.translationService.getTranslationForKey('shared.successfully')
+        );
       },
       error: (error: HttpErrorResponse) => {
         this.snackbarService.error(error.error.message);

@@ -11,6 +11,7 @@ import { MatIcon } from "@angular/material/icon";
 import { SettingsManagerService } from "../../core/services/utility/settings-manager.service";
 import { StaffUser } from "../../core/models/api/responses/staff-user.model";
 import { OrganizationService } from "../../core/services/api/organization.service";
+import TranslationService from "../../core/services/utility/translation.service";
 
 @Component({
     selector: 'ascend-employee-login',
@@ -25,6 +26,7 @@ export class EmployeeLoginComponent implements AfterViewInit{
     organizationSerivice = inject(OrganizationService);
     loading = signal(false);
     private readonly settingsManager = inject(SettingsManagerService);
+    private readonly translationService = inject(TranslationService);
 
     elRef = inject(ElementRef);
     errorKey?: string;
@@ -63,6 +65,7 @@ export class EmployeeLoginComponent implements AfterViewInit{
                     this.organizationSerivice.getSettings().subscribe({
                         next: (settings) => {
                             this.settingsManager.setUpOrganizationSettings(settings.businessProfile, settings.organizationPreferences);
+                            this.translationService.applyConfiguredLanguage();
                         },
                         error: (error) => {
                             console.error('Failed to fetch organization settings:', error);
@@ -70,6 +73,7 @@ export class EmployeeLoginComponent implements AfterViewInit{
                     })
                 }
                 this.settingsManager.setUpStaffSettings(response.staffPreferences!);
+                this.translationService.applyConfiguredLanguage();
                 this.router.navigate(['/tables']);
             },
             error: (error: HttpErrorResponse) => {

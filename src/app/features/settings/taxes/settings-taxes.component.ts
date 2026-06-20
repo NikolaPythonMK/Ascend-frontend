@@ -36,8 +36,8 @@ export class SettingsTaxesComponent implements OnInit {
     searchTerm = this.tableState.searchTerm;
     sort = this.tableState.sort;
     map = new Map<string, string>([
-        ['Name', 'name'],
-        ['Percentage', 'percentage'],
+        ['settings.taxes.name', 'name'],
+        ['settings.taxes.percentage', 'percentage'],
     ]);
     colDisplayNames = computed(() => [...this.map.keys()]);
     nonSortableColumns = signal<string[]>([])

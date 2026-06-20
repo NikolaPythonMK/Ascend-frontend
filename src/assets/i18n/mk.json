@@ -1,267 +1,542 @@
 {
-    "organizationOnboarding": {
-        "registration": {
-            "eyebrow": "Регистрација на организација",
-            "title": "Регистрирајте ја вашата организација",
-            "description": "Испратете ги деловните податоци на преглед. По одобрувањето ќе добиете е-пошта за поставување.",
-            "organizationSection": "Податоци за организацијата",
-            "ownerSection": "Податоци за сопственикот",
-            "locationSection": "Прва локација",
-            "submit": "Испрати барање",
-            "successTitle": "Барањето е испратено",
-            "successDescription": "Барањето е на преглед. По одобрувањето, сопственикот ќе добие е-пошта со инструкции."
-        },
-        "setup": {
-            "eyebrow": "Активација на организација",
-            "title": "Заштитете ја организацијата",
-            "description": "Креирајте лозинка за сопственикот и код за првиот вработен.",
-            "staffCodeHint": "Користете од 3 до 8 цифри.",
-            "submit": "Активирај организација",
-            "invalidTitle": "Овој линк за поставување не може да се користи",
-            "success": "Организацијата е успешно активирана. Сега можете да се најавите."
-        },
-        "fields": {
-            "organizationName": "Име на организација",
-            "ownerFirstName": "Име на сопственик",
-            "ownerLastName": "Презиме на сопственик",
-            "owner": "Сопственик",
-            "ownerEmail": "Е-пошта на сопственик",
-            "businessPhoneNumber": "Деловен телефон",
-            "businessEmail": "Деловна е-пошта",
-            "legalName": "Правно име",
-            "taxId": "Даночен број",
-            "currency": "Валута",
-            "locationName": "Име на локација",
-            "numberOfTables": "Број на маси",
-            "password": "Лозинка",
-            "confirmPassword": "Потврди лозинка",
-            "staffCode": "ПИН/код за вработен"
-        },
-        "validation": {
-            "required": "Ова поле е задолжително.",
-            "email": "Внесете валидна е-пошта.",
-            "tableRange": "Внесете број од 0 до 500.",
-            "passwordMismatch": "Лозинките не се совпаѓаат.",
-            "staffCode": "Користете само од 3 до 8 цифри."
-        },
-        "actions": {
-            "backToLogin": "Назад кон најава",
-            "goToLogin": "Оди кон најава",
-            "newRequest": "Испрати ново барање",
-            "cancel": "Откажи"
-        },
-        "errors": {
-            "requestFailed": "Барањето не можеше да се испрати. Обидете се повторно.",
-            "activationFailed": "Организацијата не можеше да се активира. Проверете ги податоците и обидете се повторно.",
-            "invalidLink": "Во линкот недостасуваат потребни податоци или линкот е невалиден.",
-            "tooManyAttempts": "Премногу обиди. Почекајте пред да се обидете повторно."
-        }
+  "organizationOnboarding": {
+    "registration": {
+      "eyebrow": "Регистрација на организација",
+      "title": "Регистрирајте ја вашата организација",
+      "description": "Испратете ги деловните податоци на преглед. По одобрувањето ќе добиете е-пошта со инструкции за поставување.",
+      "organizationSection": "Податоци за организацијата",
+      "ownerSection": "Податоци за сопственикот",
+      "locationSection": "Прва локација",
+      "submit": "Испрати барање",
+      "successTitle": "Барањето е испратено",
+      "successDescription": "Барањето за организацијата е на преглед. По одобрувањето, сопственикот ќе добие е-пошта со инструкции за поставување."
+    },
+    "setup": {
+      "eyebrow": "Активација на организација",
+      "title": "Заштитете ја вашата организација",
+      "description": "Креирајте лозинка за сопственикот и код за првиот вработен за да го завршите поставувањето.",
+      "staffCodeHint": "Користете од 3 до 8 цифри.",
+      "submit": "Активирај организација",
+      "invalidTitle": "Овој линк за поставување не може да се користи",
+      "success": "Организацијата е успешно активирана. Сега можете да се најавите."
+    },
+    "fields": {
+      "organizationName": "Име на организацијата",
+      "ownerFirstName": "Име на сопственикот",
+      "ownerLastName": "Презиме на сопственикот",
+      "owner": "Сопственик",
+      "ownerEmail": "Е-пошта на сопственикот",
+      "businessPhoneNumber": "Деловен телефонски број",
+      "businessEmail": "Деловна е-пошта",
+      "legalName": "Правно име",
+      "taxId": "Даночен број",
+      "currency": "Валута",
+      "locationName": "Име на локацијата",
+      "numberOfTables": "Број на маси",
+      "password": "Лозинка",
+      "confirmPassword": "Потврди лозинка",
+      "staffCode": "ПИН/код за вработен"
+    },
+    "validation": {
+      "required": "Ова поле е задолжително.",
+      "email": "Внесете валидна адреса за е-пошта.",
+      "tableRange": "Внесете број од 0 до 500.",
+      "passwordMismatch": "Лозинките не се совпаѓаат.",
+      "staffCode": "Користете само од 3 до 8 цифри."
+    },
+    "actions": {
+      "backToLogin": "Назад кон најава",
+      "goToLogin": "Оди кон најава",
+      "newRequest": "Испрати ново барање",
+      "cancel": "Откажи"
     },
     "errors": {
-        "http-not-supported-error": "Оваа верзија на прелистувачот не е поддржана. За помош, контактирајте не.",
-        "internal-server-error": "Нешто тргна наопаку од наша страна. За помош, контактирајте не.",
-        "404-title": "Страницата не е пронајдена.",
-        "404-description": "Страницата што ја барате не постои или е преместена."
+      "requestFailed": "Барањето не можеше да се испрати. Обидете се повторно.",
+      "activationFailed": "Организацијата не можеше да се активира. Проверете ги податоците и обидете се повторно.",
+      "invalidLink": "Во линкот недостасуваат потребни податоци или линкот е невалиден.",
+      "tooManyAttempts": "Премногу обиди. Почекајте пред повторно да се обидете."
+    }
+  },
+  "errors": {
+    "http-not-supported-error": "Оваа верзија на прелистувачот не е поддржана. За помош, контактирајте нè.",
+    "internal-server-error": "Настана грешка на нашата страна. За помош, контактирајте нè.",
+    "404-title": "Страницата не е пронајдена",
+    "404-description": "Страницата што ја барате не постои или е преместена.",
+    "forbidden-title": "Немате пристап",
+    "forbidden-description": "Немате дозвола да ја прегледате оваа страница."
+  },
+  "auth": {
+    "no-organization": "Немате организација?",
+    "register-organization": "Регистрирајте ја",
+    "login": "Најави се",
+    "username": "Корисничко име",
+    "password": "Лозинка",
+    "location": "Локација",
+    "auth.invalid-credential": "Погрешни податоци за најава",
+    "staffuser.notfound": "Погрешен код",
+    "logout": "Одјави се",
+    "logout-succesfull": "Успешно се одјавивте",
+    "login-succesfull": "Успешно се најавивте",
+    "invalid-credentials": "Невалидни податоци за најава"
+  },
+  "code": {
+    "missing": "Кодот за попуст е задолжителен"
+  },
+  "discount": {
+    "not-found": "Попустот не е пронајден"
+  },
+  "location": {
+    "has-occupied-table": "Локацијата не може да се избрише додека има зафатени маси"
+  },
+  "table": {
+    "cannot-delete-occupied": "Зафатените маси не може да се избришат",
+    "code-exists": "Веќе постои маса со истиот код",
+    "name-exists": "Веќе постои маса со истото име",
+    "current-location-only": "Масите може да се управуваат само од локацијата на која сте најавени",
+    "login-to-location-required": "Најавете се на оваа локација за да додавате, ажурирате или бришете маси"
+  },
+  "navbar-items": {
+    "tables": "Маси",
+    "products-categories": "Производи и категории",
+    "locations": "Локации",
+    "staff": "Персонал",
+    "analytics-revenue": "Аналитика и приходи",
+    "stock": "Залиха",
+    "settings": "Поставки",
+    "logout": "Одјави се"
+  },
+  "analytics": {
+    "eyebrow": "Преглед на работењето",
+    "title": "Аналитика и приходи",
+    "description": "Следете ги приходите, трансакциите и оперативните трендови.",
+    "filters": {
+      "title": "Филтри",
+      "hint": "Промените се зачувуваат во адресата на страницата.",
+      "from": "Од",
+      "to": "До",
+      "location": "Локација",
+      "currentLocation": "Тековна локација",
+      "allLocations": "Сите локации",
+      "paymentMethod": "Начин на плаќање",
+      "allPaymentMethods": "Сите начини на плаќање",
+      "interval": "Интервал на трендот",
+      "dimension": "Приказ по",
+      "reset": "Ресетирај филтри"
     },
-    "auth": {
-        "no-organization": "Немате организација?",
-        "register-organization": "Регистрирајте ја",
-        "login": "Најавете се",
-        "username": "Корисничко име",
-        "password": "Лозинка",
-        "location": "Локација",
-        "auth.invalid-credential": "Погрешни креденцијали",
-        "staffuser.notfound": "Погрешен код"
+    "payment": {
+      "cash": "Готовина",
+      "card": "Картичка",
+      "other": "Друго"
     },
-    "common": {
-        "homepage-back": "Вратете се на почетната страница"
+    "status": {
+      "completed": "Завршена",
+      "voided": "Поништена"
     },
-    "code": {
-        "missing": "Discount code is required"
+    "interval": {
+      "auto": "Автоматски",
+      "day": "Ден",
+      "week": "Недела",
+      "month": "Месец"
     },
-    "discount": {
-        "not-found": "Попустот не е пронајден"
+    "dimension": {
+      "product": "Производ",
+      "category": "Категорија",
+      "payment-method": "Начин на плаќање",
+      "location": "Локација",
+      "staff": "Персонал"
     },
-    "location": {
-        "has-occupied-table": "Location cannot be deleted while it has occupied tables"
+    "summary": {
+      "title": "Преглед на приходите",
+      "hint": "Бруто и нето вредности за избраниот период.",
+      "lifetimeGross": "Вкупен бруто приход",
+      "lifetimeGrossHint": "Сите евидентирани завршени трансакции",
+      "periodGross": "Бруто приход",
+      "netRevenue": "Нето приход",
+      "taxCollected": "Собран данок",
+      "discounts": "Попусти",
+      "completedTransactions": "Завршени трансакции",
+      "averageTransaction": "Просечна вредност на трансакција",
+      "voidedCount": "Откажани / поништени",
+      "voidedGross": "Поништен бруто износ",
+      "previousGross": "Бруто од претходниот период",
+      "vsPrevious": "во споредба со претходниот период",
+      "afterTaxDiscounts": "По данок и попусти",
+      "selectedPeriod": "Избран период",
+      "completedAverage": "Просек на завршена трансакција",
+      "voidedMeansCancellation": "Поништените трансакции претставуваат откажувања",
+      "excludedRevenue": "Исклучено од завршениот приход",
+      "equivalentPeriod": "Претходен споредлив период"
+    },
+    "trend": {
+      "title": "Тренд на приходите",
+      "interval": "Интервал",
+      "ariaLabel": "Графикон за бруто приход, нето приход и број на трансакции",
+      "viewData": "Прикажи податоци",
+      "period": "Период"
+    },
+    "breakdown": {
+      "title": "Распределба на приходите",
+      "top": "Најдобри",
+      "totalGross": "Вкупно бруто:"
+    },
+    "transactions": {
+      "title": "Последни трансакции",
+      "results": "трансакции",
+      "rows": "Редови",
+      "page": "Страница",
+      "of": "од",
+      "pagination": "Страници на последните трансакции"
     },
     "table": {
-        "cannot-delete-occupied": "Occupied tables cannot be deleted",
-        "code-exists": "Table with the same code already exists",
-        "name-exists": "Table with the same name already exists",
-        "current-location-only": "Tables can only be managed from the location you are logged into",
-        "login-to-location-required": "Log in to this location to add, update, or delete its tables"
+      "dateTime": "Датум / време",
+      "transactionNumber": "Број на трансакција",
+      "location": "Локација",
+      "staff": "Вработен",
+      "paymentMethod": "Начин на плаќање",
+      "status": "Статус",
+      "gross": "Бруто приход",
+      "net": "Нето приход",
+      "tax": "Данок",
+      "discount": "Попуст",
+      "transactions": "Трансакции",
+      "quantity": "Количина"
     },
-    "navbar-items": {
-        "tables": "Маси" ,
-        "products-categories": "Продукти и Категории",
+    "capabilities": {
+      "title": "Тековна покриеност на аналитиката",
+      "description": "Аналитиката за клиенти и рефундации сè уште не е достапна. Поништените трансакции се користат за анализа на откажувањата."
+    },
+    "loading": {
+      "trend": "Се вчитува трендот"
+    },
+    "empty": {
+      "summary": "Нема достапен преглед за избраните филтри.",
+      "trend": "Нема достапен тренд за избраните филтри.",
+      "breakdown": "Нема достапна распределба за избраните филтри.",
+      "transactions": "Не се пронајдени трансакции за избраните филтри."
+    },
+    "errors": {
+      "invalidDateRange": "Почетниот датум мора да биде пред или ист со крајниот датум.",
+      "dashboardTitle": "Аналитиката не можеше да се вчита",
+      "dataLoad": "Податоците за аналитика не можеа да се вчитаат."
+    },
+    "actions": {
+      "retry": "Обиди се повторно",
+      "previous": "Претходна",
+      "next": "Следна"
+    }
+  },
+  "tables": {
+    "title": "Маси",
+    "column-table": "Маса",
+    "column-status": "Статус",
+    "column-price": "Вкупно",
+    "status-available": "Слободна",
+    "status-occupied": "Зафатена",
+    "status": {
+      "Available": "Слободна",
+      "Occupied": "Зафатена",
+      "status-available": "Слободна",
+      "status-occupied": "Зафатена"
+    },
+    "no-tables-first-part": "Моментално немате внесено маси во системот.",
+    "no-tables-second-part": "Кликнете",
+    "no-tables-third-part": "тука",
+    "no-tables-fourth-part": "за да започнете со додавање маси.",
+    "temporary": "Привремена",
+    "temporary-table": "Привремена маса",
+    "receipt": "Сметка",
+    "delete-order": "Избриши нарачка",
+    "search-products": "Пребарај производи...",
+    "discount-code": "Код за попуст",
+    "split-bill": "Подели сметка",
+    "order-summary": "(ставки: {{items}}, количина: {{quantity}})",
+    "messages": {
+      "item-added": "Ставката е успешно додадена",
+      "item-updated": "Ставката е успешно ажурирана",
+      "item-deleted": "Ставката е успешно избришана"
+    },
+    "validation": {
+      "valid-quantity": "Внесете валидна количина",
+      "positive-quantity": "Количината мора да биде поголема од 0"
+    },
+    "errors": {
+      "other-waiter": "Оваа маса му припаѓа на друг вработен"
+    }
+  },
+  "staff": {
+    "tab-title-staff": "Персонал",
+    "tab-title-roles": "Улоги",
+    "add-role-btn": "Додај улога",
+    "personal": {
+      "personal": "Персонал",
+      "name": "Име",
+      "code": "Код",
+      "lastname": "Презиме",
+      "phonenumber": "Телефонски број",
+      "roles": "Улоги",
+      "add-staff": "Додај вработен",
+      "update-staff": "Ажурирај вработен"
+    },
+    "roles": {
+      "roles": "Улоги",
+      "permissions": "Дозволи",
+      "view": "Преглед",
+      "name": "Име",
+      "add-edit": "Додавање и уредување",
+      "positioning": "Позиционирање",
+      "enable-view-positioning": "Овозможете Преглед за да дозволите позиционирање",
+      "enable-view-add-edit": "Овозможете Преглед за да дозволите додавање и уредување",
+      "enable-view-delete": "Овозможете Преглед за да дозволите бришење",
+      "enable-view-message": "Овозможете „Преглед“ за {{action}} во {{group}}.",
+      "this-section": "овој дел",
+      "groups": {
+        "tables": "Маси",
+        "products": "Производи",
+        "categories": "Категории",
+        "category-group": "Група на категории",
         "locations": "Локации",
         "staff": "Персонал",
-        "analytics-revenue": "Аналитика и приходи",
-        "stock": "Залиха",
-        "settings": "Подесувања",
-        "logout": "Одјави се"
-    },
-    "analytics": {
-        "eyebrow": "Преглед на работењето",
-        "title": "Аналитика и приходи",
-        "description": "Следете ги приходите, трансакциите и оперативните трендови.",
-        "filters": {
-            "title": "Филтри",
-            "hint": "Промените се зачувуваат во адресата на страницата.",
-            "from": "Од",
-            "to": "До",
-            "location": "Локација",
-            "currentLocation": "Тековна локација",
-            "allLocations": "Сите локации",
-            "paymentMethod": "Начин на плаќање",
-            "allPaymentMethods": "Сите начини на плаќање",
-            "interval": "Интервал на тренд",
-            "dimension": "Приказ по",
-            "reset": "Ресетирај филтри"
-        },
-        "payment": {
-            "cash": "Готовина",
-            "card": "Картичка",
-            "other": "Друго"
-        },
-        "interval": {
-            "auto": "Автоматски",
-            "day": "Ден",
-            "week": "Недела",
-            "month": "Месец"
-        },
-        "dimension": {
-            "product": "Производ",
-            "category": "Категорија",
-            "payment-method": "Начин на плаќање",
-            "location": "Локација",
-            "staff": "Персонал"
-        },
-        "summary": {
-            "title": "Преглед на приходи",
-            "hint": "Бруто и нето вредности за избраниот период.",
-            "lifetimeGross": "Вкупен бруто приход",
-            "lifetimeGrossHint": "Сите завршени трансакции",
-            "periodGross": "Бруто приход",
-            "netRevenue": "Нето приход",
-            "taxCollected": "Собран данок",
-            "discounts": "Попусти",
-            "completedTransactions": "Завршени трансакции",
-            "averageTransaction": "Просечна трансакција",
-            "voidedCount": "Откажани / поништени",
-            "voidedGross": "Поништен бруто износ",
-            "previousGross": "Бруто од претходен период",
-            "vsPrevious": "споредено со претходниот период",
-            "afterTaxDiscounts": "По данок и попусти",
-            "selectedPeriod": "Избран период",
-            "completedAverage": "Просек на завршени трансакции",
-            "voidedMeansCancellation": "Поништените трансакции се сметаат за откажувања",
-            "excludedRevenue": "Исклучено од завршениот приход",
-            "equivalentPeriod": "Претходен споредлив период"
-        },
-        "trend": {
-            "title": "Тренд на приходи",
-            "interval": "Интервал",
-            "ariaLabel": "Графикон за бруто приход, нето приход и број на трансакции",
-            "viewData": "Прикажи податоци",
-            "period": "Период"
-        },
-        "breakdown": {
-            "title": "Распределба на приходи",
-            "top": "Топ",
-            "totalGross": "Вкупно бруто:"
-        },
-        "transactions": {
-            "title": "Последни трансакции",
-            "results": "трансакции",
-            "rows": "Редови",
-            "page": "Страница",
-            "of": "од",
-            "pagination": "Страници на последни трансакции"
-        },
-        "table": {
-            "dateTime": "Датум / време",
-            "transactionNumber": "Број на трансакција",
-            "location": "Локација",
-            "staff": "Вработен",
-            "paymentMethod": "Начин на плаќање",
-            "status": "Статус",
-            "gross": "Бруто приход",
-            "net": "Нето приход",
-            "tax": "Данок",
-            "discount": "Попуст",
-            "transactions": "Трансакции",
-            "quantity": "Количина"
-        },
-        "capabilities": {
-            "title": "Тековна покриеност на аналитиката",
-            "description": "Аналитиката за клиенти и рефундации сè уште не е достапна. Поништените трансакции се користат за откажувања."
-        },
-        "loading": {
-            "trend": "Се вчитува трендот"
-        },
-        "empty": {
-            "summary": "Нема преглед за избраните филтри.",
-            "trend": "Нема тренд за избраните филтри.",
-            "breakdown": "Нема распределба за избраните филтри.",
-            "transactions": "Не се пронајдени трансакции за избраните филтри."
-        },
-        "errors": {
-            "invalidDateRange": "Почетниот датум мора да биде пред или ист со крајниот датум.",
-            "dashboardTitle": "Аналитиката не може да се вчита"
-        },
-        "actions": {
-            "retry": "Обиди се повторно",
-            "previous": "Претходна",
-            "next": "Следна"
-        }
-    },
-    "tables": {
-        "title": "Маси",
-        "column-table": "Маса",
-        "column-status": "Состојба",
-        "column-price": "Вкупно",
-        "status-available": "Слободна",
-        "status-occupied": "Зафатена",
-        "status": {
-            "Available": "Слободна",
-            "Occupied": "Зафатена"
-        },
-        "no-tables-first-part": "Моментално немате внесено маси во системот.",
-        "no-tables-second-part": "Кликнете",
-        "no-tables-third-part": "тука",
-        "no-tables-fourth-part": "за да започнете со додавање на маси."
-    },
-    "staff": {
-        "tab-title-staff": "Персонал",
-        "tab-title-roles": "Улоги",
-        "add-role-btn": "Додади улога"
-    },
-    "menu": {
-        "tab-title-products": "Продукти",
-        "tab-title-categories": "Категории",
-        "tab-title-categorygroups": "Група на Категории"
-    },
-    "ui": {
-        "button": {
-            "primary": "Поднеси",
-            "secondary": "Откажи"
-        }
-    },
-    "tableItems": {
-        "add-dialog": {
-            "quantity-label": "Додади количина",
-            "note-label": "Додади белешка"
-        },
-        "update-dialog": {
-            "quantity-label": "Количина",
-            "note-label": "Белешка"         
-        },
-        "dialog-buttons": {
-            "cancel-button": "Откажи",
-            "submit-button": "Продолжи"  
-        }
+        "roles": "Улоги",
+        "reporting": "Извештаи",
+        "taxes": "Даноци",
+        "discounts": "Попусти"
+      }
     }
+  },
+  "menu": {
+    "tab-title-products": "Производи",
+    "tab-title-categories": "Категории",
+    "tab-title-categorygroups": "Групи на категории",
+    "products": {
+      "products": "Производи",
+      "category": "Категорија",
+      "product": "Производ",
+      "no-products-found": "Не се пронајдени производи",
+      "add-product": "Додај производ",
+      "update-product": "Ажурирај производ",
+      "name": "Име",
+      "name-exists": "Веќе постои производ со истото име",
+      "code": "Код",
+      "code-exists": "Веќе постои производ со истиот код",
+      "price": "Цена",
+      "tax": "Данок",
+      "category-group": "Група на категории",
+      "description": "Опис",
+      "discountpercent": "Процент на попуст",
+      "discountamount": "Износ на попуст",
+      "reason": "Причина",
+      "image": "Прикачи слика"
+    },
+    "categories": {
+      "categories": "Категории",
+      "category": "Категорија",
+      "all-categories": "Сите категории",
+      "no-categories-found": "Не се пронајдени категории",
+      "add-category": "Додај категорија",
+      "update-category": "Ажурирај категорија",
+      "name": "Име",
+      "name-exists": "Веќе постои категорија со истото име",
+      "has-active-products": "Оваа категорија не може да се избрише бидејќи има активни производи",
+      "description": "Опис",
+      "category-group": "Група на категории",
+      "image": "Прикачи слика"
+    },
+    "category-groups": {
+      "category-groups": "Групи на категории",
+      "group": "Група",
+      "all-groups": "Сите групи",
+      "no-category-groups-found": "Не се пронајдени групи на категории",
+      "add-group": "Додај група",
+      "update-group": "Ажурирај група",
+      "name": "Име",
+      "name-exists": "Веќе постои група на категории со истото име",
+      "description": "Опис",
+      "categories": "Категории",
+      "image": "Прикачи слика"
+    }
+  },
+  "locations": {
+    "locations": "Локации",
+    "add-location": "Додај локација",
+    "update-location": "Ажурирај локација",
+    "name": "Име",
+    "table-count": "Број на маси"
+  },
+  "settings": {
+    "site-settings": "Поставки на системот",
+    "empty": "Нема достапен дел со поставки.",
+    "navigation": {
+      "businessProfile": "Деловен профил",
+      "taxes": "Даноци",
+      "discounts": "Попусти",
+      "organizationDisplay": "Поставки на организацијата",
+      "userDisplay": "Поставки на персоналот"
+    },
+    "staffPreferences": {
+      "title": "Поставки на персоналот"
+    },
+    "organizationPreferences": {
+      "title": "Поставки на организацијата"
+    },
+    "preferences": {
+      "language": "Јазик",
+      "theme": "Тема",
+      "defaultTableView": "Стандарден приказ на масите",
+      "taxCalculationMode": "Начин на пресметка на данок",
+      "allowEditingOtherTables": "Дозволи уредување на други маси",
+      "allowRemovingTableItems": "Дозволи отстранување ставки од маса",
+      "displayTaxAmount": "Прикажи го износот на данокот",
+      "logoutAfterTransaction": "Одјави се по трансакција",
+      "displayStaffNameOnTables": "Прикажи го името на вработениот на масите",
+      "options": {
+        "systemDefault": "Системски стандард",
+        "english": "Англиски",
+        "macedonian": "Македонски",
+        "light": "Светла",
+        "dark": "Темна",
+        "default": "Стандардно",
+        "table": "Табела",
+        "grid": "Мрежа",
+        "draggable": "Преместлив приказ",
+        "taxInclusive": "Вклучен данок",
+        "taxAdditive": "Дополнително пресметан данок"
+      }
+    },
+    "taxes": {
+      "taxes": "Даноци",
+      "no-taxes-found": "Не се пронајдени даноци",
+      "tax-details": "Детали за данокот",
+      "name": "Име",
+      "percentage": "Процент",
+      "reason": "Причина",
+      "history-of-tax-changes": "Историја на промени на данокот",
+      "no-history": "Нема историја за данокот",
+      "current-tax": "Тековен данок",
+      "add-tax": "Додај данок",
+      "changed-at": "Променето на",
+      "changed-by": "Променето од"
+    },
+    "discounts": {
+      "discounts": "Попусти",
+      "no-discounts-found": "Не се пронајдени попусти",
+      "percent": "Процент",
+      "amount": "Износ",
+      "code": "Код",
+      "name": "Име",
+      "value": "Вредност",
+      "discountType": "Тип",
+      "isRecurring": "Повторлив попуст",
+      "expiryDate": "Датум на истекување",
+      "add-discount": "Додај попуст",
+      "update-discount": "Ажурирај попуст",
+      "isActive": "Активен",
+      "recurrenceType": "Тип на повторување",
+      "minPurchase": "Минимална набавка",
+      "maxPurchase": "Максимална набавка",
+      "usageLimit": "Ограничување на употреба",
+      "usageLimitPerCustomer": "Ограничување по клиент",
+      "additionalSettings": "Дополнителни поставки",
+      "startDate": "Почетен датум",
+      "endDate": "Краен датум",
+      "startTime": "Почетно време",
+      "endTime": "Крајно време",
+      "recurrence.none": "Без повторување",
+      "recurrence.daily": "Дневно",
+      "recurrence.weekly": "Неделно",
+      "recurrence.monthly": "Месечно",
+      "recurrence.custom": "Прилагодено"
+    },
+    "businessProfile": {
+      "title": "Поставки на деловниот профил",
+      "legalName": "Правно име",
+      "taxId": "Даночен број (данок или ДДВ)",
+      "phone": "Телефонски број",
+      "email": "Е-пошта",
+      "currency": "Валута",
+      "receiptLanguage": "Јазик на сметката",
+      "currencies": {
+        "usd": "USD — Американски долар",
+        "eur": "EUR — Евро",
+        "mkd": "MKD — Македонски денар"
+      }
+    }
+  },
+  "ui": {
+    "loader": {
+      "loading": "Се вчитува..."
+    }
+  },
+  "tableItems": {
+    "add-dialog": {
+      "quantity-label": "Додај количина",
+      "note-label": "Додај забелешка"
+    },
+    "update-dialog": {
+      "quantity-label": "Количина",
+      "note-label": "Забелешка"
+    },
+    "errors": {
+      "table-has-staff-user": "Немате дозвола да ја уредувате оваа маса"
+    }
+  },
+  "ordered-items": {
+    "no": "Бр.",
+    "name": "Име",
+    "quantity": "Количина",
+    "code": "Код",
+    "price": "Цена",
+    "total": "Вкупно"
+  },
+  "filter": {
+    "all-categories": "Сите категории"
+  },
+  "drag-view": {
+    "add-obstacle": "Додај пречка",
+    "obstacle": "Пречка",
+    "add-rectangle": "Додај правоаголник",
+    "rectangle": "Правоаголник",
+    "add-circle": "Додај круг",
+    "circle": "Круг",
+    "save": "Зачувај",
+    "floors": "Катови",
+    "floor": "Кат",
+    "add-floor": "Додај кат",
+    "main-floor": "Главен",
+    "save-layout": "Зачувај распоред",
+    "cancel-editing": "Откажи уредување",
+    "zoom-in": "Зголеми",
+    "zoom-out": "Намали",
+    "edit-layout": "Уреди распоред"
+  },
+  "quantity-dialog": {
+    "increase-value": "Зголеми вредност",
+    "decrease-value": "Намали вредност"
+  },
+  "shared": {
+    "homepage-back": "Врати се на почетната страница",
+    "discard": "Затвори",
+    "add": "Додај",
+    "edit": "Уреди",
+    "delete": "Избриши",
+    "update": "Ажурирај",
+    "updated": "Ажурирано",
+    "added": "Додадено",
+    "succesfully": "Успешно",
+    "deleted": "Избришано",
+    "delete-item": "Избриши ставка",
+    "other": "друга",
+    "others": "други",
+    "accept": "Прифати",
+    "check-continue": "Дали сте сигурни дека сакате да продолжите?",
+    "search": "Пребарај",
+    "close": "Затвори",
+    "image-preview": "Преглед на слика",
+    "delete-image": "Избриши слика",
+    "submit": "Поднеси",
+    "cancel": "Откажи",
+    "save": "Зачувај",
+    "all": "Сè",
+    "not-available": "Н/Д",
+    "successfully": "Успешно"
+  }
 }
-

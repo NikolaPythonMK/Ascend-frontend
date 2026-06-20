@@ -11,6 +11,7 @@ import { StaffPreferencesService } from "../../../core/services/api/staff-prefer
 import { finalize } from "rxjs";
 import { SnackbarService } from "../../../core/services/utility/snackbar.service";
 import { HttpErrorResponse } from "@angular/common/http";
+import TranslationService from "../../../core/services/utility/translation.service";
 
 export interface StaffPreferences {
   staffId: number;
@@ -39,6 +40,7 @@ export class SettingsStaffDisplayComponent implements OnInit {
   private readonly staff = inject(EmployeeStore);
   private readonly staffPreferencesService = inject(StaffPreferencesService);
   private readonly snackbarSettings = inject(SnackbarService);
+  private readonly translationService = inject(TranslationService);
 
   // UI state
   private openDropdownId = signal<string | null>(null);
@@ -53,20 +55,20 @@ export class SettingsStaffDisplayComponent implements OnInit {
 
   // Option sources
   private readonly languageOptions: Array<{ value: Language; label: string }> = [
-    { value: Language.En, label: "English" },
-    { value: Language.Mk, label: "Macedonian" },
+    { value: Language.En, label: "settings.preferences.options.english" },
+    { value: Language.Mk, label: "settings.preferences.options.macedonian" },
   ];
 
   private readonly themeOptions: Array<{ value: Theme; label: string }> = [
-    { value: Theme.Light, label: "Light" },
-    { value: Theme.Dark,  label: "Dark"  },
+    { value: Theme.Light, label: "settings.preferences.options.light" },
+    { value: Theme.Dark,  label: "settings.preferences.options.dark"  },
   ];
 
   private readonly tableViewOptions: Array<{ value: TableView; label: string }> = [
-    { value: TableView.Default,   label: "Default" },
-    { value: TableView.Table,     label: "Table" },
-    { value: TableView.Grid,      label: "Grid" },
-    { value: TableView.Draggable, label: "Draggable" },
+    { value: TableView.Default,   label: "settings.preferences.options.default" },
+    { value: TableView.Table,     label: "settings.preferences.options.table" },
+    { value: TableView.Grid,      label: "settings.preferences.options.grid" },
+    { value: TableView.Draggable, label: "settings.preferences.options.draggable" },
   ];
 
   ngOnInit(): void {
@@ -82,19 +84,19 @@ export class SettingsStaffDisplayComponent implements OnInit {
     this.dropdownOptions.set([
       {
         id: "language",
-        label: "Language",
+        label: "settings.preferences.language",
         selectedValue: this.settingsManager.getLanguage() ?? prefs.language,
         options: this.languageOptions
       },
       {
         id: "theme",
-        label: "Theme",
+        label: "settings.preferences.theme",
         selectedValue: this.settingsManager.getTheme() ?? prefs.theme,
         options: this.themeOptions
       },
       {
         id: "defaultTableView",
-        label: "Default table view",
+        label: "settings.preferences.defaultTableView",
         selectedValue: this.settingsManager.getDefaultTableView() ?? prefs.defaultTableView,
         options: this.tableViewOptions
       }
@@ -159,7 +161,10 @@ export class SettingsStaffDisplayComponent implements OnInit {
           next: (staffPreferences: StaffPreferences) => {
             console.log('response: ', staffPreferences)
             this.settingsManager.setUpStaffSettings(staffPreferences);
-            this.snackbarSettings.success('Sucessfull');
+            this.translationService.applyConfiguredLanguage();
+            this.snackbarSettings.success(
+              this.translationService.getTranslationForKey('shared.successfully')
+            );
 
           },
           error: (error: HttpErrorResponse) => {

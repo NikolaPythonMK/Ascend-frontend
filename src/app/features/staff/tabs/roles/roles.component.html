@@ -1,6 +1,6 @@
 <div class="wrapper">
 <div class="update-buttons floating" [class.visible]="updatedPermissions().length > 0 && !selectedRoleProtected()">
-  <ascend-button type="secondary" label="Reset" icon="undo" class="reset-btn" (clickEvent)="onReset()" />
+  <ascend-button type="secondary" [label]="'analytics.filters.reset' | translate" icon="undo" class="reset-btn" (clickEvent)="onReset()" />
   <ascend-button
     (clickEvent)="onUpdatePermissions()"
     class="update-btn"
@@ -81,7 +81,7 @@
           {{ 'staff.roles.permissions' | translate }} > {{ selectedRole()?.name }}
         </th>
         <th class="cell-align-center">{{ 'staff.roles.view' | translate }}</th>
-        <th class="cell-align-center">Add &amp; Edit</th>
+        <th class="cell-align-center">{{ 'staff.roles.add-edit' | translate }}</th>
         <th class="cell-align-center">{{ 'shared.delete' | translate }}</th>
         <th class="cell-align-center">{{ 'shared.all' | translate }}</th>
       </tr>
@@ -91,16 +91,16 @@
           <tr>
             <td>
               <div class="permission-name-cell">
-                <span>{{ row.groupName }}</span>
+                <span>{{ row.groupName | translate }}</span>
 
                 @if (row.key === 'table' && hasAction(row.key, 'positioning')) {
                   <span class="table-specific-permission">
-                    <span class="table-specific-label">Positioning</span>
+                    <span class="table-specific-label">{{ 'staff.roles.positioning' | translate }}</span>
                     <span
                       class="tooltip-wrapper"
-                      [matTooltip]="'Enable View to allow Positioning'"
+                      [matTooltip]="'staff.roles.enable-view-positioning' | translate"
                       [matTooltipDisabled]="isViewEnabled(row.key)"
-                      (click)="!isViewEnabled(row.key) && onBlockedClick(row.key, 'Positioning')">
+                      (click)="!isViewEnabled(row.key) && onBlockedClick(row.key, 'staff.roles.positioning')">
                       <mat-checkbox
                         [checked]="isActionChecked(row.key, 'positioning')"
                         (change)="onActionToggle($event.checked, row.key, 'positioning')"
@@ -127,9 +127,9 @@
             @if (hasModify(row.key)) {
               <span
                 class="tooltip-wrapper"
-                [matTooltip]="'Enable View to allow Add & Edit'"
+                [matTooltip]="'staff.roles.enable-view-add-edit' | translate"
                 [matTooltipDisabled]="isViewEnabled(row.key)"
-                (click)="!isViewEnabled(row.key) && onBlockedClick(row.key, 'Add & Edit')"
+                (click)="!isViewEnabled(row.key) && onBlockedClick(row.key, 'staff.roles.add-edit')"
               >
                 <mat-checkbox
                   [checked]="isModifyChecked(row.key)"
@@ -147,9 +147,9 @@
             @if (hasAction(row.key, 'delete')) {
               <span
                 class="tooltip-wrapper"
-                [matTooltip]="'Enable View to allow Delete'"
+                [matTooltip]="'staff.roles.enable-view-delete' | translate"
                 [matTooltipDisabled]="isViewEnabled(row.key)"
-                (click)="!isViewEnabled(row.key) && onBlockedClick(row.key, 'Delete')"
+                (click)="!isViewEnabled(row.key) && onBlockedClick(row.key, 'shared.delete')"
               >
                 <mat-checkbox
                   [checked]="isActionChecked(row.key, 'delete')"

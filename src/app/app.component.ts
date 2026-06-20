@@ -16,6 +16,6 @@ export class AppComponent {
   private settingsManager = inject(SettingsManagerService);
 
   constructor(){
-    this.translationService.setDefaultLanguage(1);
+    this.translationService.setDefaultLanguage(this.settingsManager.getLanguage());
   }
 }

@@ -110,6 +110,7 @@ export class OrganizationLoginPage {
         next: (response: LoginResponse) => { //TODO: handling if one of the settings is null
           localStorage.setItem('location', response.locationID.toString())
           this.settingsManagerService.setUpOrganizationSettings(response.businessProfile, response.organizationPreferences);
+          this.translationService.applyConfiguredLanguage();
           this.snackbarService.success(this.translationService.getTranslationForKey("auth.login-succesfull"));
           this.router.navigate([`/staff`]);
         },

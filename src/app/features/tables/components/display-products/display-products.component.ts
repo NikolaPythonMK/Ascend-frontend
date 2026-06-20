@@ -6,11 +6,12 @@ import { Category } from "../../../../core/models/api/responses/category.model";
 import { Product } from "../../../../core/models/api/responses/product.model";
 import { KeyEventEmitter } from "../table/services/key-event-emitter.service";
 import { Subject, takeUntil } from "rxjs";
+import { TranslateModule } from "@ngx-translate/core";
 
 
 @Component({
     selector: 'display-products',
-    imports: [CommonModule],
+    imports: [CommonModule, TranslateModule],
     templateUrl: 'display-products.component.html',
     styleUrls: ['display-products.component.scss']
 })

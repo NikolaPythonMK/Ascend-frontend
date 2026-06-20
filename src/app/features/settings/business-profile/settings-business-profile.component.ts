@@ -43,15 +43,15 @@ export class SettingsBusinessProfileComponent implements OnInit {
   private loadedProfile?: BusinessProfile;
 
   currencies = [
-    { value: Currency.USD, label: "USD — US Dollar" },
-    { value: Currency.EUR, label: "EUR — Euro" },
-    { value: Currency.MKD, label: "MKD — Macedonian Denar" },
+    { value: Currency.USD, label: "settings.businessProfile.currencies.usd" },
+    { value: Currency.EUR, label: "settings.businessProfile.currencies.eur" },
+    { value: Currency.MKD, label: "settings.businessProfile.currencies.mkd" },
   ];
 
   languages = [
-    { value: Language.Default, label: "System default" },
-    { value: Language.En,      label: "English" },
-    { value: Language.Mk,      label: "Macedonian" },
+    { value: Language.Default, label: "settings.preferences.options.systemDefault" },
+    { value: Language.En,      label: "settings.preferences.options.english" },
+    { value: Language.Mk,      label: "settings.preferences.options.macedonian" },
   ];
 
   profileForm = this.fb.group({

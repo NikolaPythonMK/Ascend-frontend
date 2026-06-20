@@ -44,13 +44,13 @@ export class PersonalComponent implements OnInit{
     );
 
     map = new Map<string, string>([
-        ['Name', 'name'],
-        ['Last Name', 'lastName'],
-        ['Phone Number', 'phoneNumber'],
-        ['Roles', 'roles']
+        ['staff.personal.name', 'name'],
+        ['staff.personal.lastname', 'lastName'],
+        ['staff.personal.phonenumber', 'phoneNumber'],
+        ['staff.personal.roles', 'roles']
     ]);
     colDisplayNames = computed(() => [...this.map.keys()]);
-    nonSortableColumns = signal<string[]>(['Roles'])
+    nonSortableColumns = signal<string[]>(['staff.personal.roles'])
 
     searchTerm = this.tableState.searchTerm; // Use shared search state
     sort = this.tableState.sort; // Use shared sort state

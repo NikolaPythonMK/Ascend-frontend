@@ -46,15 +46,13 @@
         (closed)="panelOpenState.set(false)"
       >
         <mat-expansion-panel-header>
-          <mat-panel-title> Additonal settings </mat-panel-title>
-          <mat-panel-description> Additonal settings </mat-panel-description>
+          <mat-panel-title>{{ 'settings.discounts.additionalSettings' | translate }}</mat-panel-title>
+          <mat-panel-description>{{ 'settings.discounts.additionalSettings' | translate }}</mat-panel-description>
         </mat-expansion-panel-header>
 
         <div class="input-group">
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>{{
-              'Start Date'
-            }}</mat-label>
+            <mat-label>{{ 'settings.discounts.startDate' | translate }}</mat-label>
             <input
               matInput
               [matDatepicker]="startDatePicker"
@@ -72,9 +70,7 @@
 
           <!-- Expiry Date -->
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>{{
-              'End Date'
-            }}</mat-label>
+            <mat-label>{{ 'settings.discounts.endDate' | translate }}</mat-label>
             <input
               matInput
               formControlName="endDate"
@@ -93,7 +89,7 @@
 
         <div class="input-group">
           <mat-form-field>
-            <mat-label>Start time</mat-label>
+            <mat-label>{{ 'settings.discounts.startTime' | translate }}</mat-label>
             <input
               matInput
               [matTimepicker]="startTimepicker"
@@ -104,7 +100,7 @@
             <mat-timepicker-toggle [for]="startTimepicker" matSuffix />
           </mat-form-field>
           <mat-form-field>
-            <mat-label>End time</mat-label>
+            <mat-label>{{ 'settings.discounts.endTime' | translate }}</mat-label>
             <input
               matInput
               formControlName="endTime"

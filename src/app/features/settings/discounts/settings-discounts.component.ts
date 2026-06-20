@@ -37,14 +37,14 @@ export class SettingsDiscountsComponent {
     searchTerm = this.tableState.searchTerm;
     sort = this.tableState.sort;
     map = new Map<string, string>([
-        ['Code', 'code'],
-        ['Name', 'name'],
-        ['Discount Type', 'discountType'],
-        ['Amount', 'amount'],
-        ['Start Date', 'startDate'],
-        ['End Date', 'endDate'],
-        ['Start Time', 'startTime'],
-        ['End Time', 'endTime']
+        ['settings.discounts.code', 'code'],
+        ['settings.discounts.name', 'name'],
+        ['settings.discounts.discountType', 'discountType'],
+        ['settings.discounts.value', 'value'],
+        ['settings.discounts.startDate', 'startDate'],
+        ['settings.discounts.endDate', 'endDate'],
+        ['settings.discounts.startTime', 'startTime'],
+        ['settings.discounts.endTime', 'endTime']
     ]);
     colDisplayNames = computed(() => [...this.map.keys()]);
     nonSortableColumns = signal<string[]>([])

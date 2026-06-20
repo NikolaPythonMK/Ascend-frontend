@@ -39,7 +39,7 @@
       <button
         mat-icon-button
         color="warn"
-        aria-label="Delete item"
+        [attr.aria-label]="'shared.delete-item' | translate"
         (click)="onDelete()"
       >
         <mat-icon>delete</mat-icon>

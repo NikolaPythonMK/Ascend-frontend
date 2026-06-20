@@ -23,7 +23,7 @@
         @for (col of displayedColumns(); track col) {
         <th (click)="onSort(col)">
           <div class="col-name">
-            <span>{{ col }}</span>
+            <span>{{ col | translate }}</span>
             <mat-icon
               [ngClass]="{ 'hidden-icon': clickedColumnHeader() !== col }"
             >

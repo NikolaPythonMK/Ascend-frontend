@@ -29,7 +29,7 @@
             @if ((getSelectedCategoriesControl().value?.length || 0) > 1) {
               <span class="additional-selection">
                 (+{{ (getSelectedCategoriesControl().value?.length || 0) - 1 }}
-                {{ getSelectedCategoriesControl().value?.length === 2 ? "'shared.other | translate'" : "'shared.others | translate'" }})
+                {{ (getSelectedCategoriesControl().value?.length === 2 ? 'shared.other' : 'shared.others') | translate }})
               </span>
             }
           </mat-select-trigger>
@@ -61,7 +61,7 @@
       type="button"
       mat-icon-button
       color="warn"
-      [ariaLabel]="'shared.delete-item | translate'"
+      [ariaLabel]="'shared.delete-item' | translate"
       class="trash-btn"
       (click)="onDelete()"
     >

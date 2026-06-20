@@ -24,21 +24,20 @@ export class SettingsPage {
   }
 
   menuItems = [
-    'Business Profile',
-    'Taxes',
-    'Discounts',
-    'Organization Display',
-    'User Display',
-    //'Hardware & Device Profiles'
+    { id: 'businessProfile', label: 'settings.navigation.businessProfile' },
+    { id: 'taxes', label: 'settings.navigation.taxes' },
+    { id: 'discounts', label: 'settings.navigation.discounts' },
+    { id: 'organizationDisplay', label: 'settings.navigation.organizationDisplay' },
+    { id: 'userDisplay', label: 'settings.navigation.userDisplay' },
   ];
-  activeItem = signal(this.menuItems[0]);
+  activeItem = signal(this.menuItems[0].id);
 
   visibleMenuItems = computed(() => {
     const canTaxes = this.canViewTaxes();
     const canDiscounts = this.canViewDiscounts();
     return this.menuItems.filter(item =>
-      (item !== 'Taxes' || canTaxes) &&
-      (item !== 'Discounts' || canDiscounts)
+      (item.id !== 'taxes' || canTaxes) &&
+      (item.id !== 'discounts' || canDiscounts)
     );
   });
 
@@ -46,13 +45,13 @@ export class SettingsPage {
     const activeItem = this.activeItem();
     const visibleMenuItems = this.visibleMenuItems();
 
-    return visibleMenuItems.includes(activeItem)
+    return visibleMenuItems.some(item => item.id === activeItem)
       ? activeItem
-      : visibleMenuItems[0] ?? null;
+      : visibleMenuItems[0]?.id ?? null;
   });
   
 
-  setActive(item: string) {
-    this.activeItem.set(item);
+  setActive(itemId: string) {
+    this.activeItem.set(itemId);
   }
 }

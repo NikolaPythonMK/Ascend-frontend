@@ -12,14 +12,23 @@ export default class TranslationService {
 
     setDefaultLanguage(language: Language): void {
         this.translateService.setDefaultLang('en');
-        //this.translateService.setDefaultLang(this.getLanguageFromEnum(this.settingsManager.getLanguage()));
+        this.useLanguage(language);
     }
 
-    getTranslationForKey(key: string): string {
-        const translation = this.translateService.instant(key);
+    applyConfiguredLanguage(): void {
+        this.useLanguage(this.settingsManager.getLanguage());
+    }
+
+    useLanguage(language: Language): void {
+        this.translateService.use(this.getLanguageFromEnum(language));
+    }
+
+    getTranslationForKey(key: string, params?: Record<string, unknown>): string {
+        const translation = this.translateService.instant(key, params);
         
-        if(translation == null || translation == undefined)
-            return key
+        if (translation == null || translation === undefined) {
+            return key;
+        }
 
         return translation;
     }

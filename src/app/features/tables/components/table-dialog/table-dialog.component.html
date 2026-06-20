@@ -2,17 +2,17 @@
   
     <div class="products">
       <div class="products-header">
-        <h3 class="title">Маса 2</h3>
+        <h3 class="title">{{ table.code }}</h3>
       </div>
 
       <!-- <tables-order-items [tableItems]="tableItems()"/> -->
 
       <div class="product-list-footer">
           <div class="price-label">
-            Вкупно: {{ table.totalPrice }}
+            {{ 'ordered-items.total' | translate }}: {{ table.totalPrice }}
           </div>
           <div>
-            <button class="delete-order-btn">Избриши нарачка</button>
+            <button class="delete-order-btn">{{ 'tables.delete-order' | translate }}</button>
           </div>
       </div>
 
@@ -23,7 +23,7 @@
     </div> -->
 
     <div class="footer">
-      <button class="primary-btn">Сметка</button> <!-- Add these classes to global file -->
-      <button class="default-btn">Откажи</button>
+      <button class="primary-btn">{{ 'tables.receipt' | translate }}</button>
+      <button class="default-btn">{{ 'shared.cancel' | translate }}</button>
     </div>
   </div>

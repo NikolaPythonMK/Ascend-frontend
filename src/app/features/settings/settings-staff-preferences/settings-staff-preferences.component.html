@@ -2,15 +2,15 @@
   <!-- Dropdown Section -->
   <div class="settings-section dropdown-section">
     <div class="title-container">
-        <span class="title">Staff Preferences</span>
+        <span class="title">{{ 'settings.staffPreferences.title' | translate }}</span>
     </div>
     @for (option of dropdownOptions(); track option.id) {
       <div class="setting-row">
-        <span class="setting-label">{{ option.label }}</span>
+        <span class="setting-label">{{ option.label | translate }}</span>
 
         <div class="custom-dropdown" [class.open]="isDropdownOpen(option.id)">
           <div class="dropdown-trigger" (click)="toggleDropdown(option.id)">
-            <span class="selected-value">{{ getSelectedLabel(option) }}</span>
+            <span class="selected-value">{{ getSelectedLabel(option) | translate }}</span>
             <span class="dropdown-arrow">▼</span>
           </div>
 
@@ -21,7 +21,7 @@
                   class="dropdown-option"
                   [class.selected]="dropdownOption.value === option.selectedValue"
                   (click)="selectOption(option.id, dropdownOption.value)">
-                  {{ dropdownOption.label }}
+                  {{ dropdownOption.label | translate }}
                 </div>
               }
             </div>
@@ -32,6 +32,6 @@
   </div>
 
   <div class="buttons-section">
-    <ascend-button type="primary" label="Update" (clickEvent)="onSubmit()"/>
+    <ascend-button type="primary" [label]="'shared.update' | translate" (clickEvent)="onSubmit()"/>
   </div>
 </div>

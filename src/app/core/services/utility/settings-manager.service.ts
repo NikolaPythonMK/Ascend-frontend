@@ -39,7 +39,15 @@ export class SettingsManagerService {
     }
 
     getLanguage(): number {
-        return this.staffPreferences()!.language != Language.Default ? this.staffPreferences()!.language : this.organizationPreferences()!.language
+        const staffLanguage = this.staffPreferences()?.language;
+        if (staffLanguage != null && staffLanguage !== Language.Default) {
+            return staffLanguage;
+        }
+
+        const organizationLanguage = this.organizationPreferences()?.language;
+        return organizationLanguage != null && organizationLanguage !== Language.Default
+            ? organizationLanguage
+            : Language.En;
     }
 
     getDefaultTableView(): number {

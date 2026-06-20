@@ -36,16 +36,16 @@
         <div class="search-container">
           <input
             type="text"
-            placeholder="Пребарај продукт..."
+            [placeholder]="'tables.search-products' | translate"
             class="search-input"
             [formControl]="searchTerm"
             #searchInput
           />
-          <button mat-icon-button class="search-btn">
+          <button mat-icon-button class="search-btn" [attr.aria-label]="'shared.search' | translate">
             <mat-icon class="search-icon">search</mat-icon>
           </button>
           @if (searchTerm.value){
-          <button mat-icon-button class="close-btn" (click)="onClearSearch()">
+          <button mat-icon-button class="close-btn" [attr.aria-label]="'shared.close' | translate" (click)="onClearSearch()">
             <mat-icon class="close-icon">close</mat-icon>
           </button>
           }
@@ -71,9 +71,9 @@
       <table>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Qty</th>
-            <th>Total</th>
+            <th>{{ 'ordered-items.name' | translate }}</th>
+            <th>{{ 'ordered-items.quantity' | translate }}</th>
+            <th>{{ 'ordered-items.total' | translate }}</th>
           </tr>
         </thead>
         @if (tableItemsLoading()) {
@@ -117,11 +117,10 @@
       <div class="price-container">
         <div class="total-price-container">
           <div class="total-meta">
-            <span class="total-label">Вкупно</span>
-            <span class="price-info"
-              >(ставки: {{ totalItems() }} количина:
-              {{ totalQuantity() }})</span
-            >
+            <span class="total-label">{{ 'ordered-items.total' | translate }}</span>
+            <span class="price-info">
+              {{ 'tables.order-summary' | translate:{ items: totalItems(), quantity: totalQuantity() } }}
+            </span>
           </div>
           <div class="total-amount">
             <span class="total-price"
@@ -131,7 +130,7 @@
         </div>
         @if (settingsManager.displayTaxAmount()) {
           <div class="calculated-tax">
-            <span>Tax:</span>
+            <span>{{ 'analytics.table.tax' | translate }}:</span>
             <span>{{ totalTaxAmount() }}</span>
           </div>
         }
@@ -158,7 +157,7 @@
         }
         @if (!isTemporaryTable()) {
           <div class="discount-container">
-          <input [disabled]="isDiscountApplied()" type="text" [(ngModel)]="discountCode" class="discount-input" placeholder="Discount code" (focus)="codeInputFocus()" (blur)="codeInputLoseFocus()"/>
+          <input [disabled]="isDiscountApplied()" type="text" [(ngModel)]="discountCode" class="discount-input" [placeholder]="'tables.discount-code' | translate" (focus)="codeInputFocus()" (blur)="codeInputLoseFocus()"/>
           @if (!isDiscountApplied()) {
             <button matFab class="discount-button" (click)="applyDiscount(discountCode())">
               <mat-icon>redeem</mat-icon>
@@ -173,11 +172,11 @@
       </div>
       <div class="transaction-container">
         @if (isTemporaryTable()){
-          <button class="submit-btn" (click)="createTemporaryTable()">Submit</button>
+          <button class="submit-btn" (click)="createTemporaryTable()">{{ 'shared.submit' | translate }}</button>
         }@else {
-          <button class="cash-btn" (click)="createTransaction(1)">Cash</button>
-          <button class="card-btn" (click)="createTransaction(2)">Card</button>
-          <button>Split Bill</button>
+          <button class="cash-btn" (click)="createTransaction(1)">{{ 'analytics.payment.cash' | translate }}</button>
+          <button class="card-btn" (click)="createTransaction(2)">{{ 'analytics.payment.card' | translate }}</button>
+          <button>{{ 'tables.split-bill' | translate }}</button>
         }
       </div>
     </div>

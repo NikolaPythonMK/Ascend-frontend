@@ -17,7 +17,9 @@
 }
 @else {  
 <mat-sidenav-container>
-    <button type="button" mat-icon-button>menu</button>
+    <button type="button" mat-icon-button>
+        <mat-icon>menu</mat-icon>
+    </button>
     <mat-sidenav opened mode="side" [style.width]="sidenavWidth()">
         <ascend-custom-navbar [collapsed]="collapsed()" (collapseEvent)="onCollapse($event)" />
     </mat-sidenav>

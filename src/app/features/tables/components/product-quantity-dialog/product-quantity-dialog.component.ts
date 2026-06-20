@@ -66,22 +66,10 @@ export class ProductQuantityComponent implements OnInit {
   });
 
   isLoading = signal<boolean>(false);
-  quantityLabel = signal<string>(
-    this.translationService.getTranslationForKey(
-      'tableItems.add-dialog.quantity-label'
-    )
-  );
-  noteLabel = signal<string>(
-    this.translationService.getTranslationForKey(
-      'tableItems.add-dialog.note-label'
-    )
-  );
-  cancelLabel = signal<string>(
-    this.translationService.getTranslationForKey('shared.cancel')
-  );
-  submitLabel = signal<string>(
-    this.translationService.getTranslationForKey('shared.submit')
-  );
+  quantityLabel = signal<string>('tableItems.add-dialog.quantity-label');
+  noteLabel = signal<string>('tableItems.add-dialog.note-label');
+  cancelLabel = signal<string>('shared.cancel');
+  submitLabel = signal<string>('shared.submit');
 
   ngOnInit(): void {
     if (!this.data.id) {
@@ -104,12 +92,16 @@ export class ProductQuantityComponent implements OnInit {
     const note = this.getNoteFormControl().value;
 
     if (!Number.isFinite(quantity)) {
-      this.snackbar.error('Enter a valid quantity');
+      this.snackbar.error(
+        this.translationService.getTranslationForKey('tables.validation.valid-quantity')
+      );
       return;
     }
 
     if (quantity <= 0) {
-      this.snackbar.error('Quantity must be greater than 0');
+      this.snackbar.error(
+        this.translationService.getTranslationForKey('tables.validation.positive-quantity')
+      );
       return;
     }
 
@@ -146,16 +138,8 @@ export class ProductQuantityComponent implements OnInit {
         next: (result: TableItem) => {
           this.getQuantityFormControl().setValue(result.quantity);
           this.getNoteFormControl().setValue(result.note);
-          this.quantityLabel.set(
-            this.translationService.getTranslationForKey(
-              'tableItems.update-dialog.quantity-label'
-            )
-          );
-          this.noteLabel.set(
-            this.translationService.getTranslationForKey(
-              'tableItems.update-dialog.note-label'
-            )
-          );
+          this.quantityLabel.set('tableItems.update-dialog.quantity-label');
+          this.noteLabel.set('tableItems.update-dialog.note-label');
         },
         error: (error: HttpErrorResponse) => {
           this.snackbar.error(error.message);

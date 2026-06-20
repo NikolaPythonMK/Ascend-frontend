@@ -181,10 +181,15 @@ export class RolesComponent implements OnInit {
    return this.isActionChecked(rowKey, 'view');
   }
 
-    onBlockedClick(rowKey: string, actionLabel: string): void {
+    onBlockedClick(rowKey: string, actionLabelKey: string): void {
     if (!this.isViewEnabled(rowKey)) {
-        const group = this.rows().find(r => r.key === rowKey)?.groupName ?? 'this section';
-        this.snackbarService.error(`Enable "View" to ${actionLabel.toLowerCase()} in ${group}.`);
+        const groupKey = this.rows().find(r => r.key === rowKey)?.groupName ?? 'staff.roles.this-section';
+        this.snackbarService.error(
+          this.translationService.getTranslationForKey('staff.roles.enable-view-message', {
+            action: this.translationService.getTranslationForKey(actionLabelKey).toLowerCase(),
+            group: this.translationService.getTranslationForKey(groupKey),
+          })
+        );
     }
     }
 
@@ -301,16 +306,16 @@ private buildRows(perms: Permission[]): RowModel[] {
     };
 
   const groups = [
-    { key: "table",         groupName: "Tables" },
-    { key: "product",       groupName: "Products" },
-    { key: "category",      groupName: "Categories" },
-    { key: "categorygroup", groupName: "Category Group" },
-    { key: "location",      groupName: "Locations" },
-    { key: "staffuser",     groupName: "Staff" },       // <-- Staff = staffuser endpoints
-    { key: "role",          groupName: "Roles" },
-    { key: "reporting",     groupName: "Reporting" },
-    { key: "tax",           groupName: "Taxes" },
-    { key: "discount",      groupName: "Discounts" },
+    { key: "table",         groupName: "staff.roles.groups.tables" },
+    { key: "product",       groupName: "staff.roles.groups.products" },
+    { key: "category",      groupName: "staff.roles.groups.categories" },
+    { key: "categorygroup", groupName: "staff.roles.groups.category-group" },
+    { key: "location",      groupName: "staff.roles.groups.locations" },
+    { key: "staffuser",     groupName: "staff.roles.groups.staff" },
+    { key: "role",          groupName: "staff.roles.groups.roles" },
+    { key: "reporting",     groupName: "staff.roles.groups.reporting" },
+    { key: "tax",           groupName: "staff.roles.groups.taxes" },
+    { key: "discount",      groupName: "staff.roles.groups.discounts" },
   ];
 
   // index /api/<entity>/<action>

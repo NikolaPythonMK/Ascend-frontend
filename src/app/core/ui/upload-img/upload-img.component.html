@@ -21,7 +21,7 @@
   <button
     class="delete-img"
     mat-icon-button
-    aria-label="Delete image"
+    [attr.aria-label]="'shared.delete-image' | translate"
     (click)="onRemoveImage()"
     type="button"
   >
@@ -30,7 +30,7 @@
   <img
     class="selected-image"
     [src]="imageUrl()"
-    [alt]="'shared.image-preview | translate'"
+    [alt]="'shared.image-preview' | translate"
     (click)="onChooseImage(imgInput)"
   />
   <div>{{ fileName() }}</div>

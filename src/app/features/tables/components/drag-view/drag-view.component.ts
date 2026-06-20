@@ -30,6 +30,7 @@ import { DisplayTablesHeaderComponent } from "../display-tables-header/display-t
 import { TranslateModule } from '@ngx-translate/core';
 import { PermissionService } from '../../../../core/services/auth/permission.service';
 import { LocationTableMappings } from '../../../../core/models/api/responses/table-mapping.model';
+import TranslationService from '../../../../core/services/utility/translation.service';
 
 @Component({
   selector: 'drag-view',
@@ -48,6 +49,7 @@ import { LocationTableMappings } from '../../../../core/models/api/responses/tab
 export class DragViewComponent implements OnInit {
   private readonly locationService = inject(LocationService);
   private readonly snackbarService = inject(SnackbarService);
+  private readonly translationService = inject(TranslationService);
   readonly breakpointService = inject(BreakpointService);
   private authz = inject(PermissionService);
   clickedTableId = output<number>();
@@ -90,7 +92,11 @@ export class DragViewComponent implements OnInit {
     .pipe(finalize(() => this.loader.set(false)))
     .subscribe(result => {
       if (!result) {
-        this.addFloor({ id: '1', name: 'Main', items: [] });
+        this.addFloor({
+          id: '1',
+          name: this.translationService.getTranslationForKey('drag-view.main-floor'),
+          items: []
+        });
 
         this.tables().forEach((table) => {
           this.addTable(table.code, table.id);
@@ -199,6 +205,15 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
 
     floor.items.forEach((item) => this.drawShape(item, newLayer));
     this.switchFloor(this.layers().length - 1);
+  }
+
+  addNewFloor(): void {
+    const floorNumber = this.layers().length + 1;
+    this.addFloor({
+      id: floorNumber.toString(),
+      name: `${this.translationService.getTranslationForKey('drag-view.floor')} ${floorNumber}`,
+      items: []
+    });
   }
 
   switchFloor(index: number) {
@@ -532,7 +547,9 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
     )
     .subscribe({
       next: () => {
-        this.snackbarService.success('Успешно');
+        this.snackbarService.success(
+          this.translationService.getTranslationForKey('shared.successfully')
+        );
       },
       error: (error: HttpErrorResponse) => {
         this.snackbarService.error(error.message);

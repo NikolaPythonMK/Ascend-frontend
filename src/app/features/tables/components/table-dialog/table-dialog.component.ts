@@ -12,11 +12,12 @@ import { DisplayProductsComponent } from '../display-products/display-products.c
 import { QuantityDialog } from '../quantity-dialog/quantity-dialog.component';
 import { TableItem } from '../../../../core/models/api/responses/table-item.model';
 import { Table } from '../../../../core/models/api/responses/table.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'table-dialog',
-  imports: [CommonModule, MatIconModule, OrderedItemsComponent, SearchBarComponent, DisplayProductsComponent],
+  imports: [CommonModule, MatIconModule, OrderedItemsComponent, SearchBarComponent, DisplayProductsComponent, TranslateModule],
   templateUrl: 'table-dialog.component.html',
   styleUrls: ['table-dialog.component.scss'],
   // host: {

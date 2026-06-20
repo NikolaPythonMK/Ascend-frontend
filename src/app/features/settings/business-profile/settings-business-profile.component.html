@@ -38,7 +38,7 @@
   <mat-label>{{ 'settings.businessProfile.currency' | translate }}</mat-label>
   <mat-select formControlName="currency">
     @for (c of currencies; track c.value) {
-      <mat-option [value]="c.value">{{ c.label }}</mat-option>
+      <mat-option [value]="c.value">{{ c.label | translate }}</mat-option>
     }
   </mat-select>
 </mat-form-field>
@@ -48,7 +48,7 @@
   <mat-label>{{ 'settings.businessProfile.receiptLanguage' | translate }}</mat-label>
   <mat-select formControlName="receiptLanguage">
     @for (lang of languages; track lang.value) {
-      <mat-option [value]="lang.value">{{ lang.label }}</mat-option>
+      <mat-option [value]="lang.value">{{ lang.label | translate }}</mat-option>
     }
   </mat-select>
 </mat-form-field>

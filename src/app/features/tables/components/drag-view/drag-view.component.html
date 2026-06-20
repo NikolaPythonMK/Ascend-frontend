@@ -11,7 +11,7 @@
   </div>
     <div class="toolbar-group">
       <button
-        [title]="'drag-view.add-obstacle| translate'"
+        [title]="'drag-view.add-obstacle' | translate"
         [disabled]="!isEdit()"
         (click)="addObstacle()"
       >
@@ -21,15 +21,14 @@
 
     <div class="toolbar-group">
       <button
-        [title]="'drag-view.add-rectangle| translate'"
+        [title]="'drag-view.add-rectangle' | translate"
         [disabled]="!isEdit()"
         (click)="switchShapeType(selectedId, 'rect')"
       >
         <i class="material-icons">rectangle</i>{{ 'drag-view.rectangle' | translate }}
       </button>
       <button
-        title="Circle"
-        [title]="'drag-view.add-circle | translate'"
+        [title]="'drag-view.add-circle' | translate"
         [disabled]="!isEdit()"
         (click)="switchShapeType(selectedId, 'circle')"
       >
@@ -44,11 +43,11 @@
     </div>
 
     <div class="toolbar-group">
-      <button title="Save Layout" [disabled]="!isEdit()" (click)="saveLayout()">
+      <button [title]="'drag-view.save-layout' | translate" [disabled]="!isEdit()" (click)="saveLayout()">
         <i class="material-icons">save</i> {{ 'shared.save' | translate }}
       </button>
 
-      <button title="Toggle Edit Mode" (click)="onCancel()">
+      <button [title]="'drag-view.cancel-editing' | translate" (click)="onCancel()">
         <i class="material-icons">close</i> {{ 'shared.cancel' | translate }}
       </button>
     </div>
@@ -58,7 +57,7 @@
       @for (floor of layers(); track floor; let i = $index) {
       <button
         (click)="switchFloor(i)"
-        [title]="'drag-view.floor | translate' + (i + 1)"
+        [title]="('drag-view.floor' | translate) + ' ' + (i + 1)"
         [ngClass]="{ activeFloor: i === currentFloorIndex }"
       >
         {{ i + 1 }}
@@ -66,14 +65,8 @@
       }
       <button
         [disabled]="!isEdit()"
-        (click)="
-          addFloor({
-            id: (layers.length + 1).toString(),
-            name: 'drag-view.floor | translate' + (layers.length + 1),
-            items: []
-          })
-        "
-        [title]="'drag-view.add-floor | translate'"
+        (click)="addNewFloor()"
+        [title]="'drag-view.add-floor' | translate"
       >
         ＋
       </button>
@@ -83,16 +76,16 @@
 
   <div class="canvas-container">
     <div class="canvas-buttons">
-      <button (click)="zoomIn()"><i class="material-icons">add</i></button>
-      <button (click)="zoomOut()"><i class="material-icons">remove</i></button>
+      <button [title]="'drag-view.zoom-in' | translate" (click)="zoomIn()"><i class="material-icons">add</i></button>
+      <button [title]="'drag-view.zoom-out' | translate" (click)="zoomOut()"><i class="material-icons">remove</i></button>
       @if (!isEdit() && canUpdateTableMapping()) {
-      <button class="canvas-edit-btn" (click)="onCanvasEditButtonClick()">
+      <button class="canvas-edit-btn" [title]="'drag-view.edit-layout' | translate" (click)="onCanvasEditButtonClick()">
         <i class="material-icons">edit</i>
       </button>
       } @for (floor of layers(); track floor; let i = $index) {
       <button
         (click)="switchFloor(i)"
-        [title]="'drag-view.floor | translate' + (i + 1)"
+        [title]="('drag-view.floor' | translate) + ' ' + (i + 1)"
         [ngClass]="{ activeFloor: i === currentFloorIndex }"
       >
         {{ i + 1 }}

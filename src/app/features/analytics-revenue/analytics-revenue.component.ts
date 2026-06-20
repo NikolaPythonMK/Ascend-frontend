@@ -49,6 +49,7 @@ import { LocationService } from '../../core/services/api/locations.service';
 import { SettingsManagerService } from '../../core/services/utility/settings-manager.service';
 import { Location } from '../../core/models/api/responses/location.model';
 import { Currency } from '../../core/models/enums/currency.enum';
+import TranslationService from '../../core/services/utility/translation.service';
 
 Chart.register(...registerables);
 
@@ -175,6 +176,7 @@ export class AnalyticsRevenueComponent
   private readonly analyticsService = inject(AnalyticsRevenueService);
   private readonly locationService = inject(LocationService);
   private readonly settingsManager = inject(SettingsManagerService);
+  private readonly translationService = inject(TranslationService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroy$ = new Subject<void>();
@@ -372,7 +374,7 @@ export class AnalyticsRevenueComponent
 
   formatGrowth(value: number | null): string {
     if (value === null || value === undefined) {
-      return 'N/A';
+      return this.translationService.getTranslationForKey('shared.not-available');
     }
     return `${value > 0 ? '+' : ''}${value.toFixed(1)}%`;
   }
@@ -408,11 +410,11 @@ export class AnalyticsRevenueComponent
   paymentMethodLabel(method: AnalyticsPaymentMethod | string): string {
     switch (Number(method)) {
       case AnalyticsPaymentMethod.Cash:
-        return 'Cash';
+        return this.translationService.getTranslationForKey('analytics.payment.cash');
       case AnalyticsPaymentMethod.Card:
-        return 'Card';
+        return this.translationService.getTranslationForKey('analytics.payment.card');
       case AnalyticsPaymentMethod.Other:
-        return 'Other';
+        return this.translationService.getTranslationForKey('analytics.payment.other');
       default:
         return String(method || '—');
     }
@@ -426,7 +428,11 @@ export class AnalyticsRevenueComponent
   }
 
   displayStatus(transaction: RecentTransaction): string {
-    return this.isVoided(transaction) ? 'Voided' : 'Completed';
+    return this.translationService.getTranslationForKey(
+      this.isVoided(transaction)
+        ? 'analytics.status.voided'
+        : 'analytics.status.completed'
+    );
   }
 
   breakdownWidth(itemPercentage: number): string {
@@ -443,7 +449,9 @@ export class AnalyticsRevenueComponent
 
     if (this.dateRangeInvalid()) {
       this.cancelSectionRequests();
-      this.dashboardError.set('The start date must be on or before the end date.');
+      this.dashboardError.set(
+        this.translationService.getTranslationForKey('analytics.errors.invalidDateRange')
+      );
       this.initialized = true;
       return;
     }
@@ -672,7 +680,7 @@ export class AnalyticsRevenueComponent
         datasets: [
           {
             type: 'line',
-            label: 'Gross revenue',
+            label: this.translationService.getTranslationForKey('analytics.summary.periodGross'),
             data: trend.data.map((point) => point.grossRevenue),
             borderColor: '#6c63ff',
             backgroundColor: 'rgba(108, 99, 255, 0.12)',
@@ -683,7 +691,7 @@ export class AnalyticsRevenueComponent
           },
           {
             type: 'line',
-            label: 'Net revenue',
+            label: this.translationService.getTranslationForKey('analytics.summary.netRevenue'),
             data: trend.data.map((point) => point.netRevenue),
             borderColor: '#1f9d55',
             backgroundColor: 'rgba(31, 157, 85, 0.08)',
@@ -694,7 +702,7 @@ export class AnalyticsRevenueComponent
           },
           {
             type: 'bar',
-            label: 'Transactions',
+            label: this.translationService.getTranslationForKey('analytics.table.transactions'),
             data: trend.data.map((point) => point.transactionCount),
             backgroundColor: 'rgba(36, 36, 58, 0.12)',
             borderColor: 'rgba(36, 36, 58, 0.35)',
@@ -756,10 +764,10 @@ export class AnalyticsRevenueComponent
         candidate.error?.detail ??
         candidate.error?.message ??
         candidate.message ??
-        'Analytics data could not be loaded.'
+        this.translationService.getTranslationForKey('analytics.errors.dataLoad')
       );
     }
-    return 'Analytics data could not be loaded.';
+    return this.translationService.getTranslationForKey('analytics.errors.dataLoad');
   }
 
   private readCurrentLocationId(): number | null {

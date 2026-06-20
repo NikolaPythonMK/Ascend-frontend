@@ -61,7 +61,9 @@
         "http-not-supported-error": "This browser version is not supported. For assistance, contact us.",
         "internal-server-error": "Something went wrong on our end. For assistance, contact us.",
         "404-title": "Page Not Found",
-        "404-description": "The page you are looking for doesn't exist or has been moved."
+        "404-description": "The page you are looking for doesn't exist or has been moved.",
+        "forbidden-title": "No access",
+        "forbidden-description": "You don't have permission to view this page."
     },
     "auth": {
         "no-organization": "Don't have an organization?",
@@ -125,6 +127,10 @@
             "cash": "Cash",
             "card": "Card",
             "other": "Other"
+        },
+        "status": {
+            "completed": "Completed",
+            "voided": "Voided"
         },
         "interval": {
             "auto": "Automatic",
@@ -210,7 +216,8 @@
         },
         "errors": {
             "invalidDateRange": "The start date must be on or before the end date.",
-            "dashboardTitle": "Analytics could not be loaded"
+            "dashboardTitle": "Analytics could not be loaded",
+            "dataLoad": "Analytics data could not be loaded."
         },
         "actions": {
             "retry": "Retry",
@@ -234,7 +241,27 @@
         "no-tables-first-part": "You currently have no tables entered in the system.",
         "no-tables-second-part": "Click",
         "no-tables-third-part": "here",
-        "no-tables-fourth-part": "to start adding tables."
+        "no-tables-fourth-part": "to start adding tables.",
+        "temporary": "Temporary",
+        "temporary-table": "Temporary table",
+        "receipt": "Receipt",
+        "delete-order": "Delete order",
+        "search-products": "Search products...",
+        "discount-code": "Discount code",
+        "split-bill": "Split bill",
+        "order-summary": "(items: {{items}}, quantity: {{quantity}})",
+        "messages": {
+            "item-added": "Item added successfully",
+            "item-updated": "Item updated successfully",
+            "item-deleted": "Item deleted successfully"
+        },
+        "validation": {
+            "valid-quantity": "Enter a valid quantity",
+            "positive-quantity": "Quantity must be greater than 0"
+        },
+        "errors": {
+            "other-waiter": "This table belongs to another staff member"
+        }
     },
     "staff": {
         "tab-title-staff": "Staff",
@@ -254,7 +281,26 @@
             "roles": "Roles",
             "permissions": "Permissions",
             "view": "View",
-            "name": "Name"
+            "name": "Name",
+            "add-edit": "Add & Edit",
+            "positioning": "Positioning",
+            "enable-view-positioning": "Enable View to allow Positioning",
+            "enable-view-add-edit": "Enable View to allow Add & Edit",
+            "enable-view-delete": "Enable View to allow Delete",
+            "enable-view-message": "Enable \"View\" to {{action}} in {{group}}.",
+            "this-section": "this section",
+            "groups": {
+                "tables": "Tables",
+                "products": "Products",
+                "categories": "Categories",
+                "category-group": "Category group",
+                "locations": "Locations",
+                "staff": "Staff",
+                "roles": "Roles",
+                "reporting": "Reporting",
+                "taxes": "Taxes",
+                "discounts": "Discounts"
+            }
         }
     },
     "menu": {
@@ -318,6 +364,44 @@
     },
     "settings": {
         "site-settings": "Site settings",
+        "empty": "No settings section is available.",
+        "navigation": {
+            "businessProfile": "Business profile",
+            "taxes": "Taxes",
+            "discounts": "Discounts",
+            "organizationDisplay": "Organization preferences",
+            "userDisplay": "Staff preferences"
+        },
+        "staffPreferences": {
+            "title": "Staff preferences"
+        },
+        "organizationPreferences": {
+            "title": "Organization preferences"
+        },
+        "preferences": {
+            "language": "Language",
+            "theme": "Theme",
+            "defaultTableView": "Default table view",
+            "taxCalculationMode": "Tax calculation mode",
+            "allowEditingOtherTables": "Allow editing other tables",
+            "allowRemovingTableItems": "Allow removing table items",
+            "displayTaxAmount": "Display tax amount",
+            "logoutAfterTransaction": "Log out after transaction",
+            "displayStaffNameOnTables": "Display staff name on tables",
+            "options": {
+                "systemDefault": "System default",
+                "english": "English",
+                "macedonian": "Macedonian",
+                "light": "Light",
+                "dark": "Dark",
+                "default": "Default",
+                "table": "Table",
+                "grid": "Grid",
+                "draggable": "Draggable",
+                "taxInclusive": "Inclusive (tax included)",
+                "taxAdditive": "Additive (tax added)"
+            }
+        },
         "taxes": {
             "taxes": "Taxes",
             "no-taxes-found": "No taxes found",
@@ -328,7 +412,9 @@
             "history-of-tax-changes": "History of tax changes",
             "no-history": "No history for tax",
             "current-tax": "Current tax",
-            "add-tax": "Add Tax"
+            "add-tax": "Add Tax",
+            "changed-at": "Changed at",
+            "changed-by": "Changed by"
         },
         "discounts": {
             "discounts": "Discounts",
@@ -350,6 +436,11 @@
             "maxPurchase": "Maximum Purchase",
             "usageLimit": "Usage Limit",
             "usageLimitPerCustomer": "Usage Limit per Customer",
+            "additionalSettings": "Additional settings",
+            "startDate": "Start date",
+            "endDate": "End date",
+            "startTime": "Start time",
+            "endTime": "End time",
 
             "recurrence.none": "None",
             "recurrence.daily": "Daily",
@@ -360,7 +451,16 @@
         "businessProfile": {
             "title": "Business Profile Settings",
             "legalName": "Legal Name",
-            "taxId": "Tax-ID ( Tax or VAT number)"
+            "taxId": "Tax ID (tax or VAT number)",
+            "phone": "Phone number",
+            "email": "Email",
+            "currency": "Currency",
+            "receiptLanguage": "Receipt language",
+            "currencies": {
+                "usd": "USD — US Dollar",
+                "eur": "EUR — Euro",
+                "mkd": "MKD — Macedonian Denar"
+            }
         }
     },
     "ui": {
@@ -403,6 +503,12 @@
         "floors": "Floors",
         "floor": "Floor",
         "add-floor": "Add Floor"
+        ,"main-floor": "Main"
+        ,"save-layout": "Save layout"
+        ,"cancel-editing": "Cancel editing"
+        ,"zoom-in": "Zoom in"
+        ,"zoom-out": "Zoom out"
+        ,"edit-layout": "Edit layout"
     },
     "quantity-dialog":{
         "increase-value": "Increase Value",
@@ -427,9 +533,12 @@
         "search": "Search",
         "close": "Close",
         "image-preview": "Image preview",
+        "delete-image": "Delete image",
         "submit": "Submit",
         "cancel": "Cancel",
         "save": "Save",
-        "all": "All"
+        "all": "All",
+        "not-available": "N/A",
+        "successfully": "Successfully"
     }
 }

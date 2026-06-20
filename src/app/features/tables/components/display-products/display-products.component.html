@@ -28,7 +28,7 @@
   <div class="products-header"></div>
   <div class="products-display" #productsContainer tabindex="0">
     @if (!loading() && products.length == 0) {
-    <p class="no-data-msg">No products have been found</p>
+    <p class="no-data-msg">{{ 'menu.products.no-products-found' | translate }}</p>
     }
     @if (loading()){
     <div class="skeleton-rect"></div>

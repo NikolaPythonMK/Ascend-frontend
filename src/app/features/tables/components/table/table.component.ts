@@ -53,6 +53,7 @@ import { OrganizationPreferencesService } from '../../../../core/services/api/or
 import { SettingsManagerService } from '../../../../core/services/utility/settings-manager.service';
 import { StaffAuthService } from '../../../employee-login/services/staff-auth.service';
 import { PermissionService } from '../../../../core/services/auth/permission.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'table-items',
@@ -63,7 +64,8 @@ import { PermissionService } from '../../../../core/services/auth/permission.ser
     ReactiveFormsModule,
     LoaderComponent,
     DisplayProductsComponent,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ],
   templateUrl: 'table.component.html',
   styleUrls: ['table.component.scss'],
@@ -158,7 +160,9 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     this.tableId.set(Number(this.route.snapshot.paramMap.get('table')));
     if (this.tableId() == 0) {
       this.isTemporaryTable.set(true);
-      this.tableName.set('Temporary Table')
+      this.tableName.set(
+        this.translationService.getTranslationForKey('tables.temporary-table')
+      );
     }
     this.getAllProducts();
     if (!this.isTemporaryTable()) {
@@ -261,7 +265,9 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe({
               next: () => {
                 this.getTableItems();
-                this.snackbarService.success('Успешно е додадена нарачка');
+                this.snackbarService.success(
+                  this.translationService.getTranslationForKey('tables.messages.item-added')
+                );
               },
               error: (error: HttpErrorResponse) => {
                 console.log(error);
@@ -319,7 +325,9 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe({
               next: () => {
                 this.getTableItems();
-                this.snackbarService.success('Успешно е ажурирана нарачката');
+                this.snackbarService.success(
+                  this.translationService.getTranslationForKey('tables.messages.item-updated')
+                );
               },
               error: (error: HttpErrorResponse) => {
                 this.snackbarService.error(error.message);
@@ -333,7 +341,9 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe({
               next: () => {
                 this.getTableItems();
-                this.snackbarService.success('Успешно е избришана нарачката');
+                this.snackbarService.success(
+                  this.translationService.getTranslationForKey('tables.messages.item-deleted')
+                );
               },
               error: (error: HttpErrorResponse) => {
                 this.snackbarService.error(error.message);
@@ -345,12 +355,16 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private validateQuantity(quantity: number): boolean {
     if (!Number.isFinite(quantity)) {
-      this.snackbarService.error('Enter a valid quantity');
+      this.snackbarService.error(
+        this.translationService.getTranslationForKey('tables.validation.valid-quantity')
+      );
       return false;
     }
 
     if (quantity <= 0) {
-      this.snackbarService.error('Quantity must be greater than 0');
+      this.snackbarService.error(
+        this.translationService.getTranslationForKey('tables.validation.positive-quantity')
+      );
       return false;
     }
 
@@ -507,7 +521,9 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe({
         next: () => {
           this.getTableItems();
-          this.snackbarService.success('Успешно');
+          this.snackbarService.success(
+            this.translationService.getTranslationForKey('shared.successfully')
+          );
           this.isDiscountApplied.set(true);
         },
         error: (error: HttpErrorResponse) => {
@@ -531,7 +547,9 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe({
         next: () => {
           this.getTableItems();
-          this.snackbarService.success('Успешно');
+          this.snackbarService.success(
+            this.translationService.getTranslationForKey('shared.successfully')
+          );
           this.isDiscountApplied.set(false);
 
         },
@@ -598,7 +616,9 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
           .pipe(finalize(() => this.tableItemsLoading.set(false)))
           .subscribe({
             next: (transaction: Transaction) => {
-              this.snackbarService.success('Успешно')
+              this.snackbarService.success(
+                this.translationService.getTranslationForKey('shared.successfully')
+              )
               if (this.settingsManager.logoutAfterTransaction()){
                 this.staffAuthService.logout();
               }
@@ -630,7 +650,9 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
           .pipe(finalize(() => this.tableItemsLoading.set(false)))
           .subscribe({
             next: () => {
-              this.snackbarService.success('Успешно')
+              this.snackbarService.success(
+                this.translationService.getTranslationForKey('shared.successfully')
+              )
             },
             error: (error: HttpErrorResponse) => {
               this.snackbarService.error(error.message);
@@ -644,7 +666,9 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
       return true;
     
     if (!this.settingsManager.canEditOtherTables() && this.staffStore.id() != this.tableStaff()?.id) {
-      this.snackbarService.error('Table belongs to another waiter')
+      this.snackbarService.error(
+        this.translationService.getTranslationForKey('tables.errors.other-waiter')
+      )
       return false;
     }
     return true;
