@@ -4,7 +4,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { TableView } from "../../../core/models/enums/table-view.enum";
 import { Language } from "../../../core/models/enums/language.enum";
-import { Theme } from "../../../core/models/enums/theme.enum";
 import { TaxCalculationMode } from "../../../core/models/enums/tax-calculation-mode.enum";
 import { SettingsManagerService } from "../../../core/services/utility/settings-manager.service";
 import type { OrganizationPreferences } from "../../../core/models/api/responses/organization-preferences.model";
@@ -58,11 +57,6 @@ export class SettingsOrganizationDisplayComponent implements OnInit {
     { value: Language.Mk, label: 'settings.preferences.options.macedonian' },
   ];
 
-  private readonly themeOptions = [
-    { value: Theme.Light, label: 'settings.preferences.options.light' },
-    { value: Theme.Dark,  label: 'settings.preferences.options.dark'  },
-  ];
-
   private readonly tableViewOptions = [
     { value: TableView.Table,     label: 'settings.preferences.options.table' },
     { value: TableView.Grid,      label: 'settings.preferences.options.grid' },
@@ -88,19 +82,13 @@ export class SettingsOrganizationDisplayComponent implements OnInit {
       {
         id: 'language',
         label: 'settings.preferences.language',
-        selectedValue: (this.settingsManager as any).getLanguage?.() ?? prefs.language,
+        selectedValue: prefs.language,
         options: this.languageOptions
-      },
-      {
-        id: 'theme',
-        label: 'settings.preferences.theme',
-        selectedValue: (this.settingsManager as any).getTheme?.() ?? prefs.theme,
-        options: this.themeOptions
       },
       {
         id: 'defaultTableView',
         label: 'settings.preferences.defaultTableView',
-        selectedValue: (this.settingsManager as any).getDefaultTableView?.() ?? prefs.defaultTableView,
+        selectedValue: prefs.defaultTableView,
         options: this.tableViewOptions
       },
       {
@@ -135,7 +123,6 @@ export class SettingsOrganizationDisplayComponent implements OnInit {
     return {
       organizationId: this.organizationId,
       language: this.selectedValue<Language>('language'),
-      theme: this.selectedValue<Theme>('theme'),
       defaultTableView: this.selectedValue<TableView>('defaultTableView'),
       taxCalculationMode: this.selectedValue<TaxCalculationMode>('taxCalculationMode'),
 
@@ -190,10 +177,25 @@ export class SettingsOrganizationDisplayComponent implements OnInit {
     this.organizationPreferencesService.update(payload)
     .pipe(finalize(() => this.loading.set(false)))
     .subscribe({
-      next: (response: OrganizationPreferences) => {
+      next: () => {
         const businessProfile = this.settingsManager.businessProfile();
         if (businessProfile) {
-          this.settingsManager.setUpOrganizationSettings(businessProfile, response);
+          const updatedPreferences: OrganizationPreferences = {
+            organizationId: payload.organizationId,
+            language: payload.language,
+            defaultTableView: payload.defaultTableView,
+            taxCalculationMode: payload.taxCalculationMode,
+            canEditOtherTables: payload.canEditOtherTables,
+            canRemoveTableItems: payload.canRemoveTableItems,
+            displayTaxAmount: payload.displayTaxAmount,
+            logoutAfterTransaction: payload.logoutAfterTransaction,
+            displayStaffNameOnTables: payload.displayStaffNameOnTables,
+          };
+
+          this.settingsManager.setUpOrganizationSettings(
+            businessProfile,
+            updatedPreferences
+          );
           this.translationService.applyConfiguredLanguage();
         }
         this.snackbarService.success(

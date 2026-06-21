@@ -1,4 +1,3 @@
-import { Language } from "../../enums/language.enum";
 import { Currency } from "../../enums/currency.enum";
 
 export interface BusinessProfileRequest {
@@ -9,5 +8,5 @@ export interface BusinessProfileRequest {
   phoneNumber: string;
   email: string;
   currency: Currency;
-  receiptLanguage: Language;
+  // receiptLanguage: Language;
 }

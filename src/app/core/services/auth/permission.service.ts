@@ -12,6 +12,8 @@ export interface PermissionReq {
 export class PermissionService {
   private store = inject(EmployeeStore);
 
+  readonly isAdmin = this.store.isAdmin;
+
   has = (req: PermissionReq) =>
     this.store.isAdmin?.() ||
     this.store.permissionSet().has(permKey(req.name, req.method));

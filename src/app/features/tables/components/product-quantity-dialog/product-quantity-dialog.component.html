@@ -36,6 +36,7 @@
 
     @if (data.id) {
     <div class="dialog-actions-update" mat-dialog-actions>
+      @if (data.canDelete !== false) {
       <button
         mat-icon-button
         color="warn"
@@ -44,6 +45,7 @@
       >
         <mat-icon>delete</mat-icon>
       </button>
+      }
 
       <div>
         <button mat-stroked-button color="warn" (click)="dialogRef.close()">

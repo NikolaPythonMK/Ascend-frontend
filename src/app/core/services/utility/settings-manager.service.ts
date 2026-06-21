@@ -2,7 +2,6 @@ import { Injectable, signal } from "@angular/core";
 import { BusinessProfile } from "../../models/api/responses/business-profile.model";
 import { OrganizationPreferences } from "../../models/api/responses/organization-preferences.model";
 import { StaffPreferences } from "../../models/api/responses/staff-preferences.model";
-import { Theme } from "../../models/enums/theme.enum";
 import { Language } from "../../models/enums/language.enum";
 import { TableView } from "../../models/enums/table-view.enum";
 
@@ -34,10 +33,6 @@ export class SettingsManagerService {
         this.staffPreferences.set(null);
     }
 
-    getTheme(): number {
-        return this.staffPreferences()!.theme != Theme.Default ? this.staffPreferences()!.theme : this.organizationPreferences()!.theme
-    }
-
     getLanguage(): number {
         const staffLanguage = this.staffPreferences()?.language;
         if (staffLanguage != null && staffLanguage !== Language.Default) {
@@ -51,7 +46,15 @@ export class SettingsManagerService {
     }
 
     getDefaultTableView(): number {
-        return this.staffPreferences()!.defaultTableView != TableView.Default ? this.staffPreferences()!.defaultTableView : this.organizationPreferences()!.defaultTableView
+        const staffDefaultTableView = this.staffPreferences()?.defaultTableView;
+        if (
+            staffDefaultTableView != null &&
+            staffDefaultTableView !== TableView.Default
+        ) {
+            return staffDefaultTableView;
+        }
+
+        return this.organizationPreferences()?.defaultTableView ?? TableView.Table;
     }
 
     canEditOtherTables(): boolean {

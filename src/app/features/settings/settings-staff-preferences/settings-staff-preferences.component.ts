@@ -3,7 +3,6 @@ import { TranslateModule } from "@ngx-translate/core";
 import { SettingsManagerService } from "../../../core/services/utility/settings-manager.service";
 import { TableView } from "../../../core/models/enums/table-view.enum";
 import { Language } from "../../../core/models/enums/language.enum";
-import { Theme } from "../../../core/models/enums/theme.enum";
 import { ButtonComponent } from "../../../core/ui/button/button.component";
 import { StaffPreferencesRequest } from "../../../core/models/api/requests/staff-preferences.request";
 import { EmployeeStore } from "../../../core/store/employee.store";
@@ -12,14 +11,7 @@ import { finalize } from "rxjs";
 import { SnackbarService } from "../../../core/services/utility/snackbar.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import TranslationService from "../../../core/services/utility/translation.service";
-
-export interface StaffPreferences {
-  staffId: number;
-  organizationId: number;
-  language: Language;
-  theme: Theme;
-  defaultTableView: TableView;
-}
+import { StaffPreferences } from "../../../core/models/api/responses/staff-preferences.model";
 
 interface DropdownOption<T> {
   id: string;
@@ -55,13 +47,9 @@ export class SettingsStaffDisplayComponent implements OnInit {
 
   // Option sources
   private readonly languageOptions: Array<{ value: Language; label: string }> = [
+    { value: Language.Default, label: "settings.preferences.options.default" },
     { value: Language.En, label: "settings.preferences.options.english" },
     { value: Language.Mk, label: "settings.preferences.options.macedonian" },
-  ];
-
-  private readonly themeOptions: Array<{ value: Theme; label: string }> = [
-    { value: Theme.Light, label: "settings.preferences.options.light" },
-    { value: Theme.Dark,  label: "settings.preferences.options.dark"  },
   ];
 
   private readonly tableViewOptions: Array<{ value: TableView; label: string }> = [
@@ -85,19 +73,13 @@ export class SettingsStaffDisplayComponent implements OnInit {
       {
         id: "language",
         label: "settings.preferences.language",
-        selectedValue: this.settingsManager.getLanguage() ?? prefs.language,
+        selectedValue: prefs.language,
         options: this.languageOptions
-      },
-      {
-        id: "theme",
-        label: "settings.preferences.theme",
-        selectedValue: this.settingsManager.getTheme() ?? prefs.theme,
-        options: this.themeOptions
       },
       {
         id: "defaultTableView",
         label: "settings.preferences.defaultTableView",
-        selectedValue: this.settingsManager.getDefaultTableView() ?? prefs.defaultTableView,
+        selectedValue: prefs.defaultTableView,
         options: this.tableViewOptions
       }
     ]);
@@ -114,7 +96,6 @@ export class SettingsStaffDisplayComponent implements OnInit {
       staffId: this.staffId,
       organizationId: this.organizationId,
       language: this.selectedValue<Language>("language"),
-      theme: this.selectedValue<Theme>("theme"),
       defaultTableView: this.selectedValue<TableView>("defaultTableView"),
       code: this.staff.code()!
     };
@@ -156,36 +137,24 @@ export class SettingsStaffDisplayComponent implements OnInit {
     this.staffPreferencesService.update(payload).pipe(
       finalize(() => this.loading.set(false))
     ).subscribe({
-      next: (response: StaffPreferences) => {
-        this.staffPreferencesService.getById(this.staffId).subscribe({
-          next: (staffPreferences: StaffPreferences) => {
-            console.log('response: ', staffPreferences)
-            this.settingsManager.setUpStaffSettings(staffPreferences);
-            this.translationService.applyConfiguredLanguage();
-            this.snackbarSettings.success(
-              this.translationService.getTranslationForKey('shared.successfully')
-            );
+      next: () => {
+        const updatedPreferences: StaffPreferences = {
+          staffId: payload.staffId,
+          organizationId: payload.organizationId,
+          language: payload.language,
+          defaultTableView: payload.defaultTableView,
+        };
 
-          },
-          error: (error: HttpErrorResponse) => {
-            this.snackbarSettings.error(error.error.message)
-          }
-        })
+        this.settingsManager.setUpStaffSettings(updatedPreferences);
+        this.translationService.applyConfiguredLanguage();
+        this.snackbarSettings.success(
+          this.translationService.getTranslationForKey('shared.successfully')
+        );
       },
       error: (error: HttpErrorResponse) => {
         this.snackbarSettings.error(error.error.message)
       }
     })
 
-    // const maybeAny = this.settingsManager as any;
-
-    // if (typeof maybeAny.updateStaffPreferences === "function") {
-    //   maybeAny.updateStaffPreferences(payload);
-    // } else {
-    //   maybeAny.setLanguage?.(payload.language);
-    //   maybeAny.setTheme?.(payload.theme);
-    //   maybeAny.setDefaultTableView?.(payload.defaultTableView);
-    //   maybeAny.setStaffPreferences?.(payload);
-    // }
   }
 }

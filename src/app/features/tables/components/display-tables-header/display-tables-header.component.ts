@@ -4,14 +4,13 @@ import { SearchBarComponent } from "../../../../core/ui/search-bar/search-bar.co
 import { MatIconModule } from "@angular/material/icon";
 import { TranslateModule } from "@ngx-translate/core";
 import { TableStateService } from "../../../../core/services/utility/table-state.service";
-import { ButtonComponent } from "../../../../core/ui/button/button.component";
 import { Router } from "@angular/router";
 import { PermissionService } from "../../../../core/services/auth/permission.service";
 
 
 @Component({
     selector: 'tables-header',
-    imports: [CommonModule, SearchBarComponent, MatIconModule, TranslateModule, ButtonComponent],
+    imports: [CommonModule, SearchBarComponent, MatIconModule, TranslateModule],
     templateUrl: 'display-tables-header.component.html',
     styleUrls: ['display-tables-header.component.scss']
 })

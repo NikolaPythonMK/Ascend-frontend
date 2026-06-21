@@ -102,6 +102,12 @@ export class TaxDetailsPage {
   getReasonControl(): AbstractControl {
     return this.taxForm.get('reason')!;
   }
+
+  onBack(): void {
+    this.router.navigate(['/settings'], {
+      queryParams: { section: 'taxes' },
+    });
+  }
   
   onDelete(): void {
     const dialogRef = this.dialog.open(ConfirmationDialog);
@@ -112,7 +118,7 @@ export class TaxDetailsPage {
     this.taxService.delete(this.id()).subscribe({
       next: (id: number) => {
         this.snackbarService.success(`${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.deleted")}`);
-        this.router.navigate(['/settings']);
+        this.onBack();
       },
       error: (error: HttpErrorResponse) => {
         this.snackbarService.error(error.message);

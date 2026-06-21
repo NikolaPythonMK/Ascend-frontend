@@ -289,7 +289,11 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     this.keyEventSubject.stop();
     const dialogRef = this.quantityDialog.open(ProductQuantityComponent, {
       width: '400px',
-      data: { id: item.id, title: item.productName },
+      data: {
+        id: item.id,
+        title: item.productName,
+        canDelete: this.settingsManager.canRemoveTableItems(),
+      },
     });
     dialogRef
       .afterClosed()
@@ -334,6 +338,10 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
               },
             });
         } else if (result.operation === 'DELETE') {
+          if (!this.canRemoveTableItemValidation()) {
+            return;
+          }
+
           this.dialogLoading.set(true);
           this.tableItemsService
             .delete(item.id)
@@ -672,6 +680,19 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
       return false;
     }
     return true;
+  }
+
+  canRemoveTableItemValidation(): boolean {
+    if (this.settingsManager.canRemoveTableItems()) {
+      return true;
+    }
+
+    this.snackbarService.error(
+      this.translationService.getTranslationForKey(
+        'tables.errors.remove-items-disabled'
+      )
+    );
+    return false;
   }
 }
 

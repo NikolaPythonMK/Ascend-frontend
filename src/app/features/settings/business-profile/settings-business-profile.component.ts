@@ -9,12 +9,15 @@ import { LoaderComponent } from "../../../core/ui/loader/loader.component";
 import { ButtonComponent } from "../../../core/ui/button/button.component";
 
 import { Currency } from "../../../core/models/enums/currency.enum";
-import { Language } from "../../../core/models/enums/language.enum";
 import { SettingsManagerService } from "../../../core/services/utility/settings-manager.service";
 import { BusinessProfile } from "../../../core/models/api/responses/business-profile.model";
 import { BusinessProfileRequest } from "../../../core/models/api/requests/business-profile.request";
 import { EmployeeStore } from "../../../core/store/employee.store";
 import { BusinessProfileService } from "../../../core/services/api/business-profile.service";
+import { HttpErrorResponse } from "@angular/common/http";
+import { finalize } from "rxjs";
+import { SnackbarService } from "../../../core/services/utility/snackbar.service";
+import TranslationService from "../../../core/services/utility/translation.service";
 
 @Component({
   selector: "settings-business-profile",
@@ -37,6 +40,8 @@ export class SettingsBusinessProfileComponent implements OnInit {
   private readonly settingsManager = inject(SettingsManagerService);
   private readonly employee = inject(EmployeeStore);
   private readonly businessProfileService = inject(BusinessProfileService);
+  private readonly snackbarService = inject(SnackbarService);
+  private readonly translationService = inject(TranslationService);
   
 
   loading = signal<boolean>(false);
@@ -48,11 +53,12 @@ export class SettingsBusinessProfileComponent implements OnInit {
     { value: Currency.MKD, label: "settings.businessProfile.currencies.mkd" },
   ];
 
-  languages = [
-    { value: Language.Default, label: "settings.preferences.options.systemDefault" },
-    { value: Language.En,      label: "settings.preferences.options.english" },
-    { value: Language.Mk,      label: "settings.preferences.options.macedonian" },
-  ];
+  // Receipt language is currently not used by the application.
+  // languages = [
+  //   { value: Language.Default, label: "settings.preferences.options.systemDefault" },
+  //   { value: Language.En,      label: "settings.preferences.options.english" },
+  //   { value: Language.Mk,      label: "settings.preferences.options.macedonian" },
+  // ];
 
   profileForm = this.fb.group({
     organizationId: [{ value: 0, disabled: true }], // read-only
@@ -66,7 +72,7 @@ export class SettingsBusinessProfileComponent implements OnInit {
     email: ['', [Validators.required, Validators.email]],
 
     currency: [Currency.USD, Validators.required],
-    receiptLanguage: [Language.En, Validators.required],
+    // receiptLanguage: [Language.En, Validators.required],
   });
 
   ngOnInit(): void {
@@ -88,33 +94,53 @@ export class SettingsBusinessProfileComponent implements OnInit {
       phoneNumber: profile.phoneNumber,
       email: profile.email,
       currency: profile.currency,
-      receiptLanguage: profile.receiptLanguage,
+      // receiptLanguage: profile.receiptLanguage,
     });
   }
 
   onUpdate(): void {
-    if (this.profileForm.invalid) return;
+    if (this.profileForm.invalid || !this.loadedProfile) {
+      this.profileForm.markAllAsTouched();
+      return;
+    }
 
     this.loading.set(true);
 
-    // Build payload (organizationId is disabled in the form, so pull from loadedProfile)
     const payload: BusinessProfileRequest = {
-      organizationId: this.loadedProfile?.organizationId ?? 0,
+      organizationId: this.loadedProfile.organizationId,
       legalName: this.profileForm.get('legalName')!.value!,
       taxId: this.profileForm.get('taxId')!.value?.trim() || null,
       phoneNumber: this.profileForm.get('phoneNumber')!.value!,
       email: this.profileForm.get('email')!.value!,
       currency: this.profileForm.get('currency')!.value as Currency,
-      receiptLanguage: this.profileForm.get('receiptLanguage')!.value as Language,
+      // receiptLanguage: this.profileForm.get('receiptLanguage')!.value as Language,
       code: this.employee.code()!
     };
 
-    // If you have a real update method, call it here:
-    // this.settingsManager.updateBusinessProfile(payload)
-    //   .pipe(finalize(() => this.loading.set(false)))
-    //   .subscribe({ next: () => {/* success feedback */}, error: () => {/* error feedback */} });
+    this.businessProfileService.update(payload)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: () => {
+          const updatedProfile: BusinessProfile = {
+            organizationId: payload.organizationId,
+            legalName: payload.legalName,
+            taxId: payload.taxId,
+            phoneNumber: payload.phoneNumber,
+            email: payload.email,
+            currency: payload.currency,
+            // receiptLanguage: payload.receiptLanguage,
+          };
 
-    console.log('BusinessProfile payload', payload);
-    this.loading.set(false);
+          this.loadedProfile = updatedProfile;
+          this.settingsManager.businessProfile.set(updatedProfile);
+          this.profileForm.markAsPristine();
+          this.snackbarService.success(
+            this.translationService.getTranslationForKey('shared.successfully')
+          );
+        },
+        error: (error: HttpErrorResponse) => {
+          this.snackbarService.error(error.error?.message ?? error.message);
+        }
+      });
   }
 }

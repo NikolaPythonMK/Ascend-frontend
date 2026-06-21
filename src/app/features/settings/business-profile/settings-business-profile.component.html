@@ -31,10 +31,10 @@
         <input matInput type="email" formControlName="email" />
       </mat-form-field>
 
-      <!-- Primary Currency & Receipt Language -->
-      <div class="row two-col">
+      <!-- Primary Currency -->
+      <div class="row">
 <!-- Currency -->
-<mat-form-field appearance="outline" class="half-width">
+<mat-form-field appearance="outline" class="full-width">
   <mat-label>{{ 'settings.businessProfile.currency' | translate }}</mat-label>
   <mat-select formControlName="currency">
     @for (c of currencies; track c.value) {
@@ -43,7 +43,9 @@
   </mat-select>
 </mat-form-field>
 
-<!-- Receipt Language -->
+<!--
+Receipt language is currently not used by the application.
+
 <mat-form-field appearance="outline" class="half-width">
   <mat-label>{{ 'settings.businessProfile.receiptLanguage' | translate }}</mat-label>
   <mat-select formControlName="receiptLanguage">
@@ -52,6 +54,7 @@
     }
   </mat-select>
 </mat-form-field>
+-->
 
       </div>
 

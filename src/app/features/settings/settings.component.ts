@@ -7,6 +7,7 @@ import { SettingsBusinessProfileComponent } from "./business-profile/settings-bu
 import { SettingsOrganizationDisplayComponent } from "./organization-display/settings-organization-display.component";
 import { SettingsStaffDisplayComponent } from "./settings-staff-preferences/settings-staff-preferences.component";
 import { PermissionService } from '../../core/services/auth/permission.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-site-settings',
@@ -16,11 +17,17 @@ import { PermissionService } from '../../core/services/auth/permission.service';
 })
 export class SettingsPage {
   private readonly authz = inject(PermissionService);
+  private readonly route = inject(ActivatedRoute);
   canViewTaxes = computed(() => this.authz.has({ name: '/api/tax/all', method: 'POST' }));
   canViewDiscounts = computed(() => this.authz.has({ name: '/api/discount/all', method: 'POST' }))
+  canViewOrganizationSettings = this.authz.isAdmin;
 
   ngOnInit(): void {
     console.log('INIT SETTINGS COMPONENT');
+    const requestedSection = this.route.snapshot.queryParamMap.get('section');
+    if (requestedSection) {
+      this.activeItem.set(requestedSection);
+    }
   }
 
   menuItems = [
@@ -37,7 +44,11 @@ export class SettingsPage {
     const canDiscounts = this.canViewDiscounts();
     return this.menuItems.filter(item =>
       (item.id !== 'taxes' || canTaxes) &&
-      (item.id !== 'discounts' || canDiscounts)
+      (item.id !== 'discounts' || canDiscounts) &&
+      (
+        !['businessProfile', 'organizationDisplay'].includes(item.id) ||
+        this.canViewOrganizationSettings()
+      )
     );
   });
 

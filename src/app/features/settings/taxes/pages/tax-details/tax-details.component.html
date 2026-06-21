@@ -1,6 +1,15 @@
 <ascend-loader [loading]="loading()" />
 <div class="content page-padding">
   <div class="header">
+    <button
+      type="button"
+      mat-button
+      class="back-button"
+      (click)="onBack()"
+    >
+      <mat-icon>arrow_back</mat-icon>
+      {{ 'shared.back' | translate }}
+    </button>
     <h2 class="title">{{ 'settings.taxes.tax-details' | translate }}</h2>
   </div>
   <div class="body">

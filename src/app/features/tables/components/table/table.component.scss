@@ -277,6 +277,36 @@ tbody tr:last-child td {
   flex: 1;
   // height: 30%;
 
+  .price-container {
+    position: relative;
+  }
+
+  .calculated-tax {
+    position: absolute;
+    top: 0;
+    right: 1.5rem;
+    z-index: 2;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid rgba(137, 172, 70, 0.4);
+    border-radius: 999px;
+    background-color: #f5faed;
+    box-shadow: 0 2px 6px rgba(32, 38, 71, 0.1);
+    color: vars.$primary-font-color;
+    font-size: 0.8rem;
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
+
+    span:last-child {
+      color: #6f9133;
+      font-weight: 700;
+    }
+  }
+
   .calculated-prices {
     width: 100%;
     div {

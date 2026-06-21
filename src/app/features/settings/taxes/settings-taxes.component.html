@@ -7,6 +7,9 @@
       [title]="'settings.taxes.taxes' | translate"
       (addEvent)="onAdd()"
       (clickedRowEvent)="onUpdate($event)"
+      (searchEvent)="onSearch($event)"
+      (sortEvent)="onSort($event)"
+      [nonSortableColumns]="nonSortableColumns()"
       [hasAddBtn]="canCreate()"
     />
     @if (taxes().length == 0) {

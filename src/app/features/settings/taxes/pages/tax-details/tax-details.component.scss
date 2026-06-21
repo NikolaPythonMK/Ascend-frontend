@@ -7,7 +7,14 @@
 }
 
 .header {
-    padding-bottom: 2em;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 2em;
+}
+
+.back-button {
+  color: vars.$primary-font-color;
 }
 
 .body {

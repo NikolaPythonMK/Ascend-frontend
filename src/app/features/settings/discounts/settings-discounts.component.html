@@ -7,6 +7,9 @@
       [title]="'settings.discounts.discounts' | translate"
       (addEvent)="onAdd()"
       (clickedRowEvent)="onUpdate($event)"
+      (searchEvent)="onSearch($event)"
+      (sortEvent)="onSort($event)"
+      [nonSortableColumns]="nonSortableColumns()"
       [hasAddBtn]="canCreate()"
     />
     @if (discounts().length == 0) {

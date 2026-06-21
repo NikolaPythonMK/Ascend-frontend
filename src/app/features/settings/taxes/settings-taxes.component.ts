@@ -5,7 +5,7 @@ import { TableStateService } from "../../../core/services/utility/table-state.se
 import { TableComponent } from "../../../core/ui/table/table.component";
 import { MatDialog } from "@angular/material/dialog";
 import { TaxDialog } from "../dialogs/tax-dialog/tax-dialog.component";
-import { Data, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { TaxService } from "../../../core/services/api/tax.service";
 import { finalize } from "rxjs";
 import { Page } from "../../../core/models/api/page.model";
@@ -15,10 +15,12 @@ import { LoaderComponent } from "../../../core/ui/loader/loader.component";
 import { DataRow } from "../../../core/ui/table/models/data-row";
 import { TranslateModule } from "@ngx-translate/core";
 import { PermissionService } from "../../../core/services/auth/permission.service";
+import { Sort } from "../../../core/ui/table/models/sort.model";
 
 @Component({
     selector: 'settings-taxes',
     imports: [MatTabsModule, TableComponent, LoaderComponent, TranslateModule],
+    providers: [TableStateService],
     templateUrl: 'settings-taxes.component.html',
     styleUrls: ['settings-taxes.component.scss']
 })
@@ -41,6 +43,7 @@ export class SettingsTaxesComponent implements OnInit {
     ]);
     colDisplayNames = computed(() => [...this.map.keys()]);
     nonSortableColumns = signal<string[]>([])
+    nonSearchableColumns = signal<string[]>(['settings.taxes.percentage'])
     loading = signal<boolean>(false);
 
     ngOnInit(): void {
@@ -61,6 +64,21 @@ export class SettingsTaxesComponent implements OnInit {
         this.router.navigate(['tax-details', id])
     }
 
+    onSearch(term: string): void {
+        this.tableState.setSearch(
+            term,
+            this.colDisplayNames(),
+            this.nonSearchableColumns(),
+            this.map
+        );
+        this.getTaxes();
+    }
+
+    onSort(sort: Sort | null): void {
+        this.tableState.setSort(sort, this.map);
+        this.getTaxes();
+    }
+
 
     private mapToRows(taxes: Tax[]): DataRow[] {
         return taxes.map((i, index) => {
@@ -77,7 +95,7 @@ export class SettingsTaxesComponent implements OnInit {
     private getTaxes(): void {
         this.loading.set(true);
 
-        this.taxService.getAll().pipe(
+        this.taxService.getAll(this.searchTerm(), this.sort()).pipe(
             finalize(() => this.loading.set(false))
         ).subscribe({
             next: (taxes: Page<Tax> | Tax[]) => {
