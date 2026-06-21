@@ -60,10 +60,17 @@ export class StaffUserDialog implements OnInit{
         this.data != null && this.data === this.employee.id()
     );
     canEditBasicDetails = computed(() =>
-        !this.data || this.isOwnProfile() || this.canUpdate()
+        !this.data
+        || this.isOwnProfile()
+        || (this.canUpdate() && (this.isAdmin() || !this.targetIsAdmin()))
     );
     canEditRoles = computed(() =>
-        !this.data || (this.canUpdate() && !this.isOwnProfile())
+        !this.data
+        || (
+            this.canUpdate()
+            && !this.isOwnProfile()
+            && (this.isAdmin() || !this.targetIsAdmin())
+        )
     );
 
     canDelete = computed(() =>
@@ -140,6 +147,7 @@ export class StaffUserDialog implements OnInit{
                             ?? false
                         );
                         this.getSelectedRolesControl().setValue(user.staffUserRoles?.map(i => i.id))
+                        this.configureRolesControl();
                         this.loading.set(false);
                     },
                     error: (error: HttpErrorResponse) => {
@@ -150,7 +158,7 @@ export class StaffUserDialog implements OnInit{
     }
 
     onSubmit(): void {
-        if (this.staffUser.invalid) {
+        if (!this.canEditBasicDetails() || this.staffUser.invalid) {
             return;
         }
     
