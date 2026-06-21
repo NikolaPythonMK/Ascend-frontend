@@ -5,27 +5,29 @@
 <form [formGroup]="staffUser" (ngSubmit)="onSubmit()" class="dialog-form">
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>{{ 'staff.personal.name' | translate }}</mat-label>
-    <input matInput formControlName="name" required [readonly]="data != null && canUpdate() === false" />
+    <input matInput formControlName="name" required [readonly]="!canEditBasicDetails()" />
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>{{ 'staff.personal.lastname' | translate }}</mat-label>
-    <input matInput formControlName="lastName" [readonly]="data != null && canUpdate() === false"  />
+    <input matInput formControlName="lastName" [readonly]="!canEditBasicDetails()" />
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>{{ 'staff.personal.phonenumber' | translate }}</mat-label>
-    <input matInput formControlName="phoneNumber" [readonly]="data != null && canUpdate() === false" />
+    <input matInput formControlName="phoneNumber" [readonly]="!canEditBasicDetails()" />
   </mat-form-field>
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>{{ 'staff.personal.code' | translate }}</mat-label>
-    <input matInput formControlName="code" required [readonly]="data != null && canUpdate() === false" />
-  </mat-form-field>
+  @if (showCodeInput()) {
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'staff.personal.code' | translate }}</mat-label>
+      <input matInput formControlName="code" required />
+    </mat-form-field>
+  }
 
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>{{ 'staff.personal.roles' | translate }}</mat-label>
-    <mat-select formControlName="selectedRoles" multiple [disabled]="data != null && canUpdate() === false">
+    <mat-select formControlName="selectedRoles" multiple>
       <mat-select-trigger>
         {{ getSelectedRolesControl().value ? getRoleName(getSelectedRolesControl().value[0]) : '' }}
         @if ((getSelectedRolesControl().value?.length || 0) > 1) {
@@ -36,7 +38,11 @@
         }
       </mat-select-trigger>
       @for (role of roles(); track role.id) {
-        <mat-option [value]="role.id">{{ role.name }}</mat-option>
+        <mat-option
+          [value]="role.id"
+          [disabled]="!isAdmin() && isAdminRole(role)">
+          {{ role.name }}
+        </mat-option>
       }
     </mat-select>
   </mat-form-field>
@@ -46,7 +52,7 @@
       <mat-icon class="trash-btn" (click)="onDelete()">delete</mat-icon>
     }
     <button mat-button type="button" (click)="dialogRef.close()">{{ 'shared.cancel' | translate }}</button>
-    @if (!data || canUpdate()){
+    @if (canEditBasicDetails()){
       <ascend-button type="primary" [label]="submitBtnlabel()" [disabled]="staffUser.invalid" />
     }    
   </div>

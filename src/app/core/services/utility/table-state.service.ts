@@ -21,14 +21,18 @@ TableStateService {
     }
     
       setSearch(term: string, colDisplayNames: string[], nonSearchableColumns: string[], map: Map<string, string>) {
-        const searchTerm = colDisplayNames
+        const propName = colDisplayNames
           .filter(i => !nonSearchableColumns.includes(i))
-          .map(i => ({
-            propName: map.get(i)!.charAt(0).toUpperCase() + map.get(i)!.slice(1),
-            searchValue: term
-          }));
-    
-        this.searchTerm.set(searchTerm);
+          .map(i => map.get(i))
+          .filter((property): property is string => property != null)
+          .map(property => property.charAt(0).toUpperCase() + property.slice(1))
+          .join(';');
+
+        this.searchTerm.set(
+          propName
+            ? [{ propName, searchValue: term }]
+            : []
+        );
       }
 
 }

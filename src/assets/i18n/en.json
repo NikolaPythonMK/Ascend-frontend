@@ -82,6 +82,10 @@
     "code": {
         "missing": "Discount code is required"
     },
+    "staffuser": {
+        "exists": "A staff member with this code already exists",
+        "admin-role-admin-only": "Only an admin can assign or remove the Admin role"
+    },
     "discount": {
         "not-found": "Discount not found"
     },

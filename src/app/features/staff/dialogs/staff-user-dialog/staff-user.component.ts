@@ -22,6 +22,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import TranslationService from "../../../../core/services/utility/translation.service";
 import { PermissionService } from "../../../../core/services/auth/permission.service";
 import { LookupModel } from "../../../../core/models/api/responses/lookup-model";
+import { EmployeeStore } from "../../../../core/store/employee.store";
 
 @Component({
     imports: [MatFormFieldModule, 
@@ -48,10 +49,21 @@ export class StaffUserDialog implements OnInit{
     readonly snackbarService = inject(SnackbarService);
     readonly data = inject<number>(MAT_DIALOG_DATA);
     readonly translationService = inject(TranslationService);
+    private readonly employee = inject(EmployeeStore);
     private authz = inject(PermissionService);
     
     canUpdate = computed(() =>
             this.authz.has({ name: '/api/staffuser/update', method: 'PUT' })
+    );
+    isAdmin = this.authz.isAdmin;
+    isOwnProfile = computed(() =>
+        this.data != null && this.data === this.employee.id()
+    );
+    canEditBasicDetails = computed(() =>
+        !this.data || this.isOwnProfile() || this.canUpdate()
+    );
+    canEditRoles = computed(() =>
+        !this.data || (this.canUpdate() && !this.isOwnProfile())
     );
 
     canDelete = computed(() =>
@@ -62,10 +74,11 @@ export class StaffUserDialog implements OnInit{
     title = signal<string>(this.translationService.getTranslationForKey("staff.personal.add-staff"));
     submitBtnlabel = signal<string>(this.translationService.getTranslationForKey("shared.add"));
     loading = signal<boolean>(false);
+    showCodeInput = signal<boolean>(!this.data);
 
     staffUser = this.fb.group({
         name: ['', Validators.required],
-        code: ['', Validators.required],
+        code: [''],
         lastName: '',
         phoneNumber: '',
         selectedRoles: []
@@ -92,6 +105,9 @@ export class StaffUserDialog implements OnInit{
     }
 
     ngOnInit(): void {
+        this.configureCodeControl(this.showCodeInput());
+        this.configureRolesControl();
+
         this.rolesService.lookUp().subscribe((result: LookupModel[]) => {
             this.roles.set(result);
         })
@@ -103,7 +119,15 @@ export class StaffUserDialog implements OnInit{
                 this.staffService.getById(this.data).subscribe({
                     next: (user: StaffUser) => {
                         this.getNameControl().setValue(user.name);
-                        this.getCodeControl().setValue(user.code);
+                        const hasVisibleCode =
+                            this.isAdmin() &&
+                            !this.isOwnProfile() &&
+                            user.code != null;
+                        this.showCodeInput.set(hasVisibleCode);
+                        this.configureCodeControl(hasVisibleCode);
+                        if (hasVisibleCode) {
+                            this.getCodeControl().setValue(user.code);
+                        }
                         this.getLastNameControl().setValue(user.lastName);
                         this.getPhoneNumberControl().setValue(user.phoneNumber);
                         this.getSelectedRolesControl().setValue(user.staffUserRoles?.map(i => i.id))
@@ -126,9 +150,15 @@ export class StaffUserDialog implements OnInit{
             name: this.getNameControl().value,
             lastName: this.getLastNameControl().value,
             phoneNumber: this.getPhoneNumberControl().value,
-            code: this.getCodeControl().value,
-            staffUserRoles: this.getSelectedRolesControl().value
         };
+
+        if (this.showCodeInput()) {
+            request.code = this.getCodeControl().value;
+        }
+
+        if (this.canEditRoles()) {
+            request.staffUserRoles = this.getSelectedRolesControl().value;
+        }
     
         const action$ = this.data 
             ? this.staffService.update(request)  // Update if data exists
@@ -136,12 +166,23 @@ export class StaffUserDialog implements OnInit{
     
         action$.subscribe({
             next: (staffUser: StaffUser) => {
+                if (this.isOwnProfile()) {
+                    this.employee.updatePersonalDetails({
+                        name: request.name,
+                        lastName: request.lastName,
+                        phoneNumber: request.phoneNumber,
+                    });
+                }
                 this.snackbarService.success(`${this.translationService.getTranslationForKey("shared.succesfully")} ${this.translationService.getTranslationForKey("shared.added")}`);
                 this.dialogRef.close(staffUser);
             },
             error: (error: HttpErrorResponse) => {
-                this.snackbarService.error(error.message);
-                this.dialogRef.close();
+                const detail = error.error?.detail;
+                this.snackbarService.error(
+                    detail
+                        ? this.translationService.getTranslationForKey(detail)
+                        : error.message
+                );
             }
         });
     }
@@ -168,5 +209,29 @@ export class StaffUserDialog implements OnInit{
 
     getRoleName(id: number): string {
         return this.roles().find(i => i.id === id)?.name ?? '';
-    }    
+    }
+
+    isAdminRole(role: LookupModel): boolean {
+        return role.name.trim().toLowerCase() === 'admin';
+    }
+
+    private configureCodeControl(required: boolean): void {
+        const codeControl = this.getCodeControl();
+        if (required) {
+            codeControl.setValidators(Validators.required);
+        } else {
+            codeControl.clearValidators();
+            codeControl.setValue('');
+        }
+        codeControl.updateValueAndValidity();
+    }
+
+    private configureRolesControl(): void {
+        const rolesControl = this.getSelectedRolesControl();
+        if (this.canEditRoles()) {
+            rolesControl.enable();
+        } else {
+            rolesControl.disable();
+        }
+    }
 }

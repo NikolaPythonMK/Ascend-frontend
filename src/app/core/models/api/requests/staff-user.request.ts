@@ -3,6 +3,6 @@ export interface StaffUserRequest {
     name: string,
     lastName?: string,
     phoneNumber?: string,
-    code: string,
-    staffUserRoles: number[]
+    code?: string,
+    staffUserRoles?: number[]
 }

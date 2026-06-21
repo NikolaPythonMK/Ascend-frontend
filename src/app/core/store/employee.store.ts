@@ -49,6 +49,13 @@ export const EmployeeStore = signalStore(
                 console.log(employee);
                 patchState(store, employee);
             },
+            updatePersonalDetails(details: {
+                name: string;
+                lastName?: string | null;
+                phoneNumber?: string | null;
+            }) {
+                patchState(store, details);
+            },
             hasEmployee(): StaffUser | null {
                 if (!store.id()){
                     return null;
