@@ -23,7 +23,7 @@
       <!-- Contact Data -->
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>{{ 'settings.businessProfile.phone' | translate }}</mat-label>
-        <input matInput formControlName="phoneNumber" />
+        <input matInput formControlName="phoneNumber" inputmode="numeric" pattern="[0-9]*" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">

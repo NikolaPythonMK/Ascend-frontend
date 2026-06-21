@@ -18,8 +18,8 @@
         <td></td>
         <td>{{ item.productName }}</td>
         <td>{{ item.quantity }}</td>
-        <td>{{ item.product.price }}</td>
-        <td>{{ item.totalGrossPrice }}</td>
+        <td>{{ settingsManager.formatCurrency(item.product.price) }}</td>
+        <td>{{ settingsManager.formatCurrency(item.totalGrossPrice) }}</td>
         <td><mat-icon>delete</mat-icon></td>
       </tr>
       }

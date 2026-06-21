@@ -47,7 +47,6 @@ import { AnalyticsRevenueService } from '../../core/services/api/analytics-reven
 import { LocationService } from '../../core/services/api/locations.service';
 import { SettingsManagerService } from '../../core/services/utility/settings-manager.service';
 import { Location } from '../../core/models/api/responses/location.model';
-import { Currency } from '../../core/models/enums/currency.enum';
 import TranslationService from '../../core/services/utility/translation.service';
 
 Chart.register(...registerables);
@@ -229,17 +228,6 @@ export class AnalyticsRevenueComponent
     }
     return filters.locationId ? `location:${filters.locationId}` : 'current';
   });
-  readonly currencyCode = computed(() => {
-    switch (this.settingsManager.businessProfile()?.currency) {
-      case Currency.EUR:
-        return 'EUR';
-      case Currency.MKD:
-        return 'MKD';
-      case Currency.USD:
-      default:
-        return 'USD';
-    }
-  });
   readonly pageNumber = computed(
     () => (this.recentTransactions()?.page ?? this.filters().page) + 1
   );
@@ -369,11 +357,7 @@ export class AnalyticsRevenueComponent
   }
 
   formatMoney(value: number | null | undefined): string {
-    return new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency: this.currencyCode(),
-      maximumFractionDigits: 2,
-    }).format(value ?? 0);
+    return this.settingsManager.formatCurrency(value);
   }
 
   formatGrowth(value: number | null): string {

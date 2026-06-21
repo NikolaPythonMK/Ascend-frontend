@@ -22,7 +22,7 @@
                 </div>
                 <div class="grid-row row-status">
                     <span class="status-occupied">{{ 'tables.status.status-occupied' | translate }}</span>
-                    <span>{{ table.totalGrossPrice }} MKD</span>
+                    <span>{{ settingsManager.formatCurrency(table.totalGrossPrice) }}</span>
                 </div>
                 <div class="grid-row">
                     <ul>

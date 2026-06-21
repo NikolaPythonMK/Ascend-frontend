@@ -16,7 +16,7 @@
                         {{ 'tables.status.' + row.status | translate }}
                     </span>
                 </td>
-                <td class="price">{{ row.totalGrossPrice }} MKD</td>
+                <td class="price">{{ settingsManager.formatCurrency(row.totalGrossPrice) }}</td>
                 <td>
                     <button class="primary-button">
                         {{ 'tables.receipt' | translate }}

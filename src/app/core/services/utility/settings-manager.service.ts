@@ -1,9 +1,10 @@
-import { Injectable, signal } from "@angular/core";
+import { computed, Injectable, signal } from "@angular/core";
 import { BusinessProfile } from "../../models/api/responses/business-profile.model";
 import { OrganizationPreferences } from "../../models/api/responses/organization-preferences.model";
 import { StaffPreferences } from "../../models/api/responses/staff-preferences.model";
 import { Language } from "../../models/enums/language.enum";
 import { TableView } from "../../models/enums/table-view.enum";
+import { Currency } from "../../models/enums/currency.enum";
 
 @Injectable({
     providedIn: 'root'
@@ -12,6 +13,17 @@ export class SettingsManagerService {
     public businessProfile = signal<BusinessProfile | null>(null);
     public organizationPreferences = signal<OrganizationPreferences | null>(null);
     public staffPreferences = signal<StaffPreferences | null>(null);
+    public readonly currencyCode = computed(() => {
+        switch (this.businessProfile()?.currency) {
+            case Currency.EUR:
+                return "EUR";
+            case Currency.MKD:
+                return "MKD";
+            case Currency.USD:
+            default:
+                return "USD";
+        }
+    });
 
     setUpOrganizationSettings(businessProfile: BusinessProfile,
                               organizationPreferences: OrganizationPreferences): void {
@@ -75,5 +87,27 @@ export class SettingsManagerService {
 
     displayStaffNameOnTables(): boolean {
         return this.organizationPreferences()!.displayStaffNameOnTables;
+    }
+
+    formatCurrency(value: number | null | undefined): string {
+        const amount = value ?? 0;
+        const locale = this.getLanguage() === Language.Mk ? "mk-MK" : "en-US";
+
+        if (this.currencyCode() === "MKD") {
+            const formattedAmount = new Intl.NumberFormat(locale, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            }).format(amount);
+
+            return `${formattedAmount} MKD`;
+        }
+
+        return new Intl.NumberFormat(locale, {
+            style: "currency",
+            currency: this.currencyCode(),
+            currencyDisplay: "narrowSymbol",
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(amount);
     }
 }

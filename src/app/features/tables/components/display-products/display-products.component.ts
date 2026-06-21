@@ -7,6 +7,7 @@ import { Product } from "../../../../core/models/api/responses/product.model";
 import { KeyEventEmitter } from "../table/services/key-event-emitter.service";
 import { Subject, takeUntil } from "rxjs";
 import { TranslateModule } from "@ngx-translate/core";
+import { SettingsManagerService } from "../../../../core/services/utility/settings-manager.service";
 
 
 @Component({
@@ -18,6 +19,7 @@ import { TranslateModule } from "@ngx-translate/core";
 export class DisplayProductsComponent implements OnInit{
     readonly productsService = inject(ProductsService);
     readonly categoriesService = inject(CategoriesService);
+    readonly settingsManager = inject(SettingsManagerService);
     _products = signal<Product[]>([]);
     @Input()
     set products(products: Product[]) {

@@ -1,8 +1,9 @@
-import { Component, input } from "@angular/core";
+import { Component, inject, input } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
 import { CommonModule } from "@angular/common";
 import type { TableItem } from "../../../../core/models/api/responses/table-item.model";
 import { TranslateModule } from "@ngx-translate/core";
+import { SettingsManagerService } from "../../../../core/services/utility/settings-manager.service";
 
 @Component({
     selector: 'tables-order-items',
@@ -11,6 +12,7 @@ import { TranslateModule } from "@ngx-translate/core";
     styleUrls: ['ordered-items.component.scss']
 })
 export class OrderedItemsComponent {
-tableItems = input.required<TableItem[]>();
+    readonly settingsManager = inject(SettingsManagerService);
+    tableItems = input.required<TableItem[]>();
 
 }

@@ -96,7 +96,7 @@
           >
             <td>{{ item.productName }}</td>
             <td>{{ item.quantity }}</td>
-            <td>{{ item.totalGrossPrice }}</td>
+            <td>{{ settingsManager.formatCurrency(item.totalGrossPrice) }}</td>
           </tr>
 
           @if (item.note !== null && item.note !== '') {
@@ -123,31 +123,17 @@
             </span>
           </div>
           <div class="total-amount">
-            <span class="total-price"
-              >{{ this.totalGrossPrice() }} <span class="type">MKD</span></span
-            >
+            <span class="total-price">
+              {{ settingsManager.formatCurrency(totalGrossPrice()) }}
+            </span>
           </div>
         </div>
         @if (settingsManager.displayTaxAmount()) {
           <div class="calculated-tax">
             <span>{{ 'analytics.table.tax' | translate }}:</span>
-            <span>{{ totalTaxAmount() }}</span>
+            <span>{{ settingsManager.formatCurrency(totalTaxAmount()) }}</span>
           </div>
         }
-        <!-- <div class="calculated-prices">
-          <div class="calculated-tax">
-            <span>Tax:</span>
-            <span>12.5$</span>
-          </div>
-          <div class="calculated-discount">
-            <span>Discounts:</span>
-            <span>0.00$</span>
-          </div>
-          <div class="calculated-net">
-            <span>Net:</span>
-            <span>112.5$</span>
-          </div>
-        </div> -->
       </div>
       <div class="footer-middle-part">
         @if (settingsManager.displayStaffNameOnTables()) {

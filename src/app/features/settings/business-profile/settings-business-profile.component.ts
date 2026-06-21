@@ -66,8 +66,7 @@ export class SettingsBusinessProfileComponent implements OnInit {
     taxId: [''],
     phoneNumber: ['', [
       Validators.required,
-      // basic E.164-ish: + followed by 6-15 digits (adjust to your needs)
-      //Validators.pattern(/^\+?[1-9]\d{5,14}$/)
+      Validators.pattern(/^\d+$/),
     ]],
     email: ['', [Validators.required, Validators.email]],
 

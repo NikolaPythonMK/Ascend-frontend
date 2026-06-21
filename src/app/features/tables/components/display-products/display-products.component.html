@@ -8,7 +8,7 @@
         <span class="card-code">#{{ product.code }}</span>
       </div>
       <div class="middle">
-        <div class="price">{{ product.price }}$</div>
+        <div class="price">{{ settingsManager.formatCurrency(product.price) }}</div>
       </div>
       <div class="footer">
         <div class="card-category">Пијалоци</div>
@@ -51,8 +51,7 @@
         ><span>{{ product.code }}</span>
       </div>
       <div class="price">
-        <span class="price-amount">{{ product.price | number : '1.0-2' }}</span>
-        <span class="price-currency">MKD</span>
+        <span class="price-amount">{{ settingsManager.formatCurrency(product.price) }}</span>
       </div>
     </div>
     } }
