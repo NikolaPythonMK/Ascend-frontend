@@ -69,6 +69,10 @@ export class StaffUserDialog implements OnInit{
     canDelete = computed(() =>
             this.authz.has({ name: '/api/staffuser/delete', method: 'POST' })
     );
+    targetIsAdmin = signal<boolean>(false);
+    canDeleteTarget = computed(() =>
+        this.canDelete() && (this.isAdmin() || !this.targetIsAdmin())
+    );
 
     roles = signal<LookupModel[]>([])
     title = signal<string>(this.translationService.getTranslationForKey("staff.personal.add-staff"));
@@ -130,6 +134,11 @@ export class StaffUserDialog implements OnInit{
                         }
                         this.getLastNameControl().setValue(user.lastName);
                         this.getPhoneNumberControl().setValue(user.phoneNumber);
+                        this.targetIsAdmin.set(
+                            user.staffUserRoles?.some(role =>
+                                role.name?.trim().toLowerCase() === 'admin')
+                            ?? false
+                        );
                         this.getSelectedRolesControl().setValue(user.staffUserRoles?.map(i => i.id))
                         this.loading.set(false);
                     },
@@ -188,6 +197,10 @@ export class StaffUserDialog implements OnInit{
     }
 
     onDelete(): void {
+        if (!this.canDeleteTarget()) {
+            return;
+        }
+
         const dialogRef = this.dialog.open(ConfirmationDialog);
         dialogRef.afterClosed().subscribe((isConfirmed: boolean) => {
             if(!isConfirmed) {
@@ -199,8 +212,12 @@ export class StaffUserDialog implements OnInit{
                     this.dialogRef.close(result);
                 },
                 error: (error: HttpErrorResponse) => {
-                    this.snackbarService.error(error.message);
-                    this.dialogRef.close();
+                    const detail = error.error?.detail;
+                    this.snackbarService.error(
+                        detail
+                            ? this.translationService.getTranslationForKey(detail)
+                            : error.message
+                    );
                 } 
             })
         })

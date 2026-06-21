@@ -64,9 +64,9 @@ export class RolesComponent implements OnInit {
   readonly translationService = inject(TranslationService);
   private authz = inject(PermissionService);
 
-  canUpdateRole = computed(() => this.authz.has({ name: '/api/role/update', method: 'PUT' }));
-  canCreateRole = computed(() => this.authz.has({ name: '/api/role/create', method: 'POST' }));
-  canDeleteRole = computed(() => this.authz.has({ name: '/api/role/delete', method: 'POST' }));
+  canUpdateRole = this.authz.isAdmin;
+  canCreateRole = this.authz.isAdmin;
+  canDeleteRole = this.authz.isAdmin;
 
   toggleAddRole = signal<boolean>(false);
   roles = signal<Role[]>([]);
@@ -95,10 +95,13 @@ export class RolesComponent implements OnInit {
     return (role?.name ?? '').trim().toLowerCase() === 'admin';
   }
 
-  onAddRole(): void { this.toggleAddRole.set(!this.toggleAddRole()); }
+  onAddRole(): void {
+    if (!this.canCreateRole()) return;
+    this.toggleAddRole.set(!this.toggleAddRole());
+  }
 
   onSubmitRole(): void {
-    if (this.getNameControl().invalid) return;
+    if (!this.canCreateRole() || this.getNameControl().invalid) return;
     const addRoleRequest: RoleRequest = { name: this.getNameControl().value, rolePermissions: [] };
     this.rolesService.add(addRoleRequest).subscribe({
       next: () => {
@@ -111,7 +114,7 @@ export class RolesComponent implements OnInit {
   }
 
   onEditRole(role: Role): void {
-    if (this.isProtectedRole(role)) return;
+    if (!this.canUpdateRole() || this.isProtectedRole(role)) return;
 
     const currentRole = this.selectedRole()?.id === role.id ? this.selectedRole()! : role;
     const dialogRef = this.dialog.open(RolesDialog, {
@@ -146,6 +149,7 @@ export class RolesComponent implements OnInit {
   }
 
   onDelete(id: number): void {
+    if (!this.canDeleteRole()) return;
     const role = this.roles().find(r => r.id === id);
     if (this.isProtectedRole(role)) return;
 
@@ -222,7 +226,7 @@ isModifyIndeterminate(rowKey: string): boolean {
 }
 
 onModifyToggle(checked: boolean, rowKey: string): void {
-  if (this.selectedRoleProtected()) return;
+  if (!this.canUpdateRole() || this.selectedRoleProtected()) return;
 
   const c = this.getActionIds(rowKey, 'create');
   const u = this.getActionIds(rowKey, 'update');
@@ -455,7 +459,7 @@ isRowAllChecked(rowKey: string): boolean {
   // ---- UI events -------------------------------------------------------------
 
 onActionToggle(checked: boolean, rowKey: string, action: ActionKey): void {
-  if (this.selectedRoleProtected()) return;
+  if (!this.canUpdateRole() || this.selectedRoleProtected()) return;
 
   const ids = this.getActionIds(rowKey, action);
   if (!ids.length) return;
@@ -479,7 +483,7 @@ onActionToggle(checked: boolean, rowKey: string, action: ActionKey): void {
 
 
 onToggleRowAll(checked: boolean, row: RowModel): void {
-  if (this.selectedRoleProtected()) return;
+  if (!this.canUpdateRole() || this.selectedRoleProtected()) return;
 
   if (this.hasAction(row.key, 'view')) this.onActionToggle(checked, row.key, 'view');
   if (this.hasModify(row.key)) this.onModifyToggle(checked, row.key);
@@ -488,11 +492,12 @@ onToggleRowAll(checked: boolean, row: RowModel): void {
 }
 
   onReset(): void {
+    if (!this.canUpdateRole()) return;
     this.updatedPermissions.set([]);
   }
 
   onUpdatePermissions(): void {
-    if (this.selectedRoleProtected()) {
+    if (!this.canUpdateRole() || this.selectedRoleProtected()) {
       this.updatedPermissions.set([]);
       return;
     }

@@ -1,5 +1,5 @@
 <div class="wrapper">
-<div class="update-buttons floating" [class.visible]="updatedPermissions().length > 0 && !selectedRoleProtected()">
+<div class="update-buttons floating" [class.visible]="canUpdateRole() && updatedPermissions().length > 0 && !selectedRoleProtected()">
   <ascend-button type="secondary" [label]="'analytics.filters.reset' | translate" icon="undo" class="reset-btn" (clickEvent)="onReset()" />
   <ascend-button
     (clickEvent)="onUpdatePermissions()"

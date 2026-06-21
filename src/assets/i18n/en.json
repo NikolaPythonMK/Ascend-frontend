@@ -84,7 +84,8 @@
     },
     "staffuser": {
         "exists": "A staff member with this code already exists",
-        "admin-role-admin-only": "Only an admin can assign or remove the Admin role"
+        "admin-role-admin-only": "Only an admin can assign or remove the Admin role",
+        "admin-delete-admin-only": "Only an admin can delete an administrator account"
     },
     "discount": {
         "not-found": "Discount not found"
