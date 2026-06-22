@@ -92,6 +92,12 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly authz = inject(PermissionService);
 
   canUpdateRole = computed(() => this.authz.has({ name: '/api/table/update', method: 'PUT' }));
+  canApplyDiscount = computed(() =>
+    this.authz.has({ name: '/api/table/apply-discount', method: 'POST' })
+  );
+  canRemoveDiscount = computed(() =>
+    this.authz.has({ name: '/api/table/remove-discount', method: 'POST' })
+  );
 
   isTemporaryTable = signal<boolean>(false);
   productsLoading = signal<boolean>(false);
@@ -516,7 +522,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   applyDiscount(code: string): void {
-    if (!this.canEditTableValidation()) return;
+    if (!this.canApplyDiscount() || !this.canEditTableValidation()) return;
     this.tableItemsLoading.set(true);
 
     const request: ApplyDiscountRequest = {
@@ -542,7 +548,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   removeDiscount(code: string): void {
-    if (!this.canEditTableValidation()) return;
+    if (!this.canRemoveDiscount() || !this.canEditTableValidation()) return;
     this.tableItemsLoading.set(true);
 
     const request: ApplyDiscountRequest = {

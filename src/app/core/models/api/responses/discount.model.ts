@@ -5,9 +5,9 @@ export interface Discount {
     name?: string,
     code: string,
     value: number,
-    discountType: DiscountType,
-    startDate?: Date,
-    endDate?: Date,
-    startTime?: Date,
-    endTime?: Date
+    discountType: DiscountType | string,
+    startDate?: string | null,
+    endDate?: string | null,
+    minPurchase?: number | null,
+    isActive: boolean
 }

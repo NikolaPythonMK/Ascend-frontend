@@ -29,6 +29,31 @@ import { TranslateModule } from '@ngx-translate/core';
 import TranslationService from '../../../../../core/services/utility/translation.service';
 import { PermissionService } from '../../../../../core/services/auth/permission.service';
 
+export function formatTaxHistoryDateTime(
+  value: string | Date,
+  locale?: string,
+  timeZone?: string
+): string {
+  const normalizedValue =
+    typeof value === 'string' && !/(?:z|[+-]\d{2}:\d{2})$/i.test(value)
+      ? `${value}Z`
+      : value;
+  const date =
+    normalizedValue instanceof Date
+      ? normalizedValue
+      : new Date(normalizedValue);
+
+  if (Number.isNaN(date.getTime())) {
+    return typeof value === 'string' ? value : '';
+  }
+
+  return new Intl.DateTimeFormat(locale, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    ...(timeZone ? { timeZone } : {}),
+  }).format(date);
+}
+
 @Component({
   imports: [
     MatFormFieldModule,
@@ -59,12 +84,15 @@ export class TaxDetailsPage {
   private readonly authz = inject(PermissionService);
 
   canUpdate = computed(() => this.authz.has({ name: '/api/tax/update', method: 'PUT' }));
-  canDelete = computed(() => this.authz.has({ name: '/api/tax/delete', method: 'DELETE' }));
+  canDelete = computed(() => this.authz.has({ name: '/api/tax/delete', method: 'POST' }));
 
   id = signal<number>(0);
   taxForm = this.fb.group({
     name: ['', Validators.required],
-    percentage: [0, Validators.required],
+    percentage: [
+      0,
+      [Validators.required, Validators.min(0), Validators.max(100)]
+    ],
     reason: ['', Validators.required],
   });
   loading = signal<boolean>(false);
@@ -86,7 +114,12 @@ export class TaxDetailsPage {
         this.dataRows.set(this.mapToRows(tax.taxHistory));
       },
       error: (error: HttpErrorResponse) => {
-        this.snackbarService.error(error.message);
+        const detail = error.error?.detail;
+        this.snackbarService.error(
+          detail
+            ? this.translationService.getTranslationForKey(detail)
+            : error.message
+        );
       },
     });
   }
@@ -121,7 +154,12 @@ export class TaxDetailsPage {
         this.onBack();
       },
       error: (error: HttpErrorResponse) => {
-        this.snackbarService.error(error.message);
+        const detail = error.error?.detail;
+        this.snackbarService.error(
+          detail
+            ? this.translationService.getTranslationForKey(detail)
+            : error.message
+        );
       }
     })      
     })
@@ -171,7 +209,7 @@ export class TaxDetailsPage {
       id: index,
       properties: {
         percentage: i.percentage,
-        changedAt: i.changedAt,
+        changedAt: formatTaxHistoryDateTime(i.changedAt),
         changedBy: i.changedBy,
         reason: i.reason
       }

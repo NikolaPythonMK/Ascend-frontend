@@ -15,6 +15,7 @@ import { Discount } from "../../../core/models/api/responses/discount.model";
 import { DiscountDialog } from "../dialogs/discount-dialog/discount-dialog.component";
 import { PermissionService } from "../../../core/services/auth/permission.service";
 import { Sort } from "../../../core/ui/table/models/sort.model";
+import TranslationService from "../../../core/services/utility/translation.service";
 
 
 @Component({
@@ -30,6 +31,7 @@ export class SettingsDiscountsComponent implements OnInit {
     private readonly snackbar = inject(SnackbarService);
     private readonly dialog = inject(MatDialog);
     private readonly authz = inject(PermissionService);
+    private readonly translationService = inject(TranslationService);
 
     canCreate = computed(() => this.authz.has({ name: '/api/discount/create', method: 'POST' }));
     discounts = signal<Discount[]>([]);
@@ -43,8 +45,7 @@ export class SettingsDiscountsComponent implements OnInit {
         ['settings.discounts.value', 'value'],
         ['settings.discounts.startDate', 'startDate'],
         ['settings.discounts.endDate', 'endDate'],
-        ['settings.discounts.startTime', 'startTime'],
-        ['settings.discounts.endTime', 'endTime']
+        ['settings.discounts.isActive', 'isActive']
     ]);
     colDisplayNames = computed(() => [...this.map.keys()]);
     nonSortableColumns = signal<string[]>([])
@@ -53,8 +54,7 @@ export class SettingsDiscountsComponent implements OnInit {
         'settings.discounts.value',
         'settings.discounts.startDate',
         'settings.discounts.endDate',
-        'settings.discounts.startTime',
-        'settings.discounts.endTime'
+        'settings.discounts.isActive'
     ])
     loading = signal<boolean>(false);
 
@@ -96,22 +96,35 @@ export class SettingsDiscountsComponent implements OnInit {
     }
 
     private mapToRows(discounts: Discount[]): DataRow[] {
-        return discounts.map((i, index) => {
+        return discounts.map(i => {
             return {
                 id: i.id,
                 properties: {
                     name: i.name,
                     code: i.code,
-                    discountType: i.discountType,
+                    discountType: this.formatDiscountType(i.discountType),
                     value: i.value,
-                    startDate: i.startDate,
-                    endDate: i.endDate,
-                    startTime: i.startTime,
-                    endTime: i.endTime
-                
+                    startDate: this.formatDate(i.startDate),
+                    endDate: this.formatDate(i.endDate),
+                    isActive: i.isActive
+                        ? this.translationService.getTranslationForKey('shared.yes')
+                        : this.translationService.getTranslationForKey('shared.no')
                 }
             }
         })
+    }
+
+    private formatDiscountType(type: Discount['discountType']): string {
+        const normalized = String(type).toLowerCase();
+        return normalized === '1' || normalized === 'percentage'
+            ? this.translationService.getTranslationForKey('settings.discounts.percent')
+            : this.translationService.getTranslationForKey('settings.discounts.amount');
+    }
+
+    private formatDate(value?: string | null): string {
+        if (!value) return '';
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString();
     }
 
     private getDiscounts(): void {

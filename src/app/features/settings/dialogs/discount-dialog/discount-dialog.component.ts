@@ -5,6 +5,8 @@ import {
   AbstractControl,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
 } from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
@@ -26,7 +28,6 @@ import TranslationService from '../../../../core/services/utility/translation.se
 import { TranslateModule } from '@ngx-translate/core';
 import { Discount } from '../../../../core/models/api/responses/discount.model';
 import { DiscountService } from '../../../../core/services/api/discount.service';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {
   MatNativeDateModule,
@@ -38,10 +39,28 @@ import { ErrorDetails } from '../../../../core/models/error-details';
 import { ConfirmationDialog } from '../../../../core/ui/confirmation-dialog/confirmation-dialog.component';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatTimepickerModule } from '@angular/material/timepicker';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { PermissionService } from '../../../../core/services/auth/permission.service';
 
+export const validateDiscount: ValidatorFn = (
+  control
+): ValidationErrors | null => {
+  const type = Number(control.get('discountType')?.value);
+  const value = Number(control.get('value')?.value);
+  const startDate = control.get('startDate')?.value;
+  const endDate = control.get('endDate')?.value;
+  const errors: ValidationErrors = {};
+
+  if (type === DiscountType.percent && value > 100) {
+    errors['percentageTooHigh'] = true;
+  }
+
+  if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
+    errors['invalidDateRange'] = true;
+  }
+
+  return Object.keys(errors).length ? errors : null;
+};
 
 @Component({
   imports: [
@@ -57,15 +76,9 @@ import { PermissionService } from '../../../../core/services/auth/permission.ser
     LoaderComponent,
     MatIconModule,
     TranslateModule,
-    MatCheckboxModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatExpansionModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatTimepickerModule,
-    FormsModule,
     MatSlideToggleModule
   ],
   providers: [provideNativeDateAdapter()],
@@ -85,29 +98,20 @@ export class DiscountDialog implements OnInit {
   private readonly authz = inject(PermissionService);
 
   canUpdate = computed(() => this.authz.has({ name: '/api/discount/update', method: 'PUT' }));
-  canDelete = computed(() => this.authz.has({ name: '/api/discount/delete', method: 'DELETE' }));  
+  canDelete = computed(() => this.authz.has({ name: '/api/discount/delete', method: 'POST' }));
 
   isUpdate = signal<boolean>(false);
 
   discountForm = this.fb.group({
     name: ['', Validators.required],
     code: ['', Validators.required],
-    discountType: [
-      { value: '', disabled: this.isUpdate() },
-      [Validators.required],
-    ], // 1 -> percent 2 -> amount
-    value: [{ value: 0, disabled: this.isUpdate() }, [Validators.required]],
+    discountType: ['', Validators.required],
+    value: [0, [Validators.required, Validators.min(0.01)]],
     startDate: [null],
     endDate: [null],
-    startTime: null,
-    endTime: null,
     isActive: true,
-    recurrenceType: '',
-    minPurchase: null,
-    maxPurchase: null,
-    usageLimit: null,
-    usageLimitPerCustomer: null,
-  });
+    minPurchase: [null, Validators.min(0)],
+  }, { validators: validateDiscount });
   loading = signal<boolean>(false);
   errorMessages = signal<string[]>([]);
   submitBtn = signal('shared.add');
@@ -123,14 +127,20 @@ export class DiscountDialog implements OnInit {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (discount: Discount) => {
-          this.getNameControl().setValue(discount.name);
+          this.getNameControl().setValue(discount.name ?? '');
           this.getCodeControl().setValue(discount.code);
-          //this.getDiscountTypeControl().setValue(discount.type);
+          this.getDiscountTypeControl().setValue(
+            this.normalizeDiscountType(discount.discountType)
+          );
           this.getValueControl().setValue(discount.value);
-          this.getStartDate().setValue(discount.startDate?.toISOString());
-          this.getEndDate().setValue(discount.endDate?.toISOString());
-          this.getStartTime().setValue(discount.startTime?.toISOString());
-          this.getEndTime().setValue(discount.endTime?.toISOString())
+          this.getStartDate().setValue(this.parseDate(discount.startDate));
+          this.getEndDate().setValue(this.parseDate(discount.endDate));
+          this.getMinPurchaseControl().setValue(discount.minPurchase ?? null);
+          this.getIsActiveControl().setValue(discount.isActive);
+
+          if (!this.canUpdate()) {
+            this.discountForm.disable();
+          }
         },
         error: (error: HttpErrorResponse) => {
           this.snackbarService.error(error.message);
@@ -163,16 +173,16 @@ export class DiscountDialog implements OnInit {
   }
 
   
-  getStartTime(): AbstractControl {
-    return this.discountForm.get('startTime')!;
+  getMinPurchaseControl(): AbstractControl {
+    return this.discountForm.get('minPurchase')!;
   }
 
-  getEndTime(): AbstractControl {
-    return this.discountForm.get('endTime')!;
+  getIsActiveControl(): AbstractControl {
+    return this.discountForm.get('isActive')!;
   }
 
   onSubmit(): void {
-    if (this.discountForm.invalid) {
+    if ((this.isUpdate() && !this.canUpdate()) || this.discountForm.invalid) {
       return;
     }
     const request: DiscountRequest = {
@@ -181,10 +191,10 @@ export class DiscountDialog implements OnInit {
       code: this.getCodeControl().value,
       value: this.getValueControl().value,
       discountType: this.getDiscountTypeControl().value as DiscountType,
-      startDate: this.getStartDate().value,
-      endDate: this.getEndDate().value,
-      startTime: this.getStartTime().value,
-      endTime: this.getEndTime().value
+      startDate: this.toDateOnly(this.getStartDate().value),
+      endDate: this.toDateOnly(this.getEndDate().value),
+      minPurchase: this.getMinPurchaseControl().value,
+      isActive: this.getIsActiveControl().value
     };
 
     this.loading.set(true);
@@ -228,9 +238,45 @@ export class DiscountDialog implements OnInit {
         this.dialogRef.close(result);
       },
       error: (error: HttpErrorResponse) => {
-        const errorDetails = error.error as ErrorDetails;
-        this.errorMessages.set(errorDetails.detail.split(','));
+        const errorDetails = error.error as ErrorDetails | undefined;
+        const details = errorDetails?.detail
+          ? errorDetails.detail.split(',')
+          : [error.message];
+        this.errorMessages.set(details);
+        this.snackbarService.error(
+          this.translationService.getTranslationForKey(details[0])
+        );
       },
     });
+  }
+
+  private normalizeDiscountType(
+    type: Discount['discountType']
+  ): DiscountType | null {
+    const normalized = String(type).toLowerCase();
+    if (normalized === '1' || normalized === 'percentage') {
+      return DiscountType.percent;
+    }
+    if (normalized === '2' || normalized === 'fixedamount') {
+      return DiscountType.amount;
+    }
+    return null;
+  }
+
+  private parseDate(value?: string | null): Date | null {
+    if (!value) return null;
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  private toDateOnly(value: Date | string | null): string | null {
+    if (!value) return null;
+    const date = value instanceof Date ? value : new Date(value);
+    if (Number.isNaN(date.getTime())) return null;
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }

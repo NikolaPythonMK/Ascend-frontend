@@ -44,7 +44,10 @@ export class TaxDialog{
 
     taxForm = this.fb.group({
         name: ['', Validators.required],
-        percentage: [0, Validators.required]
+        percentage: [
+            0,
+            [Validators.required, Validators.min(0), Validators.max(100)]
+        ]
     })
     loading = signal<boolean>(false);
     errorMessages = signal<string[]>([]);
@@ -78,8 +81,12 @@ export class TaxDialog{
                 this.dialogRef.close(tax);
             },
             error: (error: HttpErrorResponse) => {
-                this.snackbarService.error(error.message);
-                this.dialogRef.close();
+                const detail = error.error?.detail;
+                this.snackbarService.error(
+                    detail
+                        ? this.translationService.getTranslationForKey(detail)
+                        : error.message
+                );
             }
         })
     }  

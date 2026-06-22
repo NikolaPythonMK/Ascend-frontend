@@ -141,7 +141,13 @@
           <mat-icon>{{ tableStaff()?.name ? 'person_apron' : '' }}</mat-icon><span class="user">{{ tableStaff()?.name }} {{ tableStaff()?.lastName }}</span>
         </div>
         }
-        @if (!isTemporaryTable()) {
+        @if (
+          !isTemporaryTable()
+          && (
+            (!isDiscountApplied() && canApplyDiscount())
+            || (isDiscountApplied() && canRemoveDiscount())
+          )
+        ) {
           <div class="discount-container">
           <input [disabled]="isDiscountApplied()" type="text" [(ngModel)]="discountCode" class="discount-input" [placeholder]="'tables.discount-code' | translate" (focus)="codeInputFocus()" (blur)="codeInputLoseFocus()"/>
           @if (!isDiscountApplied()) {

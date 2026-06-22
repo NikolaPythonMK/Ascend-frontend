@@ -22,7 +22,7 @@
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>{{ 'settings.taxes.percentage' | translate }}</mat-label>
-        <input matInput type="number" formControlName="percentage" min="0" [readonly]="canUpdate() === false" />
+        <input matInput type="number" formControlName="percentage" min="0" max="100" [readonly]="canUpdate() === false" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">

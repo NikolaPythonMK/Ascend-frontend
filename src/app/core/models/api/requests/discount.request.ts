@@ -2,14 +2,14 @@ import { DiscountType } from "../../enums/discount-type.enum";
 
 export interface DiscountRequest {
     id?: number,
-    name?: string,
+    name: string,
     code: string,
     value: number,
     discountType: DiscountType,
-    startDate?: Date,
-    endDate?: Date,
-    startTime?: Date,
-    endTime?: Date
+    startDate?: string | null,
+    endDate?: string | null,
+    minPurchase?: number | null,
+    isActive: boolean
 }
 
 export interface ApplyDiscountRequest {

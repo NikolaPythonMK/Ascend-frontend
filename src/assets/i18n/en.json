@@ -89,7 +89,30 @@
         "admin-update-admin-only": "Only an admin can update an administrator account"
     },
     "discount": {
-        "not-found": "Discount not found"
+        "not-found": "Discount not found",
+        "name-required": "Discount name is required",
+        "code-required": "Discount code is required",
+        "value-positive": "Discount value must be greater than zero",
+        "discounttype-required": "Select percentage or fixed amount",
+        "percentage-range": "Percentage must be between 0 and 100",
+        "min-purchase-positive": "Minimum purchase cannot be negative",
+        "name-exists": "A discount with this name already exists",
+        "code-exists": "A discount with this code already exists",
+        "invalid-date-range": "End date must be after the start date",
+        "inactive": "This discount is inactive",
+        "not-started-yet": "This discount has not started yet",
+        "expired": "This discount has expired",
+        "min-purchase-amount-not-met": "The order does not meet the minimum purchase",
+        "in-use": "Remove this discount from active tables before deleting it",
+        "type-not-supported": "This discount type is not supported"
+    },
+    "tax": {
+        "notfound": "Tax not found",
+        "name-required": "Tax name is required",
+        "name-exists": "A tax with this name already exists",
+        "percentage-range": "Tax percentage must be between 0 and 100",
+        "reason-required": "Enter a reason for changing the tax",
+        "in-use": "This tax cannot be deleted while products use it"
     },
     "location": {
         "has-occupied-table": "Location cannot be deleted while it has occupied tables"
@@ -405,7 +428,8 @@
             "current-tax": "Current tax",
             "add-tax": "Add Tax",
             "changed-at": "Changed at",
-            "changed-by": "Changed by"
+            "changed-by": "Changed by",
+            "percentageRange": "Percentage must be between 0 and 100"
         },
         "discounts": {
             "discounts": "Discounts",
@@ -416,28 +440,15 @@
             "name": "Name",
             "value": "Value",
             "discountType": "Type",
-            "isRecurring": "Recurring Discount",
-            "expiryDate": "Expiry Date",
             "add-discount": "Add Discount",
             "update-discount": "Update Discount",
-
             "isActive": "Active",
-            "recurrenceType": "Recurrence Type",
             "minPurchase": "Minimum Purchase",
-            "maxPurchase": "Maximum Purchase",
-            "usageLimit": "Usage Limit",
-            "usageLimitPerCustomer": "Usage Limit per Customer",
             "additionalSettings": "Additional settings",
             "startDate": "Start date",
             "endDate": "End date",
-            "startTime": "Start time",
-            "endTime": "End time",
-
-            "recurrence.none": "None",
-            "recurrence.daily": "Daily",
-            "recurrence.weekly": "Weekly",
-            "recurrence.monthly": "Monthly",
-            "recurrence.custom": "Custom"
+            "percentageRange": "Percentage must be between 0 and 100",
+            "invalidDateRange": "End date must be after the start date"
         },
         "businessProfile": {
             "title": "Business Profile Settings",
@@ -530,6 +541,8 @@
         "save": "Save",
         "all": "All",
         "not-available": "N/A",
-        "successfully": "Successfully"
+        "successfully": "Successfully",
+        "yes": "Yes",
+        "no": "No"
     }
 }

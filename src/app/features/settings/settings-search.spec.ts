@@ -7,6 +7,7 @@ import { DiscountService } from '../../core/services/api/discount.service';
 import { TaxService } from '../../core/services/api/tax.service';
 import { SnackbarService } from '../../core/services/utility/snackbar.service';
 import { TableStateService } from '../../core/services/utility/table-state.service';
+import TranslationService from '../../core/services/utility/translation.service';
 import { SettingsDiscountsComponent } from './discounts/settings-discounts.component';
 import { SettingsTaxesComponent } from './taxes/settings-taxes.component';
 
@@ -31,6 +32,14 @@ describe('settings table search', () => {
         { provide: SnackbarService, useValue: { error: jasmine.createSpy() } },
         { provide: MatDialog, useValue: { open: jasmine.createSpy() } },
         { provide: Router, useValue: { navigate: jasmine.createSpy() } },
+        {
+          provide: TranslationService,
+          useValue: {
+            getTranslationForKey: jasmine
+              .createSpy()
+              .and.callFake((key: string) => key),
+          },
+        },
         {
           provide: PermissionService,
           useValue: { has: jasmine.createSpy().and.returnValue(true) },
@@ -61,11 +70,9 @@ describe('settings table search', () => {
 
     expect(discountService.getAll).toHaveBeenCalledWith(
       [
-        { propName: 'Code', searchValue: 'summer' },
-        { propName: 'Name', searchValue: 'summer' },
+        { propName: 'Code;Name', searchValue: 'summer' },
       ],
       undefined
     );
   });
 });
-
