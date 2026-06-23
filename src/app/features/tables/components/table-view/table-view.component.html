@@ -16,12 +16,8 @@
                         {{ 'tables.status.' + row.status | translate }}
                     </span>
                 </td>
+                <td class="staff">{{ getStaffName(row) }}</td>
                 <td class="price">{{ settingsManager.formatCurrency(row.totalGrossPrice) }}</td>
-                <td>
-                    <button class="primary-button">
-                        {{ 'tables.receipt' | translate }}
-                    </button>
-                </td>
             </tr>
         }
     </tbody>

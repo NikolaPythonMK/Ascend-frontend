@@ -15,9 +15,21 @@ import { SettingsManagerService } from "../../../../core/services/utility/settin
 })
 export class TableViewComponent {
     readonly settingsManager = inject(SettingsManagerService);
-    displayedColumns = ['tables.column-table', 'tables.column-status', 'tables.column-price', ''];
+    displayedColumns = [
+        'tables.column-table',
+        'tables.column-status',
+        'tables.column-staff',
+        'tables.column-price'
+    ];
     dataSource = input.required<Table[]>();
     clickedTableId = output<number>();
+
+    getStaffName(table: Table): string {
+        const name = table.staffUser?.name?.trim() ?? '';
+        const lastName = table.staffUser?.lastName?.trim() ?? '';
+
+        return [name, lastName].filter(Boolean).join(' ') || '—';
+    }
 
     handleRowClick(tableId: number): void {
         this.clickedTableId.emit(tableId);

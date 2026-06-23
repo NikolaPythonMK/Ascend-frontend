@@ -243,9 +243,10 @@
     },
     "tables": {
         "title": "Tables",
-        "column-table": "Table",
-        "column-status": "Status",
-        "column-price": "Total",
+    "column-table": "Table",
+    "column-status": "Status",
+    "column-staff": "Staff",
+    "column-price": "Total",
         "status-available": "Available",
         "status-occupied": "Occupied",
         "status": {

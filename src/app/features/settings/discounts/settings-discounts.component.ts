@@ -100,8 +100,8 @@ export class SettingsDiscountsComponent implements OnInit {
             return {
                 id: i.id,
                 properties: {
-                    name: i.name,
                     code: i.code,
+                    name: i.name,
                     discountType: this.formatDiscountType(i.discountType),
                     value: i.value,
                     startDate: this.formatDate(i.startDate),
