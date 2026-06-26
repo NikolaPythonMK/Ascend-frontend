@@ -318,6 +318,7 @@ private buildRows(perms: Permission[]): RowModel[] {
     { key: "staffuser",     groupName: "staff.roles.groups.staff" },
     { key: "role",          groupName: "staff.roles.groups.roles" },
     { key: "reporting",     groupName: "staff.roles.groups.reporting" },
+    { key: "analyticsrevenue", groupName: "staff.roles.groups.analytics-revenue" },
     { key: "tax",           groupName: "staff.roles.groups.taxes" },
     { key: "discount",      groupName: "staff.roles.groups.discounts" },
   ];
@@ -380,6 +381,31 @@ private buildRows(perms: Permission[]): RowModel[] {
           update:       updateIds,
           delete:       deleteIds,
           positioning:  positioningIds,
+        }
+      });
+      continue;
+    }
+
+    if (key === 'analyticsrevenue') {
+      const viewIds = uniq(
+        perms
+          .filter(permission =>
+            permission.name.startsWith('/api/analytics/revenue/')
+            && permission.method.toUpperCase() === 'GET')
+          .map(permission => permission.id)
+      );
+
+      if (!viewIds.length) continue;
+
+      rows.push({
+        key,
+        groupName,
+        actionIds: {
+          view: viewIds,
+          create: [],
+          update: [],
+          delete: [],
+          positioning: [],
         }
       });
       continue;
