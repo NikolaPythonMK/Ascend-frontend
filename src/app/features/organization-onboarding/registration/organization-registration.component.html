@@ -17,7 +17,6 @@
       </div>
     } @else {
       <header class="page-heading">
-        <p class="eyebrow">{{ 'organizationOnboarding.registration.eyebrow' | translate }}</p>
         <h1>{{ 'organizationOnboarding.registration.title' | translate }}</h1>
         <p>{{ 'organizationOnboarding.registration.description' | translate }}</p>
       </header>
@@ -38,32 +37,6 @@
               <input matInput formControlName="organizationName" autocomplete="organization" />
               @if (form.controls.organizationName.touched && form.controls.organizationName.hasError('required')) {
                 <mat-error>{{ 'organizationOnboarding.validation.required' | translate }}</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>{{ 'organizationOnboarding.fields.legalName' | translate }}</mat-label>
-              <input matInput formControlName="legalName" autocomplete="organization" />
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>{{ 'organizationOnboarding.fields.taxId' | translate }}</mat-label>
-              <input matInput formControlName="taxId" />
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>{{ 'organizationOnboarding.fields.businessPhoneNumber' | translate }}</mat-label>
-              <input matInput formControlName="businessPhoneNumber" autocomplete="tel" />
-              @if (form.controls.businessPhoneNumber.touched && form.controls.businessPhoneNumber.hasError('required')) {
-                <mat-error>{{ 'organizationOnboarding.validation.required' | translate }}</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>{{ 'organizationOnboarding.fields.businessEmail' | translate }}</mat-label>
-              <input matInput type="email" formControlName="businessEmail" autocomplete="email" />
-              @if (form.controls.businessEmail.touched && form.controls.businessEmail.hasError('email')) {
-                <mat-error>{{ 'organizationOnboarding.validation.email' | translate }}</mat-error>
               }
             </mat-form-field>
 
@@ -104,6 +77,14 @@
                 <mat-error>{{ 'organizationOnboarding.validation.required' | translate }}</mat-error>
               } @else if (form.controls.ownerEmail.touched && form.controls.ownerEmail.hasError('email')) {
                 <mat-error>{{ 'organizationOnboarding.validation.email' | translate }}</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-span">
+              <mat-label>{{ 'organizationOnboarding.fields.phoneNumber' | translate }}</mat-label>
+              <input matInput formControlName="businessPhoneNumber" autocomplete="tel" />
+              @if (form.controls.businessPhoneNumber.touched && form.controls.businessPhoneNumber.hasError('required')) {
+                <mat-error>{{ 'organizationOnboarding.validation.required' | translate }}</mat-error>
               }
             </mat-form-field>
           </div>

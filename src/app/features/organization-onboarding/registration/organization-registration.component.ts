@@ -1,6 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, inject, signal } from '@angular/core';
 import {
   FormBuilder,
   ReactiveFormsModule,
@@ -39,7 +38,6 @@ import { LoaderComponent } from '../../../core/ui/loader/loader.component';
 })
 export class OrganizationRegistrationComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly destroyRef = inject(DestroyRef);
   private readonly organizationRequests = inject(OrganizationRequestsService);
   private readonly translation = inject(TranslationService);
 
@@ -55,9 +53,6 @@ export class OrganizationRegistrationComponent {
     ownerLastName: ['', [Validators.required, Validators.maxLength(100)]],
     ownerEmail: ['', [Validators.required, Validators.email]],
     businessPhoneNumber: ['', [Validators.required, Validators.maxLength(50)]],
-    businessEmail: ['', Validators.email],
-    legalName: ['', Validators.maxLength(200)],
-    taxId: ['', Validators.maxLength(100)],
     currency: [Currency.EUR, Validators.required],
     locationName: ['', [Validators.required, Validators.maxLength(200)]],
     numberOfTables: [
@@ -69,28 +64,6 @@ export class OrganizationRegistrationComponent {
   readonly submitting = signal(false);
   readonly submitted = signal(false);
   readonly errorMessage = signal('');
-
-  constructor() {
-    this.form.controls.ownerEmail.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((ownerEmail) => {
-        if (this.form.controls.businessEmail.pristine) {
-          this.form.controls.businessEmail.setValue(ownerEmail, {
-            emitEvent: false,
-          });
-        }
-      });
-
-    this.form.controls.organizationName.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((organizationName) => {
-        if (this.form.controls.legalName.pristine) {
-          this.form.controls.legalName.setValue(organizationName, {
-            emitEvent: false,
-          });
-        }
-      });
-  }
 
   onSubmit(): void {
     if (this.submitting() || this.submitted()) {
@@ -111,9 +84,6 @@ export class OrganizationRegistrationComponent {
       ownerLastName: value.ownerLastName.trim(),
       ownerEmail: value.ownerEmail.trim(),
       businessPhoneNumber: value.businessPhoneNumber.trim(),
-      businessEmail: value.businessEmail.trim() || value.ownerEmail.trim(),
-      legalName: value.legalName.trim() || value.organizationName.trim(),
-      taxId: value.taxId.trim() || null,
       currency: value.currency,
       locationName: value.locationName.trim(),
       numberOfTables: value.numberOfTables,

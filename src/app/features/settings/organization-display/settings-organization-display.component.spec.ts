@@ -18,10 +18,8 @@ describe('SettingsOrganizationDisplayComponent', () => {
   it('applies a saved organization language immediately', () => {
     const businessProfile: BusinessProfile = {
       organizationId: 1,
-      legalName: 'Test',
       taxId: null,
       phoneNumber: '',
-      email: '',
       currency: Currency.EUR,
       // receiptLanguage: Language.En,
     };

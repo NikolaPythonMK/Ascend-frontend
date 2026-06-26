@@ -1,7 +1,6 @@
 {
     "organizationOnboarding": {
         "registration": {
-            "eyebrow": "Organization onboarding",
             "title": "Register your organization",
             "description": "Send your business details for review. You will receive a setup email after the request is approved.",
             "organizationSection": "Organization details",
@@ -26,10 +25,7 @@
             "ownerLastName": "Owner last name",
             "owner": "Owner",
             "ownerEmail": "Owner email",
-            "businessPhoneNumber": "Business phone number",
-            "businessEmail": "Business email",
-            "legalName": "Legal name",
-            "taxId": "Tax ID",
+            "phoneNumber": "Phone number",
             "currency": "Currency",
             "locationName": "Location name",
             "numberOfTables": "Number of tables",
@@ -453,10 +449,8 @@
         },
         "businessProfile": {
             "title": "Business Profile Settings",
-            "legalName": "Legal Name",
             "taxId": "Tax ID (tax or VAT number)",
             "phone": "Phone number",
-            "email": "Email",
             "currency": "Currency",
             "currencies": {
                 "usd": "USD — US Dollar",

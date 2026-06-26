@@ -11,9 +11,6 @@ export interface OrganizationActivationDetails {
   ownerLastName: string;
   ownerEmail: string;
   businessPhoneNumber: string;
-  businessEmail: string;
-  legalName: string;
-  taxId: string | null;
   currency: Currency;
   locationName: string;
   numberOfTables: number;

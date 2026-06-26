@@ -62,13 +62,11 @@ export class SettingsBusinessProfileComponent implements OnInit {
 
   profileForm = this.fb.group({
     organizationId: [{ value: 0, disabled: true }], // read-only
-    legalName: ['', [Validators.required, Validators.maxLength(200)]],
     taxId: [''],
     phoneNumber: ['', [
       Validators.required,
       Validators.pattern(/^\d+$/),
     ]],
-    email: ['', [Validators.required, Validators.email]],
 
     currency: [Currency.USD, Validators.required],
     // receiptLanguage: [Language.En, Validators.required],
@@ -88,10 +86,8 @@ export class SettingsBusinessProfileComponent implements OnInit {
 
     this.profileForm.patchValue({
       organizationId: profile.organizationId,
-      legalName: profile.legalName,
       taxId: profile.taxId,
       phoneNumber: profile.phoneNumber,
-      email: profile.email,
       currency: profile.currency,
       // receiptLanguage: profile.receiptLanguage,
     });
@@ -107,10 +103,8 @@ export class SettingsBusinessProfileComponent implements OnInit {
 
     const payload: BusinessProfileRequest = {
       organizationId: this.loadedProfile.organizationId,
-      legalName: this.profileForm.get('legalName')!.value!,
       taxId: this.profileForm.get('taxId')!.value?.trim() || null,
       phoneNumber: this.profileForm.get('phoneNumber')!.value!,
-      email: this.profileForm.get('email')!.value!,
       currency: this.profileForm.get('currency')!.value as Currency,
       // receiptLanguage: this.profileForm.get('receiptLanguage')!.value as Language,
       code: this.employee.code()!
@@ -122,10 +116,8 @@ export class SettingsBusinessProfileComponent implements OnInit {
         next: () => {
           const updatedProfile: BusinessProfile = {
             organizationId: payload.organizationId,
-            legalName: payload.legalName,
             taxId: payload.taxId,
             phoneNumber: payload.phoneNumber,
-            email: payload.email,
             currency: payload.currency,
             // receiptLanguage: payload.receiptLanguage,
           };
