@@ -5,6 +5,13 @@
 <h2 mat-dialog-title class="dialog-title">{{ this.title() }}</h2>
 
 <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="dialog-form">
+  @if(errorMessages().includes('product.used-in-active-table-item')) {
+    <div class="error-message">
+      <mat-icon>error</mat-icon>
+      <span>{{ 'menu.products.used-in-active-table-item' | translate }}</span>
+    </div>
+  }
+
   <div class="form-inputs">
     <div>
       @if(errorMessages().includes('name.exists')) {

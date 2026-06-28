@@ -7,8 +7,9 @@
             <div class="card-container">
                 <button class="test-card" type="button" (click)="onSelect(element.id)">
                     <img
-                        [src]="element.image && element.image.trim() !== '' ? 'http://localhost:5073' + element.image : 'assets/images/no-image-icon.png'"
+                        [src]="getImageSrc(element.image)"
                         [alt]="element.description || element.title"
+                        (error)="onImageError($event)"
                     >
                 </button>
                 <div class="card-label">

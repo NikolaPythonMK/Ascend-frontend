@@ -85,6 +85,7 @@ export interface RecentTransaction {
   number?: string;
   location?: string;
   locationName?: string;
+  staffUser?: string;
   staffMember?: string;
   staffName?: string;
   paymentMethod: AnalyticsPaymentMethod | string;

@@ -384,7 +384,7 @@ export class AnalyticsRevenueComponent
   }
 
   transactionStaff(transaction: RecentTransaction): string {
-    return transaction.staffName ?? transaction.staffMember ?? '—';
+    return transaction.staffUser ?? transaction.staffName ?? transaction.staffMember ?? '—';
   }
 
   transactionTax(transaction: RecentTransaction): number {

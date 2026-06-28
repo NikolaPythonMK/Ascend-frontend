@@ -140,14 +140,14 @@
           <article class="summary-card">
             <span>{{ 'analytics.summary.periodGross' | translate }}</span>
             <strong>{{ formatMoney(data.grossRevenue) }}</strong>
-            <small
+            <!-- <small
               class="growth"
               [class.positive]="(data.grossRevenueGrowthPercentage ?? 0) > 0"
               [class.negative]="(data.grossRevenueGrowthPercentage ?? 0) < 0"
             >
               {{ formatGrowth(data.grossRevenueGrowthPercentage) }}
               {{ 'analytics.summary.vsPrevious' | translate }}
-            </small>
+            </small> -->
           </article>
           <article class="summary-card">
             <span>{{ 'analytics.summary.netRevenue' | translate }}</span>
@@ -174,11 +174,11 @@
             <strong>{{ formatMoney(data.averageTransactionValue) }}</strong>
             <small>{{ 'analytics.summary.completedAverage' | translate }}</small>
           </article>
-          <article class="summary-card">
+          <!-- <article class="summary-card">
             <span>{{ 'analytics.summary.previousGross' | translate }}</span>
             <strong>{{ formatMoney(data.previousPeriodGrossRevenue) }}</strong>
             <small>{{ 'analytics.summary.equivalentPeriod' | translate }}</small>
-          </article>
+          </article> -->
         } @else {
           <div class="empty-state full-span">
             <mat-icon>monitoring</mat-icon>
@@ -227,7 +227,7 @@
         </div>
       }
 
-      @if (trend()?.data?.length) {
+      <!-- @if (trend()?.data?.length) {
         <details class="data-details">
           <summary>{{ 'analytics.trend.viewData' | translate }}</summary>
           <div class="table-scroll">
@@ -253,7 +253,7 @@
             </table>
           </div>
         </details>
-      }
+      } -->
     </section>
 
     <section class="analytics-panel breakdown-panel" aria-labelledby="breakdown-title">
@@ -265,12 +265,12 @@
             · {{ 'analytics.breakdown.top' | translate }} {{ filters().limit }}
           </p>
         </div>
-        @if (breakdown()) {
+        <!-- @if (breakdown()) {
           <span class="total-chip">
             {{ 'analytics.breakdown.totalGross' | translate }}
             {{ formatMoney(breakdown()!.totalGrossRevenue) }}
           </span>
-        }
+        } -->
       </div>
 
       @if (breakdownError()) {
@@ -302,9 +302,9 @@
                 <span>{{ item.revenuePercentage | number:'1.0-1' }}%</span>
                 <span>{{ 'analytics.table.net' | translate }}: {{ formatMoney(item.netRevenue) }}</span>
                 <span>{{ 'analytics.table.transactions' | translate }}: {{ item.transactionCount | number }}</span>
-                @if (item.quantity !== null && item.quantity !== undefined) {
+                <!-- @if (item.quantity !== null && item.quantity !== undefined) {
                   <span>{{ 'analytics.table.quantity' | translate }}: {{ item.quantity | number }}</span>
-                }
+                } -->
               </div>
             </li>
           }

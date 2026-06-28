@@ -17,6 +17,27 @@
       >
         <i class="material-icons">fence</i>{{ 'drag-view.obstacle' | translate }}
       </button>
+      <button
+        [title]="'drag-view.remove-obstacle' | translate"
+        [disabled]="!isEdit() || !canRemoveSelectedObstacle()"
+        (click)="removeSelectedObstacle()"
+      >
+        <i class="material-icons">delete</i>{{ 'drag-view.remove-obstacle' | translate }}
+      </button>
+      <button
+        [title]="'drag-view.copy-obstacle' | translate"
+        [disabled]="!isEdit() || !canCopySelectedObstacle()"
+        (click)="copySelectedObstacle()"
+      >
+        <i class="material-icons">content_copy</i>{{ 'drag-view.copy-obstacle' | translate }}
+      </button>
+      <button
+        [title]="'drag-view.paste-obstacle' | translate"
+        [disabled]="!isEdit() || !canPasteObstacle()"
+        (click)="pasteObstacle()"
+      >
+        <i class="material-icons">content_paste</i>{{ 'drag-view.paste-obstacle' | translate }}
+      </button>
     </div>
 
     <div class="toolbar-group">

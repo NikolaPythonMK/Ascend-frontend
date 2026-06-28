@@ -113,7 +113,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   discountCode = signal('');
   tableStatus = signal<string>('');
   products = signal<Product[]>([]);
-  productsPage = signal<number>(0);
+  productsPage = signal<number>(1);
   productsPageSize = signal<number>(20);
   totalProducts = signal<number>(0);
   hasMoreProducts = computed(() => this.products().length < this.totalProducts());
@@ -411,7 +411,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private reloadProducts(): void {
-    this.productsPage.set(0);
+    this.productsPage.set(1);
     this.totalProducts.set(0);
     this.products.set([]);
     this.productsLoadingMore.set(false);
@@ -470,7 +470,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
           }
 
           if (append) {
-            this.productsPage.update((page) => Math.max(page - 1, 0));
+            this.productsPage.update((page) => Math.max(page - 1, 1));
           }
 
           this.snackbarService.error(error.message);

@@ -62,6 +62,7 @@ export class DragViewComponent implements OnInit {
   floors: Floor[] = [];
   currentFloorIndex: number = 0;
   selectedId: string | null = null;
+  copiedObstacle: ShapeItem | null = null;
   color: string = '#fff';
   loader = signal<boolean>(false);
 
@@ -289,6 +290,90 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
     this.drawShape(obstacle, this.layers()[this.currentFloorIndex]);
   }
 
+  canRemoveSelectedObstacle(): boolean {
+    if (!this.selectedId) return false;
+
+    const selectedItem = this.floors[this.currentFloorIndex]?.items.find(
+      (item) => item.id === this.selectedId
+    );
+
+    return selectedItem?.tableId === 0;
+  }
+
+  removeSelectedObstacle(): void {
+    if (!this.isEdit() || !this.selectedId) return;
+
+    const floor = this.floors[this.currentFloorIndex];
+    const selectedItemIndex = floor.items.findIndex(
+      (item) => item.id === this.selectedId
+    );
+
+    if (selectedItemIndex === -1) return;
+
+    const selectedItem = floor.items[selectedItemIndex];
+
+    if (selectedItem.tableId !== 0) return;
+
+    floor.items.splice(selectedItemIndex, 1);
+
+    const layer = this.layers()[this.currentFloorIndex];
+    const group = layer.findOne<Konva.Group>(`#${selectedItem.id}`);
+    group?.destroy();
+
+    this.transformer.nodes([]);
+    this.selectedId = null;
+    layer.draw();
+    this.cdr.detectChanges();
+  }
+
+  canCopySelectedObstacle(): boolean {
+    return this.canRemoveSelectedObstacle();
+  }
+
+  copySelectedObstacle(): void {
+    if (!this.isEdit() || !this.selectedId) return;
+
+    const selectedItem = this.floors[this.currentFloorIndex]?.items.find(
+      (item) => item.id === this.selectedId
+    );
+
+    if (!selectedItem || selectedItem.tableId !== 0) return;
+
+    this.copiedObstacle = { ...selectedItem };
+  }
+
+  canPasteObstacle(): boolean {
+    return this.isEdit() && this.copiedObstacle !== null;
+  }
+
+  pasteObstacle(): void {
+    if (!this.canPasteObstacle() || !this.copiedObstacle) return;
+
+    const pastedObstacle: ShapeItem = {
+      ...this.copiedObstacle,
+      id: crypto.randomUUID(),
+      tableId: 0,
+      x: this.copiedObstacle.x + 20,
+      y: this.copiedObstacle.y + 20,
+    };
+
+    this.floors[this.currentFloorIndex].items.push(pastedObstacle);
+    this.drawShape(pastedObstacle, this.layers()[this.currentFloorIndex]);
+
+    this.selectedId = pastedObstacle.id;
+    this.color = pastedObstacle.fill;
+
+    const layer = this.layers()[this.currentFloorIndex];
+    const group = layer.findOne<Konva.Group>(`#${pastedObstacle.id}`);
+
+    if (group) {
+      this.transformer.nodes([group]);
+      layer.batchDraw();
+    }
+
+    this.cdr.detectChanges();
+  }
+
   drawShape(item: ShapeItem, layer: Konva.Layer) {
     const group = new Konva.Group({
       x: item.x,
@@ -396,6 +481,7 @@ this.stage.on('contentTouchend contentTouchcancel', () => {
         this.transformer.nodes([]);
         layer.batchDraw();
         this.selectedId = null;
+        this.cdr.detectChanges();
       }
     });
 

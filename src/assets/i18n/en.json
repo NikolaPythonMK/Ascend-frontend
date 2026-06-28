@@ -333,6 +333,7 @@
             "name-exists": "Product with the same name already exists",
             "code": "Code",
             "code-exists": "Product with the same code already exists",
+            "used-in-active-table-item": "This product cannot be deleted because it is used in an active order",
             "price": "Price",
             "tax": "Tax",
             "category-group": "Category Group",
@@ -492,6 +493,9 @@
     "drag-view": {
         "add-obstacle": "Add Obstacle",
         "obstacle": "Obstacle",
+        "remove-obstacle": "Remove obstacle",
+        "copy-obstacle": "Copy obstacle",
+        "paste-obstacle": "Paste obstacle",
         "add-rectangle": "Add Rectangle",
         "rectangle": "Rectangle",
         "add-circle": "Add Circle",

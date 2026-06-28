@@ -64,7 +64,7 @@ export class ProuctsComponent implements OnInit, AfterViewInit, OnDestroy{
     productsLoading = signal<boolean>(false);
     productsLoadingMore = signal<boolean>(false);
     categoriesLoading = signal<boolean>(false);
-    productsPage = signal<number>(0);
+    productsPage = signal<number>(1);
     productsPageSize = signal<number>(20);
     totalProducts = signal<number>(0);
     hasMoreProducts = computed(() => this.products().length < this.totalProducts());
@@ -201,7 +201,7 @@ export class ProuctsComponent implements OnInit, AfterViewInit, OnDestroy{
     }
 
     private reloadProducts(): void {
-        this.productsPage.set(0);
+        this.productsPage.set(1);
         this.totalProducts.set(0);
         this.products.set([]);
         this.productsLoadingMore.set(false);
@@ -273,7 +273,7 @@ export class ProuctsComponent implements OnInit, AfterViewInit, OnDestroy{
                 }
 
                 if (append && requestId === this.productsRequestId) {
-                    this.productsPage.update((page) => Math.max(page - 1, 0));
+                    this.productsPage.update((page) => Math.max(page - 1, 1));
                 }
                 this.snackbarService.error(error.message);
             }
